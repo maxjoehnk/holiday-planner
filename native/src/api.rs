@@ -1,59 +1,112 @@
-// This is the entry point of your Rust library.
-// When adding new code to your project, note that only items used
-// here will be transformed to their Dart equivalents.
+use std::ops::Deref;
+use parking_lot::{RwLock, RwLockReadGuard};
+use uuid::Uuid;
 
-// A plain enum without any fields. This is similar to Dart- or C-style enums.
-// flutter_rust_bridge is capable of generating code for enums with fields
-// (@freezed classes in Dart and tagged unions in C).
-pub enum Platform {
-    Unknown,
-    Android,
-    Ios,
-    Windows,
-    Unix,
-    MacIntel,
-    MacApple,
-    Wasm,
+pub use crate::commands::*;
+use crate::database::Database;
+use crate::handlers::*;
+use crate::jobs::BackgroundJobHandler;
+pub use crate::models::*;
+
+static DB: RwLock<Option<Database>> = RwLock::new(None);
+
+pub struct HandlerGuard<'a, T> {
+    db_guard: RwLockReadGuard<'a, Option<Database>>,
+    handler: T,
 }
 
-// A function definition in Rust. Similar to Dart, the return type must always be named
-// and is never inferred.
-pub fn platform() -> Platform {
-    // This is a macro, a special expression that expands into code. In Rust, all macros
-    // end with an exclamation mark and can be invoked with all kinds of brackets (parentheses,
-    // brackets and curly braces). However, certain conventions exist, for example the
-    // vector macro is almost always invoked as vec![..].
-    //
-    // The cfg!() macro returns a boolean value based on the current compiler configuration.
-    // When attached to expressions (#[cfg(..)] form), they show or hide the expression at compile time.
-    // Here, however, they evaluate to runtime values, which may or may not be optimized out
-    // by the compiler. A variety of configurations are demonstrated here which cover most of
-    // the modern oeprating systems. Try running the Flutter application on different machines
-    // and see if it matches your expected OS.
-    //
-    // Furthermore, in Rust, the last expression in a function is the return value and does
-    // not have the trailing semicolon. This entire if-else chain forms a single expression.
-    if cfg!(windows) {
-        Platform::Windows
-    } else if cfg!(target_os = "android") {
-        Platform::Android
-    } else if cfg!(target_os = "ios") {
-        Platform::Ios
-    } else if cfg!(all(target_os = "macos", target_arch = "aarch64")) {
-        Platform::MacApple
-    } else if cfg!(target_os = "macos") {
-        Platform::MacIntel
-    } else if cfg!(target_family = "wasm") {
-        Platform::Wasm
-    } else if cfg!(unix) {
-        Platform::Unix
-    } else {
-        Platform::Unknown
+impl<'a, T> Deref for HandlerGuard<'a, T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.handler
     }
 }
 
-// The convention for Rust identifiers is the snake_case,
-// and they are automatically converted to camelCase on the Dart side.
-pub fn rust_release_mode() -> bool {
-    cfg!(not(debug_assertions))
+impl HandlerCreator for RwLock<Option<Database>> {
+    type Guard<'a, T: Handler> = HandlerGuard<'a, T>;
+
+    fn try_get<'a, T: Handler>(&'a self) -> anyhow::Result<Self::Guard<'a, T>> {
+        let db_guard = self.read();
+        let db = db_guard.as_ref().unwrap();
+        let handler = T::create(db.clone());
+
+        Ok(HandlerGuard {
+            db_guard,
+            handler,
+        })
+    }
+}
+
+#[tracing::instrument]
+pub fn init() {
+    crate::logger::init();
+    let mut db = DB.write();
+    *db = Some(Database::new());
+}
+
+#[tracing::instrument]
+pub fn get_trips() -> Vec<Trip> {
+    let handler = DB.try_get::<TripHandler>().unwrap();
+    handler.get_trips().unwrap()
+}
+
+#[tracing::instrument]
+pub fn create_trip(command: CreateTrip) -> Trip {
+    let handler = DB.try_get::<TripHandler>().unwrap();
+    handler.create_trip(command).unwrap()
+}
+
+#[tracing::instrument]
+pub fn get_packing_list() -> Vec<PackingListEntry> {
+    let handler = DB.try_get::<PackingListHandler>().unwrap();
+    handler.get_packing_list().unwrap()
+}
+
+#[tracing::instrument]
+pub fn add_packing_list_entry(command: AddPackingListEntry) -> PackingListEntry {
+    let handler = DB.try_get::<PackingListHandler>().unwrap();
+    handler.add_packing_list_entry(command).unwrap()
+}
+
+#[tracing::instrument]
+pub fn delete_packing_list_entry(command: DeletePackingListEntry) {
+    let handler = DB.try_get::<PackingListHandler>().unwrap();
+    handler.delete_packing_list_entry(command).unwrap();
+}
+
+#[tracing::instrument]
+pub fn get_trip_packing_list(trip_id: Uuid) -> TripPackingListModel {
+    let handler = DB.try_get::<TripPackingListHandler>().unwrap();
+    handler.get_trip_packing_list(trip_id).unwrap()
+}
+
+#[tracing::instrument]
+pub fn mark_as_packed(trip_id: Uuid, entry_id: Uuid) {
+    let handler = DB.try_get::<TripPackingListHandler>().unwrap();
+    handler.mark_as_packed(trip_id, entry_id).unwrap();
+}
+
+#[tracing::instrument]
+pub fn mark_as_unpacked(trip_id: Uuid, entry_id: Uuid) {
+    let handler = DB.try_get::<TripPackingListHandler>().unwrap();
+    handler.mark_as_unpacked(trip_id, entry_id).unwrap();
+}
+
+#[tracing::instrument]
+pub fn search_locations(query: String) -> Vec<LocationEntry> {
+    let handler = DB.try_get::<LocationHandler>().unwrap();
+    handler.search_locations(query).unwrap()
+}
+
+#[tracing::instrument]
+pub fn add_trip_location(command: AddTripLocation) {
+    let handler = DB.try_get::<TripHandler>().unwrap();
+    handler.add_trip_location(command.trip_id, command.location).unwrap();
+}
+
+#[tracing::instrument]
+pub fn run_background_jobs() {
+    let handler = DB.try_get::<BackgroundJobHandler>().unwrap();
+    handler.run().unwrap();
 }

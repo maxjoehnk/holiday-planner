@@ -8,4 +8,4 @@ extra_c_output_path:
   - macos/Runner
 dart_decl_output: lib/bridge_definitions.dart
 dart_format_line_length: 80
-wasm: true
+wasm: false

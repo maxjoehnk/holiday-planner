@@ -1,4 +1,4 @@
-package com.example.flutter_rust_bridge_template
+package me.maxjoehnk.holiday_planner
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -49,3 +49,6 @@ jniLibs
 
 Cargo.lock
 pubspec.lock
+
+# database when running on desktop
+.database

@@ -1,0 +1,38 @@
+on: [push]
+
+name: Build
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - uses: Swatinem/rust-cache@v2
+      - run: flutter build linux --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: build/linux/x64/release/bundle
+
+  build-android:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - uses: Swatinem/rust-cache@v2
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: build/app/outputs/flutter-apk/app-release.apk
