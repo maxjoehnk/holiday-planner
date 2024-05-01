@@ -9,7 +9,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 anyhow = "1"
 flutter_rust_bridge = { version = "1", features = ["chrono", "uuid", "zero-copy"] }
-uuid = { version = "1.4", features = ["v4", "serde"] }
+uuid = { version = "1.8.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 typed-sled = "0.2"
 sled = "0.34"
