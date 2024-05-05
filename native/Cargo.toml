@@ -15,7 +15,7 @@ typed-sled = "0.2"
 sled = "0.34"
 serde = { version = "1", features = ["derive"] }
 parking_lot = "0.12"
-reqwest = { version = "0.11", features = ["json", "blocking", "rustls-tls"], default-features = false }
+reqwest = { version = "0.12", features = ["json", "blocking", "rustls-tls"], default-features = false }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 geojson = { version = "0.24" }
