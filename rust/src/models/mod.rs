@@ -1,0 +1,232 @@
+use std::fmt;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+use transits::*;
+
+pub mod transits;
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Trip {
+    pub id: Uuid,
+    pub name: String,
+    pub start_date: DateTime<Utc>,
+    pub end_date: DateTime<Utc>,
+    pub locations: Vec<Location>,
+    #[serde(default)]
+    pub transits: Vec<Transit>,
+    #[serde(default)]
+    pub accommodations: Vec<Accomodation>,
+    pub header_image: Option<Vec<u8>>,
+    #[serde(default)]
+    pub attachments: Vec<TripAttachment>,
+}
+
+impl fmt::Debug for Trip {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Trip")
+            .field("id", &self.id)
+            .field("name", &self.name)
+            .field("start_date", &self.start_date)
+            .field("end_date", &self.end_date)
+            .field("locations", &self.locations)
+            .field("transits", &self.transits)
+            .field("accommodations", &self.accommodations)
+            .field("header_image", &self.header_image.is_some())
+            .field("attachments", &self.attachments.len())
+            .finish()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Accomodation {
+    pub name: String,
+    pub location: Location,
+    pub check_in: DateTime<Utc>,
+    pub check_out: DateTime<Utc>,
+    pub attachments: Vec<TripAttachment>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TripAttachment {
+    pub id: Uuid,
+    pub name: String,
+    pub file_name: String,
+    pub content_type: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Location {
+    pub coordinates: Coordinates,
+    pub city: String,
+    pub country: String,
+    pub forecast: Option<WeatherForecast>,
+    pub attachments: Vec<TripAttachment>,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Coordinates {
+    pub latitude: f64,
+    pub longitude: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WeatherForecast {
+    pub coordinates: Coordinates,
+    pub hourly_forecast: Vec<HourlyWeatherForecast>,
+    pub daily_forecast: Vec<DailyWeatherForecast>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HourlyWeatherForecast {
+    pub time: DateTime<Utc>,
+    pub temperature: f64,
+    pub wind_speed: f64,
+    /// mm/h
+    pub precipitation_amount: f64,
+    pub precipitation_probability: f64,
+    pub condition: WeatherCondition,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DailyWeatherForecast {
+    pub day: DateTime<Utc>,
+    pub min_temperature: f64,
+    pub max_temperature: f64,
+    pub morning_temperature: f64,
+    pub day_temperature: f64,
+    pub evening_temperature: f64,
+    pub night_temperature: f64,
+    pub condition: WeatherCondition,
+    /// mm
+    pub precipitation_amount: f64,
+    pub precipitation_probability: f64,
+    pub wind_speed: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Attachment {
+    pub id: Uuid,
+    pub name: String,
+    pub file_name: String,
+    pub data: Vec<u8>,
+    pub content_type: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PackingListEntry {
+    pub id: Uuid,
+    pub name: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    pub conditions: Vec<PackingListEntryCondition>,
+    pub quantity: Quantity,
+    #[serde(default)]
+    pub category: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct Quantity {
+    pub per_day: Option<usize>,
+    pub per_night: Option<usize>,
+    pub fixed: Option<usize>,
+}
+
+impl Quantity {
+    fn calculate(&self, trip: &Trip) -> Option<usize> {
+        let mut quantity = self.fixed.unwrap_or_default();
+        let duration = trip.end_date.signed_duration_since(trip.start_date);
+        let days = duration.num_days() as usize;
+        let nights = days.saturating_sub(1);
+        if let Some(per_day) = self.per_day {
+            quantity += per_day * days;
+        }
+        if let Some(per_night) = self.per_night {
+            quantity += per_night * nights;
+        }
+
+        if quantity > 0 {
+            Some(quantity)
+        }else {
+            None
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum PackingListEntryCondition {
+    MinTripDuration {
+        length: u32
+    },
+    MaxTripDuration {
+        length: u32
+    },
+    MinTemperature {
+        temperature: f64,
+    },
+    MaxTemperature {
+        temperature: f64,
+    },
+    Weather {
+        condition: WeatherCondition,
+        min_probability: f64,
+    },
+    Tag {
+        tag: String,
+    },
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum WeatherCondition {
+    Thunderstorm,
+    Sunny,
+    Rain,
+    Clouds,
+    Snow,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TripPackingListEntry {
+    pub packing_list_entry: PackingListEntry,
+    pub is_packed: bool,
+    pub explicit_hidden: bool,
+    pub explicit_shown: bool,
+    pub quantity: Option<usize>,
+}
+
+impl TripPackingListEntry {
+    pub fn from_entry(trip: &Trip, entry: PackingListEntry) -> Self {
+        Self {
+            is_packed: false,
+            explicit_hidden: false,
+            explicit_shown: false,
+            quantity: entry.quantity.calculate(trip),
+            packing_list_entry: entry,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct TripPackingListModel {
+    pub visible: Vec<TripPackingListEntry>,
+    pub hidden: Vec<TripPackingListEntry>,
+}
+
+#[derive(Debug, Clone)]
+pub struct LocationEntry {
+    pub name: String,
+    pub coordinates: Coordinates,
+    pub country: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct PackingList {
+    pub uncategorized: Vec<PackingListEntry>,
+    pub categories: Vec<PackingListCategory>,
+}
+
+#[derive(Debug, Clone)]
+pub struct PackingListCategory {
+    pub name: String,
+    pub entries: Vec<PackingListEntry>,
+}
