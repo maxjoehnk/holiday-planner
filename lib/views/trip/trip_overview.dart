@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:intl/intl.dart';
 
@@ -15,8 +16,8 @@ class TripOverview extends StatefulWidget {
 }
 
 class _TripOverviewState extends State<TripOverview> {
-  late StreamController<List<Trip>> _trips;
-  late Stream<List<Trip>>? _trips$;
+  late StreamController<List<TripListModel>> _trips;
+  late Stream<List<TripListModel>>? _trips$;
 
   @override
   void initState() {
@@ -61,8 +62,7 @@ class _TripOverviewState extends State<TripOverview> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const CreateTripView()),
+                        MaterialPageRoute(builder: (context) => const CreateTripView()),
                       );
                     },
                     icon: const Icon(Icons.add),
@@ -79,7 +79,7 @@ class _TripOverviewState extends State<TripOverview> {
 }
 
 class TripList extends StatelessWidget {
-  final List<Trip> trips;
+  final List<TripListModel> trips;
 
   const TripList(
     this.trips, {
@@ -105,7 +105,7 @@ class TripList extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TripView(trip: trip),
+                    builder: (context) => TripView(tripId: trip.id),
                   ),
                 );
               });
@@ -116,7 +116,7 @@ class TripList extends StatelessWidget {
 }
 
 class TripOverviewItem extends StatelessWidget {
-  final Trip trip;
+  final TripListModel trip;
   final Function() onTap;
 
   const TripOverviewItem({required this.trip, super.key, required this.onTap});
@@ -145,10 +145,7 @@ class TripOverviewItem extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withOpacity(0.0),
-                        Colors.black.withOpacity(0.5)
-                      ],
+                      colors: [Colors.black.withOpacity(0.0), Colors.black.withOpacity(0.5)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     )),
@@ -156,11 +153,9 @@ class TripOverviewItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(trip.name,
-                            style: textTheme.titleMedium!
-                                .copyWith(color: Colors.white)),
+                            style: textTheme.titleMedium!.copyWith(color: Colors.white)),
                         Text("$start - $end",
-                            style: textTheme.titleSmall!
-                                .copyWith(color: Colors.white70))
+                            style: textTheme.titleSmall!.copyWith(color: Colors.white70))
                       ],
                     ),
                   )),

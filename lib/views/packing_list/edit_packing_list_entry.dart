@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/src/rust/api/packing_list.dart';
 import 'package:holiday_planner/src/rust/commands/add_packing_list_entry.dart';
+import 'package:holiday_planner/src/rust/commands/update_packing_list_entry.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 
+import 'condition_selector.dart';
 import 'conditions.dart';
+import 'temperature_selector.dart';
+import 'trip_duration_selector.dart';
 
-class AddItemDialog extends StatefulWidget {
-  const AddItemDialog({super.key});
+class EditItemDialog extends StatefulWidget {
+  final PackingListEntry? entry;
+
+  const EditItemDialog({super.key, this.entry});
 
   @override
-  State<AddItemDialog> createState() => _AddItemDialogState();
+  State<EditItemDialog> createState() => _EditItemDialogState();
 }
 
-class _AddItemDialogState extends State<AddItemDialog> {
+class _EditItemDialogState extends State<EditItemDialog> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _fixedQuantityController = TextEditingController();
   final TextEditingController _perDayController = TextEditingController();
   final TextEditingController _perNightController = TextEditingController();
   List<PackingListEntryCondition> conditions = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = widget.entry?.name ?? "";
+    _descriptionController.text = widget.entry?.description ?? "";
+    _fixedQuantityController.text = widget.entry?.quantity.fixed?.toString() ?? "";
+    _perDayController.text = widget.entry?.quantity.perDay?.toString() ?? "";
+    _perNightController.text = widget.entry?.quantity.perNight?.toString() ?? "";
+    conditions = widget.entry?.conditions ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +108,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   for (var (i, condition) in conditions.indexed)
                     ConditionTag(
                         condition: condition,
-                        onRemove: () => setState(() => conditions.removeAt(i))),
+                        onRemove: () => setState(() => conditions.removeAt(i)),
+                        onEdit: () => _editCondition(condition),
+                    ),
                 ]),
             const SizedBox(height: 4),
             OverflowBar(
@@ -99,13 +120,32 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       Navigator.pop(context);
                     },
                     child: const Text("Cancel")),
-                FilledButton(onPressed: _onSave, child: const Text("Add"))
+                const SizedBox(height: 8),
+                FilledButton(onPressed: _onSave, child: Text(widget.entry != null ? "Save" : "Add"))
               ],
             )
           ],
         ),
       ),
     );
+  }
+
+  _editCondition(PackingListEntryCondition condition) {
+    onSelect(c) {
+      var index = conditions.indexOf(condition);
+      setState(() => conditions[index] = c);
+    }
+
+    var nextDialog = condition.map(
+      minTripDuration: (duration) => TripDurationSelector(onSelect: onSelect, threshold: TripDuration.min, length: duration.length),
+      maxTripDuration: (duration) => TripDurationSelector(onSelect: onSelect, threshold: TripDuration.max, length: duration.length),
+      minTemperature: (temperature) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.min, temperature: temperature.temperature),
+      maxTemperature: (temperature) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.max, temperature: temperature.temperature),
+      weather: (_) => throw UnimplementedError(),
+      tag: (_) => throw UnimplementedError(),
+    );
+
+    showDialog(context: context, builder: (context) => nextDialog);
   }
 
   _onSave() async {
@@ -117,57 +157,25 @@ class _AddItemDialogState extends State<AddItemDialog> {
     if (description.isEmpty) {
       description = null;
     }
-    await addPackingListEntry(
-        command: AddPackingListEntry(
-            name: name, description: description, conditions: conditions, quantity: const Quantity()));
+    var quantity = Quantity(
+      perDay: BigInt.tryParse(_perDayController.text),
+      perNight: BigInt.tryParse(_perNightController.text),
+      fixed: BigInt.tryParse(_fixedQuantityController.text),
+    );
+    if (widget.entry == null) {
+      await addPackingListEntry(
+          command: AddPackingListEntry(
+              name: name, description: description, conditions: conditions, quantity: quantity));
+    }else {
+      await updatePackingListEntry(command: UpdatePackingListEntry(
+          id: widget.entry!.id,
+          name: name,
+          description: description,
+          conditions: conditions,
+          quantity: quantity,
+      ));
+    }
     Navigator.pop(context);
   }
 }
 
-class ConditionSelector extends StatelessWidget {
-  final Function(PackingListEntryCondition) onSelect;
-
-  const ConditionSelector({super.key, required this.onSelect});
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-        child: ListView(
-      shrinkWrap: true,
-      children: [
-        ListTile(
-          title: const Text("Min Trip Duration"),
-          onTap: () => _onSelect(context,
-              const PackingListEntryCondition.minTripDuration(length: 1)),
-        ),
-        ListTile(
-          title: const Text("Max Trip Duration"),
-          onTap: () => _onSelect(context,
-              const PackingListEntryCondition.maxTripDuration(length: 1)),
-        ),
-        ListTile(
-          title: const Text("Min Temperature"),
-          onTap: () => _onSelect(context,
-              const PackingListEntryCondition.minTemperature(temperature: 20)),
-        ),
-        ListTile(
-          title: const Text("Max Temperature"),
-          onTap: () => _onSelect(context,
-              const PackingListEntryCondition.maxTemperature(temperature: 0)),
-        ),
-        ListTile(
-          title: const Text("Weather"),
-          onTap: () => _onSelect(
-              context,
-              const PackingListEntryCondition.weather(
-                  condition: WeatherCondition.rain, minProbability: 0.5)),
-        ),
-      ],
-    ));
-  }
-
-  _onSelect(BuildContext context, PackingListEntryCondition condition) {
-    Navigator.pop(context);
-    onSelect(condition);
-  }
-}

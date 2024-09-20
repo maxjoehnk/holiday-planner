@@ -4,20 +4,22 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api.dart';
+import 'api/accommodations.dart';
 import 'api/attachments.dart';
 import 'api/packing_list.dart';
 import 'api/trips.dart';
 import 'commands/add_packing_list_entry.dart';
+import 'commands/add_trip_accommodation.dart';
 import 'commands/add_trip_attachment.dart';
 import 'commands/add_trip_location.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
+import 'commands/update_packing_list_entry.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
 import 'models.dart';
-import 'models/transits.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'package:uuid/uuid.dart';
 
@@ -42,10 +44,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UuidValue dco_decode_Uuid(dynamic raw);
 
   @protected
-  Accomodation dco_decode_accomodation(dynamic raw);
+  AccommodationModel dco_decode_accommodation_model(dynamic raw);
 
   @protected
   AddPackingListEntry dco_decode_add_packing_list_entry(dynamic raw);
+
+  @protected
+  AddTripAccommodation dco_decode_add_trip_accommodation(dynamic raw);
 
   @protected
   AddTripAttachment dco_decode_add_trip_attachment(dynamic raw);
@@ -54,7 +59,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddTripLocation dco_decode_add_trip_location(dynamic raw);
 
   @protected
-  Airport dco_decode_airport(dynamic raw);
+  AttachmentListModel dco_decode_attachment_list_model(dynamic raw);
 
   @protected
   bool dco_decode_bool(dynamic raw);
@@ -64,6 +69,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AddPackingListEntry dco_decode_box_autoadd_add_packing_list_entry(
+      dynamic raw);
+
+  @protected
+  AddTripAccommodation dco_decode_box_autoadd_add_trip_accommodation(
       dynamic raw);
 
   @protected
@@ -80,13 +89,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  Flight dco_decode_box_autoadd_flight(dynamic raw);
-
-  @protected
-  Train dco_decode_box_autoadd_train(dynamic raw);
-
-  @protected
-  Trip dco_decode_box_autoadd_trip(dynamic raw);
+  UpdatePackingListEntry dco_decode_box_autoadd_update_packing_list_entry(
+      dynamic raw);
 
   @protected
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
@@ -110,9 +114,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_f_64(dynamic raw);
 
   @protected
-  Flight dco_decode_flight(dynamic raw);
-
-  @protected
   HourlyWeatherForecast dco_decode_hourly_weather_forecast(dynamic raw);
 
   @protected
@@ -122,7 +123,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
-  List<Accomodation> dco_decode_list_accomodation(dynamic raw);
+  List<AccommodationModel> dco_decode_list_accommodation_model(dynamic raw);
+
+  @protected
+  List<AttachmentListModel> dco_decode_list_attachment_list_model(dynamic raw);
 
   @protected
   List<DailyWeatherForecast> dco_decode_list_daily_weather_forecast(
@@ -131,9 +135,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<HourlyWeatherForecast> dco_decode_list_hourly_weather_forecast(
       dynamic raw);
-
-  @protected
-  List<Location> dco_decode_list_location(dynamic raw);
 
   @protected
   List<LocationEntry> dco_decode_list_location_entry(dynamic raw);
@@ -149,20 +150,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  List<Transit> dco_decode_list_transit(dynamic raw);
-
-  @protected
-  List<Trip> dco_decode_list_trip(dynamic raw);
-
-  @protected
   List<TripAttachment> dco_decode_list_trip_attachment(dynamic raw);
+
+  @protected
+  List<TripListModel> dco_decode_list_trip_list_model(dynamic raw);
+
+  @protected
+  List<TripLocationListModel> dco_decode_list_trip_location_list_model(
+      dynamic raw);
 
   @protected
   List<TripPackingListEntry> dco_decode_list_trip_packing_list_entry(
       dynamic raw);
 
   @protected
-  Location dco_decode_location(dynamic raw);
+  List<TripPackingListGroup> dco_decode_list_trip_packing_list_group(
+      dynamic raw);
 
   @protected
   LocationEntry dco_decode_location_entry(dynamic raw);
@@ -172,9 +175,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DateTime? dco_decode_opt_box_autoadd_Chrono_Utc(dynamic raw);
-
-  @protected
-  Trip? dco_decode_opt_box_autoadd_trip(dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
@@ -196,22 +196,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Quantity dco_decode_quantity(dynamic raw);
 
   @protected
-  Train dco_decode_train(dynamic raw);
-
-  @protected
-  TrainStation dco_decode_train_station(dynamic raw);
-
-  @protected
-  Transit dco_decode_transit(dynamic raw);
-
-  @protected
-  Trip dco_decode_trip(dynamic raw);
-
-  @protected
   TripAttachment dco_decode_trip_attachment(dynamic raw);
 
   @protected
+  TripListModel dco_decode_trip_list_model(dynamic raw);
+
+  @protected
+  TripLocationListModel dco_decode_trip_location_list_model(dynamic raw);
+
+  @protected
+  TripOverviewModel dco_decode_trip_overview_model(dynamic raw);
+
+  @protected
   TripPackingListEntry dco_decode_trip_packing_list_entry(dynamic raw);
+
+  @protected
+  TripPackingListGroup dco_decode_trip_packing_list_group(dynamic raw);
 
   @protected
   TripPackingListModel dco_decode_trip_packing_list_model(dynamic raw);
@@ -224,6 +224,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void dco_decode_unit(dynamic raw);
+
+  @protected
+  UpdatePackingListEntry dco_decode_update_packing_list_entry(dynamic raw);
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
@@ -247,10 +250,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UuidValue sse_decode_Uuid(SseDeserializer deserializer);
 
   @protected
-  Accomodation sse_decode_accomodation(SseDeserializer deserializer);
+  AccommodationModel sse_decode_accommodation_model(
+      SseDeserializer deserializer);
 
   @protected
   AddPackingListEntry sse_decode_add_packing_list_entry(
+      SseDeserializer deserializer);
+
+  @protected
+  AddTripAccommodation sse_decode_add_trip_accommodation(
       SseDeserializer deserializer);
 
   @protected
@@ -261,7 +269,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddTripLocation sse_decode_add_trip_location(SseDeserializer deserializer);
 
   @protected
-  Airport sse_decode_airport(SseDeserializer deserializer);
+  AttachmentListModel sse_decode_attachment_list_model(
+      SseDeserializer deserializer);
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
@@ -271,6 +280,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AddPackingListEntry sse_decode_box_autoadd_add_packing_list_entry(
+      SseDeserializer deserializer);
+
+  @protected
+  AddTripAccommodation sse_decode_box_autoadd_add_trip_accommodation(
       SseDeserializer deserializer);
 
   @protected
@@ -289,13 +302,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  Flight sse_decode_box_autoadd_flight(SseDeserializer deserializer);
-
-  @protected
-  Train sse_decode_box_autoadd_train(SseDeserializer deserializer);
-
-  @protected
-  Trip sse_decode_box_autoadd_trip(SseDeserializer deserializer);
+  UpdatePackingListEntry sse_decode_box_autoadd_update_packing_list_entry(
+      SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
@@ -322,9 +330,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
-  Flight sse_decode_flight(SseDeserializer deserializer);
-
-  @protected
   HourlyWeatherForecast sse_decode_hourly_weather_forecast(
       SseDeserializer deserializer);
 
@@ -335,7 +340,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
-  List<Accomodation> sse_decode_list_accomodation(SseDeserializer deserializer);
+  List<AccommodationModel> sse_decode_list_accommodation_model(
+      SseDeserializer deserializer);
+
+  @protected
+  List<AttachmentListModel> sse_decode_list_attachment_list_model(
+      SseDeserializer deserializer);
 
   @protected
   List<DailyWeatherForecast> sse_decode_list_daily_weather_forecast(
@@ -344,9 +354,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<HourlyWeatherForecast> sse_decode_list_hourly_weather_forecast(
       SseDeserializer deserializer);
-
-  @protected
-  List<Location> sse_decode_list_location(SseDeserializer deserializer);
 
   @protected
   List<LocationEntry> sse_decode_list_location_entry(
@@ -364,13 +371,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  List<Transit> sse_decode_list_transit(SseDeserializer deserializer);
-
-  @protected
-  List<Trip> sse_decode_list_trip(SseDeserializer deserializer);
-
-  @protected
   List<TripAttachment> sse_decode_list_trip_attachment(
+      SseDeserializer deserializer);
+
+  @protected
+  List<TripListModel> sse_decode_list_trip_list_model(
+      SseDeserializer deserializer);
+
+  @protected
+  List<TripLocationListModel> sse_decode_list_trip_location_list_model(
       SseDeserializer deserializer);
 
   @protected
@@ -378,7 +387,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  Location sse_decode_location(SseDeserializer deserializer);
+  List<TripPackingListGroup> sse_decode_list_trip_packing_list_group(
+      SseDeserializer deserializer);
 
   @protected
   LocationEntry sse_decode_location_entry(SseDeserializer deserializer);
@@ -388,9 +398,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DateTime? sse_decode_opt_box_autoadd_Chrono_Utc(SseDeserializer deserializer);
-
-  @protected
-  Trip? sse_decode_opt_box_autoadd_trip(SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
@@ -413,22 +420,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Quantity sse_decode_quantity(SseDeserializer deserializer);
 
   @protected
-  Train sse_decode_train(SseDeserializer deserializer);
-
-  @protected
-  TrainStation sse_decode_train_station(SseDeserializer deserializer);
-
-  @protected
-  Transit sse_decode_transit(SseDeserializer deserializer);
-
-  @protected
-  Trip sse_decode_trip(SseDeserializer deserializer);
-
-  @protected
   TripAttachment sse_decode_trip_attachment(SseDeserializer deserializer);
 
   @protected
+  TripListModel sse_decode_trip_list_model(SseDeserializer deserializer);
+
+  @protected
+  TripLocationListModel sse_decode_trip_location_list_model(
+      SseDeserializer deserializer);
+
+  @protected
+  TripOverviewModel sse_decode_trip_overview_model(
+      SseDeserializer deserializer);
+
+  @protected
   TripPackingListEntry sse_decode_trip_packing_list_entry(
+      SseDeserializer deserializer);
+
+  @protected
+  TripPackingListGroup sse_decode_trip_packing_list_group(
       SseDeserializer deserializer);
 
   @protected
@@ -443,6 +453,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
+
+  @protected
+  UpdatePackingListEntry sse_decode_update_packing_list_entry(
+      SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
@@ -467,11 +481,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_Uuid(UuidValue self, SseSerializer serializer);
 
   @protected
-  void sse_encode_accomodation(Accomodation self, SseSerializer serializer);
+  void sse_encode_accommodation_model(
+      AccommodationModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_add_packing_list_entry(
       AddPackingListEntry self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_add_trip_accommodation(
+      AddTripAccommodation self, SseSerializer serializer);
 
   @protected
   void sse_encode_add_trip_attachment(
@@ -482,7 +501,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddTripLocation self, SseSerializer serializer);
 
   @protected
-  void sse_encode_airport(Airport self, SseSerializer serializer);
+  void sse_encode_attachment_list_model(
+      AttachmentListModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
@@ -494,6 +514,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_add_packing_list_entry(
       AddPackingListEntry self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_add_trip_accommodation(
+      AddTripAccommodation self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_add_trip_attachment(
@@ -512,13 +536,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeletePackingListEntry self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_flight(Flight self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_train(Train self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_trip(Trip self, SseSerializer serializer);
+  void sse_encode_box_autoadd_update_packing_list_entry(
+      UpdatePackingListEntry self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
@@ -545,9 +564,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
-  void sse_encode_flight(Flight self, SseSerializer serializer);
-
-  @protected
   void sse_encode_hourly_weather_forecast(
       HourlyWeatherForecast self, SseSerializer serializer);
 
@@ -558,8 +574,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_accomodation(
-      List<Accomodation> self, SseSerializer serializer);
+  void sse_encode_list_accommodation_model(
+      List<AccommodationModel> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_attachment_list_model(
+      List<AttachmentListModel> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_daily_weather_forecast(
@@ -568,9 +588,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_hourly_weather_forecast(
       List<HourlyWeatherForecast> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_location(List<Location> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_location_entry(
@@ -589,21 +606,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_transit(List<Transit> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_trip(List<Trip> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_trip_attachment(
       List<TripAttachment> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_trip_list_model(
+      List<TripListModel> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_trip_location_list_model(
+      List<TripLocationListModel> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_trip_packing_list_entry(
       List<TripPackingListEntry> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_location(Location self, SseSerializer serializer);
+  void sse_encode_list_trip_packing_list_group(
+      List<TripPackingListGroup> self, SseSerializer serializer);
 
   @protected
   void sse_encode_location_entry(LocationEntry self, SseSerializer serializer);
@@ -614,9 +634,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_Chrono_Utc(
       DateTime? self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_opt_box_autoadd_trip(Trip? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
@@ -641,24 +658,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_quantity(Quantity self, SseSerializer serializer);
 
   @protected
-  void sse_encode_train(Train self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_train_station(TrainStation self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_transit(Transit self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_trip(Trip self, SseSerializer serializer);
-
-  @protected
   void sse_encode_trip_attachment(
       TripAttachment self, SseSerializer serializer);
 
   @protected
+  void sse_encode_trip_list_model(TripListModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_trip_location_list_model(
+      TripLocationListModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_trip_overview_model(
+      TripOverviewModel self, SseSerializer serializer);
+
+  @protected
   void sse_encode_trip_packing_list_entry(
       TripPackingListEntry self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_trip_packing_list_group(
+      TripPackingListGroup self, SseSerializer serializer);
 
   @protected
   void sse_encode_trip_packing_list_model(
@@ -672,6 +692,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_packing_list_entry(
+      UpdatePackingListEntry self, SseSerializer serializer);
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);

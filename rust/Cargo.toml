@@ -1,3 +1,6 @@
+[workspace]
+members = [".", "migration"]
+
 [package]
 name = "rust_lib_holiday_planner"
 version = "0.1.0"
@@ -14,12 +17,16 @@ chrono = { version = "0.4", features = ["serde"] }
 typed-sled = "0.2"
 sled = "0.34"
 serde = { version = "1", features = ["derive"] }
-parking_lot = "0.12"
+tokio = { version = "*", features = ["sync"] }
 reqwest = { version = "0.12", features = ["json", "blocking", "rustls-tls"], default-features = false }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 geojson = { version = "0.24" }
 infer = "0.16.0"
+sea-orm = { version = "1.1.0-rc.1", features = ["runtime-tokio-rustls", "with-uuid", "with-chrono", "sqlx-sqlite", "debug-print"] }
+migration = { path = "migration" }
+futures = "0.3"
+itertools = "0.13"
 
 [target.'cfg(target_os = "android")'.dependencies]
 tracing-android = "0.2"

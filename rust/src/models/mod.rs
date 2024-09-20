@@ -6,6 +6,42 @@ use transits::*;
 
 pub mod transits;
 
+#[derive(Clone)]
+pub struct TripListModel {
+    pub id: Uuid,
+    pub name: String,
+    pub start_date: DateTime<Utc>,
+    pub end_date: DateTime<Utc>,
+    pub header_image: Option<Vec<u8>>,
+}
+
+#[derive(Clone)]
+pub struct TripOverviewModel {
+    pub id: Uuid,
+    pub name: String,
+    pub header_image: Option<Vec<u8>>,
+    pub pending_packing_list_items: usize,
+    pub packed_packing_list_items: usize,
+    pub total_packing_list_items: usize,
+}
+
+#[derive(Clone)]
+pub struct AttachmentListModel {
+    pub id: Uuid,
+    pub name: String,
+    pub file_name: String,
+    pub content_type: String,
+}
+
+#[derive(Clone)]
+pub struct TripLocationListModel {
+    pub id: Uuid,
+    pub coordinates: Coordinates,
+    pub city: String,
+    pub country: String,
+    pub forecast: Option<WeatherForecast>,
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Trip {
     pub id: Uuid,
@@ -16,7 +52,7 @@ pub struct Trip {
     #[serde(default)]
     pub transits: Vec<Transit>,
     #[serde(default)]
-    pub accommodations: Vec<Accomodation>,
+    pub accommodations: Vec<AccommodationModel>,
     pub header_image: Option<Vec<u8>>,
     #[serde(default)]
     pub attachments: Vec<TripAttachment>,
@@ -39,9 +75,10 @@ impl fmt::Debug for Trip {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Accomodation {
+pub struct AccommodationModel {
+    pub id: Uuid,
     pub name: String,
-    pub location: Location,
+    pub address: Option<String>,
     pub check_in: DateTime<Utc>,
     pub check_out: DateTime<Utc>,
     pub attachments: Vec<TripAttachment>,
@@ -72,7 +109,6 @@ pub struct Coordinates {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WeatherForecast {
-    pub coordinates: Coordinates,
     pub hourly_forecast: Vec<HourlyWeatherForecast>,
     pub daily_forecast: Vec<DailyWeatherForecast>,
 }
@@ -93,24 +129,15 @@ pub struct DailyWeatherForecast {
     pub day: DateTime<Utc>,
     pub min_temperature: f64,
     pub max_temperature: f64,
-    pub morning_temperature: f64,
-    pub day_temperature: f64,
-    pub evening_temperature: f64,
-    pub night_temperature: f64,
+    pub morning_temperature: f64, // 9
+    pub day_temperature: f64, // 15
+    pub evening_temperature: f64, // 18
+    pub night_temperature: f64, // 21
     pub condition: WeatherCondition,
     /// mm
     pub precipitation_amount: f64,
     pub precipitation_probability: f64,
     pub wind_speed: f64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Attachment {
-    pub id: Uuid,
-    pub name: String,
-    pub file_name: String,
-    pub data: Vec<u8>,
-    pub content_type: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -133,9 +160,9 @@ pub struct Quantity {
 }
 
 impl Quantity {
-    fn calculate(&self, trip: &Trip) -> Option<usize> {
+    pub(crate) fn calculate(&self, start_date: DateTime<Utc>, end_date: DateTime<Utc>) -> Option<usize> {
         let mut quantity = self.fixed.unwrap_or_default();
-        let duration = trip.end_date.signed_duration_since(trip.start_date);
+        let duration = end_date.signed_duration_since(start_date);
         let days = duration.num_days() as usize;
         let nights = days.saturating_sub(1);
         if let Some(per_day) = self.per_day {
@@ -176,7 +203,7 @@ pub enum PackingListEntryCondition {
     },
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum WeatherCondition {
     Thunderstorm,
     Sunny,
@@ -185,31 +212,24 @@ pub enum WeatherCondition {
     Snow,
 }
 
+#[derive(Debug, Clone)]
+pub struct TripPackingListModel {
+    pub groups: Vec<TripPackingListGroup>,
+    pub entries: Vec<TripPackingListEntry>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TripPackingListGroup {
+    pub id: Uuid,
+    pub name: String,
+    pub entries: Vec<TripPackingListEntry>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TripPackingListEntry {
     pub packing_list_entry: PackingListEntry,
     pub is_packed: bool,
-    pub explicit_hidden: bool,
-    pub explicit_shown: bool,
     pub quantity: Option<usize>,
-}
-
-impl TripPackingListEntry {
-    pub fn from_entry(trip: &Trip, entry: PackingListEntry) -> Self {
-        Self {
-            is_packed: false,
-            explicit_hidden: false,
-            explicit_shown: false,
-            quantity: entry.quantity.calculate(trip),
-            packing_list_entry: entry,
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct TripPackingListModel {
-    pub visible: Vec<TripPackingListEntry>,
-    pub hidden: Vec<TripPackingListEntry>,
 }
 
 #[derive(Debug, Clone)]

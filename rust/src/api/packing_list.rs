@@ -4,19 +4,25 @@ use crate::handlers::*;
 use crate::models::*;
 
 #[tracing::instrument]
-pub fn get_packing_list() -> anyhow::Result<Vec<PackingListEntry>> {
-    let handler = DB.try_get::<PackingListHandler>()?;
-    handler.get_packing_list()
+pub async fn get_packing_list() -> anyhow::Result<Vec<PackingListEntry>> {
+    let handler = DB.try_get::<PackingListHandler>().await?;
+    handler.get_packing_list().await
 }
 
 #[tracing::instrument]
-pub fn add_packing_list_entry(command: AddPackingListEntry) -> anyhow::Result<PackingListEntry> {
-    let handler = DB.try_get::<PackingListHandler>()?;
-    handler.add_packing_list_entry(command)
+pub async fn add_packing_list_entry(command: AddPackingListEntry) -> anyhow::Result<()> {
+    let handler = DB.try_get::<PackingListHandler>().await?;
+    handler.add_packing_list_entry(command).await
 }
 
 #[tracing::instrument]
-pub fn delete_packing_list_entry(command: DeletePackingListEntry) -> anyhow::Result<()> {
-    let handler = DB.try_get::<PackingListHandler>()?;
-    handler.delete_packing_list_entry(command)
+pub async fn update_packing_list_entry(command: UpdatePackingListEntry) -> anyhow::Result<()> {
+    let handler = DB.try_get::<PackingListHandler>().await?;
+    handler.update_packing_list_entry(command).await
+}
+
+#[tracing::instrument]
+pub async fn delete_packing_list_entry(command: DeletePackingListEntry) -> anyhow::Result<()> {
+    let handler = DB.try_get::<PackingListHandler>().await?;
+    handler.delete_packing_list_entry(command).await
 }

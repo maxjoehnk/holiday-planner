@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/frb_generated.dart';
+import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
 
 Future<void> main() async {
   await RustLib.init();
+  await connectDb();
   runApp(const MyApp());
 }
 

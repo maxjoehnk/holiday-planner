@@ -1,0 +1,14 @@
+drop table if exists trip_tags;
+drop table if exists trip_packing_list_entry;
+drop table if exists transits;
+drop table if exists transits_trains;
+drop table if exists location_attachments;
+drop table if exists location;
+drop table if exists accommodation_attachments;
+drop table if exists accommodations;
+drop table if exists trips;
+drop table if exists packing_list_conditions;
+drop table if exists packing_list_entries;
+drop table if exists packing_list_groups;
+drop table if exists tags;
+drop table if exists attachments;

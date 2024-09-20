@@ -1,0 +1,8 @@
+pub mod accommodations;
+pub mod attachments;
+pub mod locations;
+pub mod packing_list_conditions;
+pub mod packing_list_entries;
+pub mod trips;
+pub mod trip_packing_list_entries;
+pub mod weather_forecasts;

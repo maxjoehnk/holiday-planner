@@ -12,8 +12,9 @@ Map<WeatherCondition, IconData> _weatherIcons = {
 class ConditionTag extends StatelessWidget {
   final PackingListEntryCondition condition;
   final Function()? onRemove;
+  final Function()? onEdit;
 
-  const ConditionTag({super.key, required this.condition, this.onRemove});
+  const ConditionTag({super.key, required this.condition, this.onRemove, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -22,34 +23,41 @@ class ConditionTag extends StatelessWidget {
           tooltip: "Min Trip Duration",
           label: "> ${duration.length} Day(s)",
           color: Colors.orange.shade100,
+          onEdit: onEdit,
           onRemove: onRemove),
       maxTripDuration: (duration) => ConditionChip(
           tooltip: "Max Trip Duration",
           label: "< ${duration.length} Day(s)",
           color: Colors.orange.shade100,
+          onEdit: onEdit,
           onRemove: onRemove),
       minTemperature: (temperature) => ConditionChip(
           tooltip: "Min Temperature",
           label: "> ${temperature.temperature}°C",
           color: Colors.blue.shade100,
+          onEdit: onEdit,
           onRemove: onRemove),
       maxTemperature: (temperature) => ConditionChip(
           tooltip: "Max Temperature",
           label: "< ${temperature.temperature}°C",
           color: Colors.blue.shade100,
+          onEdit: onEdit,
           onRemove: onRemove),
       weather: (weather) => ConditionChip(
           tooltip: "Weather",
           label: "${(weather.minProbability * 100).round()}%",
           iconData: _weatherIcons[weather.condition],
           color: Colors.green.shade100,
+          onEdit: onEdit,
           onRemove: onRemove),
       tag: (tag) => ConditionChip(
           tooltip: "Tag",
           label: tag.tag,
           iconData: Icons.label,
           color: Colors.yellow.shade100,
-          onRemove: onRemove),
+          onEdit: onEdit,
+          onRemove: onRemove,
+      ),
     );
   }
 }
@@ -57,6 +65,7 @@ class ConditionTag extends StatelessWidget {
 class ConditionChip extends StatelessWidget {
   final String label;
   final Function()? onRemove;
+  final Function()? onEdit;
   final IconData? iconData;
   final String? tooltip;
   final Color color;
@@ -64,6 +73,7 @@ class ConditionChip extends StatelessWidget {
   const ConditionChip(
       {super.key,
       required this.label,
+      this.onEdit,
       this.onRemove,
       required this.color,
       this.iconData,
@@ -71,11 +81,20 @@ class ConditionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (onEdit == null) {
+      return Chip(
+        avatar: iconData != null ? Icon(iconData) : null,
+        color: WidgetStateProperty.all(color),
+        label: Text(label),
+        onDeleted: onRemove,
+        side: BorderSide.none,
+      );
+    }
     return InputChip(
       selected: true,
       showCheckmark: false,
       avatar: iconData != null ? Icon(iconData) : null,
-      onPressed: () {},
+      onPressed: onEdit,
       color: WidgetStateProperty.all(color),
       label: Text(label),
       onDeleted: onRemove,

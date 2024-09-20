@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:holiday_planner/src/rust/models.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines_plus/timelines_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class TripTimeline extends StatelessWidget {
-  final Trip trip;
+  final UuidValue tripId;
 
-  const TripTimeline({super.key, required this.trip});
+  const TripTimeline({super.key, required this.tripId});
 
   @override
   Widget build(BuildContext context) {

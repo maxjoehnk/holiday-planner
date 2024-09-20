@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/src/rust/api/packing_list.dart';
 import 'package:holiday_planner/src/rust/commands/delete_packing_list_entry.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 
-import 'add_packing_list_entry.dart';
+import 'edit_packing_list_entry.dart';
 import 'conditions.dart';
 
 class PackingListView extends StatefulWidget {
@@ -53,7 +54,7 @@ class _PackingListViewState extends State<PackingListView> {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-              return PackingList(snapshot.requireData, onRemove: _removeItem);
+              return PackingList(snapshot.requireData, onRemove: _removeItem, onEdit: _editItem);
             }),
         Positioned(
             bottom: 16,
@@ -72,7 +73,13 @@ class _PackingListViewState extends State<PackingListView> {
 
   _addItem() async {
     await showAdaptiveDialog(
-        context: context, builder: (context) => const AddItemDialog());
+        context: context, builder: (context) => const EditItemDialog());
+    _fetch();
+  }
+
+  _editItem(PackingListEntry item) async {
+    await showAdaptiveDialog(
+        context: context, builder: (context) => EditItemDialog(entry: item));
     _fetch();
   }
 
@@ -86,8 +93,9 @@ class _PackingListViewState extends State<PackingListView> {
 class PackingList extends StatelessWidget {
   final List<PackingListEntry> packingList;
   final Function(PackingListEntry) onRemove;
+  final Function(PackingListEntry) onEdit;
 
-  const PackingList(this.packingList, {super.key, required this.onRemove});
+  const PackingList(this.packingList, {super.key, required this.onRemove, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +109,9 @@ class PackingList extends StatelessWidget {
         itemBuilder: (context, index) {
           return PackingListItem(
               entry: packingList[index],
-              onDelete: () => onRemove(packingList[index]));
+              onDelete: () => onRemove(packingList[index]),
+              onEdit: () => onEdit(packingList[index])
+          );
         });
   }
 }
@@ -109,9 +119,10 @@ class PackingList extends StatelessWidget {
 class PackingListItem extends StatelessWidget {
   final PackingListEntry entry;
   final Function() onDelete;
+  final Function() onEdit;
 
   const PackingListItem(
-      {required this.entry, super.key, required this.onDelete});
+      {required this.entry, super.key, required this.onDelete, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +133,8 @@ class PackingListItem extends StatelessWidget {
         subtitle: Wrap(direction: Axis.horizontal, children: [
           for (var condition in entry.conditions)
             ConditionTag(condition: condition)
-        ]));
+        ]),
+        onTap: onEdit,
+    );
   }
 }

@@ -12,10 +12,11 @@ pub fn init() {
         .with_filter(EnvFilter::from_default_env())
         .boxed();
 
-    tracing_subscriber::registry()
+    if let Err(err) = tracing_subscriber::registry()
         .with(stdout_layer)
-        .init();
-
+        .try_init() {
+        eprintln!("Unable to setup logger: {err:?}");
+    }
 }
 
 #[cfg(target_os = "android")]

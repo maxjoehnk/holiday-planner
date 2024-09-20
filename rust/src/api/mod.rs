@@ -1,23 +1,24 @@
 use std::ops::Deref;
 use flutter_rust_bridge::frb;
-use parking_lot::{RwLock, RwLockReadGuard};
+use tokio::sync::{RwLock, RwLockReadGuard};
 use crate::database::Database;
 use crate::handlers::{Handler, HandlerCreator};
 use crate::jobs::BackgroundJobHandler;
 
 pub mod trips;
 pub mod packing_list;
+pub mod accommodations;
 pub mod attachments;
 
-static DB: RwLock<Option<Database>> = RwLock::new(None);
+static DB: RwLock<Option<Database>> = RwLock::const_new(None);
 
-#[frb(opaque)]
-pub(crate) struct HandlerGuard<'a, T> {
+#[frb(ignore)]
+pub(crate) struct HandlerGuard<'a, T: Send> {
     db_guard: RwLockReadGuard<'a, Option<Database>>,
     handler: T,
 }
 
-impl<'a, T> Deref for HandlerGuard<'a, T> {
+impl<'a, T: Send> Deref for HandlerGuard<'a, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -28,8 +29,8 @@ impl<'a, T> Deref for HandlerGuard<'a, T> {
 impl HandlerCreator for RwLock<Option<Database>> {
     type Guard<'a, T: Handler> = HandlerGuard<'a, T>;
 
-    fn try_get<'a, T: Handler>(&'a self) -> anyhow::Result<Self::Guard<'a, T>> {
-        let db_guard = self.read();
+    async fn try_get<'a, T: Handler>(&'a self) -> anyhow::Result<Self::Guard<'a, T>> {
+        let db_guard = self.read().await;
         let db = db_guard.as_ref().unwrap();
         let handler = T::create(db.clone());
 
@@ -46,12 +47,19 @@ pub fn init_app() {
     // flutter_rust_bridge::setup_default_user_utils();
 
     crate::logger::init();
-    let mut db = DB.write();
-    *db = Some(Database::new());
 }
 
+pub async fn connect_db() -> anyhow::Result<()> {
+    let database = Database::new().await?;
+    let mut db = DB.write().await;
+    *db = Some(database);
+
+    Ok(())
+}
+
+
 #[tracing::instrument]
-pub fn run_background_jobs() -> anyhow::Result<()> {
-    let handler = DB.try_get::<BackgroundJobHandler>()?;
-    handler.run()
+pub async fn run_background_jobs() -> anyhow::Result<()> {
+    let handler = DB.try_get::<BackgroundJobHandler>().await?;
+    handler.run().await
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/src/rust/api.dart';
 
 import 'packing_list/packing_list_view.dart';
 import 'trip/trip_overview.dart';
@@ -17,6 +18,7 @@ class _HomeViewState extends State<HomeView>
   @override
   void initState() {
     super.initState();
+    runBackgroundJobs();
     _tabController = TabController(length: 2, vsync: this);
   }
 

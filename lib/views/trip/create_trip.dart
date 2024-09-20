@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/commands/create_trip.dart';
+import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'trip_view.dart';
@@ -143,7 +144,7 @@ class _CreateTripViewState extends State<CreateTripView> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => TripView(trip: trip),
+        builder: (context) => TripView(tripId: trip.id),
       ),
     );
   }

@@ -1,4 +1,3 @@
-
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/attachments.dart';

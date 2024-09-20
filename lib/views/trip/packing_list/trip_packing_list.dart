@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/colors.dart';
+import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:uuid/uuid.dart';
 
 class TripPackingListView extends StatefulWidget {
-  final Trip trip;
+  final UuidValue tripId;
 
-  const TripPackingListView({super.key, required this.trip});
+  const TripPackingListView({super.key, required this.tripId});
 
   @override
   State<TripPackingListView> createState() => _TripPackingListViewState();
@@ -40,7 +43,7 @@ class _TripPackingListViewState extends State<TripPackingListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green.shade300,
+        backgroundColor: PACKING_LIST_COLOR,
         title: const Text("Packing List"),
       ),
       body: StreamBuilder(
@@ -55,7 +58,7 @@ class _TripPackingListViewState extends State<TripPackingListView> {
             return const Center(child: CircularProgressIndicator());
           }
           return PackingList(
-              trip: widget.trip,
+              tripId: widget.tripId,
               packingList: snapshot.requireData,
               onToggleItem: () => _fetch());
         },
@@ -65,27 +68,27 @@ class _TripPackingListViewState extends State<TripPackingListView> {
 
   _fetch() {
     _packingList
-        .addStream(getTripPackingList(tripId: widget.trip.id).asStream());
+        .addStream(getTripPackingList(tripId: widget.tripId).asStream());
   }
 }
 
 class PackingList extends StatelessWidget {
-  final Trip trip;
+  final UuidValue tripId;
   final TripPackingListModel packingList;
   final Function() onToggleItem;
 
   const PackingList(
       {super.key,
       required this.packingList,
-      required this.trip,
+      required this.tripId,
       required this.onToggleItem});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: packingList.visible.length,
+      itemCount: packingList.entries.length,
       itemBuilder: (context, index) {
-        var packingListEntry = packingList.visible[index];
+        var packingListEntry = packingList.entries[index];
         return ListTile(
           leading: Checkbox(
               value: packingListEntry.isPacked,
@@ -103,10 +106,10 @@ class PackingList extends StatelessWidget {
   _toggle(TripPackingListEntry entry) async {
     if (entry.isPacked) {
       await markAsUnpacked(
-          tripId: trip.id, entryId: entry.packingListEntry.id);
+          tripId: tripId, entryId: entry.packingListEntry.id);
     } else {
       await markAsPacked(
-          tripId: trip.id, entryId: entry.packingListEntry.id);
+          tripId: tripId, entryId: entry.packingListEntry.id);
     }
     onToggleItem();
   }

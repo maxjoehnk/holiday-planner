@@ -4,22 +4,23 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import 'frb_generated.dart';
-import 'models/transits.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'package:uuid/uuid.dart';
 part 'models.freezed.dart';
 
-class Accomodation {
+class AccommodationModel {
+  final UuidValue id;
   final String name;
-  final Location location;
+  final String? address;
   final DateTime checkIn;
   final DateTime checkOut;
   final List<TripAttachment> attachments;
 
-  const Accomodation({
+  const AccommodationModel({
+    required this.id,
     required this.name,
-    required this.location,
+    this.address,
     required this.checkIn,
     required this.checkOut,
     required this.attachments,
@@ -27,8 +28,9 @@ class Accomodation {
 
   @override
   int get hashCode =>
+      id.hashCode ^
       name.hashCode ^
-      location.hashCode ^
+      address.hashCode ^
       checkIn.hashCode ^
       checkOut.hashCode ^
       attachments.hashCode;
@@ -36,13 +38,42 @@ class Accomodation {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Accomodation &&
+      other is AccommodationModel &&
           runtimeType == other.runtimeType &&
+          id == other.id &&
           name == other.name &&
-          location == other.location &&
+          address == other.address &&
           checkIn == other.checkIn &&
           checkOut == other.checkOut &&
           attachments == other.attachments;
+}
+
+class AttachmentListModel {
+  final UuidValue id;
+  final String name;
+  final String fileName;
+  final String contentType;
+
+  const AttachmentListModel({
+    required this.id,
+    required this.name,
+    required this.fileName,
+    required this.contentType,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^ name.hashCode ^ fileName.hashCode ^ contentType.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AttachmentListModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          fileName == other.fileName &&
+          contentType == other.contentType;
 }
 
 class Coordinates {
@@ -168,41 +199,6 @@ class HourlyWeatherForecast {
           condition == other.condition;
 }
 
-class Location {
-  final Coordinates coordinates;
-  final String city;
-  final String country;
-  final WeatherForecast? forecast;
-  final List<TripAttachment> attachments;
-
-  const Location({
-    required this.coordinates,
-    required this.city,
-    required this.country,
-    this.forecast,
-    required this.attachments,
-  });
-
-  @override
-  int get hashCode =>
-      coordinates.hashCode ^
-      city.hashCode ^
-      country.hashCode ^
-      forecast.hashCode ^
-      attachments.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Location &&
-          runtimeType == other.runtimeType &&
-          coordinates == other.coordinates &&
-          city == other.city &&
-          country == other.country &&
-          forecast == other.forecast &&
-          attachments == other.attachments;
-}
-
 class LocationEntry {
   final String name;
   final Coordinates coordinates;
@@ -315,57 +311,6 @@ class Quantity {
           fixed == other.fixed;
 }
 
-class Trip {
-  final UuidValue id;
-  final String name;
-  final DateTime startDate;
-  final DateTime endDate;
-  final List<Location> locations;
-  final List<Transit> transits;
-  final List<Accomodation> accommodations;
-  final Uint8List? headerImage;
-  final List<TripAttachment> attachments;
-
-  const Trip({
-    required this.id,
-    required this.name,
-    required this.startDate,
-    required this.endDate,
-    required this.locations,
-    required this.transits,
-    required this.accommodations,
-    this.headerImage,
-    required this.attachments,
-  });
-
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      name.hashCode ^
-      startDate.hashCode ^
-      endDate.hashCode ^
-      locations.hashCode ^
-      transits.hashCode ^
-      accommodations.hashCode ^
-      headerImage.hashCode ^
-      attachments.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Trip &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          name == other.name &&
-          startDate == other.startDate &&
-          endDate == other.endDate &&
-          locations == other.locations &&
-          transits == other.transits &&
-          accommodations == other.accommodations &&
-          headerImage == other.headerImage &&
-          attachments == other.attachments;
-}
-
 class TripAttachment {
   final UuidValue id;
   final String name;
@@ -394,28 +339,129 @@ class TripAttachment {
           contentType == other.contentType;
 }
 
+class TripListModel {
+  final UuidValue id;
+  final String name;
+  final DateTime startDate;
+  final DateTime endDate;
+  final Uint8List? headerImage;
+
+  const TripListModel({
+    required this.id,
+    required this.name,
+    required this.startDate,
+    required this.endDate,
+    this.headerImage,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      startDate.hashCode ^
+      endDate.hashCode ^
+      headerImage.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TripListModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          startDate == other.startDate &&
+          endDate == other.endDate &&
+          headerImage == other.headerImage;
+}
+
+class TripLocationListModel {
+  final UuidValue id;
+  final Coordinates coordinates;
+  final String city;
+  final String country;
+  final WeatherForecast? forecast;
+
+  const TripLocationListModel({
+    required this.id,
+    required this.coordinates,
+    required this.city,
+    required this.country,
+    this.forecast,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      coordinates.hashCode ^
+      city.hashCode ^
+      country.hashCode ^
+      forecast.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TripLocationListModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          coordinates == other.coordinates &&
+          city == other.city &&
+          country == other.country &&
+          forecast == other.forecast;
+}
+
+class TripOverviewModel {
+  final UuidValue id;
+  final String name;
+  final Uint8List? headerImage;
+  final BigInt pendingPackingListItems;
+  final BigInt packedPackingListItems;
+  final BigInt totalPackingListItems;
+
+  const TripOverviewModel({
+    required this.id,
+    required this.name,
+    this.headerImage,
+    required this.pendingPackingListItems,
+    required this.packedPackingListItems,
+    required this.totalPackingListItems,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      headerImage.hashCode ^
+      pendingPackingListItems.hashCode ^
+      packedPackingListItems.hashCode ^
+      totalPackingListItems.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TripOverviewModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          headerImage == other.headerImage &&
+          pendingPackingListItems == other.pendingPackingListItems &&
+          packedPackingListItems == other.packedPackingListItems &&
+          totalPackingListItems == other.totalPackingListItems;
+}
+
 class TripPackingListEntry {
   final PackingListEntry packingListEntry;
   final bool isPacked;
-  final bool explicitHidden;
-  final bool explicitShown;
   final BigInt? quantity;
 
   const TripPackingListEntry({
     required this.packingListEntry,
     required this.isPacked,
-    required this.explicitHidden,
-    required this.explicitShown,
     this.quantity,
   });
 
   @override
   int get hashCode =>
-      packingListEntry.hashCode ^
-      isPacked.hashCode ^
-      explicitHidden.hashCode ^
-      explicitShown.hashCode ^
-      quantity.hashCode;
+      packingListEntry.hashCode ^ isPacked.hashCode ^ quantity.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -424,30 +470,52 @@ class TripPackingListEntry {
           runtimeType == other.runtimeType &&
           packingListEntry == other.packingListEntry &&
           isPacked == other.isPacked &&
-          explicitHidden == other.explicitHidden &&
-          explicitShown == other.explicitShown &&
           quantity == other.quantity;
 }
 
-class TripPackingListModel {
-  final List<TripPackingListEntry> visible;
-  final List<TripPackingListEntry> hidden;
+class TripPackingListGroup {
+  final UuidValue id;
+  final String name;
+  final List<TripPackingListEntry> entries;
 
-  const TripPackingListModel({
-    required this.visible,
-    required this.hidden,
+  const TripPackingListGroup({
+    required this.id,
+    required this.name,
+    required this.entries,
   });
 
   @override
-  int get hashCode => visible.hashCode ^ hidden.hashCode;
+  int get hashCode => id.hashCode ^ name.hashCode ^ entries.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TripPackingListGroup &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          entries == other.entries;
+}
+
+class TripPackingListModel {
+  final List<TripPackingListGroup> groups;
+  final List<TripPackingListEntry> entries;
+
+  const TripPackingListModel({
+    required this.groups,
+    required this.entries,
+  });
+
+  @override
+  int get hashCode => groups.hashCode ^ entries.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is TripPackingListModel &&
           runtimeType == other.runtimeType &&
-          visible == other.visible &&
-          hidden == other.hidden;
+          groups == other.groups &&
+          entries == other.entries;
 }
 
 enum WeatherCondition {
@@ -460,26 +528,22 @@ enum WeatherCondition {
 }
 
 class WeatherForecast {
-  final Coordinates coordinates;
   final List<HourlyWeatherForecast> hourlyForecast;
   final List<DailyWeatherForecast> dailyForecast;
 
   const WeatherForecast({
-    required this.coordinates,
     required this.hourlyForecast,
     required this.dailyForecast,
   });
 
   @override
-  int get hashCode =>
-      coordinates.hashCode ^ hourlyForecast.hashCode ^ dailyForecast.hashCode;
+  int get hashCode => hourlyForecast.hashCode ^ dailyForecast.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WeatherForecast &&
           runtimeType == other.runtimeType &&
-          coordinates == other.coordinates &&
           hourlyForecast == other.hourlyForecast &&
           dailyForecast == other.dailyForecast;
 }

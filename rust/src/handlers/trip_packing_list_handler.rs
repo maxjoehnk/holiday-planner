@@ -1,6 +1,8 @@
+use sea_orm::ActiveValue::Set;
+use sea_orm::IntoActiveModel;
 use uuid::Uuid;
-use crate::models::TripPackingListModel;
-use crate::database::Database;
+use crate::models::{TripPackingListEntry, TripPackingListModel};
+use crate::database::{Database, repositories};
 use crate::handlers::Handler;
 
 pub struct TripPackingListHandler {
@@ -16,53 +18,48 @@ impl Handler for TripPackingListHandler {
 }
 
 impl TripPackingListHandler {
-    pub fn get_trip_packing_list(&self, trip_id: Uuid) -> anyhow::Result<TripPackingListModel> {
-        let entries = self.db.trip_packing_list_tree()
-            .get(&trip_id)?
-            .unwrap_or_default();
-        let visible = entries.iter()
-            .filter(|entry| !entry.explicit_hidden || entry.explicit_shown)
-            .cloned()
-            .collect();
-        let hidden = entries.iter()
-            .filter(|entry| entry.explicit_hidden || !entry.explicit_shown)
-            .cloned()
+    pub async fn get_trip_packing_list(&self, trip_id: Uuid) -> anyhow::Result<TripPackingListModel> {
+        let trip_packing_list_entries = repositories::trip_packing_list_entries::find_packing_list_entries_by_trip(&self.db, trip_id).await?;
+
+        let entries = trip_packing_list_entries
+            .into_iter()
+            .filter_map(|(entry, packing_list_entry)| {
+                let packing_list_entry = packing_list_entry?;
+
+                Some(TripPackingListEntry {
+                    packing_list_entry: packing_list_entry.into(),
+                    is_packed: entry.is_packed,
+                    quantity: entry.override_quantity.map(|q| q as usize),
+                })
+            })
             .collect();
 
         Ok(TripPackingListModel {
-            visible,
-            hidden,
+            entries,
+            groups: Default::default()
         })
     }
 
-    pub fn mark_as_packed(&self, trip_id: Uuid, entry_id: Uuid) -> anyhow::Result<()> {
-        self.db.trip_packing_list_tree()
-            .update_and_fetch(&trip_id, |trip_packing_list| {
-                let mut trip_packing_list = trip_packing_list.unwrap_or_default();
-                for entry in trip_packing_list.iter_mut() {
-                    if entry.packing_list_entry.id == entry_id {
-                        entry.is_packed = true;
-                    }
-                }
+    pub async fn mark_as_packed(&self, trip_id: Uuid, entry_id: Uuid) -> anyhow::Result<()> {
+        let entry = repositories::trip_packing_list_entries::find_by_id(&self.db, trip_id, entry_id).await?;
 
-                Some(trip_packing_list)
-            })?;
+        if let Some(entry) = entry {
+            let mut entry = entry.into_active_model();
+            entry.is_packed = Set(true);
+            repositories::trip_packing_list_entries::update(&self.db, trip_id, entry).await?;
+        }
 
         Ok(())
     }
 
-    pub fn mark_as_unpacked(&self, trip_id: Uuid, entry_id: Uuid) -> anyhow::Result<()> {
-        self.db.trip_packing_list_tree()
-            .update_and_fetch(&trip_id, |trip_packing_list| {
-                let mut trip_packing_list = trip_packing_list.unwrap_or_default();
-                for entry in trip_packing_list.iter_mut() {
-                    if entry.packing_list_entry.id == entry_id {
-                        entry.is_packed = false;
-                    }
-                }
+    pub async fn mark_as_unpacked(&self, trip_id: Uuid, entry_id: Uuid) -> anyhow::Result<()> {
+        let entry = repositories::trip_packing_list_entries::find_by_id(&self.db, trip_id, entry_id).await?;
 
-                Some(trip_packing_list)
-            })?;
+        if let Some(entry) = entry {
+            let mut entry = entry.into_active_model();
+            entry.is_packed = Set(false);
+            repositories::trip_packing_list_entries::update(&self.db, trip_id, entry).await?;
+        }
 
         Ok(())
     }
