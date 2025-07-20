@@ -993,6 +993,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AccommodationStatus dco_decode_accommodation_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return AccommodationStatus(
+      accommodationName: dco_decode_String(arr[0]),
+      statusType: dco_decode_accommodation_status_type(arr[1]),
+      datetime: dco_decode_Chrono_Utc(arr[2]),
+    );
+  }
+
+  @protected
+  AccommodationStatusType dco_decode_accommodation_status_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AccommodationStatusType.values[raw as int];
+  }
+
+  @protected
   AddPackingListEntry dco_decode_add_packing_list_entry(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1087,6 +1106,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   DateTime dco_decode_box_autoadd_Chrono_Utc(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_Chrono_Utc(raw);
+  }
+
+  @protected
+  AccommodationStatus dco_decode_box_autoadd_accommodation_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_accommodation_status(raw);
   }
 
   @protected
@@ -1350,6 +1375,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<TripLocationSummary> dco_decode_list_trip_location_summary(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_trip_location_summary)
+        .toList();
+  }
+
+  @protected
   List<TripPackingListEntry> dco_decode_list_trip_packing_list_entry(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -1390,6 +1423,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   DateTime? dco_decode_opt_box_autoadd_Chrono_Utc(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_Chrono_Utc(raw);
+  }
+
+  @protected
+  AccommodationStatus? dco_decode_opt_box_autoadd_accommodation_status(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_accommodation_status(raw);
   }
 
   @protected
@@ -1535,11 +1577,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TripLocationSummary dco_decode_trip_location_summary(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return TripLocationSummary(
+      city: dco_decode_String(arr[0]),
+      country: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
   TripOverviewModel dco_decode_trip_overview_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return TripOverviewModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -1547,6 +1601,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       pendingPackingListItems: dco_decode_usize(arr[3]),
       packedPackingListItems: dco_decode_usize(arr[4]),
       totalPackingListItems: dco_decode_usize(arr[5]),
+      pointsOfInterestCount: dco_decode_usize(arr[6]),
+      accommodationStatus:
+          dco_decode_opt_box_autoadd_accommodation_status(arr[7]),
+      locationsList: dco_decode_list_trip_location_summary(arr[8]),
     );
   }
 
@@ -1726,6 +1784,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AccommodationStatus sse_decode_accommodation_status(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_accommodationName = sse_decode_String(deserializer);
+    var var_statusType = sse_decode_accommodation_status_type(deserializer);
+    var var_datetime = sse_decode_Chrono_Utc(deserializer);
+    return AccommodationStatus(
+        accommodationName: var_accommodationName,
+        statusType: var_statusType,
+        datetime: var_datetime);
+  }
+
+  @protected
+  AccommodationStatusType sse_decode_accommodation_status_type(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return AccommodationStatusType.values[inner];
+  }
+
+  @protected
   AddPackingListEntry sse_decode_add_packing_list_entry(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1823,6 +1902,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   DateTime sse_decode_box_autoadd_Chrono_Utc(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_Chrono_Utc(deserializer));
+  }
+
+  @protected
+  AccommodationStatus sse_decode_box_autoadd_accommodation_status(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_accommodation_status(deserializer));
   }
 
   @protected
@@ -2155,6 +2241,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<TripLocationSummary> sse_decode_list_trip_location_summary(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TripLocationSummary>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_trip_location_summary(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<TripPackingListEntry> sse_decode_list_trip_packing_list_entry(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2208,6 +2307,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_Chrono_Utc(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  AccommodationStatus? sse_decode_opt_box_autoadd_accommodation_status(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_accommodation_status(deserializer));
     } else {
       return null;
     }
@@ -2378,6 +2489,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TripLocationSummary sse_decode_trip_location_summary(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_city = sse_decode_String(deserializer);
+    var var_country = sse_decode_String(deserializer);
+    return TripLocationSummary(city: var_city, country: var_country);
+  }
+
+  @protected
   TripOverviewModel sse_decode_trip_overview_model(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2387,13 +2507,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_pendingPackingListItems = sse_decode_usize(deserializer);
     var var_packedPackingListItems = sse_decode_usize(deserializer);
     var var_totalPackingListItems = sse_decode_usize(deserializer);
+    var var_pointsOfInterestCount = sse_decode_usize(deserializer);
+    var var_accommodationStatus =
+        sse_decode_opt_box_autoadd_accommodation_status(deserializer);
+    var var_locationsList = sse_decode_list_trip_location_summary(deserializer);
     return TripOverviewModel(
         id: var_id,
         name: var_name,
         headerImage: var_headerImage,
         pendingPackingListItems: var_pendingPackingListItems,
         packedPackingListItems: var_packedPackingListItems,
-        totalPackingListItems: var_totalPackingListItems);
+        totalPackingListItems: var_totalPackingListItems,
+        pointsOfInterestCount: var_pointsOfInterestCount,
+        accommodationStatus: var_accommodationStatus,
+        locationsList: var_locationsList);
   }
 
   @protected
@@ -2565,6 +2692,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_accommodation_status(
+      AccommodationStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.accommodationName, serializer);
+    sse_encode_accommodation_status_type(self.statusType, serializer);
+    sse_encode_Chrono_Utc(self.datetime, serializer);
+  }
+
+  @protected
+  void sse_encode_accommodation_status_type(
+      AccommodationStatusType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_add_packing_list_entry(
       AddPackingListEntry self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2636,6 +2779,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       DateTime self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Chrono_Utc(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_accommodation_status(
+      AccommodationStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_accommodation_status(self, serializer);
   }
 
   @protected
@@ -2910,6 +3060,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_trip_location_summary(
+      List<TripLocationSummary> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_trip_location_summary(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_trip_packing_list_entry(
       List<TripPackingListEntry> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2955,6 +3115,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_Chrono_Utc(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_accommodation_status(
+      AccommodationStatus? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_accommodation_status(self, serializer);
     }
   }
 
@@ -3090,6 +3261,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_trip_location_summary(
+      TripLocationSummary self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.city, serializer);
+    sse_encode_String(self.country, serializer);
+  }
+
+  @protected
   void sse_encode_trip_overview_model(
       TripOverviewModel self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3099,6 +3278,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_usize(self.pendingPackingListItems, serializer);
     sse_encode_usize(self.packedPackingListItems, serializer);
     sse_encode_usize(self.totalPackingListItems, serializer);
+    sse_encode_usize(self.pointsOfInterestCount, serializer);
+    sse_encode_opt_box_autoadd_accommodation_status(
+        self.accommodationStatus, serializer);
+    sse_encode_list_trip_location_summary(self.locationsList, serializer);
   }
 
   @protected

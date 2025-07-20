@@ -4,7 +4,7 @@ import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.dart';
 import 'package:holiday_planner/views/trip/locations/trip_locations.dart';
 import 'package:holiday_planner/views/trip/points_of_interest/trip_points_of_interest.dart';
-import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart';
 
 import '../packing_list/trip_packing_list.dart';
 
@@ -41,21 +41,25 @@ class TransitsCard extends StatelessWidget {
 }
 
 class PointsOfInterestsCard extends StatelessWidget {
-  final UuidValue tripId;
+  final TripOverviewModel trip;
   final Function() refresh;
 
-  const PointsOfInterestsCard({super.key, required this.tripId, required this.refresh});
+  const PointsOfInterestsCard({super.key, required this.trip, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
+    final count = trip.pointsOfInterestCount.toInt();
+    final subtitle = "$count saved";
+    
     return SummaryCard(
         icon: Icons.explore, 
-        label: "Points of Interest", 
+        label: "Points of Interest",
+        subtitle: subtitle,
         color: POINTS_OF_INTERESTS_COLOR,
         onTap: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TripPointsOfInterest(tripId: tripId)),
+            MaterialPageRoute(builder: (context) => TripPointsOfInterest(tripId: trip.id)),
           );
           refresh();
         });
@@ -63,21 +67,30 @@ class PointsOfInterestsCard extends StatelessWidget {
 }
 
 class AccommodationsCard extends StatelessWidget {
-  final UuidValue tripId;
+  final TripOverviewModel trip;
   final Function() refresh;
 
-  const AccommodationsCard({super.key, required this.tripId, required this.refresh});
+  const AccommodationsCard({super.key, required this.trip, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
+    String? subtitle;
+    if (trip.accommodationStatus != null) {
+      final status = trip.accommodationStatus!;
+      final statusText = status.statusType == AccommodationStatusType.checkIn ? "Check-in" : "Check-out";
+      final formattedDate = DateFormat.yMMMMd().format(status.datetime);
+      subtitle = "$statusText at ${status.accommodationName} on $formattedDate";
+    }
+    
     return SummaryCard(
         icon: Icons.hotel,
         label: "Accommodations",
+        subtitle: subtitle,
         color: ACCOMMODATIONS_COLOR,
         onTap: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TripAccommodations(tripId: tripId)),
+            MaterialPageRoute(builder: (context) => TripAccommodations(tripId: trip.id)),
           );
           refresh();
         });
@@ -94,21 +107,28 @@ class WeatherCard extends StatelessWidget {
 }
 
 class LocationsCard extends StatelessWidget {
-  final UuidValue tripId;
+  final TripOverviewModel trip;
   final Function() refresh;
 
-  const LocationsCard({super.key, required this.tripId, required this.refresh});
+  const LocationsCard({super.key, required this.trip, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
+    String? subtitle;
+    if (trip.locationsList.isNotEmpty) {
+      final locations = trip.locationsList.map((location) => "${location.city}, ${location.country}").join(" • ");
+      subtitle = locations;
+    }
+    
     return SummaryCard(
         icon: Icons.location_on,
         label: "Locations",
+        subtitle: subtitle,
         color: LOCATIONS_COLOR,
         onTap: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TripLocations(tripId: tripId)),
+            MaterialPageRoute(builder: (context) => TripLocations(tripId: trip.id)),
           );
           refresh();
         });

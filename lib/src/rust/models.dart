@@ -48,6 +48,37 @@ class AccommodationModel {
           attachments == other.attachments;
 }
 
+class AccommodationStatus {
+  final String accommodationName;
+  final AccommodationStatusType statusType;
+  final DateTime datetime;
+
+  const AccommodationStatus({
+    required this.accommodationName,
+    required this.statusType,
+    required this.datetime,
+  });
+
+  @override
+  int get hashCode =>
+      accommodationName.hashCode ^ statusType.hashCode ^ datetime.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AccommodationStatus &&
+          runtimeType == other.runtimeType &&
+          accommodationName == other.accommodationName &&
+          statusType == other.statusType &&
+          datetime == other.datetime;
+}
+
+enum AccommodationStatusType {
+  checkIn,
+  checkOut,
+  ;
+}
+
 class AttachmentListModel {
   final UuidValue id;
   final String name;
@@ -448,6 +479,27 @@ class TripLocationListModel {
           forecast == other.forecast;
 }
 
+class TripLocationSummary {
+  final String city;
+  final String country;
+
+  const TripLocationSummary({
+    required this.city,
+    required this.country,
+  });
+
+  @override
+  int get hashCode => city.hashCode ^ country.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TripLocationSummary &&
+          runtimeType == other.runtimeType &&
+          city == other.city &&
+          country == other.country;
+}
+
 class TripOverviewModel {
   final UuidValue id;
   final String name;
@@ -455,6 +507,9 @@ class TripOverviewModel {
   final BigInt pendingPackingListItems;
   final BigInt packedPackingListItems;
   final BigInt totalPackingListItems;
+  final BigInt pointsOfInterestCount;
+  final AccommodationStatus? accommodationStatus;
+  final List<TripLocationSummary> locationsList;
 
   const TripOverviewModel({
     required this.id,
@@ -463,6 +518,9 @@ class TripOverviewModel {
     required this.pendingPackingListItems,
     required this.packedPackingListItems,
     required this.totalPackingListItems,
+    required this.pointsOfInterestCount,
+    this.accommodationStatus,
+    required this.locationsList,
   });
 
   @override
@@ -472,7 +530,10 @@ class TripOverviewModel {
       headerImage.hashCode ^
       pendingPackingListItems.hashCode ^
       packedPackingListItems.hashCode ^
-      totalPackingListItems.hashCode;
+      totalPackingListItems.hashCode ^
+      pointsOfInterestCount.hashCode ^
+      accommodationStatus.hashCode ^
+      locationsList.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -484,7 +545,10 @@ class TripOverviewModel {
           headerImage == other.headerImage &&
           pendingPackingListItems == other.pendingPackingListItems &&
           packedPackingListItems == other.packedPackingListItems &&
-          totalPackingListItems == other.totalPackingListItems;
+          totalPackingListItems == other.totalPackingListItems &&
+          pointsOfInterestCount == other.pointsOfInterestCount &&
+          accommodationStatus == other.accommodationStatus &&
+          locationsList == other.locationsList;
 }
 
 class TripPackingListEntry {

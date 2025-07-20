@@ -1213,6 +1213,32 @@ impl SseDecode for crate::models::AccommodationModel {
     }
 }
 
+impl SseDecode for crate::models::AccommodationStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_accommodationName = <String>::sse_decode(deserializer);
+        let mut var_statusType = <crate::models::AccommodationStatusType>::sse_decode(deserializer);
+        let mut var_datetime = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        return crate::models::AccommodationStatus {
+            accommodation_name: var_accommodationName,
+            status_type: var_statusType,
+            datetime: var_datetime,
+        };
+    }
+}
+
+impl SseDecode for crate::models::AccommodationStatusType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::models::AccommodationStatusType::CheckIn,
+            1 => crate::models::AccommodationStatusType::CheckOut,
+            _ => unreachable!("Invalid variant for AccommodationStatusType: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::commands::add_packing_list_entry::AddPackingListEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1584,6 +1610,20 @@ impl SseDecode for Vec<crate::models::TripLocationListModel> {
     }
 }
 
+impl SseDecode for Vec<crate::models::TripLocationSummary> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::models::TripLocationSummary>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::models::TripPackingListEntry> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1642,6 +1682,19 @@ impl SseDecode for Option<chrono::DateTime<chrono::Utc>> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<chrono::DateTime<chrono::Utc>>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::models::AccommodationStatus> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::models::AccommodationStatus>::sse_decode(
+                deserializer,
+            ));
         } else {
             return None;
         }
@@ -1836,6 +1889,18 @@ impl SseDecode for crate::models::TripLocationListModel {
     }
 }
 
+impl SseDecode for crate::models::TripLocationSummary {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_city = <String>::sse_decode(deserializer);
+        let mut var_country = <String>::sse_decode(deserializer);
+        return crate::models::TripLocationSummary {
+            city: var_city,
+            country: var_country,
+        };
+    }
+}
+
 impl SseDecode for crate::models::TripOverviewModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1845,6 +1910,11 @@ impl SseDecode for crate::models::TripOverviewModel {
         let mut var_pendingPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_packedPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_totalPackingListItems = <usize>::sse_decode(deserializer);
+        let mut var_pointsOfInterestCount = <usize>::sse_decode(deserializer);
+        let mut var_accommodationStatus =
+            <Option<crate::models::AccommodationStatus>>::sse_decode(deserializer);
+        let mut var_locationsList =
+            <Vec<crate::models::TripLocationSummary>>::sse_decode(deserializer);
         return crate::models::TripOverviewModel {
             id: var_id,
             name: var_name,
@@ -1852,6 +1922,9 @@ impl SseDecode for crate::models::TripOverviewModel {
             pending_packing_list_items: var_pendingPackingListItems,
             packed_packing_list_items: var_packedPackingListItems,
             total_packing_list_items: var_totalPackingListItems,
+            points_of_interest_count: var_pointsOfInterestCount,
+            accommodation_status: var_accommodationStatus,
+            locations_list: var_locationsList,
         };
     }
 }
@@ -2162,6 +2235,49 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::AccommodationModel>
     for crate::models::AccommodationModel
 {
     fn into_into_dart(self) -> crate::models::AccommodationModel {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::AccommodationStatus {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.accommodation_name.into_into_dart().into_dart(),
+            self.status_type.into_into_dart().into_dart(),
+            self.datetime.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::AccommodationStatus
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::AccommodationStatus>
+    for crate::models::AccommodationStatus
+{
+    fn into_into_dart(self) -> crate::models::AccommodationStatus {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::AccommodationStatusType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::CheckIn => 0.into_dart(),
+            Self::CheckOut => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::AccommodationStatusType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::AccommodationStatusType>
+    for crate::models::AccommodationStatusType
+{
+    fn into_into_dart(self) -> crate::models::AccommodationStatusType {
         self
     }
 }
@@ -2625,6 +2741,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::TripLocationListModel>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::TripLocationSummary {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.city.into_into_dart().into_dart(),
+            self.country.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::TripLocationSummary
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::TripLocationSummary>
+    for crate::models::TripLocationSummary
+{
+    fn into_into_dart(self) -> crate::models::TripLocationSummary {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -2634,6 +2771,9 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
             self.pending_packing_list_items.into_into_dart().into_dart(),
             self.packed_packing_list_items.into_into_dart().into_dart(),
             self.total_packing_list_items.into_into_dart().into_dart(),
+            self.points_of_interest_count.into_into_dart().into_dart(),
+            self.accommodation_status.into_into_dart().into_dart(),
+            self.locations_list.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2885,6 +3025,31 @@ impl SseEncode for crate::models::AccommodationModel {
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_in, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_out, serializer);
         <Vec<crate::models::TripAttachment>>::sse_encode(self.attachments, serializer);
+    }
+}
+
+impl SseEncode for crate::models::AccommodationStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.accommodation_name, serializer);
+        <crate::models::AccommodationStatusType>::sse_encode(self.status_type, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.datetime, serializer);
+    }
+}
+
+impl SseEncode for crate::models::AccommodationStatusType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::models::AccommodationStatusType::CheckIn => 0,
+                crate::models::AccommodationStatusType::CheckOut => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -3151,6 +3316,16 @@ impl SseEncode for Vec<crate::models::TripLocationListModel> {
     }
 }
 
+impl SseEncode for Vec<crate::models::TripLocationSummary> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::TripLocationSummary>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::models::TripPackingListEntry> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3196,6 +3371,16 @@ impl SseEncode for Option<chrono::DateTime<chrono::Utc>> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <chrono::DateTime<chrono::Utc>>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::models::AccommodationStatus> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::models::AccommodationStatus>::sse_encode(value, serializer);
         }
     }
 }
@@ -3334,6 +3519,14 @@ impl SseEncode for crate::models::TripLocationListModel {
     }
 }
 
+impl SseEncode for crate::models::TripLocationSummary {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.city, serializer);
+        <String>::sse_encode(self.country, serializer);
+    }
+}
+
 impl SseEncode for crate::models::TripOverviewModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3343,6 +3536,12 @@ impl SseEncode for crate::models::TripOverviewModel {
         <usize>::sse_encode(self.pending_packing_list_items, serializer);
         <usize>::sse_encode(self.packed_packing_list_items, serializer);
         <usize>::sse_encode(self.total_packing_list_items, serializer);
+        <usize>::sse_encode(self.points_of_interest_count, serializer);
+        <Option<crate::models::AccommodationStatus>>::sse_encode(
+            self.accommodation_status,
+            serializer,
+        );
+        <Vec<crate::models::TripLocationSummary>>::sse_encode(self.locations_list, serializer);
     }
 }
 

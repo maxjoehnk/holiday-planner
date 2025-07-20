@@ -23,6 +23,28 @@ pub struct TripOverviewModel {
     pub pending_packing_list_items: usize,
     pub packed_packing_list_items: usize,
     pub total_packing_list_items: usize,
+    pub points_of_interest_count: usize,
+    pub accommodation_status: Option<AccommodationStatus>,
+    pub locations_list: Vec<TripLocationSummary>,
+}
+
+#[derive(Clone)]
+pub struct AccommodationStatus {
+    pub accommodation_name: String,
+    pub status_type: AccommodationStatusType,
+    pub datetime: DateTime<Utc>,
+}
+
+#[derive(Clone)]
+pub enum AccommodationStatusType {
+    CheckIn,
+    CheckOut,
+}
+
+#[derive(Clone)]
+pub struct TripLocationSummary {
+    pub city: String,
+    pub country: String,
 }
 
 #[derive(Clone)]
