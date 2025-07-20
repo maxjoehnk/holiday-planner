@@ -156,7 +156,7 @@ class _TripViewState extends State<TripView> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.timeline), label: "Timeline"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.confirmation_num), label: "Attachments"),
+                icon: Icon(Icons.attachment), label: "Attachments"),
           ]),
     );
   }
