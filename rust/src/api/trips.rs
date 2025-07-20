@@ -11,6 +11,18 @@ pub async fn get_trips() -> anyhow::Result<Vec<TripListModel>> {
 }
 
 #[tracing::instrument]
+pub async fn get_upcoming_trips() -> anyhow::Result<Vec<TripListModel>> {
+    let handler = DB.try_get::<TripHandler>().await?;
+    handler.get_upcoming_trips().await
+}
+
+#[tracing::instrument]
+pub async fn get_past_trips() -> anyhow::Result<Vec<TripListModel>> {
+    let handler = DB.try_get::<TripHandler>().await?;
+    handler.get_past_trips().await
+}
+
+#[tracing::instrument]
 pub async fn get_trip(id: Uuid) -> anyhow::Result<TripOverviewModel> {
     let handler = DB.try_get::<TripHandler>().await?;
     let trip = handler.get_trip_overview(id).await?;

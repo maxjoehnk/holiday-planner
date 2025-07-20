@@ -40,28 +40,72 @@ class _EditItemDialogState extends State<EditItemDialog> {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
+    
     return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 400),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
-            Text("Add Item", style: textTheme.titleLarge),
-            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    widget.entry != null ? Icons.edit : Icons.add,
+                    size: 20,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    widget.entry != null ? "Edit Item" : "Add Item",
+                    style: textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
             TextFormField(
               controller: _nameController,
               autofocus: true,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Name"),
+              decoration: InputDecoration(
+                labelText: "Name",
+                hintText: "Enter item name",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.inventory_2_outlined),
+              ),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _descriptionController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Description"),
+              decoration: InputDecoration(
+                labelText: "Description",
+                hintText: "Optional description",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.description_outlined),
+                alignLabelWithHint: true,
+              ),
             ),
             const SizedBox(height: 16),
             //Flexible(
@@ -90,38 +134,91 @@ class _EditItemDialogState extends State<EditItemDialog> {
             //    ],
             //  ),
             //),
-            const SizedBox(height: 16),
-            TextButton.icon(
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => ConditionSelector(
-                        onSelect: (condition) =>
-                            setState(() => conditions.add(condition)))),
-                icon: const Icon(Icons.add),
-                label: const Text("Add Condition")),
-            const SizedBox(height: 4),
-            Wrap(
-                direction: Axis.horizontal,
-                runSpacing: 8,
-                spacing: 8,
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceVariant.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (var (i, condition) in conditions.indexed)
-                    ConditionTag(
-                        condition: condition,
-                        onRemove: () => setState(() => conditions.removeAt(i)),
-                        onEdit: () => _editCondition(condition),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.tune,
+                        size: 16,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Conditions",
+                        style: textTheme.titleSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton.icon(
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => ConditionSelector(
+                            onSelect: (condition) =>
+                                setState(() => conditions.add(condition)),
+                          ),
+                        ),
+                        icon: const Icon(Icons.add, size: 16),
+                        label: const Text("Add"),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (conditions.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        for (var (i, condition) in conditions.indexed)
+                          ConditionTag(
+                            condition: condition,
+                            onRemove: () => setState(() => conditions.removeAt(i)),
+                            onEdit: () => _editCondition(condition),
+                          ),
+                      ],
                     ),
-                ]),
-            const SizedBox(height: 4),
-            OverflowBar(
+                  ] else
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        "No conditions set. This item will appear in all trips.",
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Cancel")),
-                const SizedBox(height: 8),
-                FilledButton(onPressed: _onSave, child: Text(widget.entry != null ? "Save" : "Add"))
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  onPressed: _onSave,
+                  child: Text(widget.entry != null ? "Save" : "Add"),
+                ),
               ],
             )
           ],

@@ -10,7 +10,7 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-flutter_rust_bridge = { version = "=2.4.0", features = ["chrono", "uuid"] }
+flutter_rust_bridge = { version = "=2.5.1", features = ["chrono", "uuid"] }
 anyhow = "1"
 uuid = { version = "1.4", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
@@ -27,6 +27,9 @@ sea-orm = { version = "1.1.0-rc.1", features = ["runtime-tokio-rustls", "with-uu
 migration = { path = "migration" }
 futures = "0.3"
 itertools = "0.13"
+
+[dev-dependencies]
+tokio = { version = "*", features = ["test-util", "macros"] }
 
 [target.'cfg(target_os = "android")'.dependencies]
 tracing-android = "0.2"

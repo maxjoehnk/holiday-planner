@@ -11,38 +11,50 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _HomeViewState extends State<HomeView> {
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     runBackgroundJobs();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Holiday Planner"),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: "Trips", icon: Icon(Icons.work)),
-              Tab(text: "Packing Lists", icon: Icon(Icons.checklist)),
-            ],
+      appBar: AppBar(
+        title: const Text("Holiday Planner"),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          TripOverview(),
+          PackingListView(),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.luggage_outlined),
+            selectedIcon: Icon(Icons.luggage),
+            label: 'Trips',
           ),
-        ),
-        body: TabBarView(
-            controller: _tabController,
-            children: const [TripOverview(), PackingListView()]));
+          NavigationDestination(
+            icon: Icon(Icons.checklist_outlined),
+            selectedIcon: Icon(Icons.checklist),
+            label: 'Packing Lists',
+          ),
+        ],
+      ),
+    );
   }
 }

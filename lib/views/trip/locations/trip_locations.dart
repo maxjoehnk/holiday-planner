@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_location.dart';
-import 'package:holiday_planner/views/trip/section_theme.dart';
 import 'package:holiday_planner/widgets/location_search.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -36,39 +34,87 @@ class _TripLocationsState extends State<TripLocations> {
 
   @override
   Widget build(BuildContext context) {
-    return SectionTheme(
-      color: LOCATIONS_COLOR,
-      child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Locations"),
-          ),
-          body: StreamBuilder(
-            stream: _locations$,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
-                );
-              }
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Locations"),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: StreamBuilder(
+        stream: _locations$,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Error: ${snapshot.error}",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              return ListView.builder(
-                itemCount: snapshot.requireData.length,
-                itemBuilder: (context, index) {
-                  var location = snapshot.requireData[index];
-                  return LocationCard(
-                    location: location,
-                  );
-                },
-              );
-            }
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _addLocation(context),
-            child: const Icon(Icons.add),
-          )),
+          var locations = snapshot.requireData;
+          if (locations.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "No locations",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Add destinations to see weather forecasts and plan activities",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView.separated(
+              itemCount: locations.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                var location = locations[index];
+                return LocationCard(location: location);
+              },
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: "locations_fab",
+        onPressed: () => _addLocation(context),
+        icon: const Icon(Icons.add),
+        label: const Text("Add Location"),
+      ),
     );
   }
 
@@ -96,19 +142,71 @@ class LocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card.outlined(
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                title: Text(location.city),
-                subtitle: Text(location.country),
-              ),
-              if (location.forecast != null)
-                LocationDailyForecast(location.forecast!),
-            ]),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.location_on,
+                    size: 24,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        location.city,
+                        style: textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        location.country,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (location.forecast != null) ...[
+              const SizedBox(height: 16),
+              LocationDailyForecast(location.forecast!),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -144,41 +242,112 @@ class _LocationDailyForecastState extends State<LocationDailyForecast> {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-              children: widget.forecast.dailyForecast
-          .map((dayForecast) {
-            return InkWell(
-              onTap: () => setState(() => selectedDay = dayForecast),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: selectedDay == dayForecast ? Colors.black12 : null,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(DateFormat.Md().format(dayForecast.day)),
-                      Icon(weatherIcons[dayForecast.condition], size: 48, color: weatherColors[dayForecast.condition]),
-                      Text("${dayForecast.maxTemperature.toStringAsFixed(1)}°C", style: textTheme.titleMedium),
-                      Text("${dayForecast.minTemperature.toStringAsFixed(1)}°C", style: textTheme.titleSmall),
-                    ],
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceVariant.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.wb_sunny_outlined,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
                   ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Weather Forecast",
+                    style: textTheme.titleSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: widget.forecast.dailyForecast.map((dayForecast) {
+                    bool isSelected = selectedDay == dayForecast;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: InkWell(
+                        onTap: () => setState(() => selectedDay = dayForecast),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                            color: isSelected 
+                                ? colorScheme.primary.withOpacity(0.1)
+                                : colorScheme.surface,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected 
+                                  ? colorScheme.primary.withOpacity(0.5)
+                                  : colorScheme.outlineVariant,
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                DateFormat.Md().format(dayForecast.day),
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: isSelected 
+                                      ? colorScheme.primary
+                                      : colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Icon(
+                                weatherIcons[dayForecast.condition] ?? Icons.wb_sunny,
+                                size: 32,
+                                color: weatherColors[dayForecast.condition] ?? colorScheme.primary,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "${dayForecast.maxTemperature.toStringAsFixed(0)}°",
+                                style: textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected ? colorScheme.primary : null,
+                                ),
+                              ),
+                              Text(
+                                "${dayForecast.minTemperature.toStringAsFixed(0)}°",
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
-            );
-          }).toList()),
+            ],
+          ),
         ),
-        if (selectedDay != null)
-          LocationHourlyForecast(widget.forecast.hourlyForecast.where((f) => f.time.day == selectedDay!.day.day).toList())
+        if (selectedDay != null) ...[
+          const SizedBox(height: 12),
+          LocationHourlyForecast(widget.forecast.hourlyForecast.where((f) => f.time.day == selectedDay!.day.day).toList()),
+        ],
       ],
     );
   }
@@ -191,22 +360,106 @@ class LocationHourlyForecast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(children: forecast.map((hourForecast) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+    
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Text(DateFormat.Hm().format(hourForecast.time)),
-              Icon(weatherIcons[hourForecast.condition], size: 48, color: weatherColors[hourForecast.condition]),
-              Text("${hourForecast.temperature.toStringAsFixed(1)}°C", style: textTheme.titleMedium),
+              Icon(
+                Icons.schedule,
+                size: 16,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "Hourly Forecast",
+                style: textTheme.titleSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
-        );
-      }).toList()),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: forecast.map((hourForecast) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant,
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          DateFormat.Hm().format(hourForecast.time),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Icon(
+                          weatherIcons[hourForecast.condition] ?? Icons.wb_sunny,
+                          size: 24,
+                          color: weatherColors[hourForecast.condition] ?? colorScheme.primary,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "${hourForecast.temperature.toStringAsFixed(0)}°",
+                          style: textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        if (hourForecast.precipitationProbability > 0) ...[
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.water_drop,
+                                size: 12,
+                                color: Colors.blue.shade600,
+                              ),
+                              const SizedBox(width: 2),
+                              Text(
+                                "${(hourForecast.precipitationProbability * 100).toStringAsFixed(0)}%",
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: Colors.blue.shade600,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

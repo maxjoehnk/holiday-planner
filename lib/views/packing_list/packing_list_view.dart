@@ -48,7 +48,22 @@ class _PackingListViewState extends State<PackingListView> {
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
-                  child: Text("Error: ${snapshot.error}"),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Error: ${snapshot.error}",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 );
               }
               if (!snapshot.hasData) {
@@ -59,9 +74,11 @@ class _PackingListViewState extends State<PackingListView> {
         Positioned(
             bottom: 16,
             right: 16,
-            child: FloatingActionButton(
+            child: FloatingActionButton.extended(
+              heroTag: "packing_list_fab",
               onPressed: _addItem,
-              child: const Icon(Icons.add),
+              icon: const Icon(Icons.add),
+              label: const Text("Add Item"),
             ))
       ],
     );
@@ -100,19 +117,46 @@ class PackingList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (packingList.isEmpty) {
-      return const Center(
-        child: Text("No Items"),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.checklist_outlined,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "No packing items",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Add items to your packing list to get started!",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       );
     }
-    return ListView.builder(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: ListView.separated(
         itemCount: packingList.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           return PackingListItem(
               entry: packingList[index],
               onDelete: () => onRemove(packingList[index]),
               onEdit: () => onEdit(packingList[index])
           );
-        });
+        },
+      ),
+    );
   }
 }
 
@@ -126,15 +170,67 @@ class PackingListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        title: Text(entry.name),
-        trailing:
-            IconButton(onPressed: onDelete, icon: const Icon(Icons.delete)),
-        subtitle: Wrap(direction: Axis.horizontal, children: [
-          for (var condition in entry.conditions)
-            ConditionTag(condition: condition)
-        ]),
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+    
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
+      child: InkWell(
         onTap: onEdit,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.inventory_2_outlined,
+                    color: colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      entry.name,
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: colorScheme.error,
+                    ),
+                    tooltip: "Delete item",
+                  ),
+                ],
+              ),
+              if (entry.conditions.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var condition in entry.conditions)
+                      ConditionTag(condition: condition)
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

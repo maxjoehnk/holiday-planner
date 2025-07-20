@@ -127,6 +127,7 @@ class _TripViewState extends State<TripView> {
   Widget? _fab() {
     if (_selectedTab == 2) {
       return FloatingActionButton.extended(
+        heroTag: "trip_view_fab",
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddAttachmentView(tripId: widget.tripId)));
         },

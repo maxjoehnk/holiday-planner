@@ -1,5 +1,6 @@
 use sea_orm::ActiveValue::Set;
 use uuid::Uuid;
+use chrono::{DateTime, Utc};
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
@@ -23,6 +24,44 @@ impl TripHandler {
         let trips = repositories::trips::find_all(&self.db).await?;
 
         let trips = trips.into_iter()
+            .map(|trip| TripListModel {
+                id: trip.id,
+                name: trip.name,
+                start_date: trip.start_date,
+                end_date: trip.end_date,
+                header_image: trip.header_image,
+            })
+            .collect();
+
+        Ok(trips)
+    }
+
+    pub async fn get_upcoming_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
+        tracing::debug!("Getting upcoming trips");
+        let trips = repositories::trips::find_all(&self.db).await?;
+        let now = Utc::now();
+
+        let trips = trips.into_iter()
+            .filter(|trip| trip.end_date >= now)
+            .map(|trip| TripListModel {
+                id: trip.id,
+                name: trip.name,
+                start_date: trip.start_date,
+                end_date: trip.end_date,
+                header_image: trip.header_image,
+            })
+            .collect();
+
+        Ok(trips)
+    }
+
+    pub async fn get_past_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
+        tracing::debug!("Getting past trips");
+        let trips = repositories::trips::find_all(&self.db).await?;
+        let now = Utc::now();
+
+        let trips = trips.into_iter()
+            .filter(|trip| trip.end_date < now)
             .map(|trip| TripListModel {
                 id: trip.id,
                 name: trip.name,

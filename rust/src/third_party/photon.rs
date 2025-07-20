@@ -15,9 +15,10 @@ pub async fn search_locations(query: &str) -> anyhow::Result<Vec<geojson::Featur
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_search_locations() {
-        let locations = search_locations("Berlin").unwrap();
-        assert!(locations.len() > 0);
+    #[tokio::test]
+    async fn test_search_locations() {
+        let locations = search_locations("Berlin").await.unwrap();
+        println!("{locations:?}");
+        assert!(!locations.is_empty());
     }
 }
