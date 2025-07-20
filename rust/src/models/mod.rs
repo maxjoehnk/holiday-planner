@@ -85,6 +85,16 @@ pub struct AccommodationModel {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PointOfInterestModel {
+    pub id: Uuid,
+    pub name: String,
+    pub address: String,
+    pub website: Option<String>,
+    pub opening_hours: Option<String>,
+    pub price: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TripAttachment {
     pub id: Uuid,
     pub name: String,

@@ -7,6 +7,8 @@ pub use delete_packing_list_entry::*;
 pub use delete_attachment::*;
 pub use add_trip_location::*;
 pub use update_packing_list_entry::*;
+pub use add_trip_point_of_interest::*;
+pub use update_trip_point_of_interest::*;
 
 pub mod create_trip;
 pub mod add_packing_list_entry;
@@ -17,3 +19,5 @@ pub mod delete_packing_list_entry;
 pub mod add_trip_location;
 pub mod delete_attachment;
 pub mod update_packing_list_entry;
+pub mod add_trip_point_of_interest;
+pub mod update_trip_point_of_interest;

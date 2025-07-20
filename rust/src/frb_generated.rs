@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.5.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1637023778;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1480640965;
 
 // Section: executor
 
@@ -617,6 +617,141 @@ fn wire__crate__api__packing_list__update_packing_list_entry_impl(
         },
     )
 }
+fn wire__crate__api__points_of_interest__add_trip_point_of_interest_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "add_trip_point_of_interest",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command =
+                <crate::commands::add_trip_point_of_interest::AddTripPointOfInterest>::sse_decode(
+                    &mut deserializer,
+                );
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::points_of_interest::add_trip_point_of_interest(api_command)
+                                .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__points_of_interest__delete_point_of_interest_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "delete_point_of_interest",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_point_of_interest_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::points_of_interest::delete_point_of_interest(
+                            api_point_of_interest_id,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_trip_points_of_interest",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_trip_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::points_of_interest::get_trip_points_of_interest(
+                                api_trip_id,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "update_trip_point_of_interest", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command = <crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>((move || async move {
+                         let output_ok = crate::api::points_of_interest::update_trip_point_of_interest(api_command).await?;   Ok(output_ok)
+                    })().await)
+                } })
+}
 fn wire__crate__api__trips__add_trip_location_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1141,6 +1276,26 @@ impl SseDecode for crate::commands::add_trip_location::AddTripLocation {
     }
 }
 
+impl SseDecode for crate::commands::add_trip_point_of_interest::AddTripPointOfInterest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
+        let mut var_website = <Option<String>>::sse_decode(deserializer);
+        let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
+        let mut var_price = <Option<String>>::sse_decode(deserializer);
+        return crate::commands::add_trip_point_of_interest::AddTripPointOfInterest {
+            trip_id: var_tripId,
+            name: var_name,
+            address: var_address,
+            website: var_website,
+            opening_hours: var_openingHours,
+            price: var_price,
+        };
+    }
+}
+
 impl SseDecode for crate::models::AttachmentListModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1365,6 +1520,20 @@ impl SseDecode for Vec<crate::models::PackingListEntryCondition> {
     }
 }
 
+impl SseDecode for Vec<crate::models::PointOfInterestModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::models::PointOfInterestModel>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1581,6 +1750,26 @@ impl SseDecode for crate::models::PackingListEntryCondition {
     }
 }
 
+impl SseDecode for crate::models::PointOfInterestModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
+        let mut var_website = <Option<String>>::sse_decode(deserializer);
+        let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
+        let mut var_price = <Option<String>>::sse_decode(deserializer);
+        return crate::models::PointOfInterestModel {
+            id: var_id,
+            name: var_name,
+            address: var_address,
+            website: var_website,
+            opening_hours: var_openingHours,
+            price: var_price,
+        };
+    }
+}
+
 impl SseDecode for crate::models::Quantity {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1765,6 +1954,26 @@ impl SseDecode for crate::commands::update_trip_accommodation::UpdateTripAccommo
     }
 }
 
+impl SseDecode for crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
+        let mut var_website = <Option<String>>::sse_decode(deserializer);
+        let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
+        let mut var_price = <Option<String>>::sse_decode(deserializer);
+        return crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest {
+            id: var_id,
+            name: var_name,
+            address: var_address,
+            website: var_website,
+            opening_hours: var_openingHours,
+            price: var_price,
+        };
+    }
+}
+
 impl SseDecode for usize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1876,19 +2085,43 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__trips__add_trip_location_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__trips__create_trip_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
-        21 => {
+        16 => wire__crate__api__points_of_interest__add_trip_point_of_interest_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        17 => wire__crate__api__points_of_interest__delete_point_of_interest_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        18 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        19 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        20 => wire__crate__api__trips__add_trip_location_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__trips__create_trip_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
+        25 => {
             wire__crate__api__trips__get_trip_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        22 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2025,6 +2258,35 @@ impl flutter_rust_bridge::IntoIntoDart<crate::commands::add_trip_location::AddTr
     for crate::commands::add_trip_location::AddTripLocation
 {
     fn into_into_dart(self) -> crate::commands::add_trip_location::AddTripLocation {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::commands::add_trip_point_of_interest::AddTripPointOfInterest
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.trip_id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
+            self.website.into_into_dart().into_dart(),
+            self.opening_hours.into_into_dart().into_dart(),
+            self.price.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::add_trip_point_of_interest::AddTripPointOfInterest
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        crate::commands::add_trip_point_of_interest::AddTripPointOfInterest,
+    > for crate::commands::add_trip_point_of_interest::AddTripPointOfInterest
+{
+    fn into_into_dart(self) -> crate::commands::add_trip_point_of_interest::AddTripPointOfInterest {
         self
     }
 }
@@ -2252,6 +2514,31 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::PackingListEntryCondition>
     for crate::models::PackingListEntryCondition
 {
     fn into_into_dart(self) -> crate::models::PackingListEntryCondition {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::PointOfInterestModel {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
+            self.website.into_into_dart().into_dart(),
+            self.opening_hours.into_into_dart().into_dart(),
+            self.price.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::PointOfInterestModel
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::PointOfInterestModel>
+    for crate::models::PointOfInterestModel
+{
+    fn into_into_dart(self) -> crate::models::PointOfInterestModel {
         self
     }
 }
@@ -2485,6 +2772,37 @@ impl
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
+            self.website.into_into_dart().into_dart(),
+            self.opening_hours.into_into_dart().into_dart(),
+            self.price.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest,
+    > for crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest
+{
+    fn into_into_dart(
+        self,
+    ) -> crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::models::WeatherCondition {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
@@ -2606,6 +2924,18 @@ impl SseEncode for crate::commands::add_trip_location::AddTripLocation {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <uuid::Uuid>::sse_encode(self.trip_id, serializer);
         <crate::models::LocationEntry>::sse_encode(self.location, serializer);
+    }
+}
+
+impl SseEncode for crate::commands::add_trip_point_of_interest::AddTripPointOfInterest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.trip_id, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.address, serializer);
+        <Option<String>>::sse_encode(self.website, serializer);
+        <Option<String>>::sse_encode(self.opening_hours, serializer);
+        <Option<String>>::sse_encode(self.price, serializer);
     }
 }
 
@@ -2767,6 +3097,16 @@ impl SseEncode for Vec<crate::models::PackingListEntryCondition> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::models::PackingListEntryCondition>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::models::PointOfInterestModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::PointOfInterestModel>::sse_encode(item, serializer);
         }
     }
 }
@@ -2941,6 +3281,18 @@ impl SseEncode for crate::models::PackingListEntryCondition {
     }
 }
 
+impl SseEncode for crate::models::PointOfInterestModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.address, serializer);
+        <Option<String>>::sse_encode(self.website, serializer);
+        <Option<String>>::sse_encode(self.opening_hours, serializer);
+        <Option<String>>::sse_encode(self.price, serializer);
+    }
+}
+
 impl SseEncode for crate::models::Quantity {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3059,6 +3411,18 @@ impl SseEncode for crate::commands::update_trip_accommodation::UpdateTripAccommo
         <Option<String>>::sse_encode(self.address, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_in, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_out, serializer);
+    }
+}
+
+impl SseEncode for crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.address, serializer);
+        <Option<String>>::sse_encode(self.website, serializer);
+        <Option<String>>::sse_encode(self.opening_hours, serializer);
+        <Option<String>>::sse_encode(self.price, serializer);
     }
 }
 

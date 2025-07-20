@@ -3,6 +3,7 @@ import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.dart';
 import 'package:holiday_planner/views/trip/locations/trip_locations.dart';
+import 'package:holiday_planner/views/trip/points_of_interest/trip_points_of_interest.dart';
 import 'package:uuid/uuid.dart';
 
 import '../packing_list/trip_packing_list.dart';
@@ -40,12 +41,24 @@ class TransitsCard extends StatelessWidget {
 }
 
 class PointsOfInterestsCard extends StatelessWidget {
-  const PointsOfInterestsCard({super.key});
+  final UuidValue tripId;
+  final Function() refresh;
+
+  const PointsOfInterestsCard({super.key, required this.tripId, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
-    return const SummaryCard(
-        icon: Icons.explore, label: "Points of Interest", color: POINTS_OF_INTERESTS_COLOR);
+    return SummaryCard(
+        icon: Icons.explore, 
+        label: "Points of Interest", 
+        color: POINTS_OF_INTERESTS_COLOR,
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TripPointsOfInterest(tripId: tripId)),
+          );
+          refresh();
+        });
   }
 }
 

@@ -7,15 +7,18 @@ import 'api.dart';
 import 'api/accommodations.dart';
 import 'api/attachments.dart';
 import 'api/packing_list.dart';
+import 'api/points_of_interest.dart';
 import 'api/trips.dart';
 import 'commands/add_packing_list_entry.dart';
 import 'commands/add_trip_accommodation.dart';
 import 'commands/add_trip_attachment.dart';
 import 'commands/add_trip_location.dart';
+import 'commands/add_trip_point_of_interest.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_trip_accommodation.dart';
+import 'commands/update_trip_point_of_interest.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -60,6 +63,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddTripLocation dco_decode_add_trip_location(dynamic raw);
 
   @protected
+  AddTripPointOfInterest dco_decode_add_trip_point_of_interest(dynamic raw);
+
+  @protected
   AttachmentListModel dco_decode_attachment_list_model(dynamic raw);
 
   @protected
@@ -83,6 +89,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddTripLocation dco_decode_box_autoadd_add_trip_location(dynamic raw);
 
   @protected
+  AddTripPointOfInterest dco_decode_box_autoadd_add_trip_point_of_interest(
+      dynamic raw);
+
+  @protected
   CreateTrip dco_decode_box_autoadd_create_trip(dynamic raw);
 
   @protected
@@ -96,6 +106,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   UpdateTripAccommodation dco_decode_box_autoadd_update_trip_accommodation(
       dynamic raw);
+
+  @protected
+  UpdateTripPointOfInterest
+      dco_decode_box_autoadd_update_trip_point_of_interest(dynamic raw);
 
   @protected
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
@@ -152,6 +166,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  List<PointOfInterestModel> dco_decode_list_point_of_interest_model(
+      dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
@@ -198,6 +216,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  PointOfInterestModel dco_decode_point_of_interest_model(dynamic raw);
+
+  @protected
   Quantity dco_decode_quantity(dynamic raw);
 
   @protected
@@ -235,6 +256,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateTripAccommodation dco_decode_update_trip_accommodation(dynamic raw);
+
+  @protected
+  UpdateTripPointOfInterest dco_decode_update_trip_point_of_interest(
+      dynamic raw);
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
@@ -277,6 +302,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddTripLocation sse_decode_add_trip_location(SseDeserializer deserializer);
 
   @protected
+  AddTripPointOfInterest sse_decode_add_trip_point_of_interest(
+      SseDeserializer deserializer);
+
+  @protected
   AttachmentListModel sse_decode_attachment_list_model(
       SseDeserializer deserializer);
 
@@ -303,6 +332,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AddTripPointOfInterest sse_decode_box_autoadd_add_trip_point_of_interest(
+      SseDeserializer deserializer);
+
+  @protected
   CreateTrip sse_decode_box_autoadd_create_trip(SseDeserializer deserializer);
 
   @protected
@@ -316,6 +349,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   UpdateTripAccommodation sse_decode_box_autoadd_update_trip_accommodation(
       SseDeserializer deserializer);
+
+  @protected
+  UpdateTripPointOfInterest
+      sse_decode_box_autoadd_update_trip_point_of_interest(
+          SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
@@ -380,6 +418,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<PointOfInterestModel> sse_decode_list_point_of_interest_model(
+      SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
@@ -429,6 +471,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PointOfInterestModel sse_decode_point_of_interest_model(
+      SseDeserializer deserializer);
+
+  @protected
   Quantity sse_decode_quantity(SseDeserializer deserializer);
 
   @protected
@@ -475,6 +521,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  UpdateTripPointOfInterest sse_decode_update_trip_point_of_interest(
+      SseDeserializer deserializer);
+
+  @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
 
   @protected
@@ -517,6 +567,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddTripLocation self, SseSerializer serializer);
 
   @protected
+  void sse_encode_add_trip_point_of_interest(
+      AddTripPointOfInterest self, SseSerializer serializer);
+
+  @protected
   void sse_encode_attachment_list_model(
       AttachmentListModel self, SseSerializer serializer);
 
@@ -544,6 +598,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddTripLocation self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_add_trip_point_of_interest(
+      AddTripPointOfInterest self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_create_trip(
       CreateTrip self, SseSerializer serializer);
 
@@ -558,6 +616,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_update_trip_accommodation(
       UpdateTripAccommodation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_update_trip_point_of_interest(
+      UpdateTripPointOfInterest self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
@@ -622,6 +684,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<PackingListEntryCondition> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_point_of_interest_model(
+      List<PointOfInterestModel> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
 
@@ -675,6 +741,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PackingListEntryCondition self, SseSerializer serializer);
 
   @protected
+  void sse_encode_point_of_interest_model(
+      PointOfInterestModel self, SseSerializer serializer);
+
+  @protected
   void sse_encode_quantity(Quantity self, SseSerializer serializer);
 
   @protected
@@ -720,6 +790,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_update_trip_accommodation(
       UpdateTripAccommodation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_trip_point_of_interest(
+      UpdateTripPointOfInterest self, SseSerializer serializer);
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);

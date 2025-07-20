@@ -287,6 +287,45 @@ sealed class PackingListEntryCondition with _$PackingListEntryCondition {
   }) = PackingListEntryCondition_Tag;
 }
 
+class PointOfInterestModel {
+  final UuidValue id;
+  final String name;
+  final String address;
+  final String? website;
+  final String? openingHours;
+  final String? price;
+
+  const PointOfInterestModel({
+    required this.id,
+    required this.name,
+    required this.address,
+    this.website,
+    this.openingHours,
+    this.price,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      address.hashCode ^
+      website.hashCode ^
+      openingHours.hashCode ^
+      price.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PointOfInterestModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          address == other.address &&
+          website == other.website &&
+          openingHours == other.openingHours &&
+          price == other.price;
+}
+
 class Quantity {
   final BigInt? perDay;
   final BigInt? perNight;

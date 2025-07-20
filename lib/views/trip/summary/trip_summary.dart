@@ -14,7 +14,7 @@ class TripSummary extends StatelessWidget {
     var summaryCards = [
       PackingListCard(trip: trip, refresh: refresh),
       const TransitsCard(),
-      const PointsOfInterestsCard(),
+      PointsOfInterestsCard(tripId: trip.id, refresh: refresh),
       AccommodationsCard(tripId: trip.id, refresh: refresh),
       LocationsCard(tripId: trip.id, refresh: refresh),
       const BookingsCard(),
