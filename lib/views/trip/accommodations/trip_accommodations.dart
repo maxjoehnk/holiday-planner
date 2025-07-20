@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/accommodations/add_accommodation.dart';
+import 'package:holiday_planner/views/trip/accommodations/edit_accommodation.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
@@ -83,8 +84,8 @@ class _TripAccommodationsState extends State<TripAccommodations> {
                   Text(
                     "Add hotels, rentals, and other lodging for your trip",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -99,7 +100,11 @@ class _TripAccommodationsState extends State<TripAccommodations> {
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 var accommodation = accommodations[index];
-                return AccommodationCard(accommodation: accommodation);
+                return AccommodationCard(
+                  accommodation: accommodation,
+                  onEdit: () => _editAccommodation(context, accommodation),
+                  onDelete: () => _deleteAccommodation(context, accommodation),
+                );
               },
             ),
           );
@@ -120,6 +125,45 @@ class _TripAccommodationsState extends State<TripAccommodations> {
     _fetch();
   }
 
+  void _editAccommodation(BuildContext context, AccommodationModel accommodation) async {
+    await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => EditAccommodation(accommodation: accommodation)));
+    _fetch();
+  }
+
+  void _deleteAccommodation(BuildContext context, AccommodationModel accommodation) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Accommodation'),
+        content: Text('Are you sure you want to delete "${accommodation.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await deleteAccommodation(accommodationId: accommodation.id);
+        _fetch();
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error deleting accommodation: $e')),
+          );
+        }
+      }
+    }
+  }
+
   _fetch() {
     _accommodations.addStream(getTripAccommodations(tripId: widget.tripId).asStream());
   }
@@ -127,8 +171,15 @@ class _TripAccommodationsState extends State<TripAccommodations> {
 
 class AccommodationCard extends StatelessWidget {
   final AccommodationModel accommodation;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
-  const AccommodationCard({required this.accommodation, super.key});
+  const AccommodationCard({
+    required this.accommodation,
+    this.onEdit,
+    this.onDelete,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -136,129 +187,144 @@ class AccommodationCard extends StatelessWidget {
     var textTheme = Theme.of(context).textTheme;
     var checkIn = DateFormat.yMMMMd().format(accommodation.checkIn);
     var checkOut = DateFormat.yMMMMd().format(accommodation.checkOut);
-    var duration = accommodation.checkOut.difference(accommodation.checkIn).inDays;
+    var duration = accommodation.checkOut
+        .copyWith(hour: 0, minute: 0)
+        .difference(accommodation.checkIn.copyWith(hour: 0, minute: 0))
+        .inDays;
 
     return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: colorScheme.outlineVariant,
-          width: 1,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: colorScheme.outlineVariant,
+            width: 1,
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: InkWell(
+          onTap: onEdit,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.hotel,
+                        size: 24,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            accommodation.name,
+                            style: textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (accommodation.address != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              accommodation.address!,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    if (onDelete != null)
+                      IconButton(
+                        onPressed: onDelete,
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: colorScheme.error,
+                        ),
+                        tooltip: 'Delete accommodation',
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 Container(
-                  width: 48,
-                  height: 48,
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
+                    color: colorScheme.surfaceVariant.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    Icons.hotel,
-                    size: 24,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text(
-                        accommodation.name,
-                        style: textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: colorScheme.onSurfaceVariant,
                       ),
-                      if (accommodation.address != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          accommodation.address!,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          "$checkIn - $checkOut",
                           style: textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "$duration night${duration != 1 ? 's' : ''}",
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                if (accommodation.attachments.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.attachment,
+                        size: 16,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "${accommodation.attachments.length} attachment${accommodation.attachments.length != 1 ? 's' : ''}",
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceVariant.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 16,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      "$checkIn - $checkOut",
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      "$duration night${duration != 1 ? 's' : ''}",
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (accommodation.attachments.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(
-                    Icons.attachment,
-                    size: 16,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "${accommodation.attachments.length} attachment${accommodation.attachments.length != 1 ? 's' : ''}",
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

@@ -1,6 +1,7 @@
 use sea_orm::ActiveValue::Set;
+use sea_orm::IntoActiveModel;
 use uuid::Uuid;
-use crate::commands::{AddTripAccommodation};
+use crate::commands::{AddTripAccommodation, UpdateTripAccommodation};
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::{AccommodationModel};
@@ -47,6 +48,21 @@ impl AccommodationHandler {
         }).collect();
         
         Ok(accommodations)
+    }
+
+    pub async fn update_accommodation(&self, command: UpdateTripAccommodation) -> anyhow::Result<()> {
+        let Some(accommodation) = repositories::accommodations::find_by_id(&self.db, command.id).await? else {
+            anyhow::bail!("Unknown accommodation");
+        };
+        let mut accommodation = accommodation.into_active_model();
+        accommodation.name.set_if_not_equals(command.name);
+        accommodation.address.set_if_not_equals(command.address);
+        accommodation.check_in.set_if_not_equals(Some(command.check_in));
+        accommodation.check_out.set_if_not_equals(Some(command.check_out));
+
+        repositories::accommodations::update(&self.db, accommodation).await?;
+
+        Ok(())
     }
 
     pub async fn delete_accommodation(&self, accommodation_id: Uuid) -> anyhow::Result<()> {

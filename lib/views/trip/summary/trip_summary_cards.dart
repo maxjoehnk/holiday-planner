@@ -102,6 +102,17 @@ class LocationsCard extends StatelessWidget {
   }
 }
 
+
+class TicketsCard extends StatelessWidget {
+  const TicketsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SummaryCard(icon: Icons.airplane_ticket, label: "Tickets", color: TICKETS_COLOR);
+  }
+}
+
+
 class SummaryCard extends StatelessWidget {
   final IconData icon;
   final String label;

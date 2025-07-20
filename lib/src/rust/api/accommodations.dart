@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../commands/add_trip_accommodation.dart';
+import '../commands/update_trip_accommodation.dart';
 import '../frb_generated.dart';
 import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -17,6 +18,11 @@ Future<List<AccommodationModel>> getTripAccommodations(
 Future<void> addTripAccommodation({required AddTripAccommodation command}) =>
     RustLib.instance.api
         .crateApiAccommodationsAddTripAccommodation(command: command);
+
+Future<void> updateTripAccommodation(
+        {required UpdateTripAccommodation command}) =>
+    RustLib.instance.api
+        .crateApiAccommodationsUpdateTripAccommodation(command: command);
 
 Future<void> deleteAccommodation({required UuidValue accommodationId}) =>
     RustLib.instance.api.crateApiAccommodationsDeleteAccommodation(

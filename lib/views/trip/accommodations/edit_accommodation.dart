@@ -1,34 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
-import 'package:holiday_planner/src/rust/commands/add_trip_accommodation.dart';
+import 'package:holiday_planner/src/rust/commands/update_trip_accommodation.dart';
+import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
-class AddAccommodation extends StatefulWidget {
-  final UuidValue tripId;
+class EditAccommodation extends StatefulWidget {
+  final AccommodationModel accommodation;
 
-  const AddAccommodation({super.key, required this.tripId});
+  const EditAccommodation({super.key, required this.accommodation});
 
   @override
-  State<AddAccommodation> createState() => _AddAccommodationState();
+  State<EditAccommodation> createState() => _EditAccommodationState();
 }
 
-class _AddAccommodationState extends State<AddAccommodation> {
+class _EditAccommodationState extends State<EditAccommodation> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-  DateTime checkInDate = DateTime.now();
-  DateTime checkOutDate = DateTime.now().add(const Duration(days: 1));
+  late DateTime checkInDate;
+  late DateTime checkOutDate;
   bool _isLoading = false;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    // Set default times
-    checkInDate = DateTime(checkInDate.year, checkInDate.month, checkInDate.day, 15, 0); // 3 PM
-    checkOutDate = DateTime(checkOutDate.year, checkOutDate.month, checkOutDate.day, 11, 0); // 11 AM
+    // Pre-populate form with existing accommodation data
+    _nameController.text = widget.accommodation.name;
+    _addressController.text = widget.accommodation.address ?? '';
+    checkInDate = widget.accommodation.checkIn;
+    checkOutDate = widget.accommodation.checkOut;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    super.dispose();
   }
 
   @override
@@ -38,7 +47,7 @@ class _AddAccommodationState extends State<AddAccommodation> {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Accommodation"),
+        title: const Text("Edit Accommodation"),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -242,7 +251,7 @@ class _AddAccommodationState extends State<AddAccommodation> {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: textTheme.bodySmall?.copyWith(
+                      style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -254,24 +263,18 @@ class _AddAccommodationState extends State<AddAccommodation> {
                 children: [
                   Text(
                     DateFormat.yMMMd().format(dateTime),
-                    style: textTheme.titleSmall?.copyWith(
+                    style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
                     DateFormat.jm().format(dateTime),
-                    style: textTheme.bodySmall?.copyWith(
+                    style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: colorScheme.onSurfaceVariant,
               ),
             ],
           ),
@@ -281,44 +284,34 @@ class _AddAccommodationState extends State<AddAccommodation> {
   }
 
   Future<void> _selectDateTime(DateTime currentDateTime, Function(DateTime) onChanged) async {
-    // First select date
-    var date = await showDatePicker(
+    final date = await showDatePicker(
       context: context,
       initialDate: currentDateTime,
-      firstDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
       lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
     );
     
-    if (date == null) return;
-    
-    // Then select time
-    var time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(currentDateTime),
-    );
-    
-    if (time == null) return;
-    
-    var newDateTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
-    
-    onChanged(newDateTime);
+    if (date != null && mounted) {
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(currentDateTime),
+      );
+      
+      if (time != null && mounted) {
+        final newDateTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.minute,
+        );
+        onChanged(newDateTime);
+      }
+    }
   }
 
-  _submit() async {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    if (checkOutDate.isBefore(checkInDate)) {
-      setState(() {
-        _errorMessage = "Check-out date must be after check-in date";
-      });
       return;
     }
 
@@ -328,22 +321,26 @@ class _AddAccommodationState extends State<AddAccommodation> {
     });
 
     try {
-      await addTripAccommodation(
-        command: AddTripAccommodation(
-          name: _nameController.text,
-          address: _addressController.text.isEmpty ? null : _addressController.text,
-          tripId: widget.tripId,
-          checkIn: checkInDate,
-          checkOut: checkOutDate,
-        ),
+      final command = UpdateTripAccommodation(
+        id: widget.accommodation.id,
+        name: _nameController.text.trim(),
+        address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
       );
+
+      await updateTripAccommodation(command: command);
+      
       if (mounted) {
         Navigator.of(context).pop();
       }
     } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    } finally {
       if (mounted) {
         setState(() {
-          _errorMessage = "Failed to add accommodation: ${e.toString()}";
           _isLoading = false;
         });
       }

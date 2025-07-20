@@ -1,6 +1,6 @@
 use uuid::Uuid;
 use crate::api::DB;
-use crate::commands::{AddTripAccommodation};
+use crate::commands::{AddTripAccommodation, UpdateTripAccommodation};
 use crate::handlers::{AccommodationHandler, HandlerCreator};
 use crate::models::{AccommodationModel};
 
@@ -14,6 +14,12 @@ pub async fn get_trip_accommodations(trip_id: Uuid) -> anyhow::Result<Vec<Accomm
 pub async fn add_trip_accommodation(command: AddTripAccommodation) -> anyhow::Result<()> {
     let handler = DB.try_get::<AccommodationHandler>().await?;
     handler.add_accommodation(command).await
+}
+
+#[tracing::instrument]
+pub async fn update_trip_accommodation(command: UpdateTripAccommodation) -> anyhow::Result<()> {
+    let handler = DB.try_get::<AccommodationHandler>().await?;
+    handler.update_accommodation(command).await
 }
 
 #[tracing::instrument]

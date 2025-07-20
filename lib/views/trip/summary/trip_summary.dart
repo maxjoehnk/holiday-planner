@@ -16,8 +16,8 @@ class TripSummary extends StatelessWidget {
       const TransitsCard(),
       const PointsOfInterestsCard(),
       AccommodationsCard(tripId: trip.id, refresh: refresh),
-      const WeatherCard(),
       LocationsCard(tripId: trip.id, refresh: refresh),
+      const TicketsCard(),
     ];
 
     return SliverList(

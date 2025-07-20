@@ -30,6 +30,14 @@ pub async fn insert(db: &Database, model: accommodation::ActiveModel) -> anyhow:
     Ok(())
 }
 
+pub async fn update(db: &Database, model: accommodation::ActiveModel) -> anyhow::Result<()> {
+    Accommodation::update(model)
+        .exec(db.deref())
+        .await?;
+    
+    Ok(())
+}
+
 pub async fn delete_by_id(db: &Database, id: Uuid) -> anyhow::Result<()> {
     Accommodation::delete_by_id(id)
         .exec(db.deref())
