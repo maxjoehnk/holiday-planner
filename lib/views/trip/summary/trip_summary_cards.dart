@@ -108,7 +108,7 @@ class TicketsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SummaryCard(icon: Icons.airplane_ticket, label: "Tickets", color: TICKETS_COLOR);
+    return const SummaryCard(icon: Icons.confirmation_num, label: "Tickets & Reservations", color: TICKETS_COLOR);
   }
 }
 
