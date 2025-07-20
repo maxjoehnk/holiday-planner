@@ -23,6 +23,7 @@ class _LocationSearchState extends State<LocationSearch> {
   bool _isLoading = false;
   String? _errorMessage;
   Timer? _debounceTimer;
+  LocationEntry? _selectedLocation;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _LocationSearchState extends State<LocationSearch> {
         _results = [];
         _isLoading = false;
         _errorMessage = null;
+        _selectedLocation = null;
       });
       return;
     }
@@ -58,6 +60,7 @@ class _LocationSearchState extends State<LocationSearch> {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
+      _selectedLocation = null;
     });
 
     _debounceTimer?.cancel();
@@ -261,6 +264,9 @@ class _LocationSearchState extends State<LocationSearch> {
           var option = _results[index];
           return InkWell(
             onTap: () {
+              setState(() {
+                _selectedLocation = option;
+              });
               widget.onSelect(option);
             },
             borderRadius: BorderRadius.circular(8),
@@ -268,6 +274,10 @@ class _LocationSearchState extends State<LocationSearch> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
+                color: _selectedLocation == option ? colorScheme.primaryContainer.withOpacity(0.3) : null,
+                border: _selectedLocation == option 
+                  ? Border.all(color: colorScheme.primary, width: 1.5)
+                  : null,
               ),
               child: Row(
                 children: [
