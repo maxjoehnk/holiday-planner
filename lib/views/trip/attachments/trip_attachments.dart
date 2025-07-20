@@ -241,14 +241,4 @@ class TripAttachmentList extends StatelessWidget {
     }
     return Colors.grey;
   }
-
-  Widget? _fileIcon(AttachmentListModel attachment) {
-    if (attachment.contentType == "application/pdf") {
-      return const Icon(Bootstrap.filetype_pdf);
-    }
-    if (attachment.contentType.startsWith("image")) {
-      return const Icon(Bootstrap.image);
-    }
-    return null;
-  }
 }
