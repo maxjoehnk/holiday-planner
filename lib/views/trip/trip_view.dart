@@ -94,8 +94,45 @@ class _TripViewState extends State<TripView> {
                   pinned: true,
                   expandedHeight: 200,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: Text(trip.name),
-                    background: _headerImage == null ? null : Image(image: _headerImage!, fit: BoxFit.cover),
+                    title: Text(
+                      trip.name,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            offset: const Offset(1.0, 1.0),
+                            blurRadius: 3.0,
+                            color: Colors.black.withOpacity(0.8),
+                          ),
+                          Shadow(
+                            offset: const Offset(-1.0, -1.0),
+                            blurRadius: 3.0,
+                            color: Colors.black.withOpacity(0.8),
+                          ),
+                        ],
+                      ),
+                    ),
+                    background: _headerImage == null 
+                        ? null 
+                        : Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Image(image: _headerImage!, fit: BoxFit.cover),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withOpacity(0.3),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
                 ),
               ),
