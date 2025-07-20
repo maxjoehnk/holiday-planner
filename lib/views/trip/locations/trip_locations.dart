@@ -477,23 +477,54 @@ class _AddLocationState extends State<AddLocation> {
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
+    var colorScheme = Theme.of(context).colorScheme;
+    
     return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Add Location", style: textTheme.titleLarge),
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.add_location,
+                    size: 20,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    "Add Location",
+                    style: textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
-            LocationSearch(
-                onSelect: (entry) => setState(() => _selectedLocation = entry)),
-            const SizedBox(height: 16),
-            OverflowBar(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("Cancel"),
                 ),
+                const SizedBox(width: 12),
                 FilledButton(
                   onPressed: _selectedLocation == null
                       ? null
@@ -501,7 +532,13 @@ class _AddLocationState extends State<AddLocation> {
                   child: const Text("Add"),
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 24),
+            Flexible(
+              child: LocationSearch(
+                onSelect: (entry) => setState(() => _selectedLocation = entry),
+              ),
+            ),
           ],
         ),
       ),

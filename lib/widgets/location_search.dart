@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 
-const Duration debounceDuration = Duration(milliseconds: 500);
+const Duration debounceDuration = Duration(milliseconds: 300);
 
 class LocationSearch extends StatefulWidget {
   final Function(LocationEntry) onSelect;
@@ -16,125 +16,113 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   String? _queryInFlight;
-  late Iterable<LocationEntry> _options = [];
-  late final _Debounceable<Iterable<LocationEntry>?, String> _debouncedSearch;
+  List<LocationEntry> _results = [];
   bool _isLoading = false;
   String? _errorMessage;
-  String _lastQuery = '';
+  Timer? _debounceTimer;
 
   @override
   void initState() {
     super.initState();
-    _debouncedSearch = _debounce(_search);
+    _controller.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
-    // Cancel any in-flight queries to prevent setState after dispose
     _queryInFlight = null;
+    _debounceTimer?.cancel();
+    _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onTextChanged() {
+    final query = _controller.text.trim();
+
+    if (query.isEmpty) {
+      setState(() {
+        _results = [];
+        _isLoading = false;
+        _errorMessage = null;
+      });
+      return;
+    }
+
+    if (query.length < 2) {
+      return; // Don't search for very short queries
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(debounceDuration, () {
+      _performSearch(query);
+    });
+  }
+
+  void _performSearch(String query) async {
+    if (!mounted) return;
+
+    _queryInFlight = query;
+
+    try {
+      final results = await searchLocations(query: query);
+
+      if (_queryInFlight != query || !mounted) {
+        return;
+      }
+
+      setState(() {
+        _results = results;
+        _isLoading = false;
+        _errorMessage = null;
+      });
+    } catch (e) {
+      if (_queryInFlight != query || !mounted) {
+        return;
+      }
+
+      setState(() {
+        _results = [];
+        _isLoading = false;
+        _errorMessage = "Failed to search locations: ${e.toString()}";
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Autocomplete<LocationEntry>(
-          onSelected: (value) {
-            if (mounted) {
-              setState(() {
-                _errorMessage = null;
-              });
-            }
-            widget.onSelect(value);
-          },
-          optionsViewBuilder: (context, onSelected, options) {
-            return Material(
-              elevation: 0,
+        TextFormField(
+          controller: _controller,
+          focusNode: _focusNode,
+          decoration: InputDecoration(
+            labelText: "Search Location",
+            hintText: "Enter city or country name",
+            border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              color: colorScheme.surface,
-              child: Container(
-                constraints: const BoxConstraints(maxHeight: 300),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: colorScheme.outlineVariant,
-                    width: 1,
-                  ),
-                ),
-                child: _buildOptionsView(context, onSelected, options),
-              ),
-            );
-          },
-          optionsBuilder: (value) async {
-            if (value.text.isEmpty) {
-              if (mounted) {
-                setState(() {
-                  _isLoading = false;
-                  _errorMessage = null;
-                });
-              }
-              return const Iterable<LocationEntry>.empty();
-            }
-            
-            if (value.text != _lastQuery) {
-              if (mounted) {
-                setState(() {
-                  _isLoading = true;
-                  _errorMessage = null;
-                  _lastQuery = value.text;
-                });
-              }
-            }
-            
-            var options = await _debouncedSearch(value.text);
-            
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-            
-            if (options == null) {
-              return _options;
-            }
-            _options = options;
-            return options;
-          },
-          fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-            return TextFormField(
-              controller: controller,
-              focusNode: focusNode,
-              decoration: InputDecoration(
-                labelText: "Search Location",
-                hintText: "Enter city or country name",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _isLoading
-                    ? Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                      )
-                    : null,
-              ),
-              onFieldSubmitted: (String value) => onFieldSubmitted(),
-            );
-          },
-          displayStringForOption: (option) => "${option.name}, ${option.country}",
+            ),
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: _controller.text.isNotEmpty
+                ? IconButton(
+                    onPressed: () {
+                      _controller.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  )
+                : null,
+          ),
         ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 12),
@@ -165,31 +153,42 @@ class _LocationSearchState extends State<LocationSearch> {
             ),
           ),
         ],
+        if (_results.isNotEmpty || (_isLoading && _controller.text.isNotEmpty)) ...[
+          const SizedBox(height: 12),
+          _buildResultsList(context),
+        ],
       ],
     );
   }
 
-  Widget _buildOptionsView(
-    BuildContext context,
-    Function(LocationEntry) onSelected,
-    Iterable<LocationEntry> options,
-  ) {
+  Widget _buildResultsList(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     if (_isLoading) {
       return Container(
         height: 100,
         padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: colorScheme.outlineVariant,
+            width: 1,
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: colorScheme.primary,
+            Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: colorScheme.primary,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -203,11 +202,19 @@ class _LocationSearchState extends State<LocationSearch> {
         ),
       );
     }
-    
-    if (options.isEmpty && _lastQuery.isNotEmpty && !_isLoading) {
+
+    if (_results.isEmpty && _controller.text.isNotEmpty && !_isLoading) {
       return Container(
         height: 100,
         padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: colorScheme.outlineVariant,
+            width: 1,
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -234,157 +241,81 @@ class _LocationSearchState extends State<LocationSearch> {
         ),
       );
     }
-    
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: const EdgeInsets.all(8),
-      itemCount: options.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 4),
-      itemBuilder: (context, index) {
-        var option = options.elementAt(index);
-        return InkWell(
-          onTap: () => onSelected(option),
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(8),
+
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 300),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(8),
+        itemCount: _results.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 4),
+        itemBuilder: (context, index) {
+          var option = _results[index];
+          return InkWell(
+            onTap: () {
+              widget.onSelect(option);
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.location_on,
+                      size: 16,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.location_on,
-                    size: 16,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        option.name,
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          option.name,
+                          style: textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        option.country,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 2),
+                        Text(
+                          option.country,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ],
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
-
-  Future<Iterable<LocationEntry>?> _search(String query) async {
-    _queryInFlight = query;
-    
-    try {
-      var locations = await searchLocations(query: query);
-
-      if (_queryInFlight != query) {
-        return null;
-      }
-
-      // Clear any previous error on successful search
-      if (mounted) {
-        setState(() {
-          _errorMessage = null;
-        });
-      }
-
-      return locations;
-    } catch (e) {
-      if (_queryInFlight != query) {
-        return null;
-      }
-
-      // Report error back to user
-      if (mounted) {
-        setState(() {
-          _errorMessage = "Failed to search locations: ${e.toString()}";
-        });
-      }
-
-      // Return empty results on error
-      return const Iterable<LocationEntry>.empty();
-    }
-  }
-}
-
-typedef _Debounceable<S, T> = Future<S?> Function(T parameter);
-
-/// Returns a new function that is a debounced version of the given function.
-///
-/// This means that the original function will be called only after no calls
-/// have been made for the given Duration.
-_Debounceable<S, T> _debounce<S, T>(_Debounceable<S?, T> function) {
-  _DebounceTimer? debounceTimer;
-
-  return (T parameter) async {
-    if (debounceTimer != null && !debounceTimer!.isCompleted) {
-      debounceTimer!.cancel();
-    }
-    debounceTimer = _DebounceTimer();
-    try {
-      await debounceTimer!.future;
-    } catch (error) {
-      if (error is _CancelException) {
-        return null;
-      }
-      rethrow;
-    }
-    return function(parameter);
-  };
-}
-
-// A wrapper around Timer used for debouncing.
-class _DebounceTimer {
-  _DebounceTimer() {
-    _timer = Timer(debounceDuration, _onComplete);
-  }
-
-  late final Timer _timer;
-  final Completer<void> _completer = Completer<void>();
-
-  void _onComplete() {
-    _completer.complete();
-  }
-
-  Future<void> get future => _completer.future;
-
-  bool get isCompleted => _completer.isCompleted;
-
-  void cancel() {
-    _timer.cancel();
-    _completer.completeError(const _CancelException());
-  }
-}
-
-// An exception indicating that the timer was canceled.
-class _CancelException implements Exception {
-  const _CancelException();
 }
