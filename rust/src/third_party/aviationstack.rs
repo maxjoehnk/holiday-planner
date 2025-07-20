@@ -1,10 +1,13 @@
 use chrono::NaiveDate;
 use serde::Deserialize;
 
-const API_KEY: &str = env!("AVIATIONSTACK_API_KEY");
+const API_KEY: Option<&str> = option_env!("AVIATIONSTACK_API_KEY");
 
 pub fn get_flight(flight_number: &str, date: NaiveDate) -> anyhow::Result<Vec<AviationstackFlightStatus>> {
-    let url = format!("https://api.aviationstack.com/v1/flights?access_key={}&flight_iata={}&flight_date={}", API_KEY, flight_number, date.format("%Y-%m-%d"));
+    let Some(key) = API_KEY else {
+        anyhow::bail!("Missing API key");
+    };
+    let url = format!("https://api.aviationstack.com/v1/flights?access_key={}&flight_iata={}&flight_date={}", key, flight_number, date.format("%Y-%m-%d"));
     let res = reqwest::blocking::get(&url)?;
     let body: AviationstackResponse<AviationstackFlightStatus> = res.json()?;
 

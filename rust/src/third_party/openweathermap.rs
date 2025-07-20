@@ -5,10 +5,13 @@ use itertools::Itertools;
 
 use crate::models::{Coordinates, DailyWeatherForecast, HourlyWeatherForecast, WeatherCondition, WeatherForecast};
 
-const API_KEY: &str = env!("OPENWEATHERMAP_API_KEY");
+const API_KEY: Option<&str> = option_env!("OPENWEATHERMAP_API_KEY");
 
 pub async fn get_forecast(coordinates: &Coordinates) -> anyhow::Result<OpenWeatherMap> {
-    let url = format!("https://api.openweathermap.org/data/2.5/forecast?lat={}&lon={}&appid={}&units=metric", coordinates.latitude, coordinates.longitude, API_KEY);
+    let Some(key) = API_KEY else {
+        anyhow::bail!("OPENWEATHERMAP_API_KEY is not set");
+    };
+    let url = format!("https://api.openweathermap.org/data/2.5/forecast?lat={}&lon={}&appid={}&units=metric", coordinates.latitude, coordinates.longitude, key);
     let res = reqwest::get(&url).await?;
     let body: OpenWeatherMap = res.json().await?;
 
