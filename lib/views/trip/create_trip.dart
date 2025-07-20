@@ -24,43 +24,95 @@ class _CreateTripViewState extends State<CreateTripView> {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Trip"),
+        centerTitle: true,
+        elevation: 0,
         actions: [
           FilledButton(
             onPressed: _submit,
             child: const Text("Create"),
           ),
-          const SizedBox(width: 8)
+          const SizedBox(width: 16)
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Card(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Image Card
+              Card(
+                elevation: 0,
                 clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: colorScheme.outlineVariant,
+                    width: 1,
+                  ),
+                ),
                 child: InkWell(
                   onTap: _pickImage,
+                  borderRadius: BorderRadius.circular(16),
                   child: SizedBox(
-                    height: 128,
+                    height: 160,
                     width: double.infinity,
                     child: image != null
                         ? Image.file(
                             File(image!.path),
                             fit: BoxFit.cover,
                           )
-                        : const Icon(Icons.add_a_photo_outlined),
+                        : Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  colorScheme.primaryContainer,
+                                  colorScheme.secondaryContainer,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_outlined,
+                                  size: 48,
+                                  color: colorScheme.onPrimaryContainer.withOpacity(0.6),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Add Header Image",
+                                  style: textTheme.bodyLarge?.copyWith(
+                                    color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
+              const SizedBox(height: 24),
+              
+              // Trip Name Field
+              Text(
+                "Trip Details",
+                style: textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
                 validator: (value) {
@@ -70,44 +122,61 @@ class _CreateTripViewState extends State<CreateTripView> {
                   return null;
                 },
                 decoration: const InputDecoration(
-                    labelText: "Name", border: OutlineInputBorder()),
+                  labelText: "Trip Name",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.luggage),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+              const SizedBox(height: 24),
+              
+              // Date Selection Section
+              Text(
+                "Travel Dates",
+                style: textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
                 children: [
                   Expanded(
                     child: InputDatePickerFormField(
                       initialDate: startDate,
                       firstDate: DateTime.now(),
-                      lastDate:
-                          DateTime.now().add(const Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
                       fieldLabelText: "Start Date",
-                      onDateSubmitted: (value) =>
-                          setState(() => startDate = value),
+                      onDateSubmitted: (value) => setState(() => startDate = value),
                     ),
                   ),
-                  Container(width: 8),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: InputDatePickerFormField(
                       initialDate: endDate,
                       firstDate: startDate ?? DateTime.now(),
-                      lastDate:
-                          DateTime.now().add(const Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
                       fieldLabelText: "End Date",
-                      onDateSubmitted: (value) =>
-                          setState(() => endDate = value),
+                      onDateSubmitted: (value) => setState(() => endDate = value),
                     ),
                   ),
-                  Container(width: 8),
-                  IconButton(
-                      onPressed: () => _selectDate(context),
-                      icon: const Icon(Icons.calendar_month_outlined))
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              
+              // Date Range Picker Button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => _selectDate(context),
+                  icon: const Icon(Icons.calendar_month_outlined),
+                  label: const Text("Select Date Range"),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
