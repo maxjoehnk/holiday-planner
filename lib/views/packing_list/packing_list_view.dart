@@ -199,11 +199,36 @@ class PackingListItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      entry.name,
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.name,
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        if (entry.description?.isNotEmpty == true) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            entry.description!,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                        // Show configured quantity if any configuration exists
+                        if (_hasConfiguredQuantity(entry.quantity)) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            _formatConfiguredQuantity(entry.quantity),
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                   IconButton(
@@ -232,5 +257,33 @@ class PackingListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _hasConfiguredQuantity(Quantity quantity) {
+    return quantity.fixed != null || 
+           quantity.perDay != null || 
+           quantity.perNight != null;
+  }
+
+  String _formatConfiguredQuantity(Quantity quantity) {
+    List<String> parts = [];
+    
+    if (quantity.fixed != null && quantity.fixed! > BigInt.zero) {
+      parts.add("${quantity.fixed} fixed");
+    }
+    
+    if (quantity.perDay != null && quantity.perDay! > BigInt.zero) {
+      parts.add("${quantity.perDay} per day");
+    }
+    
+    if (quantity.perNight != null && quantity.perNight! > BigInt.zero) {
+      parts.add("${quantity.perNight} per night");
+    }
+    
+    if (parts.isEmpty) {
+      return "No quantity configured";
+    }
+    
+    return parts.join(" + ");
   }
 }

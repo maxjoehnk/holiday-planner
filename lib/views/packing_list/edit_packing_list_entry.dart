@@ -108,32 +108,91 @@ class _EditItemDialogState extends State<EditItemDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            //Flexible(
-            //  child: Row(
-            //    mainAxisSize: MainAxisSize.min,
-            //    crossAxisAlignment: CrossAxisAlignment.start,
-            //    children: [
-            //      TextFormField(
-            //        controller: _fixedQuantityController,
-            //        decoration: const InputDecoration(
-            //            border: OutlineInputBorder(), labelText: "Quantity"),
-            //        keyboardType: TextInputType.number,
-            //      ),
-            //      TextFormField(
-            //        controller: _perDayController,
-            //        decoration: const InputDecoration(
-            //            border: OutlineInputBorder(), labelText: "per Day"),
-            //        keyboardType: TextInputType.number,
-            //      ),
-            //      TextFormField(
-            //        controller: _perNightController,
-            //        decoration: const InputDecoration(
-            //            border: OutlineInputBorder(), labelText: "per Night"),
-            //        keyboardType: TextInputType.number,
-            //      ),
-            //    ],
-            //  ),
-            //),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceVariant.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.numbers,
+                        size: 16,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Quantity",
+                        style: textTheme.titleSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Set how many items to bring. These will be calculated based on your trip duration.",
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _fixedQuantityController,
+                          decoration: InputDecoration(
+                            labelText: "Fixed",
+                            hintText: "0",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _perDayController,
+                          decoration: InputDecoration(
+                            labelText: "Per Day",
+                            hintText: "0",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _perNightController,
+                          decoration: InputDecoration(
+                            labelText: "Per Night",
+                            hintText: "0",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(16),

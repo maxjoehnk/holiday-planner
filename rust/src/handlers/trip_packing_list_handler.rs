@@ -29,7 +29,8 @@ impl TripPackingListHandler {
                 Some(TripPackingListEntry {
                     packing_list_entry: packing_list_entry.into(),
                     is_packed: entry.is_packed,
-                    quantity: entry.override_quantity.map(|q| q as usize),
+                    // The quantity is calculated by a background job
+                    quantity: entry.override_quantity.or(entry.quantity).map(|q| q as usize),
                 })
             })
             .collect();

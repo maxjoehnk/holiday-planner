@@ -238,33 +238,58 @@ class PackingList extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text(
-                      packingListEntry.packingListEntry.name,
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        decoration: packingListEntry.isPacked 
-                            ? TextDecoration.lineThrough 
-                            : null,
-                        color: packingListEntry.isPacked 
-                            ? colorScheme.onSurfaceVariant 
-                            : null,
-                      ),
-                    ),
                     if (packingListEntry.quantity != null) ...[
-                      const SizedBox(height: 4),
                       Text(
-                        "${packingListEntry.quantity} item(s)",
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                        "${packingListEntry.quantity}",
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: packingListEntry.isPacked
+                              ? colorScheme.onSurfaceVariant
+                              : colorScheme.primary,
+                          decoration: packingListEntry.isPacked
+                              ? TextDecoration.lineThrough
+                              : null,
                         ),
                       ),
+                      const SizedBox(width: 12),
                     ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            packingListEntry.packingListEntry.name,
+                            style: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              decoration: packingListEntry.isPacked 
+                                  ? TextDecoration.lineThrough 
+                                  : null,
+                              color: packingListEntry.isPacked 
+                                  ? colorScheme.onSurfaceVariant 
+                                  : null,
+                            ),
+                          ),
+                          if (packingListEntry.packingListEntry.description?.isNotEmpty == true) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              packingListEntry.packingListEntry.description!,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                                decoration: packingListEntry.isPacked 
+                                    ? TextDecoration.lineThrough 
+                                    : null,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               if (packingListEntry.isPacked)
                 Icon(
                   Icons.check_circle,
