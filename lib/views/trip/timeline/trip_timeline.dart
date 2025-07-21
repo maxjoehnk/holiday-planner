@@ -1,69 +1,117 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:holiday_planner/src/rust/api/timeline.dart';
+import 'package:holiday_planner/src/rust/models/timeline.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import 'package:uuid/uuid.dart';
 
-class TripTimeline extends StatelessWidget {
+class TripTimeline extends StatefulWidget {
   final UuidValue tripId;
 
   const TripTimeline({super.key, required this.tripId});
 
   @override
+  State<TripTimeline> createState() => _TripTimelineState();
+}
+
+class _TripTimelineState extends State<TripTimeline> {
+  late StreamController<TimelineModel> _timeline;
+  late Stream<TimelineModel>? _timeline$;
+
+  @override
+  void initState() {
+    super.initState();
+    _timeline = StreamController();
+    _timeline$ = _timeline.stream;
+    _fetch();
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    _fetch();
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    _fetch();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      sliver: SliverList(
-        delegate: SliverChildListDelegate([
-          const SizedBox(height: 16),
-          TimelineEntry(
-            startTime: DateTime(2024, 9, 13, 13, 15),
-            start: true,
-            child: _buildTimelineCard(
-              context,
-              icon: Icons.flight,
-              title: "Hamburg (HAM) to Manchester (MAN)",
-              subtitle: "Eurowings · EW7768",
-              color: TRANSITS_COLOR,
+    return StreamBuilder(
+        stream: _timeline$,
+        builder: (context, snapshot) {
+          return SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                const SizedBox(height: 16),
+                for (var (i, item) in (snapshot.data?.future ?? []).indexed)
+                  TimelineEntry(
+                    startTime: item.date,
+                    start: i == 0,
+                    child: TimelineCard(itemDetails: item.details),
+                  ),
+                const SizedBox(height: 16),
+              ]),
             ),
-          ),
-          TimelineEntry(
-            startTime: DateTime(2024, 9, 13, 14, 30),
-            child: _buildTimelineCard(
-              context,
-              icon: Icons.car_rental,
-              title: "Car Pickup",
-              subtitle: "Arnold Clark",
-              color: CAR_RENTAL_COLOR,
-            ),
-          ),
-          TimelineEntry(
-            startTime: DateTime(2024, 9, 13, 16, 00),
-            child: _buildTimelineCard(
-              context,
-              icon: Icons.home,
-              title: "Check-In",
-              subtitle: "67 Park Street, Manchester",
-              color: ACCOMMODATIONS_COLOR,
-            ),
-          ),
-          const SizedBox(height: 16),
-        ]),
+          );
+        });
+  }
+
+  _fetch() {
+    _timeline.addStream(getTripTimeline(tripId: widget.tripId).asStream());
+  }
+}
+
+class TimelineEntry extends StatelessWidget {
+  final bool start;
+  final bool end;
+  final Widget child;
+  final DateTime startTime;
+  final DateTime? endTime;
+
+  const TimelineEntry(
+      {super.key,
+      this.start = false,
+      this.end = false,
+      required this.child,
+      required this.startTime,
+      this.endTime});
+
+  @override
+  Widget build(BuildContext context) {
+    return TimelineTile(
+      node: TimelineNode(
+        startConnector: start ? const DashedLineConnector() : const SolidLineConnector(),
+        endConnector: end ? const DashedLineConnector() : const SolidLineConnector(),
+        indicator: const OutlinedDotIndicator(),
+      ),
+      nodePosition: 0.25,
+      contents: child,
+      oppositeContents: ListTile(
+        title: Text(DateFormat.Hm().format(startTime)),
+        subtitle: Text(DateFormat.yMEd().format(startTime)),
       ),
     );
   }
+}
 
-  Widget _buildTimelineCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required MaterialColor color,
-  }) {
+class TimelineCard extends StatelessWidget {
+  final TimelineItemDetails itemDetails;
+
+  const TimelineCard({super.key, required this.itemDetails});
+
+  @override
+  Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -102,12 +150,13 @@ class TripTimeline extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                  if (subtitle != null)
+                    Text(
+                      subtitle!,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -116,32 +165,59 @@ class TripTimeline extends StatelessWidget {
       ),
     );
   }
-}
 
-class TimelineEntry extends StatelessWidget {
-  final bool start;
-  final bool end;
-  final Widget child;
-  final DateTime startTime;
-  final DateTime? endTime;
-
-  const TimelineEntry(
-      {super.key, this.start = false, this.end = false, required this.child, required this.startTime, this.endTime});
-
-  @override
-  Widget build(BuildContext context) {
-    return TimelineTile(
-      node: TimelineNode(
-        startConnector: start ? const DashedLineConnector() : const SolidLineConnector(),
-        endConnector: end ? const DashedLineConnector() : const SolidLineConnector(),
-        indicator: const OutlinedDotIndicator(),
-      ),
-      nodePosition: 0.25,
-      contents: child,
-      oppositeContents: ListTile(
-        title: Text(DateFormat.Hm().format(startTime)),
-        subtitle: Text(DateFormat.yMEd().format(startTime)),
-      ),
+  MaterialColor get color {
+    return itemDetails.map(
+      carRentalPickUp: (_) => CAR_RENTAL_COLOR,
+      carRentalDropOff: (_) => CAR_RENTAL_COLOR,
+      reservation: (_) => BOOKINGS_COLOR,
+      checkIn: (_) => ACCOMMODATIONS_COLOR,
+      checkOut: (_) => ACCOMMODATIONS_COLOR,
+      flightTakeOff: (_) => TRANSITS_COLOR,
+      flightLanding: (_) => TRANSITS_COLOR,
+      trainOrigin: (_) => TRANSITS_COLOR,
+      trainDestination: (_) => TRANSITS_COLOR,
     );
+  }
+
+  String get title {
+    return itemDetails.map(
+      carRentalPickUp: (_) => "Car Pickup",
+      carRentalDropOff: (_) => "Car Drop off",
+      reservation: (item) => item.title,
+      checkIn: (_) => "Check-In",
+      checkOut: (_) => "Check-Out",
+      flightTakeOff: (flight) => flight.airport,
+      flightLanding: (flight) => flight.airport,
+      trainOrigin: (train) => train.station,
+      trainDestination: (train) => train.station,
+    );
+  }
+
+  String? get subtitle {
+    return itemDetails.map(
+      carRentalPickUp: (item) => item.provider,
+      carRentalDropOff: (item) => item.provider,
+      reservation: (item) => item.address,
+      checkIn: (item) => item.address,
+      checkOut: (item) => item.address,
+      flightTakeOff: (item) => "${item.flightNumber} · ${item.seat ?? ""}",
+      flightLanding: (item) => item.flightNumber,
+      trainOrigin: (train) => "${train.station} · ${train.seat ?? ""}",
+      trainDestination: (train) => train.station,
+    );
+  }
+
+  IconData get icon {
+    return itemDetails.map(
+        carRentalPickUp: (_) => Icons.car_rental,
+        carRentalDropOff: (_) => Icons.car_rental,
+        reservation: (_) => Icons.restaurant,
+        checkIn: (_) => Icons.home,
+        checkOut: (_) => Icons.home,
+        trainOrigin: (_) => Icons.train,
+        trainDestination: (_) => Icons.train,
+        flightTakeOff: (_) => Icons.flight_takeoff,
+        flightLanding: (_) => Icons.flight_land);
   }
 }

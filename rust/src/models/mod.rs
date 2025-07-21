@@ -6,6 +6,7 @@ use transits::*;
 
 pub mod transits;
 pub mod bookings;
+pub mod timeline;
 
 #[derive(Clone)]
 pub struct TripListModel {

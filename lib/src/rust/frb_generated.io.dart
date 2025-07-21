@@ -9,6 +9,7 @@ import 'api/attachments.dart';
 import 'api/bookings.dart';
 import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
+import 'api/timeline.dart';
 import 'api/trips.dart';
 import 'commands/add_car_rental.dart';
 import 'commands/add_packing_list_entry.dart';
@@ -30,6 +31,7 @@ import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
 import 'models.dart';
 import 'models/bookings.dart';
+import 'models/timeline.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'package:uuid/uuid.dart';
 
@@ -221,6 +223,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<TimelineItem> dco_decode_list_timeline_item(dynamic raw);
+
+  @protected
   List<TripAttachment> dco_decode_list_trip_attachment(dynamic raw);
 
   @protected
@@ -278,6 +283,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reservation dco_decode_reservation(dynamic raw);
+
+  @protected
+  TimelineItem dco_decode_timeline_item(dynamic raw);
+
+  @protected
+  TimelineItemDetails dco_decode_timeline_item_details(dynamic raw);
+
+  @protected
+  TimelineModel dco_decode_timeline_model(dynamic raw);
 
   @protected
   TripAttachment dco_decode_trip_attachment(dynamic raw);
@@ -541,6 +555,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<TimelineItem> sse_decode_list_timeline_item(
+      SseDeserializer deserializer);
+
+  @protected
   List<TripAttachment> sse_decode_list_trip_attachment(
       SseDeserializer deserializer);
 
@@ -603,6 +621,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reservation sse_decode_reservation(SseDeserializer deserializer);
+
+  @protected
+  TimelineItem sse_decode_timeline_item(SseDeserializer deserializer);
+
+  @protected
+  TimelineItemDetails sse_decode_timeline_item_details(
+      SseDeserializer deserializer);
+
+  @protected
+  TimelineModel sse_decode_timeline_model(SseDeserializer deserializer);
 
   @protected
   TripAttachment sse_decode_trip_attachment(SseDeserializer deserializer);
@@ -881,6 +909,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_timeline_item(
+      List<TimelineItem> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_trip_attachment(
       List<TripAttachment> self, SseSerializer serializer);
 
@@ -946,6 +978,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_reservation(Reservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timeline_item_details(
+      TimelineItemDetails self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timeline_model(TimelineModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_trip_attachment(

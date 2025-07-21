@@ -17,6 +17,7 @@ pub mod packing_list_handler;
 pub mod trip_packing_list_handler;
 pub mod location_handler;
 pub mod point_of_interest_handler;
+pub mod timeline_handler;
 
 pub(crate) trait HandlerCreator: Send {
     type Guard<'a, T: Handler>: Deref<Target = T> + Send where Self: 'a;
