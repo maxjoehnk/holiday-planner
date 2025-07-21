@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 
 Map<WeatherCondition, IconData> _weatherIcons = {
@@ -18,43 +19,49 @@ class ConditionTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+    
     return condition.map(
       minTripDuration: (duration) => ConditionChip(
           tooltip: "Min Trip Duration",
           label: "> ${duration.length} Day(s)",
-          color: Colors.orange.shade100,
+          iconData: Icons.schedule,
+          color: CONDITION_DURATION_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       maxTripDuration: (duration) => ConditionChip(
           tooltip: "Max Trip Duration",
           label: "< ${duration.length} Day(s)",
-          color: Colors.orange.shade100,
+          iconData: Icons.schedule,
+          color: CONDITION_DURATION_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       minTemperature: (temperature) => ConditionChip(
           tooltip: "Min Temperature",
           label: "> ${temperature.temperature}°C",
-          color: Colors.blue.shade100,
+          iconData: Icons.thermostat,
+          color: CONDITION_TEMPERATURE_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       maxTemperature: (temperature) => ConditionChip(
           tooltip: "Max Temperature",
           label: "< ${temperature.temperature}°C",
-          color: Colors.blue.shade100,
+          iconData: Icons.thermostat,
+          color: CONDITION_TEMPERATURE_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       weather: (weather) => ConditionChip(
           tooltip: "Weather",
           label: "${(weather.minProbability * 100).round()}%",
           iconData: _weatherIcons[weather.condition],
-          color: Colors.green.shade100,
+          color: CONDITION_WEATHER_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       tag: (tag) => ConditionChip(
           tooltip: "Tag",
           label: tag.tag,
           iconData: Icons.label,
-          color: Colors.yellow.shade100,
+          color: CONDITION_TAG_COLOR,
           onEdit: onEdit,
           onRemove: onRemove,
       ),
@@ -68,7 +75,7 @@ class ConditionChip extends StatelessWidget {
   final Function()? onEdit;
   final IconData? iconData;
   final String? tooltip;
-  final Color color;
+  final MaterialColor color;
 
   const ConditionChip(
       {super.key,
@@ -81,24 +88,52 @@ class ConditionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
+    
     if (onEdit == null) {
       return Chip(
-        avatar: iconData != null ? Icon(iconData) : null,
-        color: WidgetStateProperty.all(color),
-        label: Text(label),
+        avatar: iconData != null ? Icon(
+          iconData,
+          size: 16,
+          color: color.shade700,
+        ) : null,
+        backgroundColor: color.shade100,
+        label: Text(
+          label,
+          style: textTheme.labelMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         onDeleted: onRemove,
         side: BorderSide.none,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       );
     }
     return InputChip(
       selected: true,
       showCheckmark: false,
-      avatar: iconData != null ? Icon(iconData) : null,
+      avatar: iconData != null ? Icon(
+        iconData,
+        size: 16,
+        color: color.shade700,
+      ) : null,
       onPressed: onEdit,
-      color: WidgetStateProperty.all(color),
-      label: Text(label),
+      backgroundColor: color.shade100,
+      selectedColor: color.shade200,
+      label: Text(
+        label,
+        style: textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       onDeleted: onRemove,
       tooltip: tooltip,
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
     );
   }
 }
