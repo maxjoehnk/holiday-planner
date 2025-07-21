@@ -17,10 +17,20 @@ class PackingListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String subtitle;
+    if (trip.totalPackingListItems.toInt() == 0) {
+      subtitle = "Nothing to pack";
+    }else if (trip.pendingPackingListItems.toInt() == 0) {
+      subtitle = "All items packed";
+    }else if (trip.pendingPackingListItems.toInt() == 1) {
+      subtitle = "1 item left to pack";
+    }else {
+      subtitle = "${trip.pendingPackingListItems} items left to pack";
+    }
     return SummaryCard(
         icon: Icons.checklist,
         label: "Packing List",
-        subtitle: "${trip.packedPackingListItems}/${trip.totalPackingListItems} packed",
+        subtitle: subtitle,
         color: PACKING_LIST_COLOR,
         onTap: () async {
           await Navigator.push(
