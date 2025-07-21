@@ -209,6 +209,8 @@ class TripOverviewItem extends StatelessWidget {
     var start = formatDate(trip.startDate);
     var end = formatDate(trip.endDate);
     
+    final duration = trip.endDate.difference(trip.startDate).inDays + 1;
+    
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: 0,
@@ -293,12 +295,31 @@ class TripOverviewItem extends StatelessWidget {
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
-                              "$start - $end",
+                              duration == 1 
+                                ? start 
+                                : "$start - $end",
                               style: textTheme.bodyMedium?.copyWith(
                                 color: Colors.white.withOpacity(0.9),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              duration == 1 
+                                ? "1 day" 
+                                : "$duration days",
+                              style: textTheme.bodySmall?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
