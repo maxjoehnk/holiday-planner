@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_accommodation.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
-import 'package:intl/intl.dart';
+import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class AddAccommodation extends StatefulWidget {
@@ -26,16 +27,17 @@ class _AddAccommodationState extends State<AddAccommodation> {
   @override
   void initState() {
     super.initState();
-    // Set default times
-    checkInDate = DateTime(checkInDate.year, checkInDate.month, checkInDate.day, 15, 0); // 3 PM
-    checkOutDate = DateTime(checkOutDate.year, checkOutDate.month, checkOutDate.day, 11, 0); // 11 AM
+    checkInDate =
+        DateTime(checkInDate.year, checkInDate.month, checkInDate.day, 15, 0);
+    checkOutDate = DateTime(
+        checkOutDate.year, checkOutDate.month, checkOutDate.day, 11, 0);
   }
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Accommodation"),
@@ -46,7 +48,7 @@ class _AddAccommodationState extends State<AddAccommodation> {
             padding: const EdgeInsets.only(right: 16.0),
             child: FilledButton(
               onPressed: _isLoading ? null : _submit,
-              child: _isLoading 
+              child: _isLoading
                   ? const SizedBox(
                       width: 16,
                       height: 16,
@@ -179,7 +181,8 @@ class _AddAccommodationState extends State<AddAccommodation> {
                 color: Colors.orange,
               ),
               const SizedBox(height: 24),
-              AccommodationSummaryCard(checkInDate: checkInDate, checkOutDate: checkOutDate),
+              AccommodationSummaryCard(
+                  checkInDate: checkInDate, checkOutDate: checkOutDate),
             ],
           ),
         ),
@@ -198,7 +201,7 @@ class _AddAccommodationState extends State<AddAccommodation> {
   }) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -253,14 +256,14 @@ class _AddAccommodationState extends State<AddAccommodation> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    DateFormat.yMMMd().format(dateTime),
+                    formatDate(dateTime),
                     style: textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    DateFormat.jm().format(dateTime),
+                    formatTime(dateTime),
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -281,32 +284,12 @@ class _AddAccommodationState extends State<AddAccommodation> {
   }
 
   Future<void> _selectDateTime(DateTime currentDateTime, Function(DateTime) onChanged) async {
-    // First select date
-    var date = await showDatePicker(
-      context: context,
-      initialDate: currentDateTime,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
-    );
-    
-    if (date == null) return;
-    
-    // Then select time
-    var time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(currentDateTime),
-    );
-    
-    if (time == null) return;
-    
-    var newDateTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
-    
+    final DateTime? newDateTime = await selectDateTime(context, initialDate: currentDateTime);
+
+    if (newDateTime == null) {
+      return;
+    }
+
     onChanged(newDateTime);
   }
 
@@ -331,7 +314,8 @@ class _AddAccommodationState extends State<AddAccommodation> {
       await addTripAccommodation(
         command: AddTripAccommodation(
           name: _nameController.text,
-          address: _addressController.text.isEmpty ? null : _addressController.text,
+          address:
+              _addressController.text.isEmpty ? null : _addressController.text,
           tripId: widget.tripId,
           checkIn: checkInDate,
           checkOut: checkOutDate,

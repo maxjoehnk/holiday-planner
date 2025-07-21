@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
-import 'package:intl/intl.dart';
+import 'package:holiday_planner/date_format.dart';
 
 import 'create_trip.dart';
 import 'trip_view.dart';
@@ -206,8 +206,8 @@ class TripOverviewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     var colorScheme = Theme.of(context).colorScheme;
-    var start = DateFormat.yMMMMd().format(trip.startDate);
-    var end = DateFormat.yMMMMd().format(trip.endDate);
+    var start = formatDate(trip.startDate);
+    var end = formatDate(trip.endDate);
     
     return Card(
       clipBehavior: Clip.antiAlias,

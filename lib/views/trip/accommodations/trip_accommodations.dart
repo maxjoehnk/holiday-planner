@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/views/trip/accommodations/add_accommodation.dart';
 import 'package:holiday_planner/views/trip/accommodations/edit_accommodation.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class TripAccommodations extends StatefulWidget {
@@ -185,8 +185,8 @@ class AccommodationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    var checkIn = DateFormat.yMMMMd().format(accommodation.checkIn);
-    var checkOut = DateFormat.yMMMMd().format(accommodation.checkOut);
+    var checkIn = formatDate(accommodation.checkIn);
+    var checkOut = formatDate(accommodation.checkOut);
     var duration = accommodation.checkOut
         .copyWith(hour: 0, minute: 0)
         .difference(accommodation.checkIn.copyWith(hour: 0, minute: 0))

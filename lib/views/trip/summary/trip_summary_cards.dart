@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.dart';
 import 'package:holiday_planner/views/trip/bookings/trip_bookings.dart';
 import 'package:holiday_planner/views/trip/locations/trip_locations.dart';
 import 'package:holiday_planner/views/trip/points_of_interest/trip_points_of_interest.dart';
-import 'package:intl/intl.dart';
 
 import '../packing_list/trip_packing_list.dart';
 
@@ -79,7 +79,7 @@ class AccommodationsCard extends StatelessWidget {
     if (trip.accommodationStatus != null) {
       final status = trip.accommodationStatus!;
       final statusText = status.statusType == AccommodationStatusType.checkIn ? "Check-in" : "Check-out";
-      final formattedDate = DateFormat.yMMMMd().format(status.datetime);
+      final formattedDate = formatDate(status.datetime);
       subtitle = "$statusText at ${status.accommodationName} on $formattedDate";
     }
     

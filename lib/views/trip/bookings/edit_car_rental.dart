@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/commands/update_car_rental.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
+import 'package:holiday_planner/widgets/date_time_picker.dart';
 
 class EditCarRentalPage extends StatefulWidget {
   final CarRental carRental;
@@ -26,19 +27,23 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
   @override
   void initState() {
     super.initState();
-    _providerController = TextEditingController(text: widget.carRental.provider);
-    _pickUpLocationController = TextEditingController(text: widget.carRental.pickUpLocation);
-    _returnLocationController = TextEditingController(text: widget.carRental.returnLocation ?? '');
-    _bookingNumberController = TextEditingController(text: widget.carRental.bookingNumber ?? '');
-    _pickUpDate = widget.carRental.pickUpDate;
-    _returnDate = widget.carRental.returnDate;
+    _providerController =
+        TextEditingController(text: widget.carRental.provider);
+    _pickUpLocationController =
+        TextEditingController(text: widget.carRental.pickUpLocation);
+    _returnLocationController =
+        TextEditingController(text: widget.carRental.returnLocation ?? '');
+    _bookingNumberController =
+        TextEditingController(text: widget.carRental.bookingNumber ?? '');
+    _pickUpDate = widget.carRental.pickUpDate.toLocal();
+    _returnDate = widget.carRental.returnDate.toLocal();
   }
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Car Rental"),
@@ -49,7 +54,7 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
             padding: const EdgeInsets.only(right: 16.0),
             child: FilledButton(
               onPressed: _isLoading ? null : _submit,
-              child: _isLoading 
+              child: _isLoading
                   ? const SizedBox(
                       width: 16,
                       height: 16,
@@ -154,7 +159,9 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
                         decoration: InputDecoration(
                           labelText: "Pick Up Date & Time *",
                           border: const OutlineInputBorder(),
-                          errorText: _pickUpDate == null ? "Please select a pick up date and time" : null,
+                          errorText: _pickUpDate == null
+                              ? "Please select a pick up date and time"
+                              : null,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,7 +192,9 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
                         decoration: InputDecoration(
                           labelText: "Return Date & Time *",
                           border: const OutlineInputBorder(),
-                          errorText: _returnDate == null ? "Please select a return date and time" : null,
+                          errorText: _returnDate == null
+                              ? "Please select a return date and time"
+                              : null,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,79 +254,38 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
   }
 
   Future<void> _selectPickUpDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _pickUpDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _pickUpDate != null 
-            ? TimeOfDay.fromDateTime(_pickUpDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _pickUpDate = newDateTime;
-          // If return date is before pick up date, clear it
-          if (_returnDate != null && _returnDate!.isBefore(newDateTime)) {
-            _returnDate = null;
-          }
-        });
-      }
+    final DateTime? pickedDateTime =
+        await selectDateTime(context, initialDate: _pickUpDate);
+
+    if (pickedDateTime == null) {
+      return;
     }
+
+    setState(() {
+      _pickUpDate = pickedDateTime;
+      if (_returnDate != null && _returnDate!.isBefore(pickedDateTime)) {
+        _returnDate = null;
+      }
+    });
   }
 
   Future<void> _selectReturnDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _returnDate ?? _pickUpDate ?? DateTime.now(),
-      firstDate: _pickUpDate ?? DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _returnDate != null 
-            ? TimeOfDay.fromDateTime(_returnDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _returnDate = newDateTime;
-        });
-      }
+    final DateTime? pickedDateTime = await selectDateTime(context,
+        initialDate: _returnDate ?? _pickUpDate, startDate: _pickUpDate);
+
+    if (pickedDateTime == null) {
+      return;
     }
+
+    setState(() {
+      _returnDate = pickedDateTime;
+    });
   }
 
   void _submit() async {
-    if (!_formKey.currentState!.validate() || _pickUpDate == null || _returnDate == null) {
+    if (!_formKey.currentState!.validate() ||
+        _pickUpDate == null ||
+        _returnDate == null) {
       setState(() {
         _errorMessage = "Please fill in all required fields";
       });
@@ -336,8 +304,12 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
         pickUpDate: _pickUpDate!,
         pickUpLocation: _pickUpLocationController.text.trim(),
         returnDate: _returnDate!,
-        returnLocation: _returnLocationController.text.trim().isEmpty ? null : _returnLocationController.text.trim(),
-        bookingNumber: _bookingNumberController.text.trim().isEmpty ? null : _bookingNumberController.text.trim(),
+        returnLocation: _returnLocationController.text.trim().isEmpty
+            ? null
+            : _returnLocationController.text.trim(),
+        bookingNumber: _bookingNumberController.text.trim().isEmpty
+            ? null
+            : _bookingNumberController.text.trim(),
       );
 
       await updateCarRental(command: command);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/commands/add_reservation.dart';
+import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class AddReservationPage extends StatefulWidget {
@@ -17,7 +18,8 @@ class _AddReservationPageState extends State<AddReservationPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _linkController = TextEditingController();
-  final TextEditingController _bookingNumberController = TextEditingController();
+  final TextEditingController _bookingNumberController =
+      TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isLoading = false;
@@ -27,7 +29,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Reservation"),
@@ -38,7 +40,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
             padding: const EdgeInsets.only(right: 16.0),
             child: FilledButton(
               onPressed: _isLoading ? null : _submit,
-              child: _isLoading 
+              child: _isLoading
                   ? const SizedBox(
                       width: 16,
                       height: 16,
@@ -137,7 +139,9 @@ class _AddReservationPageState extends State<AddReservationPage> {
                         decoration: InputDecoration(
                           labelText: "Start Date & Time *",
                           border: const OutlineInputBorder(),
-                          errorText: _startDate == null ? "Please select a start date and time" : null,
+                          errorText: _startDate == null
+                              ? "Please select a start date and time"
+                              : null,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -228,75 +232,32 @@ class _AddReservationPageState extends State<AddReservationPage> {
   }
 
   Future<void> _selectStartDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _startDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _startDate != null 
-            ? TimeOfDay.fromDateTime(_startDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _startDate = newDateTime;
-          // If end date is before start date, clear it
-          if (_endDate != null && _endDate!.isBefore(newDateTime)) {
-            _endDate = null;
-          }
-        });
-      }
+    final DateTime? pickedDateTime =
+        await selectDateTime(context, initialDate: _startDate);
+
+    if (pickedDateTime == null) {
+      return;
     }
+
+    setState(() {
+      _startDate = pickedDateTime;
+      if (_endDate != null && _endDate!.isBefore(pickedDateTime)) {
+        _endDate = null;
+      }
+    });
   }
 
   Future<void> _selectEndDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _endDate ?? _startDate ?? DateTime.now(),
-      firstDate: _startDate ?? DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _endDate != null 
-            ? TimeOfDay.fromDateTime(_endDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _endDate = newDateTime;
-        });
-      }
+    final DateTime? pickedDateTime = await selectDateTime(context,
+        initialDate: _endDate ?? _startDate, startDate: _startDate);
+
+    if (pickedDateTime == null) {
+      return;
     }
+
+    setState(() {
+      _endDate = pickedDateTime;
+    });
   }
 
   void _submit() async {
@@ -316,11 +277,17 @@ class _AddReservationPageState extends State<AddReservationPage> {
       final command = AddReservation(
         tripId: widget.tripId,
         title: _titleController.text.trim(),
-        address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
+        address: _addressController.text.trim().isEmpty
+            ? null
+            : _addressController.text.trim(),
         startDate: _startDate!,
         endDate: _endDate,
-        link: _linkController.text.trim().isEmpty ? null : _linkController.text.trim(),
-        bookingNumber: _bookingNumberController.text.trim().isEmpty ? null : _bookingNumberController.text.trim(),
+        link: _linkController.text.trim().isEmpty
+            ? null
+            : _linkController.text.trim(),
+        bookingNumber: _bookingNumberController.text.trim().isEmpty
+            ? null
+            : _bookingNumberController.text.trim(),
       );
 
       await addReservation(command: command);

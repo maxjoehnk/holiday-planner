@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_location.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/location_search.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -305,7 +306,7 @@ class _LocationDailyForecastState extends State<LocationDailyForecast> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                DateFormat.Md().format(dayForecast.day),
+                                formatDate(dayForecast.day, format: DateFormat.Md()),
                                 style: textTheme.bodySmall?.copyWith(
                                   color: isSelected 
                                       ? colorScheme.primary
@@ -411,7 +412,7 @@ class LocationHourlyForecast extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          DateFormat.Hm().format(hourForecast.time),
+                          formatTime(hourForecast.time),
                           style: textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w600,

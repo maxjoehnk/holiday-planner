@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/views/trip/bookings/add_reservation.dart';
 import 'package:holiday_planner/views/trip/bookings/add_car_rental.dart';
 import 'package:holiday_planner/views/trip/bookings/edit_reservation.dart';
 import 'package:holiday_planner/views/trip/bookings/edit_car_rental.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -303,8 +303,6 @@ class ReservationCard extends StatelessWidget {
     var colorScheme = Theme.of(context).colorScheme;
     var color = BOOKINGS_COLOR;
     var textTheme = Theme.of(context).textTheme;
-    var dateFormat = DateFormat.yMd();
-    var timeFormat = DateFormat.Hm();
 
     return Card(
       elevation: 0,
@@ -373,7 +371,7 @@ class ReservationCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "${dateFormat.format(reservation.startDate)} ${timeFormat.format(reservation.startDate)} ${reservation.endDate != null ? ' - ${dateFormat.format(reservation.endDate!)} ${timeFormat.format(reservation.endDate!)}' : ''}",
+                    "${formatDateTime(reservation.startDate)} ${reservation.endDate != null ? ' - ${formatDateTime(reservation.endDate!)}' : ''}",
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -442,8 +440,6 @@ class CarRentalCard extends StatelessWidget {
     var colorScheme = Theme.of(context).colorScheme;
     var color = CAR_RENTAL_COLOR;
     var textTheme = Theme.of(context).textTheme;
-    var dateFormat = DateFormat.yMd();
-    var timeFormat = DateFormat.Hm();
 
     return Card(
       elevation: 0,
@@ -510,7 +506,7 @@ class CarRentalCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "${dateFormat.format(carRental.pickUpDate)} ${timeFormat.format(carRental.pickUpDate)} - ${dateFormat.format(carRental.returnDate)} ${timeFormat.format(carRental.returnDate)}",
+                    "${formatDateTime(carRental.pickUpDate)} - ${formatDateTime(carRental.returnDate)}",
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),

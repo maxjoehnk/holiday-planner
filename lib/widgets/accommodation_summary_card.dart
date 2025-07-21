@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:holiday_planner/date_format.dart';
 
 class AccommodationSummaryCard extends StatelessWidget {
   final DateTime checkInDate;
@@ -54,7 +54,7 @@ class AccommodationSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            "${DateFormat.yMMMd().format(checkInDate)} - ${DateFormat.yMMMd().format(checkOutDate)}",
+            "${formatDate(checkInDate)} - ${formatDate(checkOutDate)}",
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/commands/update_reservation.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
+import 'package:holiday_planner/widgets/date_time_picker.dart';
 
 class EditReservationPage extends StatefulWidget {
   final Reservation reservation;
@@ -30,8 +31,8 @@ class _EditReservationPageState extends State<EditReservationPage> {
     _addressController = TextEditingController(text: widget.reservation.address ?? '');
     _linkController = TextEditingController(text: widget.reservation.link ?? '');
     _bookingNumberController = TextEditingController(text: widget.reservation.bookingNumber ?? '');
-    _startDate = widget.reservation.startDate;
-    _endDate = widget.reservation.endDate;
+    _startDate = widget.reservation.startDate.toLocal();
+    _endDate = widget.reservation.endDate?.toLocal();
   }
 
   @override
@@ -239,75 +240,26 @@ class _EditReservationPageState extends State<EditReservationPage> {
   }
 
   Future<void> _selectStartDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _startDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _startDate != null 
-            ? TimeOfDay.fromDateTime(_startDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _startDate = newDateTime;
-          // If end date is before start date, clear it
-          if (_endDate != null && _endDate!.isBefore(newDateTime)) {
-            _endDate = null;
-          }
-        });
-      }
+    final DateTime? pickedTime = await selectDateTime(context, initialDate: _startDate);
+
+    if (pickedTime == null) {
+      return;
     }
+
+    setState(() {
+      _startDate = pickedTime;
+      if (_endDate != null && _endDate!.isBefore(pickedTime)) {
+        _endDate = null;
+      }
+    });
   }
 
   Future<void> _selectEndDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _endDate ?? _startDate ?? DateTime.now(),
-      firstDate: _startDate ?? DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _endDate != null 
-            ? TimeOfDay.fromDateTime(_endDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _endDate = newDateTime;
-        });
-      }
-    }
+    final DateTime? pickedTime = await selectDateTime(context, initialDate: _endDate ?? _startDate, startDate: _startDate);
+
+    setState(() {
+      _endDate = pickedTime;
+    });
   }
 
   void _submit() async {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/api/timeline.dart';
 import 'package:holiday_planner/src/rust/models/timeline.dart';
-import 'package:intl/intl.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import 'package:uuid/uuid.dart';
 
@@ -95,8 +95,8 @@ class TimelineEntry extends StatelessWidget {
       nodePosition: 0.25,
       contents: child,
       oppositeContents: ListTile(
-        title: Text(DateFormat.Hm().format(startTime)),
-        subtitle: Text(DateFormat.yMEd().format(startTime)),
+        title: Text(formatTime(startTime)),
+        subtitle: Text(formatDate(startTime)),
       ),
     );
   }

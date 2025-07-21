@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip_accommodation.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
-import 'package:intl/intl.dart';
+import 'package:holiday_planner/widgets/date_time_picker.dart';
 
 class EditAccommodation extends StatefulWidget {
   final AccommodationModel accommodation;
@@ -29,8 +30,8 @@ class _EditAccommodationState extends State<EditAccommodation> {
     // Pre-populate form with existing accommodation data
     _nameController.text = widget.accommodation.name;
     _addressController.text = widget.accommodation.address ?? '';
-    checkInDate = widget.accommodation.checkIn;
-    checkOutDate = widget.accommodation.checkOut;
+    checkInDate = widget.accommodation.checkIn.toLocal();
+    checkOutDate = widget.accommodation.checkOut.toLocal();
   }
 
   @override
@@ -262,14 +263,14 @@ class _EditAccommodationState extends State<EditAccommodation> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    DateFormat.yMMMd().format(dateTime),
+                    formatDate(dateTime),
                     style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    DateFormat.jm().format(dateTime),
+                    formatTime(dateTime),
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -284,30 +285,13 @@ class _EditAccommodationState extends State<EditAccommodation> {
   }
 
   Future<void> _selectDateTime(DateTime currentDateTime, Function(DateTime) onChanged) async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: currentDateTime,
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
-    );
-    
-    if (date != null && mounted) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(currentDateTime),
-      );
-      
-      if (time != null && mounted) {
-        final newDateTime = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          time.hour,
-          time.minute,
-        );
-        onChanged(newDateTime);
-      }
+    final DateTime? newDateTime = await selectDateTime(context, initialDate: currentDateTime);
+
+    if (newDateTime == null) {
+      return;
     }
+
+    onChanged(newDateTime);
   }
 
   Future<void> _submit() async {

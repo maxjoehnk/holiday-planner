@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/commands/add_car_rental.dart';
+import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class AddCarRentalPage extends StatefulWidget {
@@ -234,75 +235,32 @@ class _AddCarRentalPageState extends State<AddCarRentalPage> {
   }
 
   Future<void> _selectPickUpDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _pickUpDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _pickUpDate != null 
-            ? TimeOfDay.fromDateTime(_pickUpDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _pickUpDate = newDateTime;
-          // If return date is before pick up date, clear it
-          if (_returnDate != null && _returnDate!.isBefore(newDateTime)) {
-            _returnDate = null;
-          }
-        });
-      }
+    final DateTime? pickedDateTime =
+    await selectDateTime(context, initialDate: _pickUpDate);
+
+    if (pickedDateTime == null) {
+      return;
     }
+
+    setState(() {
+      _pickUpDate = pickedDateTime;
+      if (_returnDate != null && _returnDate!.isBefore(pickedDateTime)) {
+        _returnDate = null;
+      }
+    });
   }
 
   Future<void> _selectReturnDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _returnDate ?? _pickUpDate ?? DateTime.now(),
-      firstDate: _pickUpDate ?? DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    
-    if (pickedDate != null) {
-      if (!context.mounted) return;
-      
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _returnDate != null 
-            ? TimeOfDay.fromDateTime(_returnDate!) 
-            : TimeOfDay.now(),
-      );
-      
-      if (pickedTime != null) {
-        final DateTime newDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        
-        setState(() {
-          _returnDate = newDateTime;
-        });
-      }
+    final DateTime? pickedDateTime = await selectDateTime(context,
+        initialDate: _returnDate ?? _pickUpDate, startDate: _pickUpDate);
+
+    if (pickedDateTime == null) {
+      return;
     }
+
+    setState(() {
+      _returnDate = pickedDateTime;
+    });
   }
 
   void _submit() async {
