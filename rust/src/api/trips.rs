@@ -80,3 +80,15 @@ pub async fn get_trip_locations(trip_id: Uuid) -> anyhow::Result<Vec<TripLocatio
     let handler = DB.try_get::<LocationHandler>().await?;
     handler.get_trip_locations(trip_id).await
 }
+
+#[tracing::instrument]
+pub async fn search_web_images(command: SearchWebImages) -> anyhow::Result<Vec<WebImage>> {
+    let handler = DB.try_get::<TripHandler>().await?;
+    handler.search_web_images(command).await
+}
+
+#[tracing::instrument]
+pub async fn download_web_image(image_url: String) -> anyhow::Result<Vec<u8>> {
+    let handler = DB.try_get::<TripHandler>().await?;
+    handler.download_web_image(image_url).await
+}

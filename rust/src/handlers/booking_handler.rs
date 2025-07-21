@@ -4,7 +4,7 @@ use uuid::Uuid;
 use crate::commands::{AddReservation, AddCarRental, UpdateReservation, UpdateCarRental};
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
-use crate::models::bookings::{Reservation, CarRental, Booking};
+use crate::models::*;
 
 pub struct BookingHandler {
     db: Database,

@@ -1,8 +1,7 @@
 use uuid::Uuid;
 use super::DB;
 use crate::handlers::*;
-use crate::handlers::timeline_handler::TimelineHandler;
-use crate::models::timeline::TimelineModel;
+use crate::models::*;
 
 #[tracing::instrument]
 pub async fn get_trip_timeline(trip_id: Uuid) -> anyhow::Result<TimelineModel> {

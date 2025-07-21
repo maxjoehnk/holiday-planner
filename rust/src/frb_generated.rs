@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2009705475;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -770136419;
 
 // Section: executor
 
@@ -610,6 +610,43 @@ fn wire__crate__api__bookings__delete_reservation_impl(
                     (move || async move {
                         let output_ok =
                             crate::api::bookings::delete_reservation(api_reservation_id).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__trips__download_web_image_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "download_web_image",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_image_url = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::trips::download_web_image(api_image_url).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -1278,6 +1315,44 @@ fn wire__crate__api__trips__search_locations_impl(
         },
     )
 }
+fn wire__crate__api__trips__search_web_images_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "search_web_images",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command = <crate::commands::search_web_images::SearchWebImages>::sse_decode(
+                &mut deserializer,
+            );
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::trips::search_web_images(api_command).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__bookings__update_car_rental_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1627,8 +1702,6 @@ impl SseDecode for crate::commands::add_reservation::AddReservation {
         let mut var_endDate = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_link = <Option<String>>::sse_decode(deserializer);
         let mut var_bookingNumber = <Option<String>>::sse_decode(deserializer);
-        let mut var_category =
-            <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
         return crate::commands::add_reservation::AddReservation {
             trip_id: var_tripId,
             title: var_title,
@@ -1637,7 +1710,6 @@ impl SseDecode for crate::commands::add_reservation::AddReservation {
             end_date: var_endDate,
             link: var_link,
             booking_number: var_bookingNumber,
-            category: var_category,
         };
     }
 }
@@ -2107,6 +2179,20 @@ impl SseDecode for Vec<crate::models::TripPackingListGroup> {
     }
 }
 
+impl SseDecode for Vec<crate::models::web_images::WebImage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::models::web_images::WebImage>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for crate::models::LocationEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2302,8 +2388,6 @@ impl SseDecode for crate::models::bookings::Reservation {
         let mut var_endDate = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_link = <Option<String>>::sse_decode(deserializer);
         let mut var_bookingNumber = <Option<String>>::sse_decode(deserializer);
-        let mut var_category =
-            <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
         let mut var_attachments = <Vec<crate::models::TripAttachment>>::sse_decode(deserializer);
         return crate::models::bookings::Reservation {
             id: var_id,
@@ -2313,21 +2397,16 @@ impl SseDecode for crate::models::bookings::Reservation {
             end_date: var_endDate,
             link: var_link,
             booking_number: var_bookingNumber,
-            category: var_category,
             attachments: var_attachments,
         };
     }
 }
 
-impl SseDecode for crate::models::bookings::ReservationCategory {
+impl SseDecode for crate::commands::search_web_images::SearchWebImages {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <i32>::sse_decode(deserializer);
-        return match inner {
-            0 => crate::models::bookings::ReservationCategory::Restaurant,
-            1 => crate::models::bookings::ReservationCategory::Activity,
-            _ => unreachable!("Invalid variant for ReservationCategory: {}", inner),
-        };
+        let mut var_query = <String>::sse_decode(deserializer);
+        return crate::commands::search_web_images::SearchWebImages { query: var_query };
     }
 }
 
@@ -2368,12 +2447,9 @@ impl SseDecode for crate::models::timeline::TimelineItemDetails {
             2 => {
                 let mut var_title = <String>::sse_decode(deserializer);
                 let mut var_address = <Option<String>>::sse_decode(deserializer);
-                let mut var_category =
-                    <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
                 return crate::models::timeline::TimelineItemDetails::Reservation {
                     title: var_title,
                     address: var_address,
-                    category: var_category,
                 };
             }
             3 => {
@@ -2647,8 +2723,6 @@ impl SseDecode for crate::commands::update_reservation::UpdateReservation {
         let mut var_endDate = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_link = <Option<String>>::sse_decode(deserializer);
         let mut var_bookingNumber = <Option<String>>::sse_decode(deserializer);
-        let mut var_category =
-            <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
         return crate::commands::update_reservation::UpdateReservation {
             id: var_id,
             title: var_title,
@@ -2657,7 +2731,6 @@ impl SseDecode for crate::commands::update_reservation::UpdateReservation {
             end_date: var_endDate,
             link: var_link,
             booking_number: var_bookingNumber,
-            category: var_category,
         };
     }
 }
@@ -2754,6 +2827,24 @@ impl SseDecode for crate::models::WeatherForecast {
     }
 }
 
+impl SseDecode for crate::models::web_images::WebImage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <String>::sse_decode(deserializer);
+        let mut var_url = <String>::sse_decode(deserializer);
+        let mut var_thumbnailUrl = <String>::sse_decode(deserializer);
+        let mut var_author = <String>::sse_decode(deserializer);
+        let mut var_description = <Option<String>>::sse_decode(deserializer);
+        return crate::models::web_images::WebImage {
+            id: var_id,
+            url: var_url,
+            thumbnail_url: var_thumbnailUrl,
+            author: var_author,
+            description: var_description,
+        };
+    }
+}
+
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -2817,63 +2908,65 @@ fn pde_ffi_dispatcher_primary_impl(
         15 => {
             wire__crate__api__bookings__delete_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        16 => {
+        16 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
+        17 => {
             wire__crate__api__packing_list__get_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        17 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__accommodations__get_trip_accommodations_impl(
+        18 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__accommodations__get_trip_accommodations_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__attachments__get_trip_attachments_impl(
+        21 => wire__crate__api__attachments__get_trip_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
-        23 => {
+        22 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
+        24 => {
             wire__crate__api__trips__get_trip_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        24 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+        25 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        31 => {
+        26 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        32 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        32 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        34 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        33 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        35 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => {
+        38 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        37 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        39 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        41 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3028,7 +3121,6 @@ impl flutter_rust_bridge::IntoDart for crate::commands::add_reservation::AddRese
             self.end_date.into_into_dart().into_dart(),
             self.link.into_into_dart().into_dart(),
             self.booking_number.into_into_dart().into_dart(),
-            self.category.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -3477,7 +3569,6 @@ impl flutter_rust_bridge::IntoDart for crate::models::bookings::Reservation {
             self.end_date.into_into_dart().into_dart(),
             self.link.into_into_dart().into_dart(),
             self.booking_number.into_into_dart().into_dart(),
-            self.category.into_into_dart().into_dart(),
             self.attachments.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -3495,23 +3586,19 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::bookings::Reservation>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::models::bookings::ReservationCategory {
+impl flutter_rust_bridge::IntoDart for crate::commands::search_web_images::SearchWebImages {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        match self {
-            Self::Restaurant => 0.into_dart(),
-            Self::Activity => 1.into_dart(),
-            _ => unreachable!(),
-        }
+        [self.query.into_into_dart().into_dart()].into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::models::bookings::ReservationCategory
+    for crate::commands::search_web_images::SearchWebImages
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::models::bookings::ReservationCategory>
-    for crate::models::bookings::ReservationCategory
+impl flutter_rust_bridge::IntoIntoDart<crate::commands::search_web_images::SearchWebImages>
+    for crate::commands::search_web_images::SearchWebImages
 {
-    fn into_into_dart(self) -> crate::models::bookings::ReservationCategory {
+    fn into_into_dart(self) -> crate::commands::search_web_images::SearchWebImages {
         self
     }
 }
@@ -3557,15 +3644,10 @@ impl flutter_rust_bridge::IntoDart for crate::models::timeline::TimelineItemDeta
                 address.into_into_dart().into_dart(),
             ]
             .into_dart(),
-            crate::models::timeline::TimelineItemDetails::Reservation {
-                title,
-                address,
-                category,
-            } => [
+            crate::models::timeline::TimelineItemDetails::Reservation { title, address } => [
                 2.into_dart(),
                 title.into_into_dart().into_dart(),
                 address.into_into_dart().into_dart(),
-                category.into_into_dart().into_dart(),
             ]
             .into_dart(),
             crate::models::timeline::TimelineItemDetails::CheckIn { address } => {
@@ -3897,7 +3979,6 @@ impl flutter_rust_bridge::IntoDart for crate::commands::update_reservation::Upda
             self.end_date.into_into_dart().into_dart(),
             self.link.into_into_dart().into_dart(),
             self.booking_number.into_into_dart().into_dart(),
-            self.category.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4041,6 +4122,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::WeatherForecast>
         self
     }
 }
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::web_images::WebImage {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.url.into_into_dart().into_dart(),
+            self.thumbnail_url.into_into_dart().into_dart(),
+            self.author.into_into_dart().into_dart(),
+            self.description.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::web_images::WebImage
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::web_images::WebImage>
+    for crate::models::web_images::WebImage
+{
+    fn into_into_dart(self) -> crate::models::web_images::WebImage {
+        self
+    }
+}
 
 impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4141,7 +4246,6 @@ impl SseEncode for crate::commands::add_reservation::AddReservation {
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.end_date, serializer);
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
-        <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
     }
 }
 
@@ -4480,6 +4584,16 @@ impl SseEncode for Vec<crate::models::TripPackingListGroup> {
     }
 }
 
+impl SseEncode for Vec<crate::models::web_images::WebImage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::web_images::WebImage>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for crate::models::LocationEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -4631,24 +4745,14 @@ impl SseEncode for crate::models::bookings::Reservation {
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.end_date, serializer);
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
-        <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
         <Vec<crate::models::TripAttachment>>::sse_encode(self.attachments, serializer);
     }
 }
 
-impl SseEncode for crate::models::bookings::ReservationCategory {
+impl SseEncode for crate::commands::search_web_images::SearchWebImages {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(
-            match self {
-                crate::models::bookings::ReservationCategory::Restaurant => 0,
-                crate::models::bookings::ReservationCategory::Activity => 1,
-                _ => {
-                    unimplemented!("");
-                }
-            },
-            serializer,
-        );
+        <String>::sse_encode(self.query, serializer);
     }
 }
 
@@ -4677,15 +4781,10 @@ impl SseEncode for crate::models::timeline::TimelineItemDetails {
                 <String>::sse_encode(provider, serializer);
                 <String>::sse_encode(address, serializer);
             }
-            crate::models::timeline::TimelineItemDetails::Reservation {
-                title,
-                address,
-                category,
-            } => {
+            crate::models::timeline::TimelineItemDetails::Reservation { title, address } => {
                 <i32>::sse_encode(2, serializer);
                 <String>::sse_encode(title, serializer);
                 <Option<String>>::sse_encode(address, serializer);
-                <crate::models::bookings::ReservationCategory>::sse_encode(category, serializer);
             }
             crate::models::timeline::TimelineItemDetails::CheckIn { address } => {
                 <i32>::sse_encode(3, serializer);
@@ -4884,7 +4983,6 @@ impl SseEncode for crate::commands::update_reservation::UpdateReservation {
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.end_date, serializer);
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
-        <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
     }
 }
 
@@ -4956,6 +5054,17 @@ impl SseEncode for crate::models::WeatherForecast {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<crate::models::HourlyWeatherForecast>>::sse_encode(self.hourly_forecast, serializer);
         <Vec<crate::models::DailyWeatherForecast>>::sse_encode(self.daily_forecast, serializer);
+    }
+}
+
+impl SseEncode for crate::models::web_images::WebImage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.url, serializer);
+        <String>::sse_encode(self.thumbnail_url, serializer);
+        <String>::sse_encode(self.author, serializer);
+        <Option<String>>::sse_encode(self.description, serializer);
     }
 }
 

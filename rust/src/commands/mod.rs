@@ -14,6 +14,7 @@ pub use add_reservation::*;
 pub use add_car_rental::*;
 pub use update_reservation::*;
 pub use update_car_rental::*;
+pub use search_web_images::*;
 
 pub mod create_trip;
 pub mod update_trip;
@@ -31,3 +32,4 @@ pub mod add_reservation;
 pub mod add_car_rental;
 pub mod update_reservation;
 pub mod update_car_rental;
+pub mod search_web_images;

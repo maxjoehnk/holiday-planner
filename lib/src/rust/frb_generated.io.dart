@@ -20,6 +20,7 @@ import 'commands/add_trip_location.dart';
 import 'commands/add_trip_point_of_interest.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
+import 'commands/search_web_images.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
@@ -33,6 +34,7 @@ import 'frb_generated.dart';
 import 'models.dart';
 import 'models/bookings.dart';
 import 'models/timeline.dart';
+import 'models/web_images.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'package:uuid/uuid.dart';
 
@@ -137,6 +139,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reservation dco_decode_box_autoadd_reservation(dynamic raw);
+
+  @protected
+  SearchWebImages dco_decode_box_autoadd_search_web_images(dynamic raw);
 
   @protected
   UpdateCarRental dco_decode_box_autoadd_update_car_rental(dynamic raw);
@@ -251,6 +256,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  List<WebImage> dco_decode_list_web_image(dynamic raw);
+
+  @protected
   LocationEntry dco_decode_location_entry(dynamic raw);
 
   @protected
@@ -289,7 +297,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Reservation dco_decode_reservation(dynamic raw);
 
   @protected
-  ReservationCategory dco_decode_reservation_category(dynamic raw);
+  SearchWebImages dco_decode_search_web_images(dynamic raw);
 
   @protected
   TimelineItem dco_decode_timeline_item(dynamic raw);
@@ -360,6 +368,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   WeatherForecast dco_decode_weather_forecast(dynamic raw);
+
+  @protected
+  WebImage dco_decode_web_image(dynamic raw);
 
   @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
@@ -467,6 +478,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reservation sse_decode_box_autoadd_reservation(SseDeserializer deserializer);
+
+  @protected
+  SearchWebImages sse_decode_box_autoadd_search_web_images(
+      SseDeserializer deserializer);
 
   @protected
   UpdateCarRental sse_decode_box_autoadd_update_car_rental(
@@ -596,6 +611,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<WebImage> sse_decode_list_web_image(SseDeserializer deserializer);
+
+  @protected
   LocationEntry sse_decode_location_entry(SseDeserializer deserializer);
 
   @protected
@@ -636,8 +654,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Reservation sse_decode_reservation(SseDeserializer deserializer);
 
   @protected
-  ReservationCategory sse_decode_reservation_category(
-      SseDeserializer deserializer);
+  SearchWebImages sse_decode_search_web_images(SseDeserializer deserializer);
 
   @protected
   TimelineItem sse_decode_timeline_item(SseDeserializer deserializer);
@@ -717,6 +734,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   WeatherForecast sse_decode_weather_forecast(SseDeserializer deserializer);
+
+  @protected
+  WebImage sse_decode_web_image(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -831,6 +851,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_reservation(
       Reservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_search_web_images(
+      SearchWebImages self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_update_car_rental(
@@ -961,6 +985,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<TripPackingListGroup> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_web_image(List<WebImage> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_location_entry(LocationEntry self, SseSerializer serializer);
 
   @protected
@@ -1004,8 +1031,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_reservation(Reservation self, SseSerializer serializer);
 
   @protected
-  void sse_encode_reservation_category(
-      ReservationCategory self, SseSerializer serializer);
+  void sse_encode_search_web_images(
+      SearchWebImages self, SseSerializer serializer);
 
   @protected
   void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer);
@@ -1090,6 +1117,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_weather_forecast(
       WeatherForecast self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_web_image(WebImage self, SseSerializer serializer);
 }
 
 // Section: wire_class

@@ -4,6 +4,7 @@ pub use accommodation_handler::*;
 pub use attachment_handler::*;
 pub use booking_handler::*;
 pub use trip_handler::*;
+pub use timeline_handler::*;
 pub use packing_list_handler::*;
 pub use trip_packing_list_handler::*;
 pub use location_handler::*;

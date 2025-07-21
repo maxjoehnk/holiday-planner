@@ -5,9 +5,11 @@
 
 import '../commands/add_trip_location.dart';
 import '../commands/create_trip.dart';
+import '../commands/search_web_images.dart';
 import '../commands/update_trip.dart';
 import '../frb_generated.dart';
 import '../models.dart';
+import '../models/web_images.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
@@ -51,3 +53,9 @@ Future<void> addTripLocation({required AddTripLocation command}) =>
 Future<List<TripLocationListModel>> getTripLocations(
         {required UuidValue tripId}) =>
     RustLib.instance.api.crateApiTripsGetTripLocations(tripId: tripId);
+
+Future<List<WebImage>> searchWebImages({required SearchWebImages command}) =>
+    RustLib.instance.api.crateApiTripsSearchWebImages(command: command);
+
+Future<Uint8List> downloadWebImage({required String imageUrl}) =>
+    RustLib.instance.api.crateApiTripsDownloadWebImage(imageUrl: imageUrl);

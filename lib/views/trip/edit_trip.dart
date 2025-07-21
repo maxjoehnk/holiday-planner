@@ -7,6 +7,8 @@ import 'package:holiday_planner/src/rust/commands/update_trip.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'web_image_search.dart';
+
 class EditTripView extends StatefulWidget {
   final TripOverviewModel trip;
 
@@ -337,12 +339,55 @@ class _EditTripViewState extends State<EditTripView> {
   }
 
   _pickImage() async {
-    var pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage == null) {
-      return;
+    final source = await showDialog<ImageSource?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Image Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Device Gallery'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              ListTile(
+                leading: const Icon(Icons.search),
+                title: const Text('Web Search'),
+                onTap: () => Navigator.pop(context, null), // null indicates web search
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (source == ImageSource.gallery) {
+      // Existing gallery picker logic
+      var pickedImage = await picker.pickImage(source: source!);
+      if (pickedImage == null) {
+        return;
+      }
+      setState(() {
+        image = pickedImage;
+        _headerImage = null; // Clear the header image since we're using XFile
+      });
+    } else if (source == null) {
+      // Web search was selected
+      final webImage = await Navigator.push<Uint8List>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WebImageSearchView(),
+        ),
+      );
+      
+      if (webImage != null) {
+        setState(() {
+          _headerImage = webImage;
+          image = null; // Clear the XFile since we're using Uint8List directly
+        });
+      }
     }
-    setState(() {
-      image = pickedImage;
-    });
   }
 }

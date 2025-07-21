@@ -2,8 +2,12 @@ use std::fmt;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use transits::*;
+pub use timeline::*;
+pub use transits::*;
+pub use web_images::*;
+pub use bookings::*;
 
+pub mod web_images;
 pub mod transits;
 pub mod bookings;
 pub mod timeline;

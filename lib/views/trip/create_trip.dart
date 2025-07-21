@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/commands/create_trip.dart';
@@ -6,6 +7,7 @@ import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'trip_view.dart';
+import 'web_image_search.dart';
 
 class CreateTripView extends StatefulWidget {
   const CreateTripView({super.key});
@@ -21,6 +23,7 @@ class _CreateTripViewState extends State<CreateTripView> {
   DateTime? startDate;
   DateTime? endDate;
   XFile? image;
+  Uint8List? _webImageBytes;
 
   @override
   Widget build(BuildContext context) {
@@ -69,36 +72,41 @@ class _CreateTripViewState extends State<CreateTripView> {
                             File(image!.path),
                             fit: BoxFit.cover,
                           )
-                        : Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  colorScheme.primaryContainer,
-                                  colorScheme.secondaryContainer,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add_a_photo_outlined,
-                                  size: 48,
-                                  color: colorScheme.onPrimaryContainer.withOpacity(0.6),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  "Add Header Image",
-                                  style: textTheme.bodyLarge?.copyWith(
-                                    color: colorScheme.onPrimaryContainer.withOpacity(0.8),
-                                    fontWeight: FontWeight.w500,
+                        : _webImageBytes != null
+                            ? Image.memory(
+                                _webImageBytes!,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      colorScheme.primaryContainer,
+                                      colorScheme.secondaryContainer,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_a_photo_outlined,
+                                      size: 48,
+                                      color: colorScheme.onPrimaryContainer.withOpacity(0.6),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      "Add Header Image",
+                                      style: textTheme.bodyLarge?.copyWith(
+                                        color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                   ),
                 ),
               ),
@@ -204,12 +212,21 @@ class _CreateTripViewState extends State<CreateTripView> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+    
+    Uint8List? headerImageBytes;
+    if (image != null) {
+      headerImageBytes = await image!.readAsBytes();
+    } else {
+      headerImageBytes = _webImageBytes;
+    }
+    
     var trip = await createTrip(
         command: CreateTrip(
             name: _nameController.text,
             startDate: startDate!,
             endDate: endDate!,
-            headerImage: await image?.readAsBytes()));
+            headerImage: headerImageBytes));
+            
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -219,12 +236,55 @@ class _CreateTripViewState extends State<CreateTripView> {
   }
 
   _pickImage() async {
-    var pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage == null) {
-      return;
+    final source = await showDialog<ImageSource?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Image Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Device Gallery'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              ListTile(
+                leading: const Icon(Icons.search),
+                title: const Text('Web Search'),
+                onTap: () => Navigator.pop(context, null),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (source == ImageSource.gallery) {
+      // Existing gallery picker logic
+      var pickedImage = await picker.pickImage(source: source!);
+      if (pickedImage == null) {
+        return;
+      }
+      setState(() {
+        image = pickedImage;
+        _webImageBytes = null; // Clear any web image bytes
+      });
+    } else if (source == null) {
+      // Web search was selected
+      final webImage = await Navigator.push<Uint8List>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WebImageSearchView(),
+        ),
+      );
+      
+      if (webImage != null) {
+        setState(() {
+          _webImageBytes = webImage;
+          image = null; // Clear the XFile since we're using Uint8List directly
+        });
+      }
     }
-    setState(() {
-      image = pickedImage;
-    });
   }
 }

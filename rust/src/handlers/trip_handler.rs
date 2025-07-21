@@ -5,6 +5,7 @@ use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
 use crate::handlers::{Handler, TripPackingListHandler};
+use crate::third_party::unsplash;
 
 pub struct TripHandler {
     db: Database,
@@ -170,5 +171,31 @@ impl TripHandler {
         let trip = self.get_trip_overview(command.id).await?.unwrap();
         
         Ok(trip)
+    }
+    
+    pub async fn search_web_images(&self, command: SearchWebImages) -> anyhow::Result<Vec<WebImage>> {
+        tracing::debug!("Searching web images for query: {}", command.query);
+        
+        let unsplash_images = unsplash::search_images(&command.query).await?;
+        
+        let images = unsplash_images.into_iter()
+            .map(|image| WebImage {
+                id: image.id,
+                url: image.urls.regular,
+                thumbnail_url: image.urls.thumb,
+                author: image.user.name,
+                description: image.description.or(image.alt_description),
+            })
+            .collect();
+        
+        Ok(images)
+    }
+    
+    pub async fn download_web_image(&self, image_url: String) -> anyhow::Result<Vec<u8>> {
+        tracing::debug!("Downloading web image from URL: {}", image_url);
+        
+        let image_bytes = unsplash::download_image(&image_url).await?;
+        
+        Ok(image_bytes)
     }
 }
