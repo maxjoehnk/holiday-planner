@@ -39,6 +39,13 @@ pub async fn create_trip(command: CreateTrip) -> anyhow::Result<TripOverviewMode
 }
 
 #[tracing::instrument]
+pub async fn update_trip(command: UpdateTrip) -> anyhow::Result<TripOverviewModel> {
+    let handler = DB.try_get::<TripHandler>().await?;
+
+    handler.update_trip(command).await
+}
+
+#[tracing::instrument]
 pub async fn get_trip_packing_list(trip_id: Uuid) -> anyhow::Result<TripPackingListModel> {
     let handler = DB.try_get::<TripPackingListHandler>().await?;
     handler.get_trip_packing_list(trip_id).await

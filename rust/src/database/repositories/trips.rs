@@ -36,3 +36,11 @@ pub async fn create(db: &Database, mut model: trip::ActiveModel) -> anyhow::Resu
 
     Ok(trip)
 }
+
+pub async fn update(db: &Database, model: trip::ActiveModel) -> anyhow::Result<()> {
+    Trip::update(model)
+        .exec(db.deref())
+        .await?;
+    
+    Ok(())
+}

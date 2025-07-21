@@ -23,6 +23,7 @@ import 'commands/delete_packing_list_entry.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
+import 'commands/update_trip.dart';
 import 'commands/update_trip_accommodation.dart';
 import 'commands/update_trip_point_of_interest.dart';
 import 'dart:async';
@@ -146,6 +147,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation dco_decode_box_autoadd_update_reservation(dynamic raw);
+
+  @protected
+  UpdateTrip dco_decode_box_autoadd_update_trip(dynamic raw);
 
   @protected
   UpdateTripAccommodation dco_decode_box_autoadd_update_trip_accommodation(
@@ -336,6 +340,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UpdateReservation dco_decode_update_reservation(dynamic raw);
 
   @protected
+  UpdateTrip dco_decode_update_trip(dynamic raw);
+
+  @protected
   UpdateTripAccommodation dco_decode_update_trip_accommodation(dynamic raw);
 
   @protected
@@ -469,6 +476,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   UpdateReservation sse_decode_box_autoadd_update_reservation(
       SseDeserializer deserializer);
+
+  @protected
+  UpdateTrip sse_decode_box_autoadd_update_trip(SseDeserializer deserializer);
 
   @protected
   UpdateTripAccommodation sse_decode_box_autoadd_update_trip_accommodation(
@@ -682,6 +692,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UpdateReservation sse_decode_update_reservation(SseDeserializer deserializer);
 
   @protected
+  UpdateTrip sse_decode_update_trip(SseDeserializer deserializer);
+
+  @protected
   UpdateTripAccommodation sse_decode_update_trip_accommodation(
       SseDeserializer deserializer);
 
@@ -823,6 +836,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_update_trip(
+      UpdateTrip self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_update_trip_accommodation(
@@ -1040,6 +1057,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_trip(UpdateTrip self, SseSerializer serializer);
 
   @protected
   void sse_encode_update_trip_accommodation(

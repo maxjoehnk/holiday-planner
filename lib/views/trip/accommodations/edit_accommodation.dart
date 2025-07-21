@@ -27,7 +27,6 @@ class _EditAccommodationState extends State<EditAccommodation> {
   @override
   void initState() {
     super.initState();
-    // Pre-populate form with existing accommodation data
     _nameController.text = widget.accommodation.name;
     _addressController.text = widget.accommodation.address ?? '';
     checkInDate = widget.accommodation.checkIn.toLocal();

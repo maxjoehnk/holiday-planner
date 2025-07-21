@@ -23,6 +23,7 @@ import 'commands/delete_packing_list_entry.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
+import 'commands/update_trip.dart';
 import 'commands/update_trip_accommodation.dart';
 import 'commands/update_trip_point_of_interest.dart';
 import 'dart:async';
@@ -95,7 +96,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1780235574;
+  int get rustContentHash => 2009705475;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -204,6 +205,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiBookingsUpdateReservation(
       {required UpdateReservation command});
+
+  Future<TripOverviewModel> crateApiTripsUpdateTrip(
+      {required UpdateTrip command});
 
   Future<void> crateApiAccommodationsUpdateTripAccommodation(
       {required UpdateTripAccommodation command});
@@ -1137,6 +1141,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<TripOverviewModel> crateApiTripsUpdateTrip(
+      {required UpdateTrip command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_update_trip(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 37, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_trip_overview_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTripsUpdateTripConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTripsUpdateTripConstMeta => const TaskConstMeta(
+        debugName: "update_trip",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiAccommodationsUpdateTripAccommodation(
       {required UpdateTripAccommodation command}) {
     return handler.executeNormal(NormalTask(
@@ -1144,7 +1173,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1171,7 +1200,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_update_trip_point_of_interest(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1490,6 +1519,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   UpdateReservation dco_decode_box_autoadd_update_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_update_reservation(raw);
+  }
+
+  @protected
+  UpdateTrip dco_decode_box_autoadd_update_trip(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_update_trip(raw);
   }
 
   @protected
@@ -2166,6 +2201,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UpdateTrip dco_decode_update_trip(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return UpdateTrip(
+      id: dco_decode_Uuid(arr[0]),
+      name: dco_decode_String(arr[1]),
+      startDate: dco_decode_Chrono_Utc(arr[2]),
+      endDate: dco_decode_Chrono_Utc(arr[3]),
+      headerImage: dco_decode_opt_list_prim_u_8_strict(arr[4]),
+    );
+  }
+
+  @protected
   UpdateTripAccommodation dco_decode_update_trip_accommodation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2546,6 +2596,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_update_reservation(deserializer));
+  }
+
+  @protected
+  UpdateTrip sse_decode_box_autoadd_update_trip(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_update_trip(deserializer));
   }
 
   @protected
@@ -3359,6 +3415,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UpdateTrip sse_decode_update_trip(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_Uuid(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_startDate = sse_decode_Chrono_Utc(deserializer);
+    var var_endDate = sse_decode_Chrono_Utc(deserializer);
+    var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
+    return UpdateTrip(
+        id: var_id,
+        name: var_name,
+        startDate: var_startDate,
+        endDate: var_endDate,
+        headerImage: var_headerImage);
+  }
+
+  @protected
   UpdateTripAccommodation sse_decode_update_trip_accommodation(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3687,6 +3759,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       UpdateReservation self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_update_reservation(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_update_trip(
+      UpdateTrip self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_update_trip(self, serializer);
   }
 
   @protected
@@ -4334,6 +4413,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_String(self.link, serializer);
     sse_encode_opt_String(self.bookingNumber, serializer);
+  }
+
+  @protected
+  void sse_encode_update_trip(UpdateTrip self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_Chrono_Utc(self.startDate, serializer);
+    sse_encode_Chrono_Utc(self.endDate, serializer);
+    sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
   }
 
   @protected

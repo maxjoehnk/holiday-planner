@@ -151,4 +151,24 @@ impl TripHandler {
 
         Ok(trip)
     }
+
+    pub async fn update_trip(&self, command: UpdateTrip) -> anyhow::Result<TripOverviewModel> {
+        let trip = repositories::trips::find_by_id(&self.db, command.id).await?;
+        if trip.is_none() {
+            return Err(anyhow::anyhow!("Trip not found"));
+        }
+
+        let model = entities::trip::ActiveModel {
+            id: Set(command.id),
+            name: Set(command.name),
+            start_date: Set(command.start_date),
+            end_date: Set(command.end_date),
+            header_image: Set(command.header_image),
+        };
+        repositories::trips::update(&self.db, model).await?;
+        
+        let trip = self.get_trip_overview(command.id).await?.unwrap();
+        
+        Ok(trip)
+    }
 }

@@ -15,12 +15,8 @@ class SectionTheme extends StatelessWidget {
         data: ThemeData.from(
           colorScheme: colorScheme.copyWith(
             primary: color,
-            primaryContainer: color.shade300,
+            primaryContainer: color.shade100,
             onPrimary: foregroundColor,
-          ),
-        ).copyWith(
-          appBarTheme: AppBarTheme(
-            backgroundColor: color.shade300,
           ),
         ),
         child: child);

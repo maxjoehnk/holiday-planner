@@ -5,6 +5,7 @@
 
 import '../commands/add_trip_location.dart';
 import '../commands/create_trip.dart';
+import '../commands/update_trip.dart';
 import '../frb_generated.dart';
 import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -24,6 +25,9 @@ Future<TripOverviewModel> getTrip({required UuidValue id}) =>
 
 Future<TripOverviewModel> createTrip({required CreateTrip command}) =>
     RustLib.instance.api.crateApiTripsCreateTrip(command: command);
+
+Future<TripOverviewModel> updateTrip({required UpdateTrip command}) =>
+    RustLib.instance.api.crateApiTripsUpdateTrip(command: command);
 
 Future<TripPackingListModel> getTripPackingList({required UuidValue tripId}) =>
     RustLib.instance.api.crateApiTripsGetTripPackingList(tripId: tripId);
