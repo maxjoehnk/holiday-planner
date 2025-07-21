@@ -1,5 +1,6 @@
 use uuid::Uuid;
 use chrono::{DateTime, Utc};
+use crate::models::bookings::ReservationCategory;
 
 #[derive(Debug)]
 pub struct AddReservation {
@@ -10,4 +11,5 @@ pub struct AddReservation {
     pub end_date: Option<DateTime<Utc>>,
     pub link: Option<String>,
     pub booking_number: Option<String>,
+    pub category: ReservationCategory,
 }

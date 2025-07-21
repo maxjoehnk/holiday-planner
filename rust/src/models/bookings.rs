@@ -10,6 +10,34 @@ pub enum Booking {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ReservationCategory {
+    Restaurant,
+    Activity,
+}
+
+impl From<crate::database::entities::reservation::ReservationCategory> for ReservationCategory {
+    fn from(category: crate::database::entities::reservation::ReservationCategory) -> Self {
+        match category {
+            crate::database::entities::reservation::ReservationCategory::Restaurant => {
+                ReservationCategory::Restaurant
+            }
+            crate::database::entities::reservation::ReservationCategory::Activity => {
+                ReservationCategory::Activity
+            }
+        }
+    }
+}
+
+impl From<ReservationCategory> for crate::database::entities::reservation::ReservationCategory {
+    fn from(category: ReservationCategory) -> Self {
+        match category {
+            ReservationCategory::Restaurant => Self::Restaurant,
+            ReservationCategory::Activity => Self::Activity,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Reservation {
     pub id: Uuid,
     pub title: String,
@@ -18,6 +46,7 @@ pub struct Reservation {
     pub end_date: Option<DateTime<Utc>>,
     pub link: Option<String>,
     pub booking_number: Option<String>,
+    pub category: ReservationCategory,
     #[serde(default)]
     pub attachments: Vec<TripAttachment>,
 }

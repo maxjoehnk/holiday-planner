@@ -289,6 +289,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Reservation dco_decode_reservation(dynamic raw);
 
   @protected
+  ReservationCategory dco_decode_reservation_category(dynamic raw);
+
+  @protected
   TimelineItem dco_decode_timeline_item(dynamic raw);
 
   @protected
@@ -631,6 +634,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reservation sse_decode_reservation(SseDeserializer deserializer);
+
+  @protected
+  ReservationCategory sse_decode_reservation_category(
+      SseDeserializer deserializer);
 
   @protected
   TimelineItem sse_decode_timeline_item(SseDeserializer deserializer);
@@ -995,6 +1002,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_reservation(Reservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_reservation_category(
+      ReservationCategory self, SseSerializer serializer);
 
   @protected
   void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer);

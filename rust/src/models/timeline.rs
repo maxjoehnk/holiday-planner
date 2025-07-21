@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use crate::models::bookings::ReservationCategory;
 
 pub struct TimelineModel {
     pub past: Vec<TimelineItem>,
@@ -22,6 +23,7 @@ pub enum TimelineItemDetails {
     Reservation {
         title: String,
         address: Option<String>,
+        category: ReservationCategory,
     },
     CheckIn {
         address: Option<String>,

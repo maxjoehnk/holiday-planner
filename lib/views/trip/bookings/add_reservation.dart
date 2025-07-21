@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/commands/add_reservation.dart';
+import 'package:holiday_planner/src/rust/models/bookings.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,6 +23,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
       TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
+  ReservationCategory _selectedCategory = ReservationCategory.restaurant;
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -128,6 +130,40 @@ class _AddReservationPageState extends State<AddReservationPage> {
                   hintText: "e.g., 155 West 51st Street, New York",
                   border: OutlineInputBorder(),
                 ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<ReservationCategory>(
+                value: _selectedCategory,
+                decoration: const InputDecoration(
+                  labelText: "Category *",
+                  border: OutlineInputBorder(),
+                ),
+                items: ReservationCategory.values.map((category) {
+                  return DropdownMenuItem<ReservationCategory>(
+                    value: category,
+                    child: Row(
+                      children: [
+                        Icon(
+                          category == ReservationCategory.restaurant
+                              ? Icons.restaurant
+                              : Icons.local_activity,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(category == ReservationCategory.restaurant
+                            ? 'Restaurant'
+                            : 'Activity'),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (ReservationCategory? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      _selectedCategory = newValue;
+                    });
+                  }
+                },
               ),
               const SizedBox(height: 16),
               Row(
@@ -288,6 +324,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
         bookingNumber: _bookingNumberController.text.trim().isEmpty
             ? null
             : _bookingNumberController.text.trim(),
+        category: _selectedCategory,
       );
 
       await addReservation(command: command);

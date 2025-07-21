@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/api/timeline.dart';
 import 'package:holiday_planner/src/rust/models/timeline.dart';
+import 'package:holiday_planner/src/rust/models/bookings.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import 'package:uuid/uuid.dart';
@@ -328,7 +329,9 @@ class TimelineCard extends StatelessWidget {
     return itemDetails.map(
         carRentalPickUp: (_) => Icons.car_rental,
         carRentalDropOff: (_) => Icons.car_rental,
-        reservation: (_) => Icons.restaurant,
+        reservation: (item) => item.category == ReservationCategory.restaurant 
+            ? Icons.restaurant 
+            : Icons.local_activity,
         checkIn: (_) => Icons.home,
         checkOut: (_) => Icons.home,
         trainOrigin: (_) => Icons.train,

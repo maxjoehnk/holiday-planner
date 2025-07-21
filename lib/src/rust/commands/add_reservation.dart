@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models/bookings.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,6 +16,7 @@ class AddReservation {
   final DateTime? endDate;
   final String? link;
   final String? bookingNumber;
+  final ReservationCategory category;
 
   const AddReservation({
     required this.tripId,
@@ -24,6 +26,7 @@ class AddReservation {
     this.endDate,
     this.link,
     this.bookingNumber,
+    required this.category,
   });
 
   @override
@@ -34,7 +37,8 @@ class AddReservation {
       startDate.hashCode ^
       endDate.hashCode ^
       link.hashCode ^
-      bookingNumber.hashCode;
+      bookingNumber.hashCode ^
+      category.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -47,5 +51,6 @@ class AddReservation {
           startDate == other.startDate &&
           endDate == other.endDate &&
           link == other.link &&
-          bookingNumber == other.bookingNumber;
+          bookingNumber == other.bookingNumber &&
+          category == other.category;
 }

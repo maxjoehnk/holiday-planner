@@ -20,7 +20,9 @@ mixin _$TimelineItemDetails {
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -37,7 +39,9 @@ mixin _$TimelineItemDetails {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -52,7 +56,9 @@ mixin _$TimelineItemDetails {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -227,7 +233,9 @@ class _$TimelineItemDetails_CarRentalPickUpImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -247,7 +255,9 @@ class _$TimelineItemDetails_CarRentalPickUpImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -265,7 +275,9 @@ class _$TimelineItemDetails_CarRentalPickUpImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -452,7 +464,9 @@ class _$TimelineItemDetails_CarRentalDropOffImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -472,7 +486,9 @@ class _$TimelineItemDetails_CarRentalDropOffImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -490,7 +506,9 @@ class _$TimelineItemDetails_CarRentalDropOffImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -598,7 +616,7 @@ abstract class _$$TimelineItemDetails_ReservationImplCopyWith<$Res> {
           $Res Function(_$TimelineItemDetails_ReservationImpl) then) =
       __$$TimelineItemDetails_ReservationImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String title, String? address});
+  $Res call({String title, String? address, ReservationCategory category});
 }
 
 /// @nodoc
@@ -618,6 +636,7 @@ class __$$TimelineItemDetails_ReservationImplCopyWithImpl<$Res>
   $Res call({
     Object? title = null,
     Object? address = freezed,
+    Object? category = null,
   }) {
     return _then(_$TimelineItemDetails_ReservationImpl(
       title: null == title
@@ -628,6 +647,10 @@ class __$$TimelineItemDetails_ReservationImplCopyWithImpl<$Res>
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String?,
+      category: null == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as ReservationCategory,
     ));
   }
 }
@@ -637,17 +660,19 @@ class __$$TimelineItemDetails_ReservationImplCopyWithImpl<$Res>
 class _$TimelineItemDetails_ReservationImpl
     extends TimelineItemDetails_Reservation {
   const _$TimelineItemDetails_ReservationImpl(
-      {required this.title, this.address})
+      {required this.title, this.address, required this.category})
       : super._();
 
   @override
   final String title;
   @override
   final String? address;
+  @override
+  final ReservationCategory category;
 
   @override
   String toString() {
-    return 'TimelineItemDetails.reservation(title: $title, address: $address)';
+    return 'TimelineItemDetails.reservation(title: $title, address: $address, category: $category)';
   }
 
   @override
@@ -656,11 +681,13 @@ class _$TimelineItemDetails_ReservationImpl
         (other.runtimeType == runtimeType &&
             other is _$TimelineItemDetails_ReservationImpl &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.address, address) || other.address == address));
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.category, category) ||
+                other.category == category));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title, address);
+  int get hashCode => Object.hash(runtimeType, title, address, category);
 
   /// Create a copy of TimelineItemDetails
   /// with the given fields replaced by the non-null parameter values.
@@ -677,7 +704,9 @@ class _$TimelineItemDetails_ReservationImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -689,7 +718,7 @@ class _$TimelineItemDetails_ReservationImpl
     required TResult Function(String station, String trainNumber)
         trainDestination,
   }) {
-    return reservation(title, address);
+    return reservation(title, address, category);
   }
 
   @override
@@ -697,7 +726,9 @@ class _$TimelineItemDetails_ReservationImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -707,7 +738,7 @@ class _$TimelineItemDetails_ReservationImpl
         trainOrigin,
     TResult? Function(String station, String trainNumber)? trainDestination,
   }) {
-    return reservation?.call(title, address);
+    return reservation?.call(title, address, category);
   }
 
   @override
@@ -715,7 +746,9 @@ class _$TimelineItemDetails_ReservationImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -727,7 +760,7 @@ class _$TimelineItemDetails_ReservationImpl
     required TResult orElse(),
   }) {
     if (reservation != null) {
-      return reservation(title, address);
+      return reservation(title, address, category);
     }
     return orElse();
   }
@@ -800,12 +833,15 @@ class _$TimelineItemDetails_ReservationImpl
 
 abstract class TimelineItemDetails_Reservation extends TimelineItemDetails {
   const factory TimelineItemDetails_Reservation(
-      {required final String title,
-      final String? address}) = _$TimelineItemDetails_ReservationImpl;
+          {required final String title,
+          final String? address,
+          required final ReservationCategory category}) =
+      _$TimelineItemDetails_ReservationImpl;
   const TimelineItemDetails_Reservation._() : super._();
 
   String get title;
   String? get address;
+  ReservationCategory get category;
 
   /// Create a copy of TimelineItemDetails
   /// with the given fields replaced by the non-null parameter values.
@@ -889,7 +925,9 @@ class _$TimelineItemDetails_CheckInImpl extends TimelineItemDetails_CheckIn {
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -909,7 +947,9 @@ class _$TimelineItemDetails_CheckInImpl extends TimelineItemDetails_CheckIn {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -927,7 +967,9 @@ class _$TimelineItemDetails_CheckInImpl extends TimelineItemDetails_CheckIn {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -1099,7 +1141,9 @@ class _$TimelineItemDetails_CheckOutImpl extends TimelineItemDetails_CheckOut {
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -1119,7 +1163,9 @@ class _$TimelineItemDetails_CheckOutImpl extends TimelineItemDetails_CheckOut {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -1137,7 +1183,9 @@ class _$TimelineItemDetails_CheckOutImpl extends TimelineItemDetails_CheckOut {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -1330,7 +1378,9 @@ class _$TimelineItemDetails_FlightTakeOffImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -1350,7 +1400,9 @@ class _$TimelineItemDetails_FlightTakeOffImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -1368,7 +1420,9 @@ class _$TimelineItemDetails_FlightTakeOffImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -1557,7 +1611,9 @@ class _$TimelineItemDetails_FlightLandingImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -1577,7 +1633,9 @@ class _$TimelineItemDetails_FlightLandingImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -1595,7 +1653,9 @@ class _$TimelineItemDetails_FlightLandingImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -1790,7 +1850,9 @@ class _$TimelineItemDetails_TrainOriginImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -1810,7 +1872,9 @@ class _$TimelineItemDetails_TrainOriginImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -1828,7 +1892,9 @@ class _$TimelineItemDetails_TrainOriginImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?
@@ -2017,7 +2083,9 @@ class _$TimelineItemDetails_TrainDestinationImpl
   TResult when<TResult extends Object?>({
     required TResult Function(String provider, String address) carRentalPickUp,
     required TResult Function(String provider, String address) carRentalDropOff,
-    required TResult Function(String title, String? address) reservation,
+    required TResult Function(
+            String title, String? address, ReservationCategory category)
+        reservation,
     required TResult Function(String? address) checkIn,
     required TResult Function(String? address) checkOut,
     required TResult Function(String airport, String flightNumber, String? seat)
@@ -2037,7 +2105,9 @@ class _$TimelineItemDetails_TrainDestinationImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String provider, String address)? carRentalPickUp,
     TResult? Function(String provider, String address)? carRentalDropOff,
-    TResult? Function(String title, String? address)? reservation,
+    TResult? Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult? Function(String? address)? checkIn,
     TResult? Function(String? address)? checkOut,
     TResult? Function(String airport, String flightNumber, String? seat)?
@@ -2055,7 +2125,9 @@ class _$TimelineItemDetails_TrainDestinationImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String provider, String address)? carRentalPickUp,
     TResult Function(String provider, String address)? carRentalDropOff,
-    TResult Function(String title, String? address)? reservation,
+    TResult Function(
+            String title, String? address, ReservationCategory category)?
+        reservation,
     TResult Function(String? address)? checkIn,
     TResult Function(String? address)? checkOut,
     TResult Function(String airport, String flightNumber, String? seat)?

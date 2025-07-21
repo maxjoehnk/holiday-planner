@@ -39,6 +39,7 @@ impl TimelineHandler {
             details: TimelineItemDetails::Reservation {
                 title: reservation.title,
                 address: reservation.address,
+                category: reservation.category.into(),
             }
         });
         let check_ins = accommodations.iter().filter_map(|accommodation| Some(TimelineItem {

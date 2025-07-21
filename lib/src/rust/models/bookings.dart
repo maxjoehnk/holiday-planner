@@ -77,6 +77,7 @@ class Reservation {
   final DateTime? endDate;
   final String? link;
   final String? bookingNumber;
+  final ReservationCategory category;
   final List<TripAttachment> attachments;
 
   const Reservation({
@@ -87,6 +88,7 @@ class Reservation {
     this.endDate,
     this.link,
     this.bookingNumber,
+    required this.category,
     required this.attachments,
   });
 
@@ -99,6 +101,7 @@ class Reservation {
       endDate.hashCode ^
       link.hashCode ^
       bookingNumber.hashCode ^
+      category.hashCode ^
       attachments.hashCode;
 
   @override
@@ -113,5 +116,12 @@ class Reservation {
           endDate == other.endDate &&
           link == other.link &&
           bookingNumber == other.bookingNumber &&
+          category == other.category &&
           attachments == other.attachments;
+}
+
+enum ReservationCategory {
+  restaurant,
+  activity,
+  ;
 }

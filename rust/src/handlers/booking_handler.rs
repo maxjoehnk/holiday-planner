@@ -31,6 +31,7 @@ impl BookingHandler {
             end_date: Set(command.end_date),
             link: Set(command.link),
             booking_number: Set(command.booking_number),
+            category: Set(command.category.into()),
         };
         
         repositories::bookings::insert_reservation(&self.db, reservation).await?;
@@ -48,6 +49,7 @@ impl BookingHandler {
             end_date: r.end_date,
             link: r.link,
             booking_number: r.booking_number,
+            category: r.category.into(),
             attachments: vec![], // TODO: Load attachments if needed
         }).collect();
         
@@ -65,6 +67,7 @@ impl BookingHandler {
         reservation.end_date.set_if_not_equals(command.end_date);
         reservation.link.set_if_not_equals(command.link);
         reservation.booking_number.set_if_not_equals(command.booking_number);
+        reservation.category.set_if_not_equals(command.category.into());
 
         repositories::bookings::update_reservation(&self.db, reservation).await?;
 

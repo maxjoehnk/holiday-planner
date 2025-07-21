@@ -331,7 +331,9 @@ class ReservationCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
-                      Icons.restaurant,
+                      reservation.category == ReservationCategory.restaurant 
+                          ? Icons.restaurant 
+                          : Icons.local_activity,
                       color: color.shade700,
                       size: 24,
                     ),
