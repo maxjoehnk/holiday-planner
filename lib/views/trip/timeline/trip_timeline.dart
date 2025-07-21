@@ -8,6 +8,8 @@ import 'package:holiday_planner/date_format.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import 'package:uuid/uuid.dart';
 
+enum TimelineFilter { upcoming, past }
+
 class TripTimeline extends StatefulWidget {
   final UuidValue tripId;
 
@@ -20,6 +22,7 @@ class TripTimeline extends StatefulWidget {
 class _TripTimelineState extends State<TripTimeline> {
   late StreamController<TimelineModel> _timeline;
   late Stream<TimelineModel>? _timeline$;
+  TimelineFilter _selectedFilter = TimelineFilter.upcoming;
 
   @override
   void initState() {
@@ -46,22 +49,130 @@ class _TripTimelineState extends State<TripTimeline> {
     return StreamBuilder(
         stream: _timeline$,
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return SliverToBoxAdapter(
+              child: _buildErrorWidget(snapshot.error.toString()),
+            );
+          }
+
+          if (!snapshot.hasData) {
+            return const SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(64.0),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
+
+          final timelineData = snapshot.requireData;
+          final events = _selectedFilter == TimelineFilter.past ? timelineData.past : timelineData.future;
+
           return SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 16),
-                for (var (i, item) in (snapshot.data?.future ?? []).indexed)
-                  TimelineEntry(
-                    startTime: item.date,
-                    start: i == 0,
-                    child: TimelineCard(itemDetails: item.details),
-                  ),
+                _buildToggleSection(),
+                const SizedBox(height: 16),
+                if (events.isEmpty)
+                  _buildEmptyState()
+                else
+                  ...events.indexed.map((entry) {
+                    final (i, item) = entry;
+                    return TimelineEntry(
+                      startTime: item.date,
+                      start: i == 0,
+                      end: i == events.length - 1,
+                      child: TimelineCard(itemDetails: item.details),
+                    );
+                  }),
                 const SizedBox(height: 16),
               ]),
             ),
           );
         });
+  }
+
+  Widget _buildToggleSection() {
+    return SegmentedButton<TimelineFilter>(
+      segments: const [
+        ButtonSegment<TimelineFilter>(
+          value: TimelineFilter.upcoming,
+          label: Text('Upcoming'),
+          icon: Icon(Icons.upcoming),
+        ),
+        ButtonSegment<TimelineFilter>(
+          value: TimelineFilter.past,
+          label: Text('Past'),
+          icon: Icon(Icons.history),
+        ),
+      ],
+      selected: {_selectedFilter},
+      onSelectionChanged: (Set<TimelineFilter> newSelection) {
+        setState(() {
+          _selectedFilter = newSelection.first;
+        });
+      },
+    );
+  }
+
+  Widget _buildErrorWidget(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(64.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Error: $error",
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(64.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _selectedFilter == TimelineFilter.past ? Icons.history : Icons.schedule,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _selectedFilter == TimelineFilter.past ? "No past events" : "No upcoming events",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _selectedFilter == TimelineFilter.past
+                  ? "No events have occurred yet for this trip"
+                  : "Add bookings, accommodations, and reservations to see your timeline",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   _fetch() {
@@ -86,11 +197,16 @@ class TimelineEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return TimelineTile(
       node: TimelineNode(
-        startConnector: start ? const DashedLineConnector() : const SolidLineConnector(),
-        endConnector: end ? const DashedLineConnector() : const SolidLineConnector(),
-        indicator: const OutlinedDotIndicator(),
+        startConnector: start
+            ? DashedLineConnector(color: colorScheme.primary)
+            : SolidLineConnector(color: colorScheme.primary),
+        endConnector: end
+            ? DashedLineConnector(color: colorScheme.primary)
+            : SolidLineConnector(color: colorScheme.primary),
+        indicator: OutlinedDotIndicator(color: colorScheme.primary),
       ),
       nodePosition: 0.25,
       contents: child,
