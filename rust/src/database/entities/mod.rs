@@ -1,12 +1,14 @@
 pub mod accommodation;
 pub mod accommodation_attachment;
 pub mod attachment;
+pub mod car_rental;
 pub mod location;
 pub mod location_attachment;
 pub mod packing_list_condition;
 pub mod packing_list_entry;
 pub mod packing_list_group;
 pub mod point_of_interest;
+pub mod reservation;
 pub mod tag;
 pub mod trip;
 pub mod trip_packing_list_entry;

@@ -5,6 +5,7 @@ use uuid::Uuid;
 use transits::*;
 
 pub mod transits;
+pub mod bookings;
 
 #[derive(Clone)]
 pub struct TripListModel {

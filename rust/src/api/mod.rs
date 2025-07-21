@@ -10,6 +10,7 @@ pub mod packing_list;
 pub mod accommodations;
 pub mod attachments;
 pub mod points_of_interest;
+pub mod bookings;
 
 static DB: RwLock<Option<Database>> = RwLock::const_new(None);
 

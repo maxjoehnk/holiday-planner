@@ -9,6 +9,10 @@ pub use add_trip_location::*;
 pub use update_packing_list_entry::*;
 pub use add_trip_point_of_interest::*;
 pub use update_trip_point_of_interest::*;
+pub use add_reservation::*;
+pub use add_car_rental::*;
+pub use update_reservation::*;
+pub use update_car_rental::*;
 
 pub mod create_trip;
 pub mod add_packing_list_entry;
@@ -21,3 +25,7 @@ pub mod delete_attachment;
 pub mod update_packing_list_entry;
 pub mod add_trip_point_of_interest;
 pub mod update_trip_point_of_interest;
+pub mod add_reservation;
+pub mod add_car_rental;
+pub mod update_reservation;
+pub mod update_car_rental;

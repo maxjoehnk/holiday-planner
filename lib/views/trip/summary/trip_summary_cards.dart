@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.dart';
+import 'package:holiday_planner/views/trip/bookings/trip_bookings.dart';
 import 'package:holiday_planner/views/trip/locations/trip_locations.dart';
 import 'package:holiday_planner/views/trip/points_of_interest/trip_points_of_interest.dart';
 import 'package:intl/intl.dart';
@@ -97,6 +98,28 @@ class AccommodationsCard extends StatelessWidget {
   }
 }
 
+class BookingsCard extends StatelessWidget {
+  final TripOverviewModel trip;
+  final Function() refresh;
+
+  const BookingsCard({super.key, required this.trip, required this.refresh});
+
+  @override
+  Widget build(BuildContext context) {
+    return SummaryCard(
+        icon: Icons.confirmation_num,
+        label: "Bookings",
+        color: BOOKINGS_COLOR,
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TripBookings(tripId: trip.id)),
+          );
+          refresh();
+        });
+  }
+}
+
 class WeatherCard extends StatelessWidget {
   const WeatherCard({super.key});
 
@@ -136,14 +159,6 @@ class LocationsCard extends StatelessWidget {
 }
 
 
-class BookingsCard extends StatelessWidget {
-  const BookingsCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SummaryCard(icon: Icons.confirmation_num, label: "Bookings", color: TICKETS_COLOR);
-  }
-}
 
 class SummaryCard extends StatelessWidget {
   final IconData icon;

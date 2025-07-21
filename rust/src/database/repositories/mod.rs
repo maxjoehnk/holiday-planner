@@ -1,5 +1,6 @@
 pub mod accommodations;
 pub mod attachments;
+pub mod bookings;
 pub mod locations;
 pub mod packing_list_conditions;
 pub mod packing_list_entries;

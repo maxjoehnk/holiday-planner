@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/colors.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines_plus/timelines_plus.dart';
@@ -24,7 +25,7 @@ class TripTimeline extends StatelessWidget {
               icon: Icons.flight,
               title: "Hamburg (HAM) to Manchester (MAN)",
               subtitle: "Eurowings · EW7768",
-              color: Colors.blue,
+              color: TRANSITS_COLOR,
             ),
           ),
           TimelineEntry(
@@ -34,7 +35,7 @@ class TripTimeline extends StatelessWidget {
               icon: Icons.car_rental,
               title: "Car Pickup",
               subtitle: "Arnold Clark",
-              color: Colors.orange,
+              color: CAR_RENTAL_COLOR,
             ),
           ),
           TimelineEntry(
@@ -44,7 +45,7 @@ class TripTimeline extends StatelessWidget {
               icon: Icons.home,
               title: "Check-In",
               subtitle: "67 Park Street, Manchester",
-              color: Colors.green,
+              color: ACCOMMODATIONS_COLOR,
             ),
           ),
           const SizedBox(height: 16),
@@ -58,7 +59,7 @@ class TripTimeline extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
-    required Color color,
+    required MaterialColor color,
   }) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
@@ -80,13 +81,13 @@ class TripTimeline extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 icon,
                 size: 24,
-                color: color,
+                color: color.shade700,
               ),
             ),
             const SizedBox(width: 16),

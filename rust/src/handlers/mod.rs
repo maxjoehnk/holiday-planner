@@ -2,6 +2,7 @@ use std::ops::Deref;
 use crate::database::Database;
 pub use accommodation_handler::*;
 pub use attachment_handler::*;
+pub use booking_handler::*;
 pub use trip_handler::*;
 pub use packing_list_handler::*;
 pub use trip_packing_list_handler::*;
@@ -10,6 +11,7 @@ pub use point_of_interest_handler::*;
 
 pub mod accommodation_handler;
 pub mod attachment_handler;
+pub mod booking_handler;
 pub mod trip_handler;
 pub mod packing_list_handler;
 pub mod trip_packing_list_handler;

@@ -17,6 +17,7 @@ mod storage {
 #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
 mod storage {
     pub fn get_path() -> &'static str {
+        tracing::info!("Opening database in folder: {:?}", std::env::current_dir());
         "db.sqlite"
     }
 }
