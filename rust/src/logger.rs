@@ -21,7 +21,9 @@ pub fn init() {
 
 #[cfg(target_os = "android")]
 pub fn init() {
-    tracing_subscriber::registry()
+    if let Err(err) = tracing_subscriber::registry()
         .with(tracing_android::layer("holiday_planner").expect("Unable to create android tracing layer"))
-        .init();
+        .try_init() {
+        eprintln!("Unable to setup logger: {err:?}");
+    }
 }
