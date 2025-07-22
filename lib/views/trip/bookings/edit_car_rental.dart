@@ -246,6 +246,20 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _isLoading ? null : _showDeleteConfirmation,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text("Delete Car Rental"),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.error,
+                    side: BorderSide(color: colorScheme.error),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -323,6 +337,61 @@ class _EditCarRentalPageState extends State<EditCarRentalPage> {
     } catch (e) {
       setState(() {
         _errorMessage = "Failed to update car rental: $e";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Car Rental'),
+          content: Text('Are you sure you want to delete "${widget.carRental.provider}" car rental? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteCarRental();
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteCarRental() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await deleteCarRental(carRentalId: widget.carRental.id);
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Car rental deleted successfully')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to delete car rental: $e";
       });
     } finally {
       setState(() {
