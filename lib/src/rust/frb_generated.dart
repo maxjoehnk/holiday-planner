@@ -2168,8 +2168,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripOverviewModel dco_decode_trip_overview_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 12)
-      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
+    if (arr.length != 13)
+      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
     return TripOverviewModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2181,9 +2181,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       packedPackingListItems: dco_decode_usize(arr[7]),
       totalPackingListItems: dco_decode_usize(arr[8]),
       pointsOfInterestCount: dco_decode_usize(arr[9]),
+      bookingsCount: dco_decode_usize(arr[10]),
       accommodationStatus:
-          dco_decode_opt_box_autoadd_accommodation_status(arr[10]),
-      locationsList: dco_decode_list_trip_location_summary(arr[11]),
+          dco_decode_opt_box_autoadd_accommodation_status(arr[11]),
+      locationsList: dco_decode_list_trip_location_summary(arr[12]),
     );
   }
 
@@ -3439,6 +3440,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_packedPackingListItems = sse_decode_usize(deserializer);
     var var_totalPackingListItems = sse_decode_usize(deserializer);
     var var_pointsOfInterestCount = sse_decode_usize(deserializer);
+    var var_bookingsCount = sse_decode_usize(deserializer);
     var var_accommodationStatus =
         sse_decode_opt_box_autoadd_accommodation_status(deserializer);
     var var_locationsList = sse_decode_list_trip_location_summary(deserializer);
@@ -3453,6 +3455,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         packedPackingListItems: var_packedPackingListItems,
         totalPackingListItems: var_totalPackingListItems,
         pointsOfInterestCount: var_pointsOfInterestCount,
+        bookingsCount: var_bookingsCount,
         accommodationStatus: var_accommodationStatus,
         locationsList: var_locationsList);
   }
@@ -4539,6 +4542,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_usize(self.packedPackingListItems, serializer);
     sse_encode_usize(self.totalPackingListItems, serializer);
     sse_encode_usize(self.pointsOfInterestCount, serializer);
+    sse_encode_usize(self.bookingsCount, serializer);
     sse_encode_opt_box_autoadd_accommodation_status(
         self.accommodationStatus, serializer);
     sse_encode_list_trip_location_summary(self.locationsList, serializer);

@@ -116,9 +116,13 @@ class BookingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final count = trip.bookingsCount.toInt();
+    final subtitle = count == 1 ? "1 booking" : "$count bookings";
+    
     return SummaryCard(
         icon: Icons.confirmation_num,
         label: "Bookings",
+        subtitle: subtitle,
         color: BOOKINGS_COLOR,
         onTap: () async {
           await Navigator.push(

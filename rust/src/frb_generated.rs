@@ -2617,6 +2617,7 @@ impl SseDecode for crate::models::TripOverviewModel {
         let mut var_packedPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_totalPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_pointsOfInterestCount = <usize>::sse_decode(deserializer);
+        let mut var_bookingsCount = <usize>::sse_decode(deserializer);
         let mut var_accommodationStatus =
             <Option<crate::models::AccommodationStatus>>::sse_decode(deserializer);
         let mut var_locationsList =
@@ -2632,6 +2633,7 @@ impl SseDecode for crate::models::TripOverviewModel {
             packed_packing_list_items: var_packedPackingListItems,
             total_packing_list_items: var_totalPackingListItems,
             points_of_interest_count: var_pointsOfInterestCount,
+            bookings_count: var_bookingsCount,
             accommodation_status: var_accommodationStatus,
             locations_list: var_locationsList,
         };
@@ -3892,6 +3894,7 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
             self.packed_packing_list_items.into_into_dart().into_dart(),
             self.total_packing_list_items.into_into_dart().into_dart(),
             self.points_of_interest_count.into_into_dart().into_dart(),
+            self.bookings_count.into_into_dart().into_dart(),
             self.accommodation_status.into_into_dart().into_dart(),
             self.locations_list.into_into_dart().into_dart(),
         ]
@@ -4983,6 +4986,7 @@ impl SseEncode for crate::models::TripOverviewModel {
         <usize>::sse_encode(self.packed_packing_list_items, serializer);
         <usize>::sse_encode(self.total_packing_list_items, serializer);
         <usize>::sse_encode(self.points_of_interest_count, serializer);
+        <usize>::sse_encode(self.bookings_count, serializer);
         <Option<crate::models::AccommodationStatus>>::sse_encode(
             self.accommodation_status,
             serializer,

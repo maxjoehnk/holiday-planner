@@ -511,6 +511,7 @@ class TripOverviewModel {
   final BigInt packedPackingListItems;
   final BigInt totalPackingListItems;
   final BigInt pointsOfInterestCount;
+  final BigInt bookingsCount;
   final AccommodationStatus? accommodationStatus;
   final List<TripLocationSummary> locationsList;
 
@@ -525,6 +526,7 @@ class TripOverviewModel {
     required this.packedPackingListItems,
     required this.totalPackingListItems,
     required this.pointsOfInterestCount,
+    required this.bookingsCount,
     this.accommodationStatus,
     required this.locationsList,
   });
@@ -541,6 +543,7 @@ class TripOverviewModel {
       packedPackingListItems.hashCode ^
       totalPackingListItems.hashCode ^
       pointsOfInterestCount.hashCode ^
+      bookingsCount.hashCode ^
       accommodationStatus.hashCode ^
       locationsList.hashCode;
 
@@ -559,6 +562,7 @@ class TripOverviewModel {
           packedPackingListItems == other.packedPackingListItems &&
           totalPackingListItems == other.totalPackingListItems &&
           pointsOfInterestCount == other.pointsOfInterestCount &&
+          bookingsCount == other.bookingsCount &&
           accommodationStatus == other.accommodationStatus &&
           locationsList == other.locationsList;
 }

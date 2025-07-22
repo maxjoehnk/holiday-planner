@@ -110,6 +110,10 @@ impl TripHandler {
         let points_of_interest = repositories::points_of_interest::find_all_by_trip(&self.db, id).await?;
         let points_of_interest_count = points_of_interest.len();
         
+        let reservations = repositories::bookings::find_all_reservations_by_trip(&self.db, id).await?;
+        let car_rentals = repositories::bookings::find_all_car_rentals_by_trip(&self.db, id).await?;
+        let bookings_count = reservations.len() + car_rentals.len();
+        
         let accommodations = repositories::accommodations::find_all_by_trip(&self.db, id).await?;
         let now = Utc::now();
         let accommodation_status = self.determine_accommodation_status(&accommodations, now);
@@ -135,6 +139,7 @@ impl TripHandler {
                 total_packing_list_items,
                 packed_packing_list_items,
                 points_of_interest_count,
+                bookings_count,
                 accommodation_status,
                 locations_list,
             }

@@ -33,6 +33,7 @@ pub struct TripOverviewModel {
     pub packed_packing_list_items: usize,
     pub total_packing_list_items: usize,
     pub points_of_interest_count: usize,
+    pub bookings_count: usize,
     pub accommodation_status: Option<AccommodationStatus>,
     pub locations_list: Vec<TripLocationSummary>,
 }
