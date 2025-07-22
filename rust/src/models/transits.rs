@@ -32,6 +32,7 @@ pub struct Airport {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Train {
+    pub train_number: Option<String>,
     pub departure: TrainStation,
     pub arrival: TrainStation,
     pub scheduled_departure_time: DateTime<Utc>,
@@ -45,6 +46,6 @@ pub struct TrainStation {
     pub name: String,
     pub scheduled_platform: String,
     pub actual_platform: Option<String>,
-    pub city: String,
-    pub country: String,
+    pub city: Option<String>,
+    pub country: Option<String>,
 }

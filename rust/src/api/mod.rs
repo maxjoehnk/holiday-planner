@@ -12,6 +12,7 @@ pub mod attachments;
 pub mod points_of_interest;
 pub mod bookings;
 pub mod timeline;
+pub mod transits;
 
 static DB: RwLock<Option<Database>> = RwLock::const_new(None);
 

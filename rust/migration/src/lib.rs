@@ -7,6 +7,7 @@ mod m20240920_163139_packing_list_quantity;
 mod m20250720_174945_points_of_interest;
 mod m20250721_000700_bookings;
 mod m20250721_183500_add_reservation_category;
+mod m20250722_152400_trains;
 
 pub struct Migrator;
 
@@ -21,6 +22,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250720_174945_points_of_interest::Migration),
             Box::new(m20250721_000700_bookings::Migration),
             Box::new(m20250721_183500_add_reservation_category::Migration),
+            Box::new(m20250722_152400_trains::Migration),
         ]
     }
 }

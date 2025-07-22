@@ -13,7 +13,7 @@ class TripSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     var summaryCards = [
       PackingListCard(trip: trip, refresh: refresh),
-      const TransitsCard(),
+      TransitCard(trip: trip, refresh: refresh),
       PointsOfInterestsCard(trip: trip, refresh: refresh),
       AccommodationsCard(trip: trip, refresh: refresh),
       LocationsCard(trip: trip, refresh: refresh),

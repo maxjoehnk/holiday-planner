@@ -96,7 +96,6 @@ class _TripBookingsState extends State<TripBookings> {
     );
   }
 
-
   Widget _buildErrorWidget(String error) {
     return Center(
       child: Column(

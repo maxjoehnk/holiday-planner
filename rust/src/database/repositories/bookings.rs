@@ -91,6 +91,11 @@ pub async fn delete_car_rental_by_id(db: &Database, id: Uuid) -> anyhow::Result<
     Ok(())
 }
 
+
+
+
+
+
 pub async fn count_all_bookings_by_trip(db: &impl ConnectionTrait, trip_id: Uuid) -> DbResult<u64> {
     let reservation_count = Reservation::find()
         .filter(reservation::Column::TripId.eq(trip_id))

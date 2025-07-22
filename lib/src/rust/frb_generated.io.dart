@@ -10,11 +10,13 @@ import 'api/bookings.dart';
 import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
 import 'api/timeline.dart';
+import 'api/transits.dart';
 import 'api/trips.dart';
 import 'commands/add_accommodation_attachment.dart';
 import 'commands/add_car_rental.dart';
 import 'commands/add_packing_list_entry.dart';
 import 'commands/add_reservation.dart';
+import 'commands/add_train.dart';
 import 'commands/add_trip_accommodation.dart';
 import 'commands/add_trip_attachment.dart';
 import 'commands/add_trip_location.dart';
@@ -25,6 +27,7 @@ import 'commands/search_web_images.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
+import 'commands/update_train.dart';
 import 'commands/update_trip.dart';
 import 'commands/update_trip_accommodation.dart';
 import 'commands/update_trip_point_of_interest.dart';
@@ -35,6 +38,7 @@ import 'frb_generated.dart';
 import 'models.dart';
 import 'models/bookings.dart';
 import 'models/timeline.dart';
+import 'models/transits.dart';
 import 'models/web_images.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'package:uuid/uuid.dart';
@@ -82,6 +86,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddReservation dco_decode_add_reservation(dynamic raw);
 
   @protected
+  AddTrain dco_decode_add_train(dynamic raw);
+
+  @protected
   AddTripAccommodation dco_decode_add_trip_accommodation(dynamic raw);
 
   @protected
@@ -123,6 +130,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddReservation dco_decode_box_autoadd_add_reservation(dynamic raw);
 
   @protected
+  AddTrain dco_decode_box_autoadd_add_train(dynamic raw);
+
+  @protected
   AddTripAccommodation dco_decode_box_autoadd_add_trip_accommodation(
       dynamic raw);
 
@@ -161,6 +171,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation dco_decode_box_autoadd_update_reservation(dynamic raw);
+
+  @protected
+  UpdateTrain dco_decode_box_autoadd_update_train(dynamic raw);
 
   @protected
   UpdateTrip dco_decode_box_autoadd_update_trip(dynamic raw);
@@ -244,6 +257,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<TimelineItem> dco_decode_list_timeline_item(dynamic raw);
 
   @protected
+  List<Train> dco_decode_list_train(dynamic raw);
+
+  @protected
   List<TripAttachment> dco_decode_list_trip_attachment(dynamic raw);
 
   @protected
@@ -321,6 +337,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TimelineModel dco_decode_timeline_model(dynamic raw);
 
   @protected
+  Train dco_decode_train(dynamic raw);
+
+  @protected
+  TrainStation dco_decode_train_station(dynamic raw);
+
+  @protected
   TripAttachment dco_decode_trip_attachment(dynamic raw);
 
   @protected
@@ -361,6 +383,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation dco_decode_update_reservation(dynamic raw);
+
+  @protected
+  UpdateTrain dco_decode_update_train(dynamic raw);
 
   @protected
   UpdateTrip dco_decode_update_trip(dynamic raw);
@@ -423,6 +448,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddReservation sse_decode_add_reservation(SseDeserializer deserializer);
 
   @protected
+  AddTrain sse_decode_add_train(SseDeserializer deserializer);
+
+  @protected
   AddTripAccommodation sse_decode_add_trip_accommodation(
       SseDeserializer deserializer);
 
@@ -472,6 +500,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AddTrain sse_decode_box_autoadd_add_train(SseDeserializer deserializer);
+
+  @protected
   AddTripAccommodation sse_decode_box_autoadd_add_trip_accommodation(
       SseDeserializer deserializer);
 
@@ -515,6 +546,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   UpdateReservation sse_decode_box_autoadd_update_reservation(
       SseDeserializer deserializer);
+
+  @protected
+  UpdateTrain sse_decode_box_autoadd_update_train(SseDeserializer deserializer);
 
   @protected
   UpdateTrip sse_decode_box_autoadd_update_trip(SseDeserializer deserializer);
@@ -608,6 +642,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<Train> sse_decode_list_train(SseDeserializer deserializer);
+
+  @protected
   List<TripAttachment> sse_decode_list_trip_attachment(
       SseDeserializer deserializer);
 
@@ -692,6 +729,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TimelineModel sse_decode_timeline_model(SseDeserializer deserializer);
 
   @protected
+  Train sse_decode_train(SseDeserializer deserializer);
+
+  @protected
+  TrainStation sse_decode_train_station(SseDeserializer deserializer);
+
+  @protected
   TripAttachment sse_decode_trip_attachment(SseDeserializer deserializer);
 
   @protected
@@ -739,6 +782,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation sse_decode_update_reservation(SseDeserializer deserializer);
+
+  @protected
+  UpdateTrain sse_decode_update_train(SseDeserializer deserializer);
 
   @protected
   UpdateTrip sse_decode_update_trip(SseDeserializer deserializer);
@@ -804,6 +850,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddReservation self, SseSerializer serializer);
 
   @protected
+  void sse_encode_add_train(AddTrain self, SseSerializer serializer);
+
+  @protected
   void sse_encode_add_trip_accommodation(
       AddTripAccommodation self, SseSerializer serializer);
 
@@ -854,6 +903,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddReservation self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_add_train(
+      AddTrain self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_add_trip_accommodation(
       AddTripAccommodation self, SseSerializer serializer);
 
@@ -900,6 +953,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_update_train(
+      UpdateTrain self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_update_trip(
@@ -994,6 +1051,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<TimelineItem> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_train(List<Train> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_trip_attachment(
       List<TripAttachment> self, SseSerializer serializer);
 
@@ -1082,6 +1142,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_timeline_model(TimelineModel self, SseSerializer serializer);
 
   @protected
+  void sse_encode_train(Train self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_train_station(TrainStation self, SseSerializer serializer);
+
+  @protected
   void sse_encode_trip_attachment(
       TripAttachment self, SseSerializer serializer);
 
@@ -1132,6 +1198,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_train(UpdateTrain self, SseSerializer serializer);
 
   @protected
   void sse_encode_update_trip(UpdateTrip self, SseSerializer serializer);

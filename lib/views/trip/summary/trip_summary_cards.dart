@@ -4,6 +4,7 @@ import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.dart';
 import 'package:holiday_planner/views/trip/bookings/trip_bookings.dart';
+import 'package:holiday_planner/views/trip/transits/trip_transits.dart';
 import 'package:holiday_planner/views/trip/locations/trip_locations.dart';
 import 'package:holiday_planner/views/trip/points_of_interest/trip_points_of_interest.dart';
 
@@ -39,15 +40,6 @@ class PackingListCard extends StatelessWidget {
           );
           refresh();
         });
-  }
-}
-
-class TransitsCard extends StatelessWidget {
-  const TransitsCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SummaryCard(icon: Icons.directions_transit, label: "Transits", color: TRANSITS_COLOR);
   }
 }
 
@@ -128,6 +120,28 @@ class BookingsCard extends StatelessWidget {
           await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TripBookings(tripId: trip.id)),
+          );
+          refresh();
+        });
+  }
+}
+
+class TransitCard extends StatelessWidget {
+  final TripOverviewModel trip;
+  final Function() refresh;
+
+  const TransitCard({super.key, required this.trip, required this.refresh});
+
+  @override
+  Widget build(BuildContext context) {
+    return SummaryCard(
+        icon: Icons.directions_transit,
+        label: "Transits",
+        color: TRANSITS_COLOR,
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TripTransits(tripId: trip.id)),
           );
           refresh();
         });

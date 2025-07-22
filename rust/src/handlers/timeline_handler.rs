@@ -19,6 +19,7 @@ impl TimelineHandler {
     pub async fn get_timeline(&self, trip_id: Uuid) -> anyhow::Result<TimelineModel> {
         let car_rentals = repositories::bookings::find_all_car_rentals_by_trip(&self.db, trip_id).await?;
         let reservations = repositories::bookings::find_all_reservations_by_trip(&self.db, trip_id).await?;
+        let trains = repositories::transits::find_all_trains_by_trip(&self.db, trip_id).await?;
         let accommodations = repositories::accommodations::find_all_by_trip(&self.db, trip_id).await?;
 
         let car_rentals = car_rentals.into_iter().flat_map(|rental| [TimelineItem {
@@ -54,12 +55,33 @@ impl TimelineHandler {
                 address: accommodation.address.clone(),
             }
         }));
+        let trains = trains.into_iter().flat_map(|train| [TimelineItem {
+            date: train.scheduled_departure_time,
+            details: TimelineItemDetails::TrainOrigin {
+                station: match &train.departure_station_city {
+                    Some(city) => format!("{}, {}", train.departure_station_name, city),
+                    None => train.departure_station_name.clone(),
+                },
+                train_number: train.train_number.clone().unwrap_or_default(),
+                seat: None,
+            }
+        }, TimelineItem {
+            date: train.scheduled_arrival_time,
+            details: TimelineItemDetails::TrainDestination {
+                station: match &train.arrival_station_city {
+                    Some(city) => format!("{}, {}", train.arrival_station_name, city),
+                    None => train.arrival_station_name.clone(),
+                },
+                train_number: train.train_number.unwrap_or_default(),
+            }
+        }]);
 
         let mut timeline_items: Vec<TimelineItem> = car_rentals
             .into_iter()
             .chain(reservations)
             .chain(check_ins)
             .chain(check_outs)
+            .chain(trains)
             .collect();
         timeline_items.sort_by_key(|item| item.date);
 
