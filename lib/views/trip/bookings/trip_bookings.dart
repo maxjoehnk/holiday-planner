@@ -159,15 +159,29 @@ class _TripBookingsState extends State<TripBookings> {
   }
 
   void _showAddBookingMenu(BuildContext context) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
+        return AlertDialog(
+          title: const Text('Add Booking'),
+          contentPadding: const EdgeInsets.only(top: 20.0),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.restaurant),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: BOOKINGS_COLOR.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.restaurant,
+                    color: BOOKINGS_COLOR.shade700,
+                    size: 24,
+                  ),
+                ),
                 title: const Text('Add Reservation'),
                 subtitle: const Text('Restaurant, hotel, or other booking'),
                 onTap: () {
@@ -175,8 +189,21 @@ class _TripBookingsState extends State<TripBookings> {
                   _addReservation(context);
                 },
               ),
+              const SizedBox(height: 8),
               ListTile(
-                leading: const Icon(Icons.directions_car),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: CAR_RENTAL_COLOR.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.directions_car,
+                    color: CAR_RENTAL_COLOR.shade700,
+                    size: 24,
+                  ),
+                ),
                 title: const Text('Add Car Rental'),
                 subtitle: const Text('Car rental booking'),
                 onTap: () {
@@ -186,6 +213,12 @@ class _TripBookingsState extends State<TripBookings> {
               ),
             ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
         );
       },
     );
