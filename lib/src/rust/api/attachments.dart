@@ -3,6 +3,7 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import '../commands/add_accommodation_attachment.dart';
 import '../commands/add_trip_attachment.dart';
 import '../frb_generated.dart';
 import '../models.dart';
@@ -24,3 +25,19 @@ Future<void> readAttachment(
 Future<void> deleteAttachment({required UuidValue attachmentId}) =>
     RustLib.instance.api
         .crateApiAttachmentsDeleteAttachment(attachmentId: attachmentId);
+
+Future<List<AttachmentListModel>> getAccommodationAttachments(
+        {required UuidValue accommodationId}) =>
+    RustLib.instance.api.crateApiAttachmentsGetAccommodationAttachments(
+        accommodationId: accommodationId);
+
+Future<void> addAccommodationAttachment(
+        {required AddAccommodationAttachment command}) =>
+    RustLib.instance.api
+        .crateApiAttachmentsAddAccommodationAttachment(command: command);
+
+Future<void> removeAccommodationAttachment(
+        {required UuidValue accommodationId,
+        required UuidValue attachmentId}) =>
+    RustLib.instance.api.crateApiAttachmentsRemoveAccommodationAttachment(
+        accommodationId: accommodationId, attachmentId: attachmentId);

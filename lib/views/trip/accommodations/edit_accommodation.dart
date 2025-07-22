@@ -1,10 +1,17 @@
+import 'dart:async';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
+import 'package:holiday_planner/src/rust/api/attachments.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip_accommodation.dart';
+import 'package:holiday_planner/src/rust/commands/add_accommodation_attachment.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
+import 'package:icons_plus/icons_plus.dart';
+import 'package:open_app_file/open_app_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 class EditAccommodation extends StatefulWidget {
   final AccommodationModel accommodation;
@@ -24,6 +31,13 @@ class _EditAccommodationState extends State<EditAccommodation> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  // Attachment related state
+  late StreamController<List<AttachmentListModel>> _attachments;
+  late Stream<List<AttachmentListModel>>? _attachments$;
+  bool _isAddingAttachment = false;
+  final TextEditingController _attachmentNameController = TextEditingController();
+  XFile? _attachmentFile;
+
   @override
   void initState() {
     super.initState();
@@ -31,13 +45,130 @@ class _EditAccommodationState extends State<EditAccommodation> {
     _addressController.text = widget.accommodation.address ?? '';
     checkInDate = widget.accommodation.checkIn.toLocal();
     checkOutDate = widget.accommodation.checkOut.toLocal();
+
+    // Initialize attachment related state
+    _attachments = StreamController();
+    _attachments$ = _attachments.stream;
+    _fetchAttachments();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _addressController.dispose();
+    _attachmentNameController.dispose();
+    _attachments.close();
     super.dispose();
+  }
+
+  void _fetchAttachments() {
+    _attachments.addStream(
+      getAccommodationAttachments(accommodationId: widget.accommodation.id).asStream()
+    );
+  }
+
+  Future<void> _addAttachment() async {
+    if (_attachmentFile == null) {
+      setState(() {
+        _errorMessage = "Please select a file to attach";
+      });
+      return;
+    }
+
+    if (_attachmentNameController.text.isEmpty) {
+      setState(() {
+        _errorMessage = "Please enter a name for the attachment";
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await addAccommodationAttachment(
+        command: AddAccommodationAttachment(
+          name: _attachmentNameController.text,
+          accommodationId: widget.accommodation.id,
+          path: _attachmentFile!.path,
+        ),
+      );
+
+      // Reset attachment form
+      setState(() {
+        _isAddingAttachment = false;
+        _attachmentNameController.clear();
+        _attachmentFile = null;
+      });
+
+      // Refresh attachments list
+      _fetchAttachments();
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to add attachment: ${e.toString()}";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _removeAttachment(AttachmentListModel attachment) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await removeAccommodationAttachment(
+        accommodationId: widget.accommodation.id,
+        attachmentId: attachment.id,
+      );
+
+      // Refresh attachments list
+      _fetchAttachments();
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to remove attachment: ${e.toString()}";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _openAttachment(AttachmentListModel attachment) async {
+    try {
+      String dir = (await getTemporaryDirectory()).path;
+      String path = "$dir/${attachment.fileName}";
+      await readAttachment(attachmentId: attachment.id, targetPath: path);
+      await OpenAppFile.open(path);
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to open attachment: ${e.toString()}";
+      });
+    }
+  }
+
+  Future<void> _pickAttachmentFile() async {
+    try {
+      var pickedFile = await openFile();
+      if (pickedFile == null) {
+        return;
+      }
+      setState(() {
+        _attachmentFile = pickedFile;
+        _errorMessage = null; // Clear any previous errors
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to select file: ${e.toString()}";
+      });
+    }
   }
 
   @override
@@ -189,6 +320,261 @@ class _EditAccommodationState extends State<EditAccommodation> {
               ),
               const SizedBox(height: 24),
               AccommodationSummaryCard(checkInDate: checkInDate, checkOutDate: checkOutDate),
+              const SizedBox(height: 24),
+
+              // Attachments section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Attachments",
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  FilledButton.icon(
+                    onPressed: _isLoading ? null : () {
+                      setState(() {
+                        _isAddingAttachment = true;
+                        _attachmentNameController.clear();
+                        _attachmentFile = null;
+                      });
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text("Add"),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Add attachment form
+              if (_isAddingAttachment) ...[
+                Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant,
+                      width: 1,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Add New Attachment",
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _attachmentNameController,
+                          decoration: InputDecoration(
+                            labelText: "Name",
+                            hintText: "Enter attachment name",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(Icons.label_outline),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: _attachmentFile != null
+                                ? colorScheme.primaryContainer.withOpacity(0.3)
+                                : colorScheme.surfaceVariant.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _attachmentFile != null
+                                  ? colorScheme.primary.withOpacity(0.5)
+                                  : colorScheme.outlineVariant,
+                              width: _attachmentFile != null ? 2 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              if (_attachmentFile != null) ...[
+                                Text(
+                                  _attachmentFile!.name,
+                                  style: textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.primary,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 8),
+                                OutlinedButton.icon(
+                                  onPressed: _pickAttachmentFile,
+                                  icon: const Icon(Icons.refresh),
+                                  label: const Text("Choose Different File"),
+                                ),
+                              ] else ...[
+                                FilledButton.icon(
+                                  onPressed: _pickAttachmentFile,
+                                  icon: const Icon(Icons.attach_file),
+                                  label: const Text("Choose File"),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isAddingAttachment = false;
+                                  _attachmentNameController.clear();
+                                  _attachmentFile = null;
+                                });
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                            const SizedBox(width: 8),
+                            FilledButton(
+                              onPressed: _isLoading ? null : _addAttachment,
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : const Text("Add Attachment"),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // Attachments list
+              StreamBuilder<List<AttachmentListModel>>(
+                stream: _attachments$,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Text(
+                          "Error loading attachments: ${snapshot.error}",
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final attachments = snapshot.data!;
+
+                  if (attachments.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Text(
+                          "No attachments added yet",
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: attachments.length,
+                    itemBuilder: (context, index) {
+                      final attachment = attachments[index];
+                      return Card(
+                        elevation: 0,
+                        margin: const EdgeInsets.only(bottom: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
+                            color: colorScheme.outlineVariant,
+                            width: 1,
+                          ),
+                        ),
+                        child: InkWell(
+                          onTap: () => _openAttachment(attachment),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: _getFileTypeColor(attachment).withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    _getFileTypeIcon(attachment),
+                                    size: 20,
+                                    color: _getFileTypeColor(attachment),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        attachment.name,
+                                        style: textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        attachment.fileName,
+                                        style: textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => _removeAttachment(attachment),
+                                  icon: Icon(
+                                    Icons.delete_outline,
+                                    color: colorScheme.error,
+                                    size: 20,
+                                  ),
+                                  tooltip: "Remove attachment",
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
@@ -386,5 +772,43 @@ class _EditAccommodationState extends State<EditAccommodation> {
         }
       }
     }
+  }
+
+  IconData _getFileTypeIcon(AttachmentListModel attachment) {
+    if (attachment.contentType == "application/pdf") {
+      return Bootstrap.filetype_pdf;
+    }
+    if (attachment.contentType.startsWith("image")) {
+      return Bootstrap.image;
+    }
+    if (attachment.contentType.startsWith("text")) {
+      return Icons.description_outlined;
+    }
+    if (attachment.contentType.contains("word") || attachment.contentType.contains("document")) {
+      return Bootstrap.filetype_doc;
+    }
+    if (attachment.contentType.contains("excel") || attachment.contentType.contains("spreadsheet")) {
+      return Bootstrap.filetype_xls;
+    }
+    return Icons.insert_drive_file_outlined;
+  }
+
+  Color _getFileTypeColor(AttachmentListModel attachment) {
+    if (attachment.contentType == "application/pdf") {
+      return Colors.red;
+    }
+    if (attachment.contentType.startsWith("image")) {
+      return Colors.green;
+    }
+    if (attachment.contentType.startsWith("text")) {
+      return Colors.blue;
+    }
+    if (attachment.contentType.contains("word") || attachment.contentType.contains("document")) {
+      return Colors.blue;
+    }
+    if (attachment.contentType.contains("excel") || attachment.contentType.contains("spreadsheet")) {
+      return Colors.green;
+    }
+    return Colors.grey;
   }
 }

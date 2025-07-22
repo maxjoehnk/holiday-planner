@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -770136419;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 543444178;
 
 // Section: executor
 
@@ -45,6 +45,21 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__attachments__add_accommodation_attachment_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "add_accommodation_attachment", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command = <crate::commands::add_accommodation_attachment::AddAccommodationAttachment>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>((move || async move {
+                         let output_ok = crate::api::attachments::add_accommodation_attachment(api_command).await?;   Ok(output_ok)
+                    })().await)
+                } })
+}
 fn wire__crate__api__bookings__add_car_rental_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -655,6 +670,45 @@ fn wire__crate__api__trips__download_web_image_impl(
         },
     )
 }
+fn wire__crate__api__attachments__get_accommodation_attachments_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_accommodation_attachments",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_accommodation_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::attachments::get_accommodation_attachments(
+                            api_accommodation_id,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__packing_list__get_packing_list_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1244,6 +1298,47 @@ fn wire__crate__api__attachments__read_attachment_impl(
         },
     )
 }
+fn wire__crate__api__attachments__remove_accommodation_attachment_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "remove_accommodation_attachment",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_accommodation_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            let api_attachment_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::attachments::remove_accommodation_attachment(
+                            api_accommodation_id,
+                            api_attachment_id,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__run_background_jobs_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1647,6 +1742,20 @@ impl SseDecode for crate::models::AccommodationStatusType {
             0 => crate::models::AccommodationStatusType::CheckIn,
             1 => crate::models::AccommodationStatusType::CheckOut,
             _ => unreachable!("Invalid variant for AccommodationStatusType: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::commands::add_accommodation_attachment::AddAccommodationAttachment {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_accommodationId = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_path = <String>::sse_decode(deserializer);
+        return crate::commands::add_accommodation_attachment::AddAccommodationAttachment {
+            accommodation_id: var_accommodationId,
+            name: var_name,
+            path: var_path,
         };
     }
 }
@@ -2886,119 +2995,137 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__bookings__add_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__packing_list__add_packing_list_entry_impl(
+        1 => wire__crate__api__attachments__add_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__bookings__add_reservation_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire__crate__api__accommodations__add_trip_accommodation_impl(
+        2 => wire__crate__api__bookings__add_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__packing_list__add_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__attachments__add_trip_attachment_impl(
+        4 => wire__crate__api__bookings__add_reservation_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__accommodations__add_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__trips__add_trip_location_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__points_of_interest__add_trip_point_of_interest_impl(
+        6 => wire__crate__api__attachments__add_trip_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__connect_db_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire__crate__api__trips__create_trip_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire__crate__api__accommodations__delete_accommodation_impl(
+        7 => wire__crate__api__trips__add_trip_location_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__points_of_interest__add_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => {
+        9 => wire__crate__api__connect_db_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire__crate__api__trips__create_trip_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire__crate__api__accommodations__delete_accommodation_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        12 => {
             wire__crate__api__attachments__delete_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        12 => wire__crate__api__bookings__delete_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__packing_list__delete_packing_list_entry_impl(
+        13 => wire__crate__api__bookings__delete_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire__crate__api__packing_list__delete_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__points_of_interest__delete_point_of_interest_impl(
+        15 => wire__crate__api__points_of_interest__delete_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => {
+        16 => {
             wire__crate__api__bookings__delete_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        16 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
-        17 => {
+        17 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__attachments__get_accommodation_attachments_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        19 => {
             wire__crate__api__packing_list__get_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        18 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__accommodations__get_trip_accommodations_impl(
+        20 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__accommodations__get_trip_accommodations_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__attachments__get_trip_attachments_impl(
+        23 => wire__crate__api__attachments__get_trip_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
-        24 => {
+        24 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
+        26 => {
             wire__crate__api__trips__get_trip_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        25 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+        27 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        32 => {
+        28 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        34 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        33 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        34 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        35 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => {
+        36 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        41 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        39 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        42 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        44 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3087,6 +3214,34 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::AccommodationStatusType>
     for crate::models::AccommodationStatusType
 {
     fn into_into_dart(self) -> crate::models::AccommodationStatusType {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::commands::add_accommodation_attachment::AddAccommodationAttachment
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.accommodation_id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.path.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::add_accommodation_attachment::AddAccommodationAttachment
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        crate::commands::add_accommodation_attachment::AddAccommodationAttachment,
+    > for crate::commands::add_accommodation_attachment::AddAccommodationAttachment
+{
+    fn into_into_dart(
+        self,
+    ) -> crate::commands::add_accommodation_attachment::AddAccommodationAttachment {
         self
     }
 }
@@ -4274,6 +4429,15 @@ impl SseEncode for crate::models::AccommodationStatusType {
             },
             serializer,
         );
+    }
+}
+
+impl SseEncode for crate::commands::add_accommodation_attachment::AddAccommodationAttachment {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.accommodation_id, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.path, serializer);
     }
 }
 

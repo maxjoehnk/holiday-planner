@@ -14,6 +14,7 @@ import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
 import 'api/timeline.dart';
 import 'api/trips.dart';
+import 'commands/add_accommodation_attachment.dart';
 import 'commands/add_car_rental.dart';
 import 'commands/add_packing_list_entry.dart';
 import 'commands/add_reservation.dart';
@@ -70,6 +71,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AccommodationStatusType dco_decode_accommodation_status_type(dynamic raw);
 
   @protected
+  AddAccommodationAttachment dco_decode_add_accommodation_attachment(
+      dynamic raw);
+
+  @protected
   AddCarRental dco_decode_add_car_rental(dynamic raw);
 
   @protected
@@ -104,6 +109,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AccommodationStatus dco_decode_box_autoadd_accommodation_status(dynamic raw);
+
+  @protected
+  AddAccommodationAttachment
+      dco_decode_box_autoadd_add_accommodation_attachment(dynamic raw);
 
   @protected
   AddCarRental dco_decode_box_autoadd_add_car_rental(dynamic raw);
@@ -402,6 +411,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AddAccommodationAttachment sse_decode_add_accommodation_attachment(
+      SseDeserializer deserializer);
+
+  @protected
   AddCarRental sse_decode_add_car_rental(SseDeserializer deserializer);
 
   @protected
@@ -442,6 +455,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AccommodationStatus sse_decode_box_autoadd_accommodation_status(
       SseDeserializer deserializer);
+
+  @protected
+  AddAccommodationAttachment
+      sse_decode_box_autoadd_add_accommodation_attachment(
+          SseDeserializer deserializer);
 
   @protected
   AddCarRental sse_decode_box_autoadd_add_car_rental(
@@ -773,6 +791,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AccommodationStatusType self, SseSerializer serializer);
 
   @protected
+  void sse_encode_add_accommodation_attachment(
+      AddAccommodationAttachment self, SseSerializer serializer);
+
+  @protected
   void sse_encode_add_car_rental(AddCarRental self, SseSerializer serializer);
 
   @protected
@@ -816,6 +838,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_accommodation_status(
       AccommodationStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_add_accommodation_attachment(
+      AddAccommodationAttachment self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_add_car_rental(

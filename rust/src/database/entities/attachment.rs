@@ -21,12 +21,24 @@ pub enum Relation {
         from = "Column::TripId",
         to = "super::trip::Column::Id"
     )]
-    Trip
+    Trip,
+    #[sea_orm(has_many = "super::accommodation_attachment::Entity")]
+    AccommodationAttachment
 }
 
 impl Related<super::trip::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Trip.def()
+    }
+}
+
+impl Related<super::accommodation::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::accommodation_attachment::Relation::Accommodation.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::accommodation_attachment::Relation::Attachment.def().rev())
     }
 }
 

@@ -27,3 +27,21 @@ pub async fn delete_attachment(attachment_id: Uuid) -> anyhow::Result<()> {
     let handler = DB.try_get::<AttachmentHandler>().await?;
     handler.delete_attachment(attachment_id).await
 }
+
+#[tracing::instrument]
+pub async fn get_accommodation_attachments(accommodation_id: Uuid) -> anyhow::Result<Vec<AttachmentListModel>> {
+    let handler = DB.try_get::<AttachmentHandler>().await?;
+    handler.get_accommodation_attachments(accommodation_id).await
+}
+
+#[tracing::instrument]
+pub async fn add_accommodation_attachment(command: AddAccommodationAttachment) -> anyhow::Result<()> {
+    let handler = DB.try_get::<AttachmentHandler>().await?;
+    handler.add_accommodation_attachment(command).await
+}
+
+#[tracing::instrument]
+pub async fn remove_accommodation_attachment(accommodation_id: Uuid, attachment_id: Uuid) -> anyhow::Result<()> {
+    let handler = DB.try_get::<AttachmentHandler>().await?;
+    handler.remove_accommodation_attachment(accommodation_id, attachment_id).await
+}
