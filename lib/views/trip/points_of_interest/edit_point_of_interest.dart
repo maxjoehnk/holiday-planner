@@ -221,6 +221,20 @@ class _EditPointOfInterestState extends State<EditPointOfInterest> {
               ),
               const SizedBox(height: 24),
               _buildPreviewCard(context),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _isLoading ? null : () => _deletePointOfInterest(context),
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text("Delete Point of Interest"),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.error,
+                    side: BorderSide(color: colorScheme.error),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -389,6 +403,50 @@ class _EditPointOfInterestState extends State<EditPointOfInterest> {
         ),
       ),
     );
+  }
+
+  Future<void> _deletePointOfInterest(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Point of Interest'),
+        content: Text('Are you sure you want to delete "${widget.pointOfInterest.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      try {
+        await deletePointOfInterest(pointOfInterestId: widget.pointOfInterest.id);
+        if (mounted) {
+          Navigator.of(context).pop(); // Go back to the list
+        }
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'Error deleting point of interest: $e';
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error deleting point of interest: $e')),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _submit() async {

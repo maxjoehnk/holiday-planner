@@ -103,7 +103,6 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
                 return PointOfInterestCard(
                   pointOfInterest: poi,
                   onEdit: () => _editPointOfInterest(context, poi),
-                  onDelete: () => _deletePointOfInterest(context, poi),
                 );
               },
             ),
@@ -131,38 +130,6 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
     _fetch();
   }
 
-  void _deletePointOfInterest(BuildContext context, PointOfInterestModel pointOfInterest) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Point of Interest'),
-        content: Text('Are you sure you want to delete "${pointOfInterest.name}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        await deletePointOfInterest(pointOfInterestId: pointOfInterest.id);
-        _fetch();
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting point of interest: $e')),
-          );
-        }
-      }
-    }
-  }
 
   _fetch() {
     _pointsOfInterest.addStream(getTripPointsOfInterest(tripId: widget.tripId).asStream());
