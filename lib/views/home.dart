@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api.dart';
 
 import 'packing_list/packing_list_view.dart';
-import 'trip/trip_overview.dart';
+import 'trip_list/trip_overview.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});

@@ -6,8 +6,8 @@ import 'package:holiday_planner/src/rust/commands/create_trip.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'trip_view.dart';
-import 'web_image_search.dart';
+import '../trip/trip_view.dart';
+import '../trip/web_image_search.dart';
 
 class CreateTripView extends StatefulWidget {
   const CreateTripView({super.key});

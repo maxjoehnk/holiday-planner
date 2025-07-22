@@ -8,10 +8,8 @@ import 'package:holiday_planner/src/rust/commands/add_accommodation_attachment.d
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
+import 'package:holiday_planner/widgets/attachment_card.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
-import 'package:icons_plus/icons_plus.dart';
-import 'package:open_app_file/open_app_file.dart';
-import 'package:path_provider/path_provider.dart';
 
 class EditAccommodation extends StatefulWidget {
   final AccommodationModel accommodation;
@@ -31,7 +29,6 @@ class _EditAccommodationState extends State<EditAccommodation> {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Attachment related state
   late StreamController<List<AttachmentListModel>> _attachments;
   late Stream<List<AttachmentListModel>>? _attachments$;
   bool _isAddingAttachment = false;
@@ -46,7 +43,6 @@ class _EditAccommodationState extends State<EditAccommodation> {
     checkInDate = widget.accommodation.checkIn.toLocal();
     checkOutDate = widget.accommodation.checkOut.toLocal();
 
-    // Initialize attachment related state
     _attachments = StreamController();
     _attachments$ = _attachments.stream;
     _fetchAttachments();
@@ -137,19 +133,6 @@ class _EditAccommodationState extends State<EditAccommodation> {
     } finally {
       setState(() {
         _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _openAttachment(AttachmentListModel attachment) async {
-    try {
-      String dir = (await getTemporaryDirectory()).path;
-      String path = "$dir/${attachment.fileName}";
-      await readAttachment(attachmentId: attachment.id, targetPath: path);
-      await OpenAppFile.open(path);
-    } catch (e) {
-      setState(() {
-        _errorMessage = "Failed to open attachment: ${e.toString()}";
       });
     }
   }
@@ -502,75 +485,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
                     itemCount: attachments.length,
                     itemBuilder: (context, index) {
                       final attachment = attachments[index];
-                      return Card(
-                        elevation: 0,
-                        margin: const EdgeInsets.only(bottom: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
-                            color: colorScheme.outlineVariant,
-                            width: 1,
-                          ),
-                        ),
-                        child: InkWell(
-                          onTap: () => _openAttachment(attachment),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: _getFileTypeColor(attachment).withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    _getFileTypeIcon(attachment),
-                                    size: 20,
-                                    color: _getFileTypeColor(attachment),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        attachment.name,
-                                        style: textTheme.titleSmall?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        attachment.fileName,
-                                        style: textTheme.bodySmall?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () => _removeAttachment(attachment),
-                                  icon: Icon(
-                                    Icons.delete_outline,
-                                    color: colorScheme.error,
-                                    size: 20,
-                                  ),
-                                  tooltip: "Remove attachment",
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                      return AttachmentCard(attachment: attachment, onDelete: () => _removeAttachment(attachment));
                     },
                   );
                 },
@@ -772,43 +687,5 @@ class _EditAccommodationState extends State<EditAccommodation> {
         }
       }
     }
-  }
-
-  IconData _getFileTypeIcon(AttachmentListModel attachment) {
-    if (attachment.contentType == "application/pdf") {
-      return Bootstrap.filetype_pdf;
-    }
-    if (attachment.contentType.startsWith("image")) {
-      return Bootstrap.image;
-    }
-    if (attachment.contentType.startsWith("text")) {
-      return Icons.description_outlined;
-    }
-    if (attachment.contentType.contains("word") || attachment.contentType.contains("document")) {
-      return Bootstrap.filetype_doc;
-    }
-    if (attachment.contentType.contains("excel") || attachment.contentType.contains("spreadsheet")) {
-      return Bootstrap.filetype_xls;
-    }
-    return Icons.insert_drive_file_outlined;
-  }
-
-  Color _getFileTypeColor(AttachmentListModel attachment) {
-    if (attachment.contentType == "application/pdf") {
-      return Colors.red;
-    }
-    if (attachment.contentType.startsWith("image")) {
-      return Colors.green;
-    }
-    if (attachment.contentType.startsWith("text")) {
-      return Colors.blue;
-    }
-    if (attachment.contentType.contains("word") || attachment.contentType.contains("document")) {
-      return Colors.blue;
-    }
-    if (attachment.contentType.contains("excel") || attachment.contentType.contains("spreadsheet")) {
-      return Colors.green;
-    }
-    return Colors.grey;
   }
 }
