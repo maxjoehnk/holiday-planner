@@ -103,7 +103,6 @@ class _TripAccommodationsState extends State<TripAccommodations> {
                 return AccommodationCard(
                   accommodation: accommodation,
                   onEdit: () => _editAccommodation(context, accommodation),
-                  onDelete: () => _deleteAccommodation(context, accommodation),
                 );
               },
             ),
@@ -131,39 +130,6 @@ class _TripAccommodationsState extends State<TripAccommodations> {
     _fetch();
   }
 
-  void _deleteAccommodation(BuildContext context, AccommodationModel accommodation) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Accommodation'),
-        content: Text('Are you sure you want to delete "${accommodation.name}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        await deleteAccommodation(accommodationId: accommodation.id);
-        _fetch();
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting accommodation: $e')),
-          );
-        }
-      }
-    }
-  }
-
   _fetch() {
     _accommodations.addStream(getTripAccommodations(tripId: widget.tripId).asStream());
   }
@@ -172,12 +138,10 @@ class _TripAccommodationsState extends State<TripAccommodations> {
 class AccommodationCard extends StatelessWidget {
   final AccommodationModel accommodation;
   final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
 
   const AccommodationCard({
     required this.accommodation,
     this.onEdit,
-    this.onDelete,
     super.key,
   });
 
@@ -251,15 +215,6 @@ class AccommodationCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (onDelete != null)
-                      IconButton(
-                        onPressed: onDelete,
-                        icon: Icon(
-                          Icons.delete_outline,
-                          color: colorScheme.error,
-                        ),
-                        tooltip: 'Delete accommodation',
-                      ),
                   ],
                 ),
                 const SizedBox(height: 16),

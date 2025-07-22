@@ -189,6 +189,20 @@ class _EditAccommodationState extends State<EditAccommodation> {
               ),
               const SizedBox(height: 24),
               AccommodationSummaryCard(checkInDate: checkInDate, checkOutDate: checkOutDate),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _isLoading ? null : () => _deleteAccommodation(context),
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text("Delete Accommodation"),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.error,
+                    side: BorderSide(color: colorScheme.error),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -326,6 +340,50 @@ class _EditAccommodationState extends State<EditAccommodation> {
         setState(() {
           _isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _deleteAccommodation(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Accommodation'),
+        content: Text('Are you sure you want to delete "${widget.accommodation.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      try {
+        await deleteAccommodation(accommodationId: widget.accommodation.id);
+        if (mounted) {
+          Navigator.of(context).pop(); // Go back to the previous screen
+        }
+      } catch (e) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
