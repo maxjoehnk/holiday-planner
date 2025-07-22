@@ -26,7 +26,6 @@ pub async fn get_past_trips() -> anyhow::Result<Vec<TripListModel>> {
 pub async fn get_trip(id: Uuid) -> anyhow::Result<TripOverviewModel> {
     let handler = DB.try_get::<TripHandler>().await?;
     let trip = handler.get_trip_overview(id).await?;
-    let trip = trip.ok_or_else(|| anyhow::anyhow!("Trip not found"))?;
 
     Ok(trip)
 }

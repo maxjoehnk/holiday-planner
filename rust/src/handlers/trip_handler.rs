@@ -1,6 +1,7 @@
+use std::ops::Deref;
 use sea_orm::ActiveValue::Set;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveTime, Utc};
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
@@ -96,9 +97,13 @@ impl TripHandler {
         Ok(trips)
     }
 
-    pub async fn get_trip_overview(&self, id: Uuid) -> anyhow::Result<Option<TripOverviewModel>> {
+    pub async fn get_trip_overview(&self, id: Uuid) -> anyhow::Result<TripOverviewModel> {
         let trip = repositories::trips::find_by_id(&self.db, id).await?;
-        
+
+        let Some(trip) = trip else {
+            anyhow::bail!("Trip not found");
+        };
+
         // TODO: we should not depend upon another handler
         // Also we don't need to fetch all the packing list items for the overview
         let trip_packing_list_handler = TripPackingListHandler::create(self.db.clone());
@@ -107,13 +112,9 @@ impl TripHandler {
         let packed_packing_list_items = packing_items.entries.iter().filter(|entry| entry.is_packed).count();
         let total_packing_list_items = packing_items.entries.len();
         
-        let points_of_interest = repositories::points_of_interest::find_all_by_trip(&self.db, id).await?;
-        let points_of_interest_count = points_of_interest.len();
-        
-        let reservations = repositories::bookings::find_all_reservations_by_trip(&self.db, id).await?;
-        let car_rentals = repositories::bookings::find_all_car_rentals_by_trip(&self.db, id).await?;
-        let bookings_count = reservations.len() + car_rentals.len();
-        
+        let points_of_interest_count = repositories::points_of_interest::count_by_trip(self.db.deref(), id).await? as usize;
+        let bookings_count = repositories::bookings::count_all_bookings_by_trip(self.db.deref(), id).await? as usize;
+
         let accommodations = repositories::accommodations::find_all_by_trip(&self.db, id).await?;
         let now = Utc::now();
         let accommodation_status = self.determine_accommodation_status(&accommodations, now);
@@ -125,25 +126,23 @@ impl TripHandler {
                 country: location.country,
             })
             .collect();
-        
-        let trip = trip.map(|trip| {
-            let duration_days = std::cmp::max(1, (trip.end_date - trip.start_date).num_days());
-            TripOverviewModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                duration_days,
-                header_image: trip.header_image,
-                pending_packing_list_items,
-                total_packing_list_items,
-                packed_packing_list_items,
-                points_of_interest_count,
-                bookings_count,
-                accommodation_status,
-                locations_list,
-            }
-        });
+
+        let duration_days = ((trip.end_date.with_time(NaiveTime::default()).earliest().unwrap()) - (trip.start_date.with_time(NaiveTime::default()).earliest().unwrap())).num_days() + 1;
+        let trip = TripOverviewModel {
+            id: trip.id,
+            name: trip.name,
+            start_date: trip.start_date,
+            end_date: trip.end_date,
+            duration_days,
+            header_image: trip.header_image,
+            pending_packing_list_items,
+            total_packing_list_items,
+            packed_packing_list_items,
+            points_of_interest_count,
+            bookings_count,
+            accommodation_status,
+            locations_list,
+        };
 
         Ok(trip)
     }
@@ -157,7 +156,7 @@ impl TripHandler {
             ..Default::default()
         };
         let trip = repositories::trips::create(&self.db, model).await?;
-        let trip = self.get_trip_overview(trip.id).await?.unwrap();
+        let trip = self.get_trip_overview(trip.id).await?;
 
         Ok(trip)
     }
@@ -177,7 +176,7 @@ impl TripHandler {
         };
         repositories::trips::update(&self.db, model).await?;
         
-        let trip = self.get_trip_overview(command.id).await?.unwrap();
+        let trip = self.get_trip_overview(command.id).await?;
         
         Ok(trip)
     }

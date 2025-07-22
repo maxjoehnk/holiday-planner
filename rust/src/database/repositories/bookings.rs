@@ -1,10 +1,11 @@
+use sea_orm::PaginatorTrait;
 use std::ops::Deref;
 use crate::database::entities::{reservation, car_rental};
 use crate::database::entities::reservation::Entity as Reservation;
 use crate::database::entities::car_rental::Entity as CarRental;
-use sea_orm::{EntityTrait, QueryFilter, QueryOrder, ColumnTrait};
+use sea_orm::{EntityTrait, QueryFilter, QueryOrder, ColumnTrait, ConnectionTrait};
 use uuid::Uuid;
-use crate::database::Database;
+use crate::database::{Database, DbResult};
 
 pub async fn find_all_reservations_by_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<Vec<reservation::Model>> {
     let reservations = Reservation::find()
@@ -88,4 +89,18 @@ pub async fn delete_car_rental_by_id(db: &Database, id: Uuid) -> anyhow::Result<
         .await?;
 
     Ok(())
+}
+
+pub async fn count_all_bookings_by_trip(db: &impl ConnectionTrait, trip_id: Uuid) -> DbResult<u64> {
+    let reservation_count = Reservation::find()
+        .filter(reservation::Column::TripId.eq(trip_id))
+        .count(db)
+        .await?;
+
+    let car_rental_count = CarRental::find()
+        .filter(car_rental::Column::TripId.eq(trip_id))
+        .count(db)
+        .await?;
+
+    Ok(reservation_count + car_rental_count)
 }

@@ -1,8 +1,17 @@
 use std::ops::Deref;
 use crate::database::entities::point_of_interest::{self, Entity as PointOfInterest};
-use sea_orm::{EntityTrait, QueryFilter, QueryOrder, ColumnTrait};
+use sea_orm::{EntityTrait, QueryFilter, QueryOrder, ColumnTrait, ConnectionTrait, PaginatorTrait};
 use uuid::Uuid;
-use crate::database::Database;
+use crate::database::{Database, DbResult};
+
+pub async fn count_by_trip(db: &impl ConnectionTrait, trip_id: Uuid) -> DbResult<u64> {
+    let count = PointOfInterest::find()
+        .filter(point_of_interest::Column::TripId.eq(trip_id))
+        .count(db)
+        .await?;
+
+    Ok(count)
+}
 
 pub async fn find_all_by_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<Vec<point_of_interest::Model>> {
     let points_of_interest = PointOfInterest::find()
