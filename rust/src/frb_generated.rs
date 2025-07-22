@@ -1702,6 +1702,8 @@ impl SseDecode for crate::commands::add_reservation::AddReservation {
         let mut var_endDate = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_link = <Option<String>>::sse_decode(deserializer);
         let mut var_bookingNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_category =
+            <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
         return crate::commands::add_reservation::AddReservation {
             trip_id: var_tripId,
             title: var_title,
@@ -1710,6 +1712,7 @@ impl SseDecode for crate::commands::add_reservation::AddReservation {
             end_date: var_endDate,
             link: var_link,
             booking_number: var_bookingNumber,
+            category: var_category,
         };
     }
 }
@@ -2388,6 +2391,8 @@ impl SseDecode for crate::models::bookings::Reservation {
         let mut var_endDate = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_link = <Option<String>>::sse_decode(deserializer);
         let mut var_bookingNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_category =
+            <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
         let mut var_attachments = <Vec<crate::models::TripAttachment>>::sse_decode(deserializer);
         return crate::models::bookings::Reservation {
             id: var_id,
@@ -2397,7 +2402,20 @@ impl SseDecode for crate::models::bookings::Reservation {
             end_date: var_endDate,
             link: var_link,
             booking_number: var_bookingNumber,
+            category: var_category,
             attachments: var_attachments,
+        };
+    }
+}
+
+impl SseDecode for crate::models::bookings::ReservationCategory {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::models::bookings::ReservationCategory::Restaurant,
+            1 => crate::models::bookings::ReservationCategory::Activity,
+            _ => unreachable!("Invalid variant for ReservationCategory: {}", inner),
         };
     }
 }
@@ -2447,9 +2465,12 @@ impl SseDecode for crate::models::timeline::TimelineItemDetails {
             2 => {
                 let mut var_title = <String>::sse_decode(deserializer);
                 let mut var_address = <Option<String>>::sse_decode(deserializer);
+                let mut var_category =
+                    <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
                 return crate::models::timeline::TimelineItemDetails::Reservation {
                     title: var_title,
                     address: var_address,
+                    category: var_category,
                 };
             }
             3 => {
@@ -2588,6 +2609,9 @@ impl SseDecode for crate::models::TripOverviewModel {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_startDate = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_endDate = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_durationDays = <i64>::sse_decode(deserializer);
         let mut var_headerImage = <Option<Vec<u8>>>::sse_decode(deserializer);
         let mut var_pendingPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_packedPackingListItems = <usize>::sse_decode(deserializer);
@@ -2600,6 +2624,9 @@ impl SseDecode for crate::models::TripOverviewModel {
         return crate::models::TripOverviewModel {
             id: var_id,
             name: var_name,
+            start_date: var_startDate,
+            end_date: var_endDate,
+            duration_days: var_durationDays,
             header_image: var_headerImage,
             pending_packing_list_items: var_pendingPackingListItems,
             packed_packing_list_items: var_packedPackingListItems,
@@ -2723,6 +2750,8 @@ impl SseDecode for crate::commands::update_reservation::UpdateReservation {
         let mut var_endDate = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_link = <Option<String>>::sse_decode(deserializer);
         let mut var_bookingNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_category =
+            <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
         return crate::commands::update_reservation::UpdateReservation {
             id: var_id,
             title: var_title,
@@ -2731,6 +2760,7 @@ impl SseDecode for crate::commands::update_reservation::UpdateReservation {
             end_date: var_endDate,
             link: var_link,
             booking_number: var_bookingNumber,
+            category: var_category,
         };
     }
 }
@@ -3121,6 +3151,7 @@ impl flutter_rust_bridge::IntoDart for crate::commands::add_reservation::AddRese
             self.end_date.into_into_dart().into_dart(),
             self.link.into_into_dart().into_dart(),
             self.booking_number.into_into_dart().into_dart(),
+            self.category.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -3569,6 +3600,7 @@ impl flutter_rust_bridge::IntoDart for crate::models::bookings::Reservation {
             self.end_date.into_into_dart().into_dart(),
             self.link.into_into_dart().into_dart(),
             self.booking_number.into_into_dart().into_dart(),
+            self.category.into_into_dart().into_dart(),
             self.attachments.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -3582,6 +3614,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::bookings::Reservation>
     for crate::models::bookings::Reservation
 {
     fn into_into_dart(self) -> crate::models::bookings::Reservation {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::bookings::ReservationCategory {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Restaurant => 0.into_dart(),
+            Self::Activity => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::bookings::ReservationCategory
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::bookings::ReservationCategory>
+    for crate::models::bookings::ReservationCategory
+{
+    fn into_into_dart(self) -> crate::models::bookings::ReservationCategory {
         self
     }
 }
@@ -3644,10 +3697,15 @@ impl flutter_rust_bridge::IntoDart for crate::models::timeline::TimelineItemDeta
                 address.into_into_dart().into_dart(),
             ]
             .into_dart(),
-            crate::models::timeline::TimelineItemDetails::Reservation { title, address } => [
+            crate::models::timeline::TimelineItemDetails::Reservation {
+                title,
+                address,
+                category,
+            } => [
                 2.into_dart(),
                 title.into_into_dart().into_dart(),
                 address.into_into_dart().into_dart(),
+                category.into_into_dart().into_dart(),
             ]
             .into_dart(),
             crate::models::timeline::TimelineItemDetails::CheckIn { address } => {
@@ -3826,6 +3884,9 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
         [
             self.id.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
+            self.start_date.into_into_dart().into_dart(),
+            self.end_date.into_into_dart().into_dart(),
+            self.duration_days.into_into_dart().into_dart(),
             self.header_image.into_into_dart().into_dart(),
             self.pending_packing_list_items.into_into_dart().into_dart(),
             self.packed_packing_list_items.into_into_dart().into_dart(),
@@ -3979,6 +4040,7 @@ impl flutter_rust_bridge::IntoDart for crate::commands::update_reservation::Upda
             self.end_date.into_into_dart().into_dart(),
             self.link.into_into_dart().into_dart(),
             self.booking_number.into_into_dart().into_dart(),
+            self.category.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4246,6 +4308,7 @@ impl SseEncode for crate::commands::add_reservation::AddReservation {
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.end_date, serializer);
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
+        <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
     }
 }
 
@@ -4745,7 +4808,24 @@ impl SseEncode for crate::models::bookings::Reservation {
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.end_date, serializer);
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
+        <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
         <Vec<crate::models::TripAttachment>>::sse_encode(self.attachments, serializer);
+    }
+}
+
+impl SseEncode for crate::models::bookings::ReservationCategory {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::models::bookings::ReservationCategory::Restaurant => 0,
+                crate::models::bookings::ReservationCategory::Activity => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -4781,10 +4861,15 @@ impl SseEncode for crate::models::timeline::TimelineItemDetails {
                 <String>::sse_encode(provider, serializer);
                 <String>::sse_encode(address, serializer);
             }
-            crate::models::timeline::TimelineItemDetails::Reservation { title, address } => {
+            crate::models::timeline::TimelineItemDetails::Reservation {
+                title,
+                address,
+                category,
+            } => {
                 <i32>::sse_encode(2, serializer);
                 <String>::sse_encode(title, serializer);
                 <Option<String>>::sse_encode(address, serializer);
+                <crate::models::bookings::ReservationCategory>::sse_encode(category, serializer);
             }
             crate::models::timeline::TimelineItemDetails::CheckIn { address } => {
                 <i32>::sse_encode(3, serializer);
@@ -4890,6 +4975,9 @@ impl SseEncode for crate::models::TripOverviewModel {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <uuid::Uuid>::sse_encode(self.id, serializer);
         <String>::sse_encode(self.name, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.start_date, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.end_date, serializer);
+        <i64>::sse_encode(self.duration_days, serializer);
         <Option<Vec<u8>>>::sse_encode(self.header_image, serializer);
         <usize>::sse_encode(self.pending_packing_list_items, serializer);
         <usize>::sse_encode(self.packed_packing_list_items, serializer);
@@ -4983,6 +5071,7 @@ impl SseEncode for crate::commands::update_reservation::UpdateReservation {
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.end_date, serializer);
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
+        <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
     }
 }
 

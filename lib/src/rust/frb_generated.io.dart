@@ -297,6 +297,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Reservation dco_decode_reservation(dynamic raw);
 
   @protected
+  ReservationCategory dco_decode_reservation_category(dynamic raw);
+
+  @protected
   SearchWebImages dco_decode_search_web_images(dynamic raw);
 
   @protected
@@ -652,6 +655,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reservation sse_decode_reservation(SseDeserializer deserializer);
+
+  @protected
+  ReservationCategory sse_decode_reservation_category(
+      SseDeserializer deserializer);
 
   @protected
   SearchWebImages sse_decode_search_web_images(SseDeserializer deserializer);
@@ -1029,6 +1036,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_reservation(Reservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_reservation_category(
+      ReservationCategory self, SseSerializer serializer);
 
   @protected
   void sse_encode_search_web_images(

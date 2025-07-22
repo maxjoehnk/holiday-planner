@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/attachments/add_attachment.dart';
@@ -66,6 +67,18 @@ class _TripViewState extends State<TripView> {
     _trip.addStream(getTrip(id: widget.tripId).asStream());
   }
 
+  String _buildDateString(TripOverviewModel trip) {
+    final isSameDate = trip.startDate.year == trip.endDate.year &&
+                      trip.startDate.month == trip.endDate.month &&
+                      trip.startDate.day == trip.endDate.day;
+    
+    if (isSameDate) {
+      return formatDate(trip.startDate);
+    } else {
+      return '${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,21 +121,58 @@ class _TripViewState extends State<TripView> {
                     ),
                   ],
                   flexibleSpace: FlexibleSpaceBar(
-                    title: Text(
-                      trip.name,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            offset: const Offset(1.0, 1.0),
-                            blurRadius: 3.0,
-                            color: Colors.black.withOpacity(0.8),
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            trip.name,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          Shadow(
-                            offset: const Offset(-1.0, -1.0),
-                            blurRadius: 3.0,
-                            color: Colors.black.withOpacity(0.8),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 16,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  _buildDateString(trip),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white.withOpacity(0.9),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  trip.durationDays == 1
+                                    ? "1 day"
+                                    : "${trip.durationDays} days",
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

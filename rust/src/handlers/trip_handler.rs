@@ -123,9 +123,13 @@ impl TripHandler {
             .collect();
         
         let trip = trip.map(|trip| {
+            let duration_days = std::cmp::max(1, (trip.end_date - trip.start_date).num_days());
             TripOverviewModel {
                 id: trip.id,
                 name: trip.name,
+                start_date: trip.start_date,
+                end_date: trip.end_date,
+                duration_days,
                 header_image: trip.header_image,
                 pending_packing_list_items,
                 total_packing_list_items,

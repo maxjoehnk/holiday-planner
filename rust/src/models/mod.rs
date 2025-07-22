@@ -25,6 +25,9 @@ pub struct TripListModel {
 pub struct TripOverviewModel {
     pub id: Uuid,
     pub name: String,
+    pub start_date: DateTime<Utc>,
+    pub end_date: DateTime<Utc>,
+    pub duration_days: i64,
     pub header_image: Option<Vec<u8>>,
     pub pending_packing_list_items: usize,
     pub packed_packing_list_items: usize,

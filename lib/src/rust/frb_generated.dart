@@ -1372,8 +1372,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AddReservation dco_decode_add_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 7)
-      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return AddReservation(
       tripId: dco_decode_Uuid(arr[0]),
       title: dco_decode_String(arr[1]),
@@ -1382,6 +1382,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       endDate: dco_decode_opt_box_autoadd_Chrono_Utc(arr[4]),
       link: dco_decode_opt_String(arr[5]),
       bookingNumber: dco_decode_opt_String(arr[6]),
+      category: dco_decode_reservation_category(arr[7]),
     );
   }
 
@@ -1996,8 +1997,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Reservation dco_decode_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return Reservation(
       id: dco_decode_Uuid(arr[0]),
       title: dco_decode_String(arr[1]),
@@ -2006,8 +2007,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       endDate: dco_decode_opt_box_autoadd_Chrono_Utc(arr[4]),
       link: dco_decode_opt_String(arr[5]),
       bookingNumber: dco_decode_opt_String(arr[6]),
-      attachments: dco_decode_list_trip_attachment(arr[7]),
+      category: dco_decode_reservation_category(arr[7]),
+      attachments: dco_decode_list_trip_attachment(arr[8]),
     );
+  }
+
+  @protected
+  ReservationCategory dco_decode_reservation_category(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ReservationCategory.values[raw as int];
   }
 
   @protected
@@ -2051,6 +2059,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return TimelineItemDetails_Reservation(
           title: dco_decode_String(raw[1]),
           address: dco_decode_opt_String(raw[2]),
+          category: dco_decode_reservation_category(raw[3]),
         );
       case 3:
         return TimelineItemDetails_CheckIn(
@@ -2159,19 +2168,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripOverviewModel dco_decode_trip_overview_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 9)
-      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
+    if (arr.length != 12)
+      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
     return TripOverviewModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
-      headerImage: dco_decode_opt_list_prim_u_8_strict(arr[2]),
-      pendingPackingListItems: dco_decode_usize(arr[3]),
-      packedPackingListItems: dco_decode_usize(arr[4]),
-      totalPackingListItems: dco_decode_usize(arr[5]),
-      pointsOfInterestCount: dco_decode_usize(arr[6]),
+      startDate: dco_decode_Chrono_Utc(arr[2]),
+      endDate: dco_decode_Chrono_Utc(arr[3]),
+      durationDays: dco_decode_i_64(arr[4]),
+      headerImage: dco_decode_opt_list_prim_u_8_strict(arr[5]),
+      pendingPackingListItems: dco_decode_usize(arr[6]),
+      packedPackingListItems: dco_decode_usize(arr[7]),
+      totalPackingListItems: dco_decode_usize(arr[8]),
+      pointsOfInterestCount: dco_decode_usize(arr[9]),
       accommodationStatus:
-          dco_decode_opt_box_autoadd_accommodation_status(arr[7]),
-      locationsList: dco_decode_list_trip_location_summary(arr[8]),
+          dco_decode_opt_box_autoadd_accommodation_status(arr[10]),
+      locationsList: dco_decode_list_trip_location_summary(arr[11]),
     );
   }
 
@@ -2268,8 +2280,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   UpdateReservation dco_decode_update_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 7)
-      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return UpdateReservation(
       id: dco_decode_Uuid(arr[0]),
       title: dco_decode_String(arr[1]),
@@ -2278,6 +2290,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       endDate: dco_decode_opt_box_autoadd_Chrono_Utc(arr[4]),
       link: dco_decode_opt_String(arr[5]),
       bookingNumber: dco_decode_opt_String(arr[6]),
+      category: dco_decode_reservation_category(arr[7]),
     );
   }
 
@@ -2483,6 +2496,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_endDate = sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
     var var_link = sse_decode_opt_String(deserializer);
     var var_bookingNumber = sse_decode_opt_String(deserializer);
+    var var_category = sse_decode_reservation_category(deserializer);
     return AddReservation(
         tripId: var_tripId,
         title: var_title,
@@ -2490,7 +2504,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         startDate: var_startDate,
         endDate: var_endDate,
         link: var_link,
-        bookingNumber: var_bookingNumber);
+        bookingNumber: var_bookingNumber,
+        category: var_category);
   }
 
   @protected
@@ -3250,6 +3265,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_endDate = sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
     var var_link = sse_decode_opt_String(deserializer);
     var var_bookingNumber = sse_decode_opt_String(deserializer);
+    var var_category = sse_decode_reservation_category(deserializer);
     var var_attachments = sse_decode_list_trip_attachment(deserializer);
     return Reservation(
         id: var_id,
@@ -3259,7 +3275,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         endDate: var_endDate,
         link: var_link,
         bookingNumber: var_bookingNumber,
+        category: var_category,
         attachments: var_attachments);
+  }
+
+  @protected
+  ReservationCategory sse_decode_reservation_category(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ReservationCategory.values[inner];
   }
 
   @protected
@@ -3297,8 +3322,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 2:
         var var_title = sse_decode_String(deserializer);
         var var_address = sse_decode_opt_String(deserializer);
+        var var_category = sse_decode_reservation_category(deserializer);
         return TimelineItemDetails_Reservation(
-            title: var_title, address: var_address);
+            title: var_title, address: var_address, category: var_category);
       case 3:
         var var_address = sse_decode_opt_String(deserializer);
         return TimelineItemDetails_CheckIn(address: var_address);
@@ -3405,6 +3431,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_Uuid(deserializer);
     var var_name = sse_decode_String(deserializer);
+    var var_startDate = sse_decode_Chrono_Utc(deserializer);
+    var var_endDate = sse_decode_Chrono_Utc(deserializer);
+    var var_durationDays = sse_decode_i_64(deserializer);
     var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
     var var_pendingPackingListItems = sse_decode_usize(deserializer);
     var var_packedPackingListItems = sse_decode_usize(deserializer);
@@ -3416,6 +3445,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return TripOverviewModel(
         id: var_id,
         name: var_name,
+        startDate: var_startDate,
+        endDate: var_endDate,
+        durationDays: var_durationDays,
         headerImage: var_headerImage,
         pendingPackingListItems: var_pendingPackingListItems,
         packedPackingListItems: var_packedPackingListItems,
@@ -3526,6 +3558,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_endDate = sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
     var var_link = sse_decode_opt_String(deserializer);
     var var_bookingNumber = sse_decode_opt_String(deserializer);
+    var var_category = sse_decode_reservation_category(deserializer);
     return UpdateReservation(
         id: var_id,
         title: var_title,
@@ -3533,7 +3566,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         startDate: var_startDate,
         endDate: var_endDate,
         link: var_link,
-        bookingNumber: var_bookingNumber);
+        bookingNumber: var_bookingNumber,
+        category: var_category);
   }
 
   @protected
@@ -3716,6 +3750,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_String(self.link, serializer);
     sse_encode_opt_String(self.bookingNumber, serializer);
+    sse_encode_reservation_category(self.category, serializer);
   }
 
   @protected
@@ -4349,7 +4384,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_String(self.link, serializer);
     sse_encode_opt_String(self.bookingNumber, serializer);
+    sse_encode_reservation_category(self.category, serializer);
     sse_encode_list_trip_attachment(self.attachments, serializer);
+  }
+
+  @protected
+  void sse_encode_reservation_category(
+      ReservationCategory self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -4387,11 +4430,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(address, serializer);
       case TimelineItemDetails_Reservation(
           title: final title,
-          address: final address
+          address: final address,
+          category: final category
         ):
         sse_encode_i_32(2, serializer);
         sse_encode_String(title, serializer);
         sse_encode_opt_String(address, serializer);
+        sse_encode_reservation_category(category, serializer);
       case TimelineItemDetails_CheckIn(address: final address):
         sse_encode_i_32(3, serializer);
         sse_encode_opt_String(address, serializer);
@@ -4486,6 +4531,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.id, serializer);
     sse_encode_String(self.name, serializer);
+    sse_encode_Chrono_Utc(self.startDate, serializer);
+    sse_encode_Chrono_Utc(self.endDate, serializer);
+    sse_encode_i_64(self.durationDays, serializer);
     sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
     sse_encode_usize(self.pendingPackingListItems, serializer);
     sse_encode_usize(self.packedPackingListItems, serializer);
@@ -4575,6 +4623,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_String(self.link, serializer);
     sse_encode_opt_String(self.bookingNumber, serializer);
+    sse_encode_reservation_category(self.category, serializer);
   }
 
   @protected

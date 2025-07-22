@@ -503,6 +503,9 @@ class TripLocationSummary {
 class TripOverviewModel {
   final UuidValue id;
   final String name;
+  final DateTime startDate;
+  final DateTime endDate;
+  final PlatformInt64 durationDays;
   final Uint8List? headerImage;
   final BigInt pendingPackingListItems;
   final BigInt packedPackingListItems;
@@ -514,6 +517,9 @@ class TripOverviewModel {
   const TripOverviewModel({
     required this.id,
     required this.name,
+    required this.startDate,
+    required this.endDate,
+    required this.durationDays,
     this.headerImage,
     required this.pendingPackingListItems,
     required this.packedPackingListItems,
@@ -527,6 +533,9 @@ class TripOverviewModel {
   int get hashCode =>
       id.hashCode ^
       name.hashCode ^
+      startDate.hashCode ^
+      endDate.hashCode ^
+      durationDays.hashCode ^
       headerImage.hashCode ^
       pendingPackingListItems.hashCode ^
       packedPackingListItems.hashCode ^
@@ -542,6 +551,9 @@ class TripOverviewModel {
           runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
+          startDate == other.startDate &&
+          endDate == other.endDate &&
+          durationDays == other.durationDays &&
           headerImage == other.headerImage &&
           pendingPackingListItems == other.pendingPackingListItems &&
           packedPackingListItems == other.packedPackingListItems &&
