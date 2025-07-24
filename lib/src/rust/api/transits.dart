@@ -24,8 +24,10 @@ Future<void> deleteTrain({required UuidValue trainId}) =>
 Future<List<Train>> getTripTrains({required UuidValue tripId}) =>
     RustLib.instance.api.crateApiTransitsGetTripTrains(tripId: tripId);
 
-Future<void> parseSharedTrainData({required ParseSharedTrainData command}) =>
-    RustLib.instance.api.crateApiTransitsParseSharedTrainData(command: command);
+Future<void> importParsedTrainJourney(
+        {required ImportParsedTrainJourney command}) =>
+    RustLib.instance.api
+        .crateApiTransitsImportParsedTrainJourney(command: command);
 
 Future<ParsedTrainJourney> parseTrainData({required ParseTrainData command}) =>
     RustLib.instance.api.crateApiTransitsParseTrainData(command: command);

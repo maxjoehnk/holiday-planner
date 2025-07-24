@@ -159,7 +159,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  ParseSharedTrainData dco_decode_box_autoadd_parse_shared_train_data(
+  ImportParsedTrainJourney dco_decode_box_autoadd_import_parsed_train_journey(
       dynamic raw);
 
   @protected
@@ -227,6 +227,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
+  ImportParsedTrainJourney dco_decode_import_parsed_train_journey(dynamic raw);
 
   @protected
   List<AccommodationModel> dco_decode_list_accommodation_model(dynamic raw);
@@ -323,9 +326,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PackingListEntryCondition dco_decode_packing_list_entry_condition(
       dynamic raw);
-
-  @protected
-  ParseSharedTrainData dco_decode_parse_shared_train_data(dynamic raw);
 
   @protected
   ParseTrainData dco_decode_parse_train_data(dynamic raw);
@@ -553,7 +553,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  ParseSharedTrainData sse_decode_box_autoadd_parse_shared_train_data(
+  ImportParsedTrainJourney sse_decode_box_autoadd_import_parsed_train_journey(
       SseDeserializer deserializer);
 
   @protected
@@ -630,6 +630,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
+  ImportParsedTrainJourney sse_decode_import_parsed_train_journey(
+      SseDeserializer deserializer);
 
   @protected
   List<AccommodationModel> sse_decode_list_accommodation_model(
@@ -735,10 +739,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PackingListEntryCondition sse_decode_packing_list_entry_condition(
-      SseDeserializer deserializer);
-
-  @protected
-  ParseSharedTrainData sse_decode_parse_shared_train_data(
       SseDeserializer deserializer);
 
   @protected
@@ -986,8 +986,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeletePackingListEntry self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_parse_shared_train_data(
-      ParseSharedTrainData self, SseSerializer serializer);
+  void sse_encode_box_autoadd_import_parsed_train_journey(
+      ImportParsedTrainJourney self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_parse_train_data(
@@ -1065,6 +1065,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_import_parsed_train_journey(
+      ImportParsedTrainJourney self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_accommodation_model(
@@ -1175,10 +1179,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_packing_list_entry_condition(
       PackingListEntryCondition self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_parse_shared_train_data(
-      ParseSharedTrainData self, SseSerializer serializer);
 
   @protected
   void sse_encode_parse_train_data(

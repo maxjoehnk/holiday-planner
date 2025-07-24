@@ -105,7 +105,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 2099084757;
+  int get rustContentHash => -627967105;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -206,6 +206,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<List<TripListModel>> crateApiTripsGetUpcomingTrips();
 
+  Future<void> crateApiTransitsImportParsedTrainJourney(
+      {required ImportParsedTrainJourney command});
+
   Future<void> crateApiInitApp();
 
   Future<void> crateApiTripsMarkAsPacked(
@@ -213,9 +216,6 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiTripsMarkAsUnpacked(
       {required UuidValue tripId, required UuidValue entryId});
-
-  Future<void> crateApiTransitsParseSharedTrainData(
-      {required ParseSharedTrainData command});
 
   Future<ParsedTrainJourney> crateApiTransitsParseTrainData(
       {required ParseTrainData command});
@@ -1104,12 +1104,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiTransitsImportParsedTrainJourney(
+      {required ImportParsedTrainJourney command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_import_parsed_train_journey(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 34, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTransitsImportParsedTrainJourneyConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTransitsImportParsedTrainJourneyConstMeta =>
+      const TaskConstMeta(
+        debugName: "import_parsed_train_journey",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiInitApp() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1135,7 +1161,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(entryId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1161,7 +1187,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(entryId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 36, port: port_);
+            funcId: 37, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1177,32 +1203,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "mark_as_unpacked",
         argNames: ["tripId", "entryId"],
-      );
-
-  @override
-  Future<void> crateApiTransitsParseSharedTrainData(
-      {required ParseSharedTrainData command}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_parse_shared_train_data(command, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiTransitsParseSharedTrainDataConstMeta,
-      argValues: [command],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiTransitsParseSharedTrainDataConstMeta =>
-      const TaskConstMeta(
-        debugName: "parse_shared_train_data",
-        argNames: ["command"],
       );
 
   @override
@@ -1871,10 +1871,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ParseSharedTrainData dco_decode_box_autoadd_parse_shared_train_data(
+  ImportParsedTrainJourney dco_decode_box_autoadd_import_parsed_train_journey(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_parse_shared_train_data(raw);
+    return dco_decode_import_parsed_train_journey(raw);
   }
 
   @protected
@@ -2060,6 +2060,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64 dco_decode_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeI64(raw);
+  }
+
+  @protected
+  ImportParsedTrainJourney dco_decode_import_parsed_train_journey(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ImportParsedTrainJourney(
+      tripId: dco_decode_Uuid(arr[0]),
+      journey: dco_decode_parsed_train_journey(arr[1]),
+    );
   }
 
   @protected
@@ -2308,18 +2320,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw Exception("unreachable");
     }
-  }
-
-  @protected
-  ParseSharedTrainData dco_decode_parse_shared_train_data(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return ParseSharedTrainData(
-      tripId: dco_decode_Uuid(arr[0]),
-      sharedText: dco_decode_String(arr[1]),
-    );
   }
 
   @protected
@@ -3196,10 +3196,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ParseSharedTrainData sse_decode_box_autoadd_parse_shared_train_data(
+  ImportParsedTrainJourney sse_decode_box_autoadd_import_parsed_train_journey(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_parse_shared_train_data(deserializer));
+    return (sse_decode_import_parsed_train_journey(deserializer));
   }
 
   @protected
@@ -3400,6 +3400,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  ImportParsedTrainJourney sse_decode_import_parsed_train_journey(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tripId = sse_decode_Uuid(deserializer);
+    var var_journey = sse_decode_parsed_train_journey(deserializer);
+    return ImportParsedTrainJourney(tripId: var_tripId, journey: var_journey);
   }
 
   @protected
@@ -3783,15 +3792,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw UnimplementedError('');
     }
-  }
-
-  @protected
-  ParseSharedTrainData sse_decode_parse_shared_train_data(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_tripId = sse_decode_Uuid(deserializer);
-    var var_sharedText = sse_decode_String(deserializer);
-    return ParseSharedTrainData(tripId: var_tripId, sharedText: var_sharedText);
   }
 
   @protected
@@ -4633,10 +4633,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_parse_shared_train_data(
-      ParseSharedTrainData self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_import_parsed_train_journey(
+      ImportParsedTrainJourney self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_parse_shared_train_data(self, serializer);
+    sse_encode_import_parsed_train_journey(self, serializer);
   }
 
   @protected
@@ -4803,6 +4803,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_import_parsed_train_journey(
+      ImportParsedTrainJourney self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.tripId, serializer);
+    sse_encode_parsed_train_journey(self.journey, serializer);
   }
 
   @protected
@@ -5118,14 +5126,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(5, serializer);
         sse_encode_String(tag, serializer);
     }
-  }
-
-  @protected
-  void sse_encode_parse_shared_train_data(
-      ParseSharedTrainData self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_Uuid(self.tripId, serializer);
-    sse_encode_String(self.sharedText, serializer);
   }
 
   @protected

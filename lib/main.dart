@@ -4,7 +4,7 @@ import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'dart:async';
-import 'package:holiday_planner/views/shared_train_handler.dart';
+import 'package:holiday_planner/views/share_receiver/shared_train_handler.dart';
 
 Future<void> main() async {
   await RustLib.init();

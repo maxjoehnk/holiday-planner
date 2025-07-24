@@ -1,7 +1,7 @@
 use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
-use crate::commands::{AddTrain, UpdateTrain, ParseSharedTrainData, ParseTrainData};
+use crate::commands::{AddTrain, UpdateTrain, ImportParsedTrainJourney, ParseTrainData};
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::transits::{Train, ParsedTrainJourney, ParsedTrainSegment};
@@ -99,17 +99,11 @@ impl TrainHandler {
         Ok(())
     }
 
-    pub async fn parse_shared_train_data(&self, command: ParseSharedTrainData) -> anyhow::Result<()> {
-        tracing::debug!("Parsing shared train data for trip {}", command.trip_id);
+    pub async fn import_parsed_train_journey(&self, command: ImportParsedTrainJourney) -> anyhow::Result<()> {
+        tracing::debug!("Importing parsed train data for trip {}", command.trip_id);
         
-        // Parse the shared train information
-        let parsed_journey = crate::parsers::train_parser::parse_db_train_info(&command.shared_text)?;
-        
-        // Store the count before moving the segments
-        let segments_count = parsed_journey.segments.len();
-        
-        // Create AddTrain commands for each segment and add them
-        for segment in parsed_journey.segments {
+        let segments_count = command.journey.segments.len();
+        for segment in command.journey.segments {
             let add_train_command = AddTrain {
                 trip_id: command.trip_id,
                 train_number: segment.train_number,
@@ -137,10 +131,8 @@ impl TrainHandler {
     pub async fn parse_train_data(&self, command: ParseTrainData) -> anyhow::Result<ParsedTrainJourney> {
         tracing::debug!("Parsing train data without saving");
         
-        // Parse the shared train information
         let parsed_journey = crate::parsers::train_parser::parse_db_train_info(&command.shared_text)?;
         
-        // Convert from parser types to API types
         let segments: Vec<ParsedTrainSegment> = parsed_journey.segments.into_iter().map(|segment| {
             ParsedTrainSegment {
                 train_number: segment.train_number,

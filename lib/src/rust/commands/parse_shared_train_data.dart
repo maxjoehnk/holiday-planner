@@ -4,26 +4,27 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models/transits.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
-class ParseSharedTrainData {
+class ImportParsedTrainJourney {
   final UuidValue tripId;
-  final String sharedText;
+  final ParsedTrainJourney journey;
 
-  const ParseSharedTrainData({
+  const ImportParsedTrainJourney({
     required this.tripId,
-    required this.sharedText,
+    required this.journey,
   });
 
   @override
-  int get hashCode => tripId.hashCode ^ sharedText.hashCode;
+  int get hashCode => tripId.hashCode ^ journey.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ParseSharedTrainData &&
+      other is ImportParsedTrainJourney &&
           runtimeType == other.runtimeType &&
           tripId == other.tripId &&
-          sharedText == other.sharedText;
+          journey == other.journey;
 }

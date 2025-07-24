@@ -1,7 +1,8 @@
 use uuid::Uuid;
+use crate::models::ParsedTrainJourney;
 
 #[derive(Debug)]
-pub struct ParseSharedTrainData {
+pub struct ImportParsedTrainJourney {
     pub trip_id: Uuid,
-    pub shared_text: String,
+    pub journey: ParsedTrainJourney,
 }
