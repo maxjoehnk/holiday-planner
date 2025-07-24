@@ -27,6 +27,7 @@ sea-orm = { version = "1.1.0-rc.1", features = ["runtime-tokio-rustls", "with-uu
 migration = { path = "migration" }
 futures = "0.3"
 itertools = "0.13"
+regex = "1.10"
 
 [dev-dependencies]
 tokio = { version = "*", features = ["test-util", "macros"] }

@@ -23,6 +23,7 @@ import 'commands/add_trip_location.dart';
 import 'commands/add_trip_point_of_interest.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
+import 'commands/parse_shared_train_data.dart';
 import 'commands/search_web_images.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
@@ -154,6 +155,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DeletePackingListEntry dco_decode_box_autoadd_delete_packing_list_entry(
+      dynamic raw);
+
+  @protected
+  ParseSharedTrainData dco_decode_box_autoadd_parse_shared_train_data(
       dynamic raw);
 
   @protected
@@ -311,6 +316,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PackingListEntryCondition dco_decode_packing_list_entry_condition(
       dynamic raw);
+
+  @protected
+  ParseSharedTrainData dco_decode_parse_shared_train_data(dynamic raw);
 
   @protected
   PointOfInterestModel dco_decode_point_of_interest_model(dynamic raw);
@@ -529,6 +537,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  ParseSharedTrainData sse_decode_box_autoadd_parse_shared_train_data(
+      SseDeserializer deserializer);
+
+  @protected
   Reservation sse_decode_box_autoadd_reservation(SseDeserializer deserializer);
 
   @protected
@@ -699,6 +711,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PackingListEntryCondition sse_decode_packing_list_entry_condition(
+      SseDeserializer deserializer);
+
+  @protected
+  ParseSharedTrainData sse_decode_parse_shared_train_data(
       SseDeserializer deserializer);
 
   @protected
@@ -935,6 +951,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeletePackingListEntry self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_parse_shared_train_data(
+      ParseSharedTrainData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_reservation(
       Reservation self, SseSerializer serializer);
 
@@ -1112,6 +1132,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_packing_list_entry_condition(
       PackingListEntryCondition self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_parse_shared_train_data(
+      ParseSharedTrainData self, SseSerializer serializer);
 
   @protected
   void sse_encode_point_of_interest_model(

@@ -13,3 +13,5 @@ mod third_party;
 mod handlers;
 /// flutter_rust_bridge:ignore
 mod jobs;
+/// flutter_rust_bridge:ignore
+mod parsers;

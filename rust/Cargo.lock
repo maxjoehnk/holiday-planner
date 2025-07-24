@@ -2314,6 +2314,7 @@ dependencies = [
  "infer",
  "itertools",
  "migration",
+ "regex",
  "reqwest",
  "sea-orm",
  "serde",

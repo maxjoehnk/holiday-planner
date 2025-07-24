@@ -1,7 +1,7 @@
 use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
-use crate::commands::{AddTrain, UpdateTrain};
+use crate::commands::{AddTrain, UpdateTrain, ParseSharedTrainData};
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::transits::Train;
@@ -95,6 +95,41 @@ impl TrainHandler {
     pub async fn delete_train(&self, train_id: Uuid) -> anyhow::Result<()> {
         repositories::transits::delete_train_by_id(&self.db, train_id).await?;
 
+        Ok(())
+    }
+
+    pub async fn parse_shared_train_data(&self, command: ParseSharedTrainData) -> anyhow::Result<()> {
+        tracing::debug!("Parsing shared train data for trip {}", command.trip_id);
+        
+        // Parse the shared train information
+        let parsed_journey = crate::parsers::train_parser::parse_db_train_info(&command.shared_text)?;
+        
+        // Store the count before moving the segments
+        let segments_count = parsed_journey.segments.len();
+        
+        // Create AddTrain commands for each segment and add them
+        for segment in parsed_journey.segments {
+            let add_train_command = AddTrain {
+                trip_id: command.trip_id,
+                train_number: segment.train_number,
+                departure_station_name: segment.departure_station_name,
+                departure_station_city: segment.departure_station_city,
+                departure_station_country: segment.departure_station_country,
+                departure_scheduled_platform: segment.departure_scheduled_platform.unwrap_or_default(),
+                arrival_station_name: segment.arrival_station_name,
+                arrival_station_city: segment.arrival_station_city,
+                arrival_station_country: segment.arrival_station_country,
+                arrival_scheduled_platform: segment.arrival_scheduled_platform.unwrap_or_default(),
+                scheduled_departure_time: segment.scheduled_departure_time.to_utc(),
+                scheduled_arrival_time: segment.scheduled_arrival_time.to_utc(),
+            };
+            
+            self.add_train(add_train_command).await?;
+        }
+        
+        tracing::info!("Successfully added {} train segments to trip {}", 
+                      segments_count, command.trip_id);
+        
         Ok(())
     }
 }

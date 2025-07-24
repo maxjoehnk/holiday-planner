@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -872429213;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 289300355;
 
 // Section: executor
 
@@ -1365,6 +1365,46 @@ fn wire__crate__api__trips__mark_as_unpacked_impl(
         },
     )
 }
+fn wire__crate__api__transits__parse_shared_train_data_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "parse_shared_train_data",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command =
+                <crate::commands::parse_shared_train_data::ParseSharedTrainData>::sse_decode(
+                    &mut deserializer,
+                );
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::transits::parse_shared_train_data(api_command).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__attachments__read_attachment_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2647,6 +2687,18 @@ impl SseDecode for crate::models::PackingListEntryCondition {
     }
 }
 
+impl SseDecode for crate::commands::parse_shared_train_data::ParseSharedTrainData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_sharedText = <String>::sse_decode(deserializer);
+        return crate::commands::parse_shared_train_data::ParseSharedTrainData {
+            trip_id: var_tripId,
+            shared_text: var_sharedText,
+        };
+    }
+}
+
 impl SseDecode for crate::models::PointOfInterestModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3368,37 +3420,43 @@ fn pde_ffi_dispatcher_primary_impl(
         34 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
         35 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
         36 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        37 => {
+        37 => wire__crate__api__transits__parse_shared_train_data_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        38 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        38 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
+        39 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        43 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        40 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        41 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        44 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => {
+        45 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        45 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        46 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        49 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4007,6 +4065,31 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::PackingListEntryCondition>
     for crate::models::PackingListEntryCondition
 {
     fn into_into_dart(self) -> crate::models::PackingListEntryCondition {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::commands::parse_shared_train_data::ParseSharedTrainData
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.trip_id.into_into_dart().into_dart(),
+            self.shared_text.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::parse_shared_train_data::ParseSharedTrainData
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        crate::commands::parse_shared_train_data::ParseSharedTrainData,
+    > for crate::commands::parse_shared_train_data::ParseSharedTrainData
+{
+    fn into_into_dart(self) -> crate::commands::parse_shared_train_data::ParseSharedTrainData {
         self
     }
 }
@@ -5358,6 +5441,14 @@ impl SseEncode for crate::models::PackingListEntryCondition {
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseEncode for crate::commands::parse_shared_train_data::ParseSharedTrainData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.trip_id, serializer);
+        <String>::sse_encode(self.shared_text, serializer);
     }
 }
 
