@@ -46,6 +46,7 @@ impl TrainHandler {
     pub async fn get_trip_trains(&self, trip_id: Uuid) -> anyhow::Result<Vec<Train>> {
         let trains = repositories::transits::find_all_trains_by_trip(&self.db, trip_id).await?;
         let trains = trains.into_iter().map(|t| Train {
+            id: t.id,
             train_number: t.train_number,
             departure: crate::models::transits::TrainStation {
                 name: t.departure_station_name,

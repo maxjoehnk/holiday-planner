@@ -5,6 +5,7 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:uuid/uuid.dart';
 
 class ParsedTrainJourney {
   final List<ParsedTrainSegment> segments;
@@ -87,6 +88,7 @@ class ParsedTrainSegment {
 }
 
 class Train {
+  final UuidValue id;
   final String? trainNumber;
   final TrainStation departure;
   final TrainStation arrival;
@@ -96,6 +98,7 @@ class Train {
   final DateTime? estimatedArrivalTime;
 
   const Train({
+    required this.id,
     this.trainNumber,
     required this.departure,
     required this.arrival,
@@ -107,6 +110,7 @@ class Train {
 
   @override
   int get hashCode =>
+      id.hashCode ^
       trainNumber.hashCode ^
       departure.hashCode ^
       arrival.hashCode ^
@@ -120,6 +124,7 @@ class Train {
       identical(this, other) ||
       other is Train &&
           runtimeType == other.runtimeType &&
+          id == other.id &&
           trainNumber == other.trainNumber &&
           departure == other.departure &&
           arrival == other.arrival &&

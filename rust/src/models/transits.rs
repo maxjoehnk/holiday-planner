@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Transit {
@@ -32,6 +33,7 @@ pub struct Airport {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Train {
+    pub id: Uuid,
     pub train_number: Option<String>,
     pub departure: TrainStation,
     pub arrival: TrainStation,

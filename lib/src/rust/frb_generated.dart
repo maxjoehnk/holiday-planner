@@ -2514,16 +2514,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Train dco_decode_train(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 7)
-      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return Train(
-      trainNumber: dco_decode_opt_String(arr[0]),
-      departure: dco_decode_train_station(arr[1]),
-      arrival: dco_decode_train_station(arr[2]),
-      scheduledDepartureTime: dco_decode_Chrono_Utc(arr[3]),
-      scheduledArrivalTime: dco_decode_Chrono_Utc(arr[4]),
-      estimatedDepartureTime: dco_decode_opt_box_autoadd_Chrono_Utc(arr[5]),
-      estimatedArrivalTime: dco_decode_opt_box_autoadd_Chrono_Utc(arr[6]),
+      id: dco_decode_Uuid(arr[0]),
+      trainNumber: dco_decode_opt_String(arr[1]),
+      departure: dco_decode_train_station(arr[2]),
+      arrival: dco_decode_train_station(arr[3]),
+      scheduledDepartureTime: dco_decode_Chrono_Utc(arr[4]),
+      scheduledArrivalTime: dco_decode_Chrono_Utc(arr[5]),
+      estimatedDepartureTime: dco_decode_opt_box_autoadd_Chrono_Utc(arr[6]),
+      estimatedArrivalTime: dco_decode_opt_box_autoadd_Chrono_Utc(arr[7]),
     );
   }
 
@@ -3984,6 +3985,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   Train sse_decode_train(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_Uuid(deserializer);
     var var_trainNumber = sse_decode_opt_String(deserializer);
     var var_departure = sse_decode_train_station(deserializer);
     var var_arrival = sse_decode_train_station(deserializer);
@@ -3994,6 +3996,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_estimatedArrivalTime =
         sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
     return Train(
+        id: var_id,
         trainNumber: var_trainNumber,
         departure: var_departure,
         arrival: var_arrival,
@@ -5291,6 +5294,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_train(Train self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.id, serializer);
     sse_encode_opt_String(self.trainNumber, serializer);
     sse_encode_train_station(self.departure, serializer);
     sse_encode_train_station(self.arrival, serializer);

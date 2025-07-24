@@ -3,13 +3,11 @@ import 'package:holiday_planner/src/rust/api/transits.dart';
 import 'package:holiday_planner/src/rust/commands/update_train.dart';
 import 'package:holiday_planner/src/rust/models/transits.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
-import 'package:uuid/uuid.dart';
 
 class EditTrainPage extends StatefulWidget {
   final Train train;
-  final UuidValue trainId; // We need the ID for updating, but Train model doesn't include it
 
-  const EditTrainPage({super.key, required this.train, required this.trainId});
+  const EditTrainPage({super.key, required this.train});
 
   @override
   State<EditTrainPage> createState() => _EditTrainPageState();
@@ -415,6 +413,20 @@ class _EditTrainPageState extends State<EditTrainPage> {
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _isLoading ? null : _showDeleteConfirmation,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text("Delete Train Booking"),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.error,
+                    side: BorderSide(color: colorScheme.error),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -466,7 +478,7 @@ class _EditTrainPageState extends State<EditTrainPage> {
 
     try {
       final command = UpdateTrain(
-        id: widget.trainId,
+        id: widget.train.id,
         trainNumber: _trainNumberController.text.trim().isEmpty
             ? null
             : _trainNumberController.text.trim(),
@@ -537,7 +549,7 @@ class _EditTrainPageState extends State<EditTrainPage> {
     });
 
     try {
-      await deleteTrain(trainId: widget.trainId);
+      await deleteTrain(trainId: widget.train.id);
 
       if (mounted) {
         Navigator.of(context).pop();

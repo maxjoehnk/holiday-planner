@@ -154,12 +154,8 @@ class _TripTransitsState extends State<TripTransits> {
   }
 
   void _editTrain(BuildContext context, Train train, int index) async {
-    // Note: We need train ID for editing, but Train model doesn't include it
-    // For now, we'll use a placeholder UUID based on index
-    final trainId =
-        UuidValue.fromString('00000000-0000-0000-0000-${index.toString().padLeft(12, '0')}');
     await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => EditTrainPage(train: train, trainId: trainId)));
+        MaterialPageRoute(builder: (context) => EditTrainPage(train: train)));
     _fetch();
   }
 

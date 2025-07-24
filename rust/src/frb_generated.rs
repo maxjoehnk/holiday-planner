@@ -3001,6 +3001,7 @@ impl SseDecode for crate::models::timeline::TimelineModel {
 impl SseDecode for crate::models::transits::Train {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
         let mut var_trainNumber = <Option<String>>::sse_decode(deserializer);
         let mut var_departure = <crate::models::transits::TrainStation>::sse_decode(deserializer);
         let mut var_arrival = <crate::models::transits::TrainStation>::sse_decode(deserializer);
@@ -3013,6 +3014,7 @@ impl SseDecode for crate::models::transits::Train {
         let mut var_estimatedArrivalTime =
             <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         return crate::models::transits::Train {
+            id: var_id,
             train_number: var_trainNumber,
             departure: var_departure,
             arrival: var_arrival,
@@ -4519,6 +4521,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::timeline::TimelineModel>
 impl flutter_rust_bridge::IntoDart for crate::models::transits::Train {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
+            self.id.into_into_dart().into_dart(),
             self.train_number.into_into_dart().into_dart(),
             self.departure.into_into_dart().into_dart(),
             self.arrival.into_into_dart().into_dart(),
@@ -5827,6 +5830,7 @@ impl SseEncode for crate::models::timeline::TimelineModel {
 impl SseEncode for crate::models::transits::Train {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.id, serializer);
         <Option<String>>::sse_encode(self.train_number, serializer);
         <crate::models::transits::TrainStation>::sse_encode(self.departure, serializer);
         <crate::models::transits::TrainStation>::sse_encode(self.arrival, serializer);
