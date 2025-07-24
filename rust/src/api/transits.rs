@@ -1,8 +1,8 @@
 use uuid::Uuid;
 use crate::api::DB;
-use crate::commands::{AddTrain, UpdateTrain, ParseSharedTrainData};
+use crate::commands::{AddTrain, UpdateTrain, ParseSharedTrainData, ParseTrainData};
 use crate::handlers::{HandlerCreator, TrainHandler};
-use crate::models::Train;
+use crate::models::{Train, ParsedTrainJourney};
 
 #[tracing::instrument]
 pub async fn add_train(command: AddTrain) -> anyhow::Result<()> {
@@ -32,4 +32,10 @@ pub async fn get_trip_trains(trip_id: Uuid) -> anyhow::Result<Vec<Train>> {
 pub async fn parse_shared_train_data(command: ParseSharedTrainData) -> anyhow::Result<()> {
     let handler = DB.try_get::<TrainHandler>().await?;
     handler.parse_shared_train_data(command).await
+}
+
+#[tracing::instrument]
+pub async fn parse_train_data(command: ParseTrainData) -> anyhow::Result<ParsedTrainJourney> {
+    let handler = DB.try_get::<TrainHandler>().await?;
+    handler.parse_train_data(command).await
 }

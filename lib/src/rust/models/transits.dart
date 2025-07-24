@@ -6,6 +6,86 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+class ParsedTrainJourney {
+  final List<ParsedTrainSegment> segments;
+  final String? journeyUrl;
+
+  const ParsedTrainJourney({
+    required this.segments,
+    this.journeyUrl,
+  });
+
+  @override
+  int get hashCode => segments.hashCode ^ journeyUrl.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ParsedTrainJourney &&
+          runtimeType == other.runtimeType &&
+          segments == other.segments &&
+          journeyUrl == other.journeyUrl;
+}
+
+class ParsedTrainSegment {
+  final String? trainNumber;
+  final String departureStationName;
+  final String? departureStationCity;
+  final String? departureStationCountry;
+  final String? departureScheduledPlatform;
+  final String arrivalStationName;
+  final String? arrivalStationCity;
+  final String? arrivalStationCountry;
+  final String? arrivalScheduledPlatform;
+  final DateTime scheduledDepartureTime;
+  final DateTime scheduledArrivalTime;
+
+  const ParsedTrainSegment({
+    this.trainNumber,
+    required this.departureStationName,
+    this.departureStationCity,
+    this.departureStationCountry,
+    this.departureScheduledPlatform,
+    required this.arrivalStationName,
+    this.arrivalStationCity,
+    this.arrivalStationCountry,
+    this.arrivalScheduledPlatform,
+    required this.scheduledDepartureTime,
+    required this.scheduledArrivalTime,
+  });
+
+  @override
+  int get hashCode =>
+      trainNumber.hashCode ^
+      departureStationName.hashCode ^
+      departureStationCity.hashCode ^
+      departureStationCountry.hashCode ^
+      departureScheduledPlatform.hashCode ^
+      arrivalStationName.hashCode ^
+      arrivalStationCity.hashCode ^
+      arrivalStationCountry.hashCode ^
+      arrivalScheduledPlatform.hashCode ^
+      scheduledDepartureTime.hashCode ^
+      scheduledArrivalTime.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ParsedTrainSegment &&
+          runtimeType == other.runtimeType &&
+          trainNumber == other.trainNumber &&
+          departureStationName == other.departureStationName &&
+          departureStationCity == other.departureStationCity &&
+          departureStationCountry == other.departureStationCountry &&
+          departureScheduledPlatform == other.departureScheduledPlatform &&
+          arrivalStationName == other.arrivalStationName &&
+          arrivalStationCity == other.arrivalStationCity &&
+          arrivalStationCountry == other.arrivalStationCountry &&
+          arrivalScheduledPlatform == other.arrivalScheduledPlatform &&
+          scheduledDepartureTime == other.scheduledDepartureTime &&
+          scheduledArrivalTime == other.scheduledArrivalTime;
+}
+
 class Train {
   final String? trainNumber;
   final TrainStation departure;

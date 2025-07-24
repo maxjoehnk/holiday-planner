@@ -49,3 +49,24 @@ pub struct TrainStation {
     pub city: Option<String>,
     pub country: Option<String>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParsedTrainSegment {
+    pub train_number: Option<String>,
+    pub departure_station_name: String,
+    pub departure_station_city: Option<String>,
+    pub departure_station_country: Option<String>,
+    pub departure_scheduled_platform: Option<String>,
+    pub arrival_station_name: String,
+    pub arrival_station_city: Option<String>,
+    pub arrival_station_country: Option<String>,
+    pub arrival_scheduled_platform: Option<String>,
+    pub scheduled_departure_time: DateTime<Utc>,
+    pub scheduled_arrival_time: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParsedTrainJourney {
+    pub segments: Vec<ParsedTrainSegment>,
+    pub journey_url: Option<String>,
+}

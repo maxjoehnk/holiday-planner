@@ -24,6 +24,7 @@ import 'commands/add_trip_point_of_interest.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
 import 'commands/parse_shared_train_data.dart';
+import 'commands/parse_train_data.dart';
 import 'commands/search_web_images.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
@@ -162,6 +163,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  ParseTrainData dco_decode_box_autoadd_parse_train_data(dynamic raw);
+
+  @protected
   Reservation dco_decode_box_autoadd_reservation(dynamic raw);
 
   @protected
@@ -252,6 +256,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  List<ParsedTrainSegment> dco_decode_list_parsed_train_segment(dynamic raw);
+
+  @protected
   List<PointOfInterestModel> dco_decode_list_point_of_interest_model(
       dynamic raw);
 
@@ -319,6 +326,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ParseSharedTrainData dco_decode_parse_shared_train_data(dynamic raw);
+
+  @protected
+  ParseTrainData dco_decode_parse_train_data(dynamic raw);
+
+  @protected
+  ParsedTrainJourney dco_decode_parsed_train_journey(dynamic raw);
+
+  @protected
+  ParsedTrainSegment dco_decode_parsed_train_segment(dynamic raw);
 
   @protected
   PointOfInterestModel dco_decode_point_of_interest_model(dynamic raw);
@@ -541,6 +557,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  ParseTrainData sse_decode_box_autoadd_parse_train_data(
+      SseDeserializer deserializer);
+
+  @protected
   Reservation sse_decode_box_autoadd_reservation(SseDeserializer deserializer);
 
   @protected
@@ -643,6 +663,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<ParsedTrainSegment> sse_decode_list_parsed_train_segment(
+      SseDeserializer deserializer);
+
+  @protected
   List<PointOfInterestModel> sse_decode_list_point_of_interest_model(
       SseDeserializer deserializer);
 
@@ -715,6 +739,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ParseSharedTrainData sse_decode_parse_shared_train_data(
+      SseDeserializer deserializer);
+
+  @protected
+  ParseTrainData sse_decode_parse_train_data(SseDeserializer deserializer);
+
+  @protected
+  ParsedTrainJourney sse_decode_parsed_train_journey(
+      SseDeserializer deserializer);
+
+  @protected
+  ParsedTrainSegment sse_decode_parsed_train_segment(
       SseDeserializer deserializer);
 
   @protected
@@ -955,6 +990,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ParseSharedTrainData self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_parse_train_data(
+      ParseTrainData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_reservation(
       Reservation self, SseSerializer serializer);
 
@@ -1059,6 +1098,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<PackingListEntryCondition> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_parsed_train_segment(
+      List<ParsedTrainSegment> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_point_of_interest_model(
       List<PointOfInterestModel> self, SseSerializer serializer);
 
@@ -1136,6 +1179,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_parse_shared_train_data(
       ParseSharedTrainData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_parse_train_data(
+      ParseTrainData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_parsed_train_journey(
+      ParsedTrainJourney self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_parsed_train_segment(
+      ParsedTrainSegment self, SseSerializer serializer);
 
   @protected
   void sse_encode_point_of_interest_model(

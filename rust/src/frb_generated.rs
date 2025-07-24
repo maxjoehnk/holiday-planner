@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 289300355;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2099084757;
 
 // Section: executor
 
@@ -1405,6 +1405,43 @@ fn wire__crate__api__transits__parse_shared_train_data_impl(
         },
     )
 }
+fn wire__crate__api__transits__parse_train_data_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "parse_train_data",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command =
+                <crate::commands::parse_train_data::ParseTrainData>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::transits::parse_train_data(api_command).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__attachments__read_attachment_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2390,6 +2427,20 @@ impl SseDecode for Vec<crate::models::PackingListEntryCondition> {
     }
 }
 
+impl SseDecode for Vec<crate::models::transits::ParsedTrainSegment> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::models::transits::ParsedTrainSegment>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::models::PointOfInterestModel> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2695,6 +2746,61 @@ impl SseDecode for crate::commands::parse_shared_train_data::ParseSharedTrainDat
         return crate::commands::parse_shared_train_data::ParseSharedTrainData {
             trip_id: var_tripId,
             shared_text: var_sharedText,
+        };
+    }
+}
+
+impl SseDecode for crate::commands::parse_train_data::ParseTrainData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_sharedText = <String>::sse_decode(deserializer);
+        return crate::commands::parse_train_data::ParseTrainData {
+            shared_text: var_sharedText,
+        };
+    }
+}
+
+impl SseDecode for crate::models::transits::ParsedTrainJourney {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_segments =
+            <Vec<crate::models::transits::ParsedTrainSegment>>::sse_decode(deserializer);
+        let mut var_journeyUrl = <Option<String>>::sse_decode(deserializer);
+        return crate::models::transits::ParsedTrainJourney {
+            segments: var_segments,
+            journey_url: var_journeyUrl,
+        };
+    }
+}
+
+impl SseDecode for crate::models::transits::ParsedTrainSegment {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_trainNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_departureStationName = <String>::sse_decode(deserializer);
+        let mut var_departureStationCity = <Option<String>>::sse_decode(deserializer);
+        let mut var_departureStationCountry = <Option<String>>::sse_decode(deserializer);
+        let mut var_departureScheduledPlatform = <Option<String>>::sse_decode(deserializer);
+        let mut var_arrivalStationName = <String>::sse_decode(deserializer);
+        let mut var_arrivalStationCity = <Option<String>>::sse_decode(deserializer);
+        let mut var_arrivalStationCountry = <Option<String>>::sse_decode(deserializer);
+        let mut var_arrivalScheduledPlatform = <Option<String>>::sse_decode(deserializer);
+        let mut var_scheduledDepartureTime =
+            <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_scheduledArrivalTime =
+            <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        return crate::models::transits::ParsedTrainSegment {
+            train_number: var_trainNumber,
+            departure_station_name: var_departureStationName,
+            departure_station_city: var_departureStationCity,
+            departure_station_country: var_departureStationCountry,
+            departure_scheduled_platform: var_departureScheduledPlatform,
+            arrival_station_name: var_arrivalStationName,
+            arrival_station_city: var_arrivalStationCity,
+            arrival_station_country: var_arrivalStationCountry,
+            arrival_scheduled_platform: var_arrivalScheduledPlatform,
+            scheduled_departure_time: var_scheduledDepartureTime,
+            scheduled_arrival_time: var_scheduledArrivalTime,
         };
     }
 }
@@ -3426,37 +3532,38 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        38 => {
+        38 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
+        39 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        39 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
+        40 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        43 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        44 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        41 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        44 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => {
+        46 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        46 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        47 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        50 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4090,6 +4197,76 @@ impl
     > for crate::commands::parse_shared_train_data::ParseSharedTrainData
 {
     fn into_into_dart(self) -> crate::commands::parse_shared_train_data::ParseSharedTrainData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::commands::parse_train_data::ParseTrainData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.shared_text.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::parse_train_data::ParseTrainData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::commands::parse_train_data::ParseTrainData>
+    for crate::commands::parse_train_data::ParseTrainData
+{
+    fn into_into_dart(self) -> crate::commands::parse_train_data::ParseTrainData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::transits::ParsedTrainJourney {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.segments.into_into_dart().into_dart(),
+            self.journey_url.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::transits::ParsedTrainJourney
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::transits::ParsedTrainJourney>
+    for crate::models::transits::ParsedTrainJourney
+{
+    fn into_into_dart(self) -> crate::models::transits::ParsedTrainJourney {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::transits::ParsedTrainSegment {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.train_number.into_into_dart().into_dart(),
+            self.departure_station_name.into_into_dart().into_dart(),
+            self.departure_station_city.into_into_dart().into_dart(),
+            self.departure_station_country.into_into_dart().into_dart(),
+            self.departure_scheduled_platform
+                .into_into_dart()
+                .into_dart(),
+            self.arrival_station_name.into_into_dart().into_dart(),
+            self.arrival_station_city.into_into_dart().into_dart(),
+            self.arrival_station_country.into_into_dart().into_dart(),
+            self.arrival_scheduled_platform.into_into_dart().into_dart(),
+            self.scheduled_departure_time.into_into_dart().into_dart(),
+            self.scheduled_arrival_time.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::transits::ParsedTrainSegment
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::transits::ParsedTrainSegment>
+    for crate::models::transits::ParsedTrainSegment
+{
+    fn into_into_dart(self) -> crate::models::transits::ParsedTrainSegment {
         self
     }
 }
@@ -5214,6 +5391,16 @@ impl SseEncode for Vec<crate::models::PackingListEntryCondition> {
     }
 }
 
+impl SseEncode for Vec<crate::models::transits::ParsedTrainSegment> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::transits::ParsedTrainSegment>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::models::PointOfInterestModel> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5449,6 +5636,38 @@ impl SseEncode for crate::commands::parse_shared_train_data::ParseSharedTrainDat
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <uuid::Uuid>::sse_encode(self.trip_id, serializer);
         <String>::sse_encode(self.shared_text, serializer);
+    }
+}
+
+impl SseEncode for crate::commands::parse_train_data::ParseTrainData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.shared_text, serializer);
+    }
+}
+
+impl SseEncode for crate::models::transits::ParsedTrainJourney {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<crate::models::transits::ParsedTrainSegment>>::sse_encode(self.segments, serializer);
+        <Option<String>>::sse_encode(self.journey_url, serializer);
+    }
+}
+
+impl SseEncode for crate::models::transits::ParsedTrainSegment {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.train_number, serializer);
+        <String>::sse_encode(self.departure_station_name, serializer);
+        <Option<String>>::sse_encode(self.departure_station_city, serializer);
+        <Option<String>>::sse_encode(self.departure_station_country, serializer);
+        <Option<String>>::sse_encode(self.departure_scheduled_platform, serializer);
+        <String>::sse_encode(self.arrival_station_name, serializer);
+        <Option<String>>::sse_encode(self.arrival_station_city, serializer);
+        <Option<String>>::sse_encode(self.arrival_station_country, serializer);
+        <Option<String>>::sse_encode(self.arrival_scheduled_platform, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.scheduled_departure_time, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.scheduled_arrival_time, serializer);
     }
 }
 

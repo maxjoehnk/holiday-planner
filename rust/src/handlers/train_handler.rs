@@ -1,10 +1,10 @@
 use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
-use crate::commands::{AddTrain, UpdateTrain, ParseSharedTrainData};
+use crate::commands::{AddTrain, UpdateTrain, ParseSharedTrainData, ParseTrainData};
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
-use crate::models::transits::Train;
+use crate::models::transits::{Train, ParsedTrainJourney, ParsedTrainSegment};
 
 pub struct TrainHandler {
     db: Database,
@@ -131,5 +131,34 @@ impl TrainHandler {
                       segments_count, command.trip_id);
         
         Ok(())
+    }
+
+    pub async fn parse_train_data(&self, command: ParseTrainData) -> anyhow::Result<ParsedTrainJourney> {
+        tracing::debug!("Parsing train data without saving");
+        
+        // Parse the shared train information
+        let parsed_journey = crate::parsers::train_parser::parse_db_train_info(&command.shared_text)?;
+        
+        // Convert from parser types to API types
+        let segments: Vec<ParsedTrainSegment> = parsed_journey.segments.into_iter().map(|segment| {
+            ParsedTrainSegment {
+                train_number: segment.train_number,
+                departure_station_name: segment.departure_station_name,
+                departure_station_city: segment.departure_station_city,
+                departure_station_country: segment.departure_station_country,
+                departure_scheduled_platform: segment.departure_scheduled_platform,
+                arrival_station_name: segment.arrival_station_name,
+                arrival_station_city: segment.arrival_station_city,
+                arrival_station_country: segment.arrival_station_country,
+                arrival_scheduled_platform: segment.arrival_scheduled_platform,
+                scheduled_departure_time: segment.scheduled_departure_time.to_utc(),
+                scheduled_arrival_time: segment.scheduled_arrival_time.to_utc(),
+            }
+        }).collect();
+        
+        Ok(ParsedTrainJourney {
+            segments,
+            journey_url: parsed_journey.journey_url,
+        })
     }
 }

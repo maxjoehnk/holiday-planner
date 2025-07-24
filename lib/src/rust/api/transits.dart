@@ -5,6 +5,7 @@
 
 import '../commands/add_train.dart';
 import '../commands/parse_shared_train_data.dart';
+import '../commands/parse_train_data.dart';
 import '../commands/update_train.dart';
 import '../frb_generated.dart';
 import '../models/transits.dart';
@@ -25,3 +26,6 @@ Future<List<Train>> getTripTrains({required UuidValue tripId}) =>
 
 Future<void> parseSharedTrainData({required ParseSharedTrainData command}) =>
     RustLib.instance.api.crateApiTransitsParseSharedTrainData(command: command);
+
+Future<ParsedTrainJourney> parseTrainData({required ParseTrainData command}) =>
+    RustLib.instance.api.crateApiTransitsParseTrainData(command: command);

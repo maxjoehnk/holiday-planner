@@ -24,6 +24,7 @@ import 'commands/add_trip_point_of_interest.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
 import 'commands/parse_shared_train_data.dart';
+import 'commands/parse_train_data.dart';
 import 'commands/search_web_images.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
@@ -104,7 +105,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 289300355;
+  int get rustContentHash => 2099084757;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -215,6 +216,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiTransitsParseSharedTrainData(
       {required ParseSharedTrainData command});
+
+  Future<ParsedTrainJourney> crateApiTransitsParseTrainData(
+      {required ParseTrainData command});
 
   Future<void> crateApiAttachmentsReadAttachment(
       {required UuidValue attachmentId, required String targetPath});
@@ -1202,6 +1206,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<ParsedTrainJourney> crateApiTransitsParseTrainData(
+      {required ParseTrainData command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_parse_train_data(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 38, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_parsed_train_journey,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTransitsParseTrainDataConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTransitsParseTrainDataConstMeta =>
+      const TaskConstMeta(
+        debugName: "parse_train_data",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiAttachmentsReadAttachment(
       {required UuidValue attachmentId, required String targetPath}) {
     return handler.executeNormal(NormalTask(
@@ -1210,7 +1240,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(attachmentId, serializer);
         sse_encode_String(targetPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1237,7 +1267,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(accommodationId, serializer);
         sse_encode_Uuid(attachmentId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 39, port: port_);
+            funcId: 40, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1262,7 +1292,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 40, port: port_);
+            funcId: 41, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1287,7 +1317,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(query, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 41, port: port_);
+            funcId: 42, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_location_entry,
@@ -1313,7 +1343,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_search_web_images(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 42, port: port_);
+            funcId: 43, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_web_image,
@@ -1339,7 +1369,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_car_rental(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 43, port: port_);
+            funcId: 44, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1365,7 +1395,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_packing_list_entry(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 44, port: port_);
+            funcId: 45, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1391,7 +1421,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_reservation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 45, port: port_);
+            funcId: 46, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1416,7 +1446,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_train(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 46, port: port_);
+            funcId: 47, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1442,7 +1472,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 47, port: port_);
+            funcId: 48, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -1467,7 +1497,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 48, port: port_);
+            funcId: 49, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1494,7 +1524,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_update_trip_point_of_interest(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 49, port: port_);
+            funcId: 50, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1848,6 +1878,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ParseTrainData dco_decode_box_autoadd_parse_train_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_parse_train_data(raw);
+  }
+
+  @protected
   Reservation dco_decode_box_autoadd_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_reservation(raw);
@@ -2086,6 +2122,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ParsedTrainSegment> dco_decode_list_parsed_train_segment(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_parsed_train_segment).toList();
+  }
+
+  @protected
   List<PointOfInterestModel> dco_decode_list_point_of_interest_model(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2277,6 +2319,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return ParseSharedTrainData(
       tripId: dco_decode_Uuid(arr[0]),
       sharedText: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  ParseTrainData dco_decode_parse_train_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return ParseTrainData(
+      sharedText: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  ParsedTrainJourney dco_decode_parsed_train_journey(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ParsedTrainJourney(
+      segments: dco_decode_list_parsed_train_segment(arr[0]),
+      journeyUrl: dco_decode_opt_String(arr[1]),
+    );
+  }
+
+  @protected
+  ParsedTrainSegment dco_decode_parsed_train_segment(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 11)
+      throw Exception('unexpected arr length: expect 11 but see ${arr.length}');
+    return ParsedTrainSegment(
+      trainNumber: dco_decode_opt_String(arr[0]),
+      departureStationName: dco_decode_String(arr[1]),
+      departureStationCity: dco_decode_opt_String(arr[2]),
+      departureStationCountry: dco_decode_opt_String(arr[3]),
+      departureScheduledPlatform: dco_decode_opt_String(arr[4]),
+      arrivalStationName: dco_decode_String(arr[5]),
+      arrivalStationCity: dco_decode_opt_String(arr[6]),
+      arrivalStationCountry: dco_decode_opt_String(arr[7]),
+      arrivalScheduledPlatform: dco_decode_opt_String(arr[8]),
+      scheduledDepartureTime: dco_decode_Chrono_Utc(arr[9]),
+      scheduledArrivalTime: dco_decode_Chrono_Utc(arr[10]),
     );
   }
 
@@ -3116,6 +3202,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ParseTrainData sse_decode_box_autoadd_parse_train_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_parse_train_data(deserializer));
+  }
+
+  @protected
   Reservation sse_decode_box_autoadd_reservation(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_reservation(deserializer));
@@ -3412,6 +3505,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ParsedTrainSegment> sse_decode_list_parsed_train_segment(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ParsedTrainSegment>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_parsed_train_segment(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<PointOfInterestModel> sse_decode_list_point_of_interest_model(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3685,6 +3791,52 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_tripId = sse_decode_Uuid(deserializer);
     var var_sharedText = sse_decode_String(deserializer);
     return ParseSharedTrainData(tripId: var_tripId, sharedText: var_sharedText);
+  }
+
+  @protected
+  ParseTrainData sse_decode_parse_train_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_sharedText = sse_decode_String(deserializer);
+    return ParseTrainData(sharedText: var_sharedText);
+  }
+
+  @protected
+  ParsedTrainJourney sse_decode_parsed_train_journey(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_segments = sse_decode_list_parsed_train_segment(deserializer);
+    var var_journeyUrl = sse_decode_opt_String(deserializer);
+    return ParsedTrainJourney(
+        segments: var_segments, journeyUrl: var_journeyUrl);
+  }
+
+  @protected
+  ParsedTrainSegment sse_decode_parsed_train_segment(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_trainNumber = sse_decode_opt_String(deserializer);
+    var var_departureStationName = sse_decode_String(deserializer);
+    var var_departureStationCity = sse_decode_opt_String(deserializer);
+    var var_departureStationCountry = sse_decode_opt_String(deserializer);
+    var var_departureScheduledPlatform = sse_decode_opt_String(deserializer);
+    var var_arrivalStationName = sse_decode_String(deserializer);
+    var var_arrivalStationCity = sse_decode_opt_String(deserializer);
+    var var_arrivalStationCountry = sse_decode_opt_String(deserializer);
+    var var_arrivalScheduledPlatform = sse_decode_opt_String(deserializer);
+    var var_scheduledDepartureTime = sse_decode_Chrono_Utc(deserializer);
+    var var_scheduledArrivalTime = sse_decode_Chrono_Utc(deserializer);
+    return ParsedTrainSegment(
+        trainNumber: var_trainNumber,
+        departureStationName: var_departureStationName,
+        departureStationCity: var_departureStationCity,
+        departureStationCountry: var_departureStationCountry,
+        departureScheduledPlatform: var_departureScheduledPlatform,
+        arrivalStationName: var_arrivalStationName,
+        arrivalStationCity: var_arrivalStationCity,
+        arrivalStationCountry: var_arrivalStationCountry,
+        arrivalScheduledPlatform: var_arrivalScheduledPlatform,
+        scheduledDepartureTime: var_scheduledDepartureTime,
+        scheduledArrivalTime: var_scheduledArrivalTime);
   }
 
   @protected
@@ -4485,6 +4637,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_parse_train_data(
+      ParseTrainData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_parse_train_data(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_reservation(
       Reservation self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4723,6 +4882,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_parsed_train_segment(
+      List<ParsedTrainSegment> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_parsed_train_segment(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_point_of_interest_model(
       List<PointOfInterestModel> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4954,6 +5123,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.tripId, serializer);
     sse_encode_String(self.sharedText, serializer);
+  }
+
+  @protected
+  void sse_encode_parse_train_data(
+      ParseTrainData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.sharedText, serializer);
+  }
+
+  @protected
+  void sse_encode_parsed_train_journey(
+      ParsedTrainJourney self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_parsed_train_segment(self.segments, serializer);
+    sse_encode_opt_String(self.journeyUrl, serializer);
+  }
+
+  @protected
+  void sse_encode_parsed_train_segment(
+      ParsedTrainSegment self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.trainNumber, serializer);
+    sse_encode_String(self.departureStationName, serializer);
+    sse_encode_opt_String(self.departureStationCity, serializer);
+    sse_encode_opt_String(self.departureStationCountry, serializer);
+    sse_encode_opt_String(self.departureScheduledPlatform, serializer);
+    sse_encode_String(self.arrivalStationName, serializer);
+    sse_encode_opt_String(self.arrivalStationCity, serializer);
+    sse_encode_opt_String(self.arrivalStationCountry, serializer);
+    sse_encode_opt_String(self.arrivalScheduledPlatform, serializer);
+    sse_encode_Chrono_Utc(self.scheduledDepartureTime, serializer);
+    sse_encode_Chrono_Utc(self.scheduledArrivalTime, serializer);
   }
 
   @protected

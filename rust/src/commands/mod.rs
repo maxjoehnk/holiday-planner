@@ -18,6 +18,7 @@ pub use update_car_rental::*;
 pub use add_train::*;
 pub use update_train::*;
 pub use parse_shared_train_data::*;
+pub use parse_train_data::*;
 pub use search_web_images::*;
 
 pub mod create_trip;
@@ -39,5 +40,6 @@ pub mod update_car_rental;
 pub mod add_train;
 pub mod update_train;
 pub mod parse_shared_train_data;
+pub mod parse_train_data;
 pub mod search_web_images;
 pub mod add_accommodation_attachment;
