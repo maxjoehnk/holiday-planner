@@ -1,3 +1,4 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
 
@@ -60,7 +61,7 @@ class TrainFormState extends State<TrainForm> {
   late final TextEditingController _arrivalStationCityController;
   late final TextEditingController _arrivalStationCountryController;
   late final TextEditingController _arrivalPlatformController;
-  
+
   DateTime? _departureTime;
   DateTime? _arrivalTime;
 
@@ -68,17 +69,26 @@ class TrainFormState extends State<TrainForm> {
   void initState() {
     super.initState();
     final data = widget.initialData;
-    
-    _trainNumberController = TextEditingController(text: data?.trainNumber ?? '');
-    _departureStationNameController = TextEditingController(text: data?.departureStationName ?? '');
-    _departureStationCityController = TextEditingController(text: data?.departureStationCity ?? '');
-    _departureStationCountryController = TextEditingController(text: data?.departureStationCountry ?? '');
-    _departurePlatformController = TextEditingController(text: data?.departurePlatform ?? '');
-    _arrivalStationNameController = TextEditingController(text: data?.arrivalStationName ?? '');
-    _arrivalStationCityController = TextEditingController(text: data?.arrivalStationCity ?? '');
-    _arrivalStationCountryController = TextEditingController(text: data?.arrivalStationCountry ?? '');
-    _arrivalPlatformController = TextEditingController(text: data?.arrivalPlatform ?? '');
-    
+
+    _trainNumberController =
+        TextEditingController(text: data?.trainNumber ?? '');
+    _departureStationNameController =
+        TextEditingController(text: data?.departureStationName ?? '');
+    _departureStationCityController =
+        TextEditingController(text: data?.departureStationCity ?? '');
+    _departureStationCountryController =
+        TextEditingController(text: data?.departureStationCountry ?? '');
+    _departurePlatformController =
+        TextEditingController(text: data?.departurePlatform ?? '');
+    _arrivalStationNameController =
+        TextEditingController(text: data?.arrivalStationName ?? '');
+    _arrivalStationCityController =
+        TextEditingController(text: data?.arrivalStationCity ?? '');
+    _arrivalStationCountryController =
+        TextEditingController(text: data?.arrivalStationCountry ?? '');
+    _arrivalPlatformController =
+        TextEditingController(text: data?.arrivalPlatform ?? '');
+
     _departureTime = data?.departureTime;
     _arrivalTime = data?.arrivalTime;
   }
@@ -134,7 +144,7 @@ class TrainFormState extends State<TrainForm> {
               ),
               const SizedBox(height: 24),
             ],
-            
+
             // Train Details Section
             Text(
               "Train Details",
@@ -152,9 +162,9 @@ class TrainFormState extends State<TrainForm> {
                 border: OutlineInputBorder(),
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             Text(
               "Departure",
               style: textTheme.titleLarge?.copyWith(
@@ -227,42 +237,37 @@ class TrainFormState extends State<TrainForm> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: InkWell(
-                    onTap: () => _selectDepartureTime(context),
-                    child: InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: "Departure Time *",
-                        border: const OutlineInputBorder(),
-                        errorText: _departureTime == null
-                            ? "Please select departure time"
-                            : null,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _departureTime != null
-                                  ? "${_departureTime!.day}/${_departureTime!.month}/${_departureTime!.year} ${_departureTime!.hour.toString().padLeft(2, '0')}:${_departureTime!.minute.toString().padLeft(2, '0')}"
-                                  : "Select time",
-                              style: _departureTime != null
-                                  ? textTheme.bodyLarge
-                                  : textTheme.bodyLarge?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                            ),
-                          ),
-                          const Icon(Icons.access_time),
-                        ],
-                      ),
-                    ),
+                    child: DateTimeFormField(
+                  decoration: const InputDecoration(
+                    labelText: "Departure Time *",
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.access_time),
                   ),
-                ),
+                  validator: (value) {
+                    if (value == null) {
+                      return "Please select departure time";
+                    }
+                    return null;
+                  },
+                  initialValue: _departureTime,
+                  onChanged: (DateTime? pickedDateTime) {
+                    if (pickedDateTime == null) {
+                      return;
+                    }
+                    setState(() {
+                      _departureTime = pickedDateTime;
+                      if (_arrivalTime != null &&
+                          _arrivalTime!.isBefore(pickedDateTime)) {
+                        _arrivalTime = null;
+                      }
+                    });
+                  },
+                )),
               ],
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             Text(
               "Arrival",
               style: textTheme.titleLarge?.copyWith(
@@ -335,40 +340,32 @@ class TrainFormState extends State<TrainForm> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: InkWell(
-                    onTap: () => _selectArrivalTime(context),
-                    child: InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: "Arrival Time *",
-                        border: const OutlineInputBorder(),
-                        errorText: _arrivalTime == null
-                            ? "Please select arrival time"
-                            : null,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _arrivalTime != null
-                                  ? "${_arrivalTime!.day}/${_arrivalTime!.month}/${_arrivalTime!.year} ${_arrivalTime!.hour.toString().padLeft(2, '0')}:${_arrivalTime!.minute.toString().padLeft(2, '0')}"
-                                  : "Select time",
-                              style: _arrivalTime != null
-                                  ? textTheme.bodyLarge
-                                  : textTheme.bodyLarge?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                            ),
-                          ),
-                          const Icon(Icons.access_time),
-                        ],
-                      ),
-                    ),
+                    child: DateTimeFormField(
+                  decoration: const InputDecoration(
+                    labelText: "Arrival Time *",
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.access_time),
                   ),
-                ),
+                  validator: (value) {
+                    if (value == null) {
+                      return "Please select arrival time";
+                    }
+                    return null;
+                  },
+                  initialValue: _arrivalTime,
+                  initialPickerDateTime: _departureTime,
+                  onChanged: (DateTime? pickedDateTime) {
+                    if (pickedDateTime == null) {
+                      return;
+                    }
+                    setState(() {
+                      _arrivalTime = pickedDateTime;
+                    });
+                  },
+                )),
               ],
             ),
-            
+
             const SizedBox(height: 32),
             Text(
               "* Required fields",
@@ -412,9 +409,9 @@ class TrainFormState extends State<TrainForm> {
   }
 
   bool validate() {
-    return _formKey.currentState!.validate() && 
-           _departureTime != null && 
-           _arrivalTime != null;
+    return _formKey.currentState!.validate() &&
+        _departureTime != null &&
+        _arrivalTime != null;
   }
 
   void submit() {
