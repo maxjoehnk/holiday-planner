@@ -148,7 +148,6 @@ class _ConditionOption extends StatelessWidget {
   final Color color;
   final Color onColor;
   final VoidCallback onTap;
-  final bool enabled;
 
   const _ConditionOption({
     required this.icon,
@@ -157,19 +156,17 @@ class _ConditionOption extends StatelessWidget {
     required this.color,
     required this.onColor,
     required this.onTap,
-    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
     
     return Material(
-      color: enabled ? color : colorScheme.surfaceVariant.withOpacity(0.3),
+      color: color,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: enabled ? onTap : null,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -179,13 +176,13 @@ class _ConditionOption extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: enabled ? onColor.withOpacity(0.2) : colorScheme.onSurfaceVariant.withOpacity(0.1),
+                  color: onColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   icon,
                   size: 20,
-                  color: enabled ? onColor : colorScheme.onSurfaceVariant.withOpacity(0.5),
+                  color: onColor,
                 ),
               ),
               const SizedBox(width: 16),
@@ -196,7 +193,7 @@ class _ConditionOption extends StatelessWidget {
                     Text(
                       title,
                       style: textTheme.titleMedium?.copyWith(
-                        color: enabled ? onColor : colorScheme.onSurfaceVariant.withOpacity(0.5),
+                        color: onColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -204,26 +201,12 @@ class _ConditionOption extends StatelessWidget {
                     Text(
                       subtitle,
                       style: textTheme.bodySmall?.copyWith(
-                        color: enabled ? onColor.withOpacity(0.8) : colorScheme.onSurfaceVariant.withOpacity(0.4),
+                        color: onColor.withOpacity(0.8),
                       ),
                     ),
                   ],
                 ),
               ),
-              if (!enabled)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colorScheme.onSurfaceVariant.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    "Coming Soon",
-                    style: textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),

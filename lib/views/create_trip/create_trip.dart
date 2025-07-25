@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
-import 'package:holiday_planner/src/rust/commands/create_trip.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
+import 'package:holiday_planner/src/rust/commands/create_trip.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../trip/trip_view.dart';
@@ -29,7 +31,7 @@ class _CreateTripViewState extends State<CreateTripView> {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Trip"),
@@ -94,13 +96,15 @@ class _CreateTripViewState extends State<CreateTripView> {
                                     Icon(
                                       Icons.add_a_photo_outlined,
                                       size: 48,
-                                      color: colorScheme.onPrimaryContainer.withOpacity(0.6),
+                                      color: colorScheme.onPrimaryContainer
+                                          .withOpacity(0.6),
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
                                       "Add Header Image",
                                       style: textTheme.bodyLarge?.copyWith(
-                                        color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                                        color: colorScheme.onPrimaryContainer
+                                            .withOpacity(0.8),
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -111,7 +115,7 @@ class _CreateTripViewState extends State<CreateTripView> {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Trip Name Field
               Text(
                 "Trip Details",
@@ -121,22 +125,20 @@ class _CreateTripViewState extends State<CreateTripView> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _nameController,
-                textInputAction: TextInputAction.next,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter a name";
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  labelText: "Trip Name",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.luggage),
-                ),
-              ),
+                  controller: _nameController,
+                  textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter a name";
+                    }
+                    return null;
+                  },
+                  decoration: AppInputDecoration(
+                    labelText: "Trip Name",
+                    icon: Icons.luggage,
+                  )),
               const SizedBox(height: 24),
-              
+
               // Date Selection Section
               Text(
                 "Travel Dates",
@@ -148,28 +150,42 @@ class _CreateTripViewState extends State<CreateTripView> {
               Row(
                 children: [
                   Expanded(
-                    child: InputDatePickerFormField(
-                      initialDate: startDate,
+                    child: DateTimeFormField(
+                      initialValue: startDate,
                       firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
-                      fieldLabelText: "Start Date",
-                      onDateSubmitted: (value) => setState(() => startDate = value),
+                      mode: DateTimeFieldPickerMode.date,
+                      lastDate:
+                          DateTime.now().add(const Duration(days: 365 * 5)),
+                      decoration: AppInputDecoration(
+                        labelText: "Start Date",
+                        icon: Icons.calendar_month,
+                      ),
+                      onChanged: (value) => setState(() => startDate = value),
+                      hideDefaultSuffixIcon: true,
+                      canClear: false,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: InputDatePickerFormField(
-                      initialDate: endDate,
+                    child: DateTimeFormField(
+                      initialValue: endDate,
                       firstDate: startDate ?? DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
-                      fieldLabelText: "End Date",
-                      onDateSubmitted: (value) => setState(() => endDate = value),
+                      mode: DateTimeFieldPickerMode.date,
+                      lastDate:
+                          DateTime.now().add(const Duration(days: 365 * 5)),
+                      decoration: AppInputDecoration(
+                        labelText: "End Date",
+                        icon: Icons.calendar_month,
+                      ),
+                      onChanged: (value) => setState(() => endDate = value),
+                      hideDefaultSuffixIcon: true,
+                      canClear: false,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // Date Range Picker Button
               SizedBox(
                 width: double.infinity,
@@ -212,21 +228,21 @@ class _CreateTripViewState extends State<CreateTripView> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     Uint8List? headerImageBytes;
     if (image != null) {
       headerImageBytes = await image!.readAsBytes();
     } else {
       headerImageBytes = _webImageBytes;
     }
-    
+
     var trip = await createTrip(
         command: CreateTrip(
             name: _nameController.text,
             startDate: startDate!,
             endDate: endDate!,
             headerImage: headerImageBytes));
-            
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -278,7 +294,7 @@ class _CreateTripViewState extends State<CreateTripView> {
           builder: (context) => const WebImageSearchView(),
         ),
       );
-      
+
       if (webImage != null) {
         setState(() {
           _webImageBytes = webImage;

@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'web_image_search.dart';
@@ -205,10 +207,9 @@ class _EditTripViewState extends State<EditTripView> {
                   }
                   return null;
                 },
-                decoration: const InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Trip Name",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.luggage),
+                  icon: Icons.luggage,
                 ),
               ),
               const SizedBox(height: 24),
@@ -222,29 +223,41 @@ class _EditTripViewState extends State<EditTripView> {
               Row(
                 children: [
                   Expanded(
-                    child: InputDatePickerFormField(
-                      initialDate: startDate,
+                    child: DateTimeFormField(
+                      mode: DateTimeFieldPickerMode.date,
+                      initialValue: startDate,
                       firstDate: DateTime.now()
                           .subtract(const Duration(days: 365 * 5)),
                       lastDate:
                           DateTime.now().add(const Duration(days: 365 * 5)),
-                      fieldLabelText: "Start Date",
-                      onDateSubmitted: (value) =>
+                      onChanged: (value) =>
                           setState(() => startDate = value),
+                      decoration: AppInputDecoration(
+                        labelText: "Start Date",
+                        icon: Icons.calendar_month,
+                      ),
+                      hideDefaultSuffixIcon: true,
+                      canClear: false,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: InputDatePickerFormField(
-                      initialDate: endDate,
+                    child: DateTimeFormField(
+                      mode: DateTimeFieldPickerMode.date,
+                      initialValue: endDate,
                       firstDate: startDate ??
                           DateTime.now()
                               .subtract(const Duration(days: 365 * 5)),
                       lastDate:
                           DateTime.now().add(const Duration(days: 365 * 5)),
-                      fieldLabelText: "End Date",
-                      onDateSubmitted: (value) =>
+                      onChanged: (value) =>
                           setState(() => endDate = value),
+                      decoration: AppInputDecoration(
+                        labelText: "End Date",
+                        icon: Icons.calendar_month,
+                      ),
+                      hideDefaultSuffixIcon: true,
+                      canClear: false,
                     ),
                   ),
                 ],

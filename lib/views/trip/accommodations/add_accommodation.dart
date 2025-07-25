@@ -4,6 +4,7 @@ import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_accommodation.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:uuid/uuid.dart';
 
 class AddAccommodation extends StatefulWidget {
@@ -121,13 +122,10 @@ class _AddAccommodationState extends State<AddAccommodation> {
                   }
                   return null;
                 },
-                decoration: InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Name",
                   hintText: "Hotel, Airbnb, etc.",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.hotel_outlined),
+                  icon: Icons.hotel_outlined,
                 ),
               ),
               const SizedBox(height: 16),

@@ -19,8 +19,6 @@ class ConditionTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-    
     return condition.map(
       minTripDuration: (duration) => ConditionChip(
           tooltip: "Min Trip Duration",

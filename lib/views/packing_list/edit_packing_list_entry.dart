@@ -3,6 +3,7 @@ import 'package:holiday_planner/src/rust/api/packing_list.dart';
 import 'package:holiday_planner/src/rust/commands/add_packing_list_entry.dart';
 import 'package:holiday_planner/src/rust/commands/update_packing_list_entry.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 
 import 'condition_selector.dart';
 import 'conditions.dart';
@@ -84,28 +85,17 @@ class _EditItemDialogState extends State<EditItemDialog> {
             TextFormField(
               controller: _nameController,
               autofocus: true,
-              decoration: InputDecoration(
-                labelText: "Name",
+              decoration: AppInputDecoration(labelText: "Name",
                 hintText: "Enter item name",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: const Icon(Icons.inventory_2_outlined),
-              ),
+              icon: Icons.inventory_2_outlined),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _descriptionController,
               maxLines: 3,
-              decoration: InputDecoration(
-                labelText: "Description",
-                hintText: "Optional description",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: const Icon(Icons.description_outlined),
-                alignLabelWithHint: true,
-              ),
+              decoration: AppInputDecoration(labelText: "Description",
+                  hintText: "Optional description",
+                  icon: Icons.description_outlined),
             ),
             const SizedBox(height: 16),
             Container(
@@ -147,14 +137,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _fixedQuantityController,
-                          decoration: InputDecoration(
-                            labelText: "Fixed",
-                            hintText: "0",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
+                          decoration: AppInputDecoration(labelText: "Fixed", hintText: "0"),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -162,14 +145,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _perDayController,
-                          decoration: InputDecoration(
-                            labelText: "Per Day",
-                            hintText: "0",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
+                          decoration: AppInputDecoration(labelText: "Per Day", hintText: "0"),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -177,14 +153,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _perNightController,
-                          decoration: InputDecoration(
-                            labelText: "Per Night",
-                            hintText: "0",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
+                          decoration: AppInputDecoration(labelText: "Per Night", hintText: "0"),
                           keyboardType: TextInputType.number,
                         ),
                       ),

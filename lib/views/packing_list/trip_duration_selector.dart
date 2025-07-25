@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 
 enum TripDuration { min, max }
 
@@ -83,13 +84,10 @@ class _TripDurationSelectorState extends State<TripDurationSelector> {
               TextFormField(
                 controller: _controller,
                 autofocus: true,
-                decoration: InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Duration (days)",
                   hintText: "Enter number of days",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.schedule),
+                  icon: Icons.schedule,
                 ),
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.number,

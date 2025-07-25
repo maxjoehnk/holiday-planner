@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppInputDecoration extends InputDecoration {
-  AppInputDecoration(String label,
-      {super.hintText, IconData? icon, bool? required}): super(
-      labelText: "$label${required == true ? ' *' : ''}",
+  AppInputDecoration({required String labelText, super.hintText, IconData? icon, bool? required}): super(
+      labelText: "$labelText${required == true ? ' *' : ''}",
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
       ),

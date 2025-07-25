@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 
 enum Temperature { min, max }
 
@@ -87,17 +88,12 @@ class _TemperatureSelectorState extends State<TemperatureSelector> {
               TextFormField(
                 controller: _controller,
                 autofocus: true,
-                decoration: InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Temperature (°C)",
                   hintText: "Enter temperature",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: Icon(
-                    widget.threshold == Temperature.min 
+                  icon: widget.threshold == Temperature.min
                         ? Icons.thermostat 
                         : Icons.ac_unit,
-                  ),
                 ),
                 textInputAction: TextInputAction.done,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),

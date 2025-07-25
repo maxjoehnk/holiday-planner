@@ -10,6 +10,7 @@ import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
 import 'package:holiday_planner/widgets/attachment_card.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 
 class EditAccommodation extends StatefulWidget {
   final AccommodationModel accommodation;
@@ -242,13 +243,10 @@ class _EditAccommodationState extends State<EditAccommodation> {
                   }
                   return null;
                 },
-                decoration: InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Name",
                   hintText: "Hotel, Airbnb, etc.",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.hotel_outlined),
+                  icon: Icons.hotel_outlined,
                 ),
               ),
               const SizedBox(height: 16),
@@ -256,14 +254,10 @@ class _EditAccommodationState extends State<EditAccommodation> {
                 controller: _addressController,
                 textInputAction: TextInputAction.next,
                 maxLines: 2,
-                decoration: InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Address (Optional)",
                   hintText: "Street address or location",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.location_on_outlined),
-                  alignLabelWithHint: true,
+                  icon: Icons.location_on_outlined,
                 ),
               ),
               const SizedBox(height: 24),
@@ -355,13 +349,10 @@ class _EditAccommodationState extends State<EditAccommodation> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _attachmentNameController,
-                          decoration: InputDecoration(
+                          decoration: AppInputDecoration(
                             labelText: "Name",
                             hintText: "Enter attachment name",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(Icons.label_outline),
+                            icon: Icons.label_outline,
                           ),
                         ),
                         const SizedBox(height: 16),

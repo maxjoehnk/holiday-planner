@@ -1,6 +1,7 @@
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
-import 'package:holiday_planner/widgets/date_time_picker.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
+import 'package:holiday_planner/widgets/required_fields_hint.dart';
 
 class TrainFormData {
   final String trainNumber;
@@ -104,6 +105,7 @@ class TrainFormState extends State<TrainForm> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 16,
           children: [
             if (widget.errorMessage != null) ...[
               Container(
@@ -144,79 +146,72 @@ class TrainFormState extends State<TrainForm> {
               ),
               const SizedBox(height: 24),
             ],
-
-            // Train Details Section
             Text(
               "Train Details",
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 16),
             TextFormField(
               controller: _trainNumberController,
               textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: "Train Number",
-                hintText: "e.g., ICE 123",
-                border: OutlineInputBorder(),
-              ),
+              decoration: AppInputDecoration(
+                  labelText: "Train Number",
+                  hintText: "e.g., ICE 123",
+                  icon: Icons.train),
             ),
-
-            const SizedBox(height: 32),
-
+            const SizedBox(height: 16),
             Text(
               "Departure",
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 16),
             TextFormField(
               controller: _departureStationNameController,
               textInputAction: TextInputAction.next,
-              validator: (value) {
+              validator: (String? value) {
                 if (value == null || value.isEmpty) {
                   return "Please enter departure station name";
                 }
                 return null;
               },
-              decoration: const InputDecoration(
-                labelText: "Station Name *",
+              decoration: AppInputDecoration(
+                labelText: "Station Name",
+                required: true,
                 hintText: "e.g., Berlin Hauptbahnhof",
-                border: OutlineInputBorder(),
+                icon: Icons.departure_board,
               ),
             ),
-            const SizedBox(height: 16),
             Row(
+              spacing: 16,
               children: [
                 Expanded(
                   child: TextFormField(
                     controller: _departureStationCityController,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: "City",
-                      hintText: "e.g., Berlin",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: AppInputDecoration(
+                        labelText: "City",
+                        hintText: "e.g., Berlin",
+                        icon: Icons.location_city,
+                        required: null),
                   ),
                 ),
-                const SizedBox(width: 16),
                 Expanded(
                   child: TextFormField(
                     controller: _departureStationCountryController,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: "Country",
-                      hintText: "e.g., Germany",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: AppInputDecoration(
+                        labelText: "Country",
+                        hintText: "e.g., Germany",
+                        icon: Icons.map,
+                        required: null),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
             Row(
+              spacing: 16,
               children: [
                 Expanded(
                   child: TextFormField(
@@ -228,21 +223,22 @@ class TrainFormState extends State<TrainForm> {
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      labelText: "Platform *",
-                      hintText: "e.g., 12",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: AppInputDecoration(
+                        labelText: "Platform",
+                        hintText: "e.g., 12",
+                        icon: Icons.numbers,
+                        required: true),
                   ),
                 ),
-                const SizedBox(width: 16),
                 Expanded(
                     child: DateTimeFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Departure Time *",
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.access_time),
-                  ),
+                  decoration: AppInputDecoration(
+                      labelText: "Departure Time",
+                      hintText: null,
+                      icon: Icons.access_time,
+                      required: true),
+                  hideDefaultSuffixIcon: true,
+                  canClear: false,
                   validator: (value) {
                     if (value == null) {
                       return "Please select departure time";
@@ -265,16 +261,13 @@ class TrainFormState extends State<TrainForm> {
                 )),
               ],
             ),
-
-            const SizedBox(height: 32),
-
+            const SizedBox(height: 16),
             Text(
               "Arrival",
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 16),
             TextFormField(
               controller: _arrivalStationNameController,
               textInputAction: TextInputAction.next,
@@ -284,24 +277,23 @@ class TrainFormState extends State<TrainForm> {
                 }
                 return null;
               },
-              decoration: const InputDecoration(
-                labelText: "Station Name *",
-                hintText: "e.g., Paris Gare du Nord",
-                border: OutlineInputBorder(),
-              ),
+              decoration: AppInputDecoration(
+                  labelText: "Station Name",
+                  hintText: "e.g., Paris Gare du Nord",
+                  icon: Icons.departure_board,
+                  required: true),
             ),
-            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: TextFormField(
                     controller: _arrivalStationCityController,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: "City",
-                      hintText: "e.g., Paris",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: AppInputDecoration(
+                        labelText: "City",
+                        hintText: "e.g., Paris",
+                        icon: Icons.location_city,
+                        required: null),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -309,16 +301,15 @@ class TrainFormState extends State<TrainForm> {
                   child: TextFormField(
                     controller: _arrivalStationCountryController,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: "Country",
-                      hintText: "e.g., France",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: AppInputDecoration(
+                        labelText: "Country",
+                        hintText: "e.g., France",
+                        icon: Icons.map,
+                        required: null),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -331,21 +322,23 @@ class TrainFormState extends State<TrainForm> {
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      labelText: "Platform *",
-                      hintText: "e.g., 3",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: AppInputDecoration(
+                        labelText: "Platform",
+                        hintText: "e.g., 3",
+                        icon: Icons.numbers,
+                        required: true),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                     child: DateTimeFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Arrival Time *",
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.access_time),
-                  ),
+                  decoration: AppInputDecoration(
+                      labelText: "Arrival Time",
+                      hintText: null,
+                      icon: Icons.access_time,
+                      required: true),
+                  hideDefaultSuffixIcon: true,
+                  canClear: false,
                   validator: (value) {
                     if (value == null) {
                       return "Please select arrival time";
@@ -365,47 +358,12 @@ class TrainFormState extends State<TrainForm> {
                 )),
               ],
             ),
-
-            const SizedBox(height: 32),
-            Text(
-              "* Required fields",
-              style: textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
+            const SizedBox(height: 16),
+            const RequiredFieldsHint()
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _selectDepartureTime(BuildContext context) async {
-    final DateTime? pickedDateTime =
-        await selectDateTime(context, initialDate: _departureTime);
-
-    if (pickedDateTime == null) {
-      return;
-    }
-
-    setState(() {
-      _departureTime = pickedDateTime;
-      if (_arrivalTime != null && _arrivalTime!.isBefore(pickedDateTime)) {
-        _arrivalTime = null;
-      }
-    });
-  }
-
-  Future<void> _selectArrivalTime(BuildContext context) async {
-    final DateTime? pickedDateTime = await selectDateTime(context,
-        initialDate: _arrivalTime ?? _departureTime, startDate: _departureTime);
-
-    if (pickedDateTime == null) {
-      return;
-    }
-
-    setState(() {
-      _arrivalTime = pickedDateTime;
-    });
   }
 
   bool validate() {

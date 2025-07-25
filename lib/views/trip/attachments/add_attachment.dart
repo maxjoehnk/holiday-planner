@@ -2,6 +2,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/attachments.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_attachment.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:uuid/uuid.dart';
 
 class AddAttachmentView extends StatefulWidget {
@@ -108,13 +109,10 @@ class _AddAttachmentViewState extends State<AddAttachmentView> {
                   }
                   return null;
                 },
-                decoration: InputDecoration(
+                decoration: AppInputDecoration(
                   labelText: "Name",
                   hintText: "Enter attachment name",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.label_outline),
+                  icon: Icons.label_outline,
                 ),
               ),
               const SizedBox(height: 24),

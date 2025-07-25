@@ -148,7 +148,7 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
                 return null;
               },
               decoration: AppInputDecoration(
-                  "Name",
+                  labelText: "Name",
                   hintText: "Restaurant, Museum, Park, etc.",
                   required: true,
                   icon: Icons.explore_outlined
@@ -165,7 +165,7 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
                 return null;
               },
               decoration: AppInputDecoration(
-              "Address",
+                labelText: "Address",
               hintText: "Street address or location",
               icon: Icons.location_on_outlined,
               required: true,
@@ -186,7 +186,7 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
                 return null;
               },
               decoration: AppInputDecoration(
-                "Website",
+                labelText: "Website",
                 hintText: "https://example.com",
                 icon: Icons.language_outlined,
               ),
@@ -196,7 +196,7 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
               textInputAction: TextInputAction.next,
               maxLines: 2,
               decoration: AppInputDecoration(
-                "Opening Hours",
+                labelText: "Opening Hours",
                 hintText: "Mon-Fri: 9:00-17:00, Sat-Sun: 10:00-16:00",
                 icon: Icons.access_time_outlined,
               ),
@@ -205,7 +205,7 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
               controller: _priceController,
               textInputAction: TextInputAction.done,
               decoration: AppInputDecoration(
-                "Price",
+                labelText: "Price",
                 hintText: "\$15, €20, Free, etc.",
                 icon: Icons.attach_money_outlined,
               ),
