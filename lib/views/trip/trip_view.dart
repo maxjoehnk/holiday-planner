@@ -8,7 +8,6 @@ import 'package:holiday_planner/views/trip/attachments/add_attachment.dart';
 import 'package:holiday_planner/views/trip/attachments/trip_attachments.dart';
 import 'package:holiday_planner/views/trip/edit_trip.dart';
 import 'package:holiday_planner/views/trip/summary/trip_summary.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:uuid/uuid.dart';
 
 import 'timeline/trip_timeline.dart';

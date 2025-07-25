@@ -1,0 +1,418 @@
+import 'package:flutter/material.dart';
+import 'package:holiday_planner/widgets/form_field.dart';
+import 'package:holiday_planner/widgets/required_fields_hint.dart';
+import 'package:uuid/uuid.dart';
+
+class PointOfInterestFormData {
+  final String name;
+  final String address;
+  final String? website;
+  final String? openingHours;
+  final String? price;
+  final UuidValue? id;
+  final UuidValue? tripId;
+
+  PointOfInterestFormData({
+    required this.name,
+    required this.address,
+    this.website,
+    this.openingHours,
+    this.price,
+    this.id,
+    this.tripId,
+  });
+}
+
+class PointOfInterestForm extends StatefulWidget {
+  final PointOfInterestFormData? initialData;
+  final Function(PointOfInterestFormData) onSubmit;
+  final bool isLoading;
+  final String? errorMessage;
+  final VoidCallback? onErrorDismiss;
+
+  const PointOfInterestForm({
+    super.key,
+    this.initialData,
+    required this.onSubmit,
+    this.isLoading = false,
+    this.errorMessage,
+    this.onErrorDismiss,
+  });
+
+  @override
+  State<PointOfInterestForm> createState() => PointOfInterestFormState();
+}
+
+class PointOfInterestFormState extends State<PointOfInterestForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController _nameController;
+  late final TextEditingController _addressController;
+  late final TextEditingController _websiteController;
+  late final TextEditingController _openingHoursController;
+  late final TextEditingController _priceController;
+
+  @override
+  void initState() {
+    super.initState();
+    final data = widget.initialData;
+
+    _nameController = TextEditingController(text: data?.name ?? '');
+    _addressController = TextEditingController(text: data?.address ?? '');
+    _websiteController = TextEditingController(text: data?.website ?? '');
+    _openingHoursController =
+        TextEditingController(text: data?.openingHours ?? '');
+    _priceController = TextEditingController(text: data?.price ?? '');
+
+    _nameController.addListener(() => setState(() {}));
+    _addressController.addListener(() => setState(() {}));
+    _websiteController.addListener(() => setState(() {}));
+    _openingHoursController.addListener(() => setState(() {}));
+    _priceController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _websiteController.dispose();
+    _openingHoursController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 16,
+          children: [
+            if (widget.errorMessage != null) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: colorScheme.onErrorContainer,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        widget.errorMessage!,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: widget.onErrorDismiss,
+                      icon: Icon(
+                        Icons.close,
+                        color: colorScheme.onErrorContainer,
+                        size: 20,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+            Text(
+              "Point of Interest Details",
+              style: textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            TextFormField(
+              controller: _nameController,
+              textInputAction: TextInputAction.next,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter a name";
+                }
+                return null;
+              },
+              decoration: AppInputDecoration(
+                  "Name",
+                  hintText: "Restaurant, Museum, Park, etc.",
+                  required: true,
+                  icon: Icons.explore_outlined
+              ),
+            ),
+            TextFormField(
+              controller: _addressController,
+              textInputAction: TextInputAction.next,
+              maxLines: 2,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter an address";
+                }
+                return null;
+              },
+              decoration: AppInputDecoration(
+              "Address",
+              hintText: "Street address or location",
+              icon: Icons.location_on_outlined,
+              required: true,
+              ),
+            ),
+            TextFormField(
+              controller: _websiteController,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.url,
+              validator: (value) {
+                if (value != null && value.isNotEmpty) {
+                  // Basic URL validation
+                  if (!value.startsWith('http://') &&
+                      !value.startsWith('https://')) {
+                    return "Please enter a valid URL (starting with http:// or https://)";
+                  }
+                }
+                return null;
+              },
+              decoration: AppInputDecoration(
+                "Website",
+                hintText: "https://example.com",
+                icon: Icons.language_outlined,
+              ),
+            ),
+            TextFormField(
+              controller: _openingHoursController,
+              textInputAction: TextInputAction.next,
+              maxLines: 2,
+              decoration: AppInputDecoration(
+                "Opening Hours",
+                hintText: "Mon-Fri: 9:00-17:00, Sat-Sun: 10:00-16:00",
+                icon: Icons.access_time_outlined,
+              ),
+            ),
+            TextFormField(
+              controller: _priceController,
+              textInputAction: TextInputAction.done,
+              decoration: AppInputDecoration(
+                "Price",
+                hintText: "\$15, €20, Free, etc.",
+                icon: Icons.attach_money_outlined,
+              ),
+            ),
+            _buildPreviewCard(context),
+            const SizedBox(width: 16),
+            const RequiredFieldsHint(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreviewCard(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.visibility_outlined,
+                  size: 20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  "Preview",
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.explore,
+                    size: 24,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _nameController.text.isEmpty
+                            ? "Point of Interest Name"
+                            : _nameController.text,
+                        style: textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: _nameController.text.isEmpty
+                              ? colorScheme.onSurfaceVariant
+                              : null,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _addressController.text.isEmpty
+                            ? "Address will appear here"
+                            : _addressController.text,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (_websiteController.text.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceVariant.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.language,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _websiteController.text,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(
+                      Icons.open_in_new,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            if (_openingHoursController.text.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _openingHoursController.text,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (_priceController.text.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.attach_money,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _priceController.text,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool validate() {
+    return _formKey.currentState!.validate();
+  }
+
+  PointOfInterestFormData getFormData() {
+    return PointOfInterestFormData(
+      name: _nameController.text.trim(),
+      address: _addressController.text.trim(),
+      website: _websiteController.text.trim().isEmpty
+          ? null
+          : _websiteController.text.trim(),
+      openingHours: _openingHoursController.text.trim().isEmpty
+          ? null
+          : _openingHoursController.text.trim(),
+      price: _priceController.text.trim().isEmpty
+          ? null
+          : _priceController.text.trim(),
+      id: widget.initialData?.id,
+      tripId: widget.initialData?.tripId,
+    );
+  }
+
+  void submit() {
+    if (validate()) {
+      widget.onSubmit(getFormData());
+    }
+  }
+}
