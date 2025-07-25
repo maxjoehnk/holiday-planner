@@ -321,7 +321,7 @@ class PointOfInterestCard extends StatelessWidget {
   void _launchWebsite(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri);
     }
   }
 
@@ -331,7 +331,7 @@ class PointOfInterestCard extends StatelessWidget {
     final uri = Uri.parse(url);
     
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri);
     }
   }
 }
