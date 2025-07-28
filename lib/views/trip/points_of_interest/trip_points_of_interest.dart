@@ -210,6 +210,15 @@ class PointOfInterestCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (pointOfInterest.phoneNumber != null)
+                      IconButton(
+                        onPressed: () => _launchPhone(pointOfInterest.phoneNumber!),
+                        icon: Icon(
+                          Icons.phone,
+                          color: colorScheme.primary,
+                        ),
+                        tooltip: 'Call',
+                      ),
                     IconButton(
                       onPressed: () => _launchNavigation(pointOfInterest.address),
                       icon: Icon(
@@ -312,6 +321,30 @@ class PointOfInterestCard extends StatelessWidget {
                     ],
                   ),
                 ],
+                if (pointOfInterest.note != null && pointOfInterest.note!.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.note,
+                        size: 16,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          pointOfInterest.note!,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -330,6 +363,13 @@ class PointOfInterestCard extends StatelessWidget {
     final url = 'https://www.google.com/maps/search/?api=1&query=$encodedAddress';
     final uri = Uri.parse(url);
     
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  void _launchPhone(String phoneNumber) async {
+    final uri = Uri.parse('tel:$phoneNumber');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }

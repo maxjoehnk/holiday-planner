@@ -70,6 +70,8 @@ class _AddPointOfInterestState extends State<AddPointOfInterest> {
           website: formData.website,
           openingHours: formData.openingHours,
           price: formData.price,
+          phoneNumber: formData.phoneNumber,
+          note: formData.note,
           tripId: widget.tripId,
         ),
       );

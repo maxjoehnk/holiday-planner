@@ -30,6 +30,8 @@ impl PointOfInterestHandler {
             website: Set(command.website),
             opening_hours: Set(command.opening_hours),
             price: Set(command.price),
+            phone_number: Set(command.phone_number),
+            note: Set(command.note),
         };
         
         repositories::points_of_interest::insert(&self.db, point_of_interest).await?;
@@ -46,6 +48,8 @@ impl PointOfInterestHandler {
             website: p.website,
             opening_hours: p.opening_hours,
             price: p.price,
+            phone_number: p.phone_number,
+            note: p.note,
         }).collect();
         
         Ok(points_of_interest)
@@ -61,6 +65,8 @@ impl PointOfInterestHandler {
         point_of_interest.website.set_if_not_equals(command.website);
         point_of_interest.opening_hours.set_if_not_equals(command.opening_hours);
         point_of_interest.price.set_if_not_equals(command.price);
+        point_of_interest.phone_number.set_if_not_equals(command.phone_number);
+        point_of_interest.note.set_if_not_equals(command.note);
 
         repositories::points_of_interest::update(&self.db, point_of_interest).await?;
 

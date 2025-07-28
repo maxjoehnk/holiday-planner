@@ -9,6 +9,8 @@ class PointOfInterestFormData {
   final String? website;
   final String? openingHours;
   final String? price;
+  final String? phoneNumber;
+  final String? note;
   final UuidValue? id;
   final UuidValue? tripId;
 
@@ -18,6 +20,8 @@ class PointOfInterestFormData {
     this.website,
     this.openingHours,
     this.price,
+    this.phoneNumber,
+    this.note,
     this.id,
     this.tripId,
   });
@@ -50,6 +54,8 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
   late final TextEditingController _websiteController;
   late final TextEditingController _openingHoursController;
   late final TextEditingController _priceController;
+  late final TextEditingController _phoneNumberController;
+  late final TextEditingController _noteController;
 
   @override
   void initState() {
@@ -62,12 +68,16 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
     _openingHoursController =
         TextEditingController(text: data?.openingHours ?? '');
     _priceController = TextEditingController(text: data?.price ?? '');
+    _phoneNumberController = TextEditingController(text: data?.phoneNumber ?? '');
+    _noteController = TextEditingController(text: data?.note ?? '');
 
     _nameController.addListener(() => setState(() {}));
     _addressController.addListener(() => setState(() {}));
     _websiteController.addListener(() => setState(() {}));
     _openingHoursController.addListener(() => setState(() {}));
     _priceController.addListener(() => setState(() {}));
+    _phoneNumberController.addListener(() => setState(() {}));
+    _noteController.addListener(() => setState(() {}));
   }
 
   @override
@@ -77,6 +87,8 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
     _websiteController.dispose();
     _openingHoursController.dispose();
     _priceController.dispose();
+    _phoneNumberController.dispose();
+    _noteController.dispose();
     super.dispose();
   }
 
@@ -203,11 +215,31 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
             ),
             TextFormField(
               controller: _priceController,
-              textInputAction: TextInputAction.done,
+              textInputAction: TextInputAction.next,
               decoration: AppInputDecoration(
                 labelText: "Price",
                 hintText: "\$15, €20, Free, etc.",
                 icon: Icons.attach_money_outlined,
+              ),
+            ),
+            TextFormField(
+              controller: _phoneNumberController,
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.phone,
+              decoration: AppInputDecoration(
+                labelText: "Phone Number",
+                hintText: "+1 (555) 123-4567",
+                icon: Icons.phone_outlined,
+              ),
+            ),
+            TextFormField(
+              controller: _noteController,
+              textInputAction: TextInputAction.done,
+              maxLines: 3,
+              decoration: AppInputDecoration(
+                labelText: "Note",
+                hintText: "Additional information, tips, or personal notes",
+                icon: Icons.note_outlined,
               ),
             ),
             _buildPreviewCard(context),
@@ -382,6 +414,50 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
                 ],
               ),
             ],
+            if (_phoneNumberController.text.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.phone,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _phoneNumberController.text,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (_noteController.text.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.note,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _noteController.text,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -405,6 +481,12 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
       price: _priceController.text.trim().isEmpty
           ? null
           : _priceController.text.trim(),
+      phoneNumber: _phoneNumberController.text.trim().isEmpty
+          ? null
+          : _phoneNumberController.text.trim(),
+      note: _noteController.text.trim().isEmpty
+          ? null
+          : _noteController.text.trim(),
       id: widget.initialData?.id,
       tripId: widget.initialData?.tripId,
     );

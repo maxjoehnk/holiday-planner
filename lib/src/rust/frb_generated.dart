@@ -1732,8 +1732,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AddTripPointOfInterest dco_decode_add_trip_point_of_interest(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return AddTripPointOfInterest(
       tripId: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -1741,6 +1741,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       website: dco_decode_opt_String(arr[3]),
       openingHours: dco_decode_opt_String(arr[4]),
       price: dco_decode_opt_String(arr[5]),
+      phoneNumber: dco_decode_opt_String(arr[6]),
+      note: dco_decode_opt_String(arr[7]),
     );
   }
 
@@ -2370,8 +2372,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PointOfInterestModel dco_decode_point_of_interest_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return PointOfInterestModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2379,6 +2381,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       website: dco_decode_opt_String(arr[3]),
       openingHours: dco_decode_opt_String(arr[4]),
       price: dco_decode_opt_String(arr[5]),
+      phoneNumber: dco_decode_opt_String(arr[6]),
+      note: dco_decode_opt_String(arr[7]),
     );
   }
 
@@ -2787,8 +2791,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return UpdateTripPointOfInterest(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2796,6 +2800,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       website: dco_decode_opt_String(arr[3]),
       openingHours: dco_decode_opt_String(arr[4]),
       price: dco_decode_opt_String(arr[5]),
+      phoneNumber: dco_decode_opt_String(arr[6]),
+      note: dco_decode_opt_String(arr[7]),
     );
   }
 
@@ -3053,13 +3059,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_website = sse_decode_opt_String(deserializer);
     var var_openingHours = sse_decode_opt_String(deserializer);
     var var_price = sse_decode_opt_String(deserializer);
+    var var_phoneNumber = sse_decode_opt_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
     return AddTripPointOfInterest(
         tripId: var_tripId,
         name: var_name,
         address: var_address,
         website: var_website,
         openingHours: var_openingHours,
-        price: var_price);
+        price: var_price,
+        phoneNumber: var_phoneNumber,
+        note: var_note);
   }
 
   @protected
@@ -3850,13 +3860,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_website = sse_decode_opt_String(deserializer);
     var var_openingHours = sse_decode_opt_String(deserializer);
     var var_price = sse_decode_opt_String(deserializer);
+    var var_phoneNumber = sse_decode_opt_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
     return PointOfInterestModel(
         id: var_id,
         name: var_name,
         address: var_address,
         website: var_website,
         openingHours: var_openingHours,
-        price: var_price);
+        price: var_price,
+        phoneNumber: var_phoneNumber,
+        note: var_note);
   }
 
   @protected
@@ -4299,13 +4313,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_website = sse_decode_opt_String(deserializer);
     var var_openingHours = sse_decode_opt_String(deserializer);
     var var_price = sse_decode_opt_String(deserializer);
+    var var_phoneNumber = sse_decode_opt_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
     return UpdateTripPointOfInterest(
         id: var_id,
         name: var_name,
         address: var_address,
         website: var_website,
         openingHours: var_openingHours,
-        price: var_price);
+        price: var_price,
+        phoneNumber: var_phoneNumber,
+        note: var_note);
   }
 
   @protected
@@ -4503,6 +4521,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.website, serializer);
     sse_encode_opt_String(self.openingHours, serializer);
     sse_encode_opt_String(self.price, serializer);
+    sse_encode_opt_String(self.phoneNumber, serializer);
+    sse_encode_opt_String(self.note, serializer);
   }
 
   @protected
@@ -5170,6 +5190,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.website, serializer);
     sse_encode_opt_String(self.openingHours, serializer);
     sse_encode_opt_String(self.price, serializer);
+    sse_encode_opt_String(self.phoneNumber, serializer);
+    sse_encode_opt_String(self.note, serializer);
   }
 
   @protected
@@ -5506,6 +5528,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.website, serializer);
     sse_encode_opt_String(self.openingHours, serializer);
     sse_encode_opt_String(self.price, serializer);
+    sse_encode_opt_String(self.phoneNumber, serializer);
+    sse_encode_opt_String(self.note, serializer);
   }
 
   @protected

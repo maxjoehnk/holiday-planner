@@ -2135,6 +2135,8 @@ impl SseDecode for crate::commands::add_trip_point_of_interest::AddTripPointOfIn
         let mut var_website = <Option<String>>::sse_decode(deserializer);
         let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
         let mut var_price = <Option<String>>::sse_decode(deserializer);
+        let mut var_phoneNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_note = <Option<String>>::sse_decode(deserializer);
         return crate::commands::add_trip_point_of_interest::AddTripPointOfInterest {
             trip_id: var_tripId,
             name: var_name,
@@ -2142,6 +2144,8 @@ impl SseDecode for crate::commands::add_trip_point_of_interest::AddTripPointOfIn
             website: var_website,
             opening_hours: var_openingHours,
             price: var_price,
+            phone_number: var_phoneNumber,
+            note: var_note,
         };
     }
 }
@@ -2815,6 +2819,8 @@ impl SseDecode for crate::models::PointOfInterestModel {
         let mut var_website = <Option<String>>::sse_decode(deserializer);
         let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
         let mut var_price = <Option<String>>::sse_decode(deserializer);
+        let mut var_phoneNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_note = <Option<String>>::sse_decode(deserializer);
         return crate::models::PointOfInterestModel {
             id: var_id,
             name: var_name,
@@ -2822,6 +2828,8 @@ impl SseDecode for crate::models::PointOfInterestModel {
             website: var_website,
             opening_hours: var_openingHours,
             price: var_price,
+            phone_number: var_phoneNumber,
+            note: var_note,
         };
     }
 }
@@ -3351,6 +3359,8 @@ impl SseDecode for crate::commands::update_trip_point_of_interest::UpdateTripPoi
         let mut var_website = <Option<String>>::sse_decode(deserializer);
         let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
         let mut var_price = <Option<String>>::sse_decode(deserializer);
+        let mut var_phoneNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_note = <Option<String>>::sse_decode(deserializer);
         return crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest {
             id: var_id,
             name: var_name,
@@ -3358,6 +3368,8 @@ impl SseDecode for crate::commands::update_trip_point_of_interest::UpdateTripPoi
             website: var_website,
             opening_hours: var_openingHours,
             price: var_price,
+            phone_number: var_phoneNumber,
+            note: var_note,
         };
     }
 }
@@ -3880,6 +3892,8 @@ impl flutter_rust_bridge::IntoDart
             self.website.into_into_dart().into_dart(),
             self.opening_hours.into_into_dart().into_dart(),
             self.price.into_into_dart().into_dart(),
+            self.phone_number.into_into_dart().into_dart(),
+            self.note.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4283,6 +4297,8 @@ impl flutter_rust_bridge::IntoDart for crate::models::PointOfInterestModel {
             self.website.into_into_dart().into_dart(),
             self.opening_hours.into_into_dart().into_dart(),
             self.price.into_into_dart().into_dart(),
+            self.phone_number.into_into_dart().into_dart(),
+            self.note.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4931,6 +4947,8 @@ impl flutter_rust_bridge::IntoDart
             self.website.into_into_dart().into_dart(),
             self.opening_hours.into_into_dart().into_dart(),
             self.price.into_into_dart().into_dart(),
+            self.phone_number.into_into_dart().into_dart(),
+            self.note.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5187,6 +5205,8 @@ impl SseEncode for crate::commands::add_trip_point_of_interest::AddTripPointOfIn
         <Option<String>>::sse_encode(self.website, serializer);
         <Option<String>>::sse_encode(self.opening_hours, serializer);
         <Option<String>>::sse_encode(self.price, serializer);
+        <Option<String>>::sse_encode(self.phone_number, serializer);
+        <Option<String>>::sse_encode(self.note, serializer);
     }
 }
 
@@ -5684,6 +5704,8 @@ impl SseEncode for crate::models::PointOfInterestModel {
         <Option<String>>::sse_encode(self.website, serializer);
         <Option<String>>::sse_encode(self.opening_hours, serializer);
         <Option<String>>::sse_encode(self.price, serializer);
+        <Option<String>>::sse_encode(self.phone_number, serializer);
+        <Option<String>>::sse_encode(self.note, serializer);
     }
 }
 
@@ -6054,6 +6076,8 @@ impl SseEncode for crate::commands::update_trip_point_of_interest::UpdateTripPoi
         <Option<String>>::sse_encode(self.website, serializer);
         <Option<String>>::sse_encode(self.opening_hours, serializer);
         <Option<String>>::sse_encode(self.price, serializer);
+        <Option<String>>::sse_encode(self.phone_number, serializer);
+        <Option<String>>::sse_encode(self.note, serializer);
     }
 }
 

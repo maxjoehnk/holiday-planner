@@ -325,6 +325,8 @@ class PointOfInterestModel {
   final String? website;
   final String? openingHours;
   final String? price;
+  final String? phoneNumber;
+  final String? note;
 
   const PointOfInterestModel({
     required this.id,
@@ -333,6 +335,8 @@ class PointOfInterestModel {
     this.website,
     this.openingHours,
     this.price,
+    this.phoneNumber,
+    this.note,
   });
 
   @override
@@ -342,7 +346,9 @@ class PointOfInterestModel {
       address.hashCode ^
       website.hashCode ^
       openingHours.hashCode ^
-      price.hashCode;
+      price.hashCode ^
+      phoneNumber.hashCode ^
+      note.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -354,7 +360,9 @@ class PointOfInterestModel {
           address == other.address &&
           website == other.website &&
           openingHours == other.openingHours &&
-          price == other.price;
+          price == other.price &&
+          phoneNumber == other.phoneNumber &&
+          note == other.note;
 }
 
 class Quantity {

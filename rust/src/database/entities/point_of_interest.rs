@@ -13,6 +13,8 @@ pub struct Model {
     pub website: Option<String>,
     pub opening_hours: Option<String>,
     pub price: Option<String>,
+    pub phone_number: Option<String>,
+    pub note: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

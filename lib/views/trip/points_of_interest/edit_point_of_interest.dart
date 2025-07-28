@@ -55,6 +55,8 @@ class _EditPointOfInterestState extends State<EditPointOfInterest> {
                 website: widget.pointOfInterest.website,
                 openingHours: widget.pointOfInterest.openingHours,
                 price: widget.pointOfInterest.price,
+                phoneNumber: widget.pointOfInterest.phoneNumber,
+                note: widget.pointOfInterest.note,
               ),
               onSubmit: _handleFormSubmit,
               isLoading: _isLoading,
@@ -97,6 +99,8 @@ class _EditPointOfInterestState extends State<EditPointOfInterest> {
         website: formData.website,
         openingHours: formData.openingHours,
         price: formData.price,
+        phoneNumber: formData.phoneNumber,
+        note: formData.note,
       );
 
       await updateTripPointOfInterest(command: command);
