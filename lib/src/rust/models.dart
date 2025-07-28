@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import 'frb_generated.dart';
+import 'models/tidal_information.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'package:uuid/uuid.dart';
@@ -458,6 +459,9 @@ class TripLocationListModel {
   final String city;
   final String country;
   final WeatherForecast? forecast;
+  final bool isCoastal;
+  final DateTime? tidalInformationLastUpdated;
+  final List<TidalInformation> tidalInformation;
 
   const TripLocationListModel({
     required this.id,
@@ -465,6 +469,9 @@ class TripLocationListModel {
     required this.city,
     required this.country,
     this.forecast,
+    required this.isCoastal,
+    this.tidalInformationLastUpdated,
+    required this.tidalInformation,
   });
 
   @override
@@ -473,7 +480,10 @@ class TripLocationListModel {
       coordinates.hashCode ^
       city.hashCode ^
       country.hashCode ^
-      forecast.hashCode;
+      forecast.hashCode ^
+      isCoastal.hashCode ^
+      tidalInformationLastUpdated.hashCode ^
+      tidalInformation.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -484,7 +494,10 @@ class TripLocationListModel {
           coordinates == other.coordinates &&
           city == other.city &&
           country == other.country &&
-          forecast == other.forecast;
+          forecast == other.forecast &&
+          isCoastal == other.isCoastal &&
+          tidalInformationLastUpdated == other.tidalInformationLastUpdated &&
+          tidalInformation == other.tidalInformation;
 }
 
 class TripLocationSummary {

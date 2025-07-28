@@ -95,6 +95,7 @@ class ForecastDetailView extends StatelessWidget {
 
               const SizedBox(height: 24),
 
+
               Text(
                 'Daily Forecast',
                 style: textTheme.titleMedium?.copyWith(
@@ -353,6 +354,7 @@ class ForecastDetailView extends StatelessWidget {
       ],
     );
   }
+
 }
 
 // Weather icons and colors

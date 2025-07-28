@@ -39,6 +39,7 @@ import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
 import 'models.dart';
 import 'models/bookings.dart';
+import 'models/tidal_information.dart';
 import 'models/timeline.dart';
 import 'models/transits.dart';
 import 'models/web_images.dart';
@@ -269,6 +270,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<TidalInformation> dco_decode_list_tidal_information(dynamic raw);
+
+  @protected
   List<TimelineItem> dco_decode_list_timeline_item(dynamic raw);
 
   @protected
@@ -350,6 +354,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SearchWebImages dco_decode_search_web_images(dynamic raw);
+
+  @protected
+  TidalInformation dco_decode_tidal_information(dynamic raw);
+
+  @protected
+  TideType dco_decode_tide_type(dynamic raw);
 
   @protected
   TimelineItem dco_decode_timeline_item(dynamic raw);
@@ -678,6 +688,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<TidalInformation> sse_decode_list_tidal_information(
+      SseDeserializer deserializer);
+
+  @protected
   List<TimelineItem> sse_decode_list_timeline_item(
       SseDeserializer deserializer);
 
@@ -768,6 +782,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SearchWebImages sse_decode_search_web_images(SseDeserializer deserializer);
+
+  @protected
+  TidalInformation sse_decode_tidal_information(SseDeserializer deserializer);
+
+  @protected
+  TideType sse_decode_tide_type(SseDeserializer deserializer);
 
   @protected
   TimelineItem sse_decode_timeline_item(SseDeserializer deserializer);
@@ -1114,6 +1134,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_tidal_information(
+      List<TidalInformation> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_timeline_item(
       List<TimelineItem> self, SseSerializer serializer);
 
@@ -1209,6 +1233,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_search_web_images(
       SearchWebImages self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tidal_information(
+      TidalInformation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tide_type(TideType self, SseSerializer serializer);
 
   @protected
   void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer);

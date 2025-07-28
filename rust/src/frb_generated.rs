@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -627967105;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -459532735;
 
 // Section: executor
 
@@ -1672,6 +1672,45 @@ fn wire__crate__api__bookings__update_car_rental_impl(
         },
     )
 }
+fn wire__crate__api__trips__update_coastal_flag_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "update_coastal_flag",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_location_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            let api_is_coastal = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::trips::update_coastal_flag(api_location_id, api_is_coastal)
+                                .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__packing_list__update_packing_list_entry_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2484,6 +2523,20 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::models::tidal_information::TidalInformation> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(
+                <crate::models::tidal_information::TidalInformation>::sse_decode(deserializer),
+            );
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::models::timeline::TimelineItem> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2895,6 +2948,32 @@ impl SseDecode for crate::commands::search_web_images::SearchWebImages {
     }
 }
 
+impl SseDecode for crate::models::tidal_information::TidalInformation {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_date = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_height = <f64>::sse_decode(deserializer);
+        let mut var_tide = <crate::models::tidal_information::TideType>::sse_decode(deserializer);
+        return crate::models::tidal_information::TidalInformation {
+            date: var_date,
+            height: var_height,
+            tide: var_tide,
+        };
+    }
+}
+
+impl SseDecode for crate::models::tidal_information::TideType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::models::tidal_information::TideType::High,
+            1 => crate::models::tidal_information::TideType::Low,
+            _ => unreachable!("Invalid variant for TideType: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::models::timeline::TimelineItem {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3095,12 +3174,20 @@ impl SseDecode for crate::models::TripLocationListModel {
         let mut var_city = <String>::sse_decode(deserializer);
         let mut var_country = <String>::sse_decode(deserializer);
         let mut var_forecast = <Option<crate::models::WeatherForecast>>::sse_decode(deserializer);
+        let mut var_isCoastal = <bool>::sse_decode(deserializer);
+        let mut var_tidalInformationLastUpdated =
+            <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
+        let mut var_tidalInformation =
+            <Vec<crate::models::tidal_information::TidalInformation>>::sse_decode(deserializer);
         return crate::models::TripLocationListModel {
             id: var_id,
             coordinates: var_coordinates,
             city: var_city,
             country: var_country,
             forecast: var_forecast,
+            is_coastal: var_isCoastal,
+            tidal_information_last_updated: var_tidalInformationLastUpdated,
+            tidal_information: var_tidalInformation,
         };
     }
 }
@@ -3561,24 +3648,25 @@ fn pde_ffi_dispatcher_primary_impl(
         42 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
         43 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
         44 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        45 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => {
+        47 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        47 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        48 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        50 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        51 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4398,6 +4486,49 @@ impl flutter_rust_bridge::IntoIntoDart<crate::commands::search_web_images::Searc
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::tidal_information::TidalInformation {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.date.into_into_dart().into_dart(),
+            self.height.into_into_dart().into_dart(),
+            self.tide.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::tidal_information::TidalInformation
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::tidal_information::TidalInformation>
+    for crate::models::tidal_information::TidalInformation
+{
+    fn into_into_dart(self) -> crate::models::tidal_information::TidalInformation {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::tidal_information::TideType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::High => 0.into_dart(),
+            Self::Low => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::tidal_information::TideType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::tidal_information::TideType>
+    for crate::models::tidal_information::TideType
+{
+    fn into_into_dart(self) -> crate::models::tidal_information::TideType {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::models::timeline::TimelineItem {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -4635,6 +4766,11 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripLocationListModel {
             self.city.into_into_dart().into_dart(),
             self.country.into_into_dart().into_dart(),
             self.forecast.into_into_dart().into_dart(),
+            self.is_coastal.into_into_dart().into_dart(),
+            self.tidal_information_last_updated
+                .into_into_dart()
+                .into_dart(),
+            self.tidal_information.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5453,6 +5589,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::models::tidal_information::TidalInformation> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::tidal_information::TidalInformation>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::models::timeline::TimelineItem> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5756,6 +5902,31 @@ impl SseEncode for crate::commands::search_web_images::SearchWebImages {
     }
 }
 
+impl SseEncode for crate::models::tidal_information::TidalInformation {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.date, serializer);
+        <f64>::sse_encode(self.height, serializer);
+        <crate::models::tidal_information::TideType>::sse_encode(self.tide, serializer);
+    }
+}
+
+impl SseEncode for crate::models::tidal_information::TideType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::models::tidal_information::TideType::High => 0,
+                crate::models::tidal_information::TideType::Low => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::models::timeline::TimelineItem {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5910,6 +6081,15 @@ impl SseEncode for crate::models::TripLocationListModel {
         <String>::sse_encode(self.city, serializer);
         <String>::sse_encode(self.country, serializer);
         <Option<crate::models::WeatherForecast>>::sse_encode(self.forecast, serializer);
+        <bool>::sse_encode(self.is_coastal, serializer);
+        <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(
+            self.tidal_information_last_updated,
+            serializer,
+        );
+        <Vec<crate::models::tidal_information::TidalInformation>>::sse_encode(
+            self.tidal_information,
+            serializer,
+        );
     }
 }
 

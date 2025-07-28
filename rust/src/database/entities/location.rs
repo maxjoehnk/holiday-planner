@@ -13,6 +13,8 @@ pub struct Model {
     pub coordinates_longitude: f64,
     pub city: String,
     pub country: String,
+    pub is_coastal: bool,
+    pub tidal_information_last_updated: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -44,6 +46,12 @@ impl Related<super::attachment::Entity> for Entity {
 
     fn via() -> Option<RelationDef> {
         Some(super::location_attachment::Relation::Location.def().rev())
+    }
+}
+
+impl Related<super::tidal_information::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::tidal_information::Relation::Location.def().rev()
     }
 }
 
@@ -79,6 +87,7 @@ impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
             id: Set(Uuid::new_v4()),
+            is_coastal: Set(false),
             ..ActiveModelTrait::default()
         }
     }

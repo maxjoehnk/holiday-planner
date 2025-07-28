@@ -6,11 +6,13 @@ pub use timeline::*;
 pub use transits::*;
 pub use web_images::*;
 pub use bookings::*;
+pub use tidal_information::*;
 
 pub mod web_images;
 pub mod transits;
 pub mod bookings;
 pub mod timeline;
+pub mod tidal_information;
 
 #[derive(Clone)]
 pub struct TripListModel {
@@ -72,6 +74,9 @@ pub struct TripLocationListModel {
     pub city: String,
     pub country: String,
     pub forecast: Option<WeatherForecast>,
+    pub is_coastal: bool,
+    pub tidal_information_last_updated: Option<DateTime<Utc>>,
+    pub tidal_information: Vec<TidalInformation>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]

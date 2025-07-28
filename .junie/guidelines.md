@@ -7,6 +7,7 @@ Cross-platform mobile app using Flutter frontend + Rust backend, connected via F
 ## Architecture
 
 Flutter handles UI with Material3 design, while Rust manages all business logic, database operations, and external integrations. Communication flows through generated bridge code.
+The rust backend stores data in a sqlite database.
 
 ### Key Architectural Patterns
 

@@ -91,3 +91,10 @@ pub async fn download_web_image(image_url: String) -> anyhow::Result<Vec<u8>> {
     let handler = DB.try_get::<TripHandler>().await?;
     handler.download_web_image(image_url).await
 }
+
+#[tracing::instrument]
+pub async fn update_coastal_flag(location_id: Uuid, is_coastal: bool) -> anyhow::Result<()> {
+    let handler = DB.try_get::<LocationHandler>().await?;
+    handler.update_coastal_flag(location_id, is_coastal).await
+}
+

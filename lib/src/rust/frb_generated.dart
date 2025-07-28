@@ -40,6 +40,7 @@ import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'models.dart';
 import 'models/bookings.dart';
+import 'models/tidal_information.dart';
 import 'models/timeline.dart';
 import 'models/transits.dart';
 import 'models/web_images.dart';
@@ -105,7 +106,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -627967105;
+  int get rustContentHash => -459532735;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -236,6 +237,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiBookingsUpdateCarRental(
       {required UpdateCarRental command});
+
+  Future<void> crateApiTripsUpdateCoastalFlag(
+      {required UuidValue locationId, required bool isCoastal});
 
   Future<void> crateApiPackingListUpdatePackingListEntry(
       {required UpdatePackingListEntry command});
@@ -1388,6 +1392,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiTripsUpdateCoastalFlag(
+      {required UuidValue locationId, required bool isCoastal}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Uuid(locationId, serializer);
+        sse_encode_bool(isCoastal, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 45, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTripsUpdateCoastalFlagConstMeta,
+      argValues: [locationId, isCoastal],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTripsUpdateCoastalFlagConstMeta =>
+      const TaskConstMeta(
+        debugName: "update_coastal_flag",
+        argNames: ["locationId", "isCoastal"],
+      );
+
+  @override
   Future<void> crateApiPackingListUpdatePackingListEntry(
       {required UpdatePackingListEntry command}) {
     return handler.executeNormal(NormalTask(
@@ -1395,7 +1426,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_packing_list_entry(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 45, port: port_);
+            funcId: 46, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1421,7 +1452,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_reservation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 46, port: port_);
+            funcId: 47, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1446,7 +1477,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_train(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 47, port: port_);
+            funcId: 48, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1472,7 +1503,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 48, port: port_);
+            funcId: 49, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -1497,7 +1528,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 49, port: port_);
+            funcId: 50, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1524,7 +1555,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_update_trip_point_of_interest(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 50, port: port_);
+            funcId: 51, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2157,6 +2188,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<TidalInformation> dco_decode_list_tidal_information(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_tidal_information).toList();
+  }
+
+  @protected
   List<TimelineItem> dco_decode_list_timeline_item(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_timeline_item).toList();
@@ -2436,6 +2473,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TidalInformation dco_decode_tidal_information(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return TidalInformation(
+      date: dco_decode_Chrono_Utc(arr[0]),
+      height: dco_decode_f_64(arr[1]),
+      tide: dco_decode_tide_type(arr[2]),
+    );
+  }
+
+  @protected
+  TideType dco_decode_tide_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TideType.values[raw as int];
+  }
+
+  @protected
   TimelineItem dco_decode_timeline_item(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2580,14 +2636,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripLocationListModel dco_decode_trip_location_list_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return TripLocationListModel(
       id: dco_decode_Uuid(arr[0]),
       coordinates: dco_decode_coordinates(arr[1]),
       city: dco_decode_String(arr[2]),
       country: dco_decode_String(arr[3]),
       forecast: dco_decode_opt_box_autoadd_weather_forecast(arr[4]),
+      isCoastal: dco_decode_bool(arr[5]),
+      tidalInformationLastUpdated:
+          dco_decode_opt_box_autoadd_Chrono_Utc(arr[6]),
+      tidalInformation: dco_decode_list_tidal_information(arr[7]),
     );
   }
 
@@ -3558,6 +3618,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<TidalInformation> sse_decode_list_tidal_information(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TidalInformation>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_tidal_information(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<TimelineItem> sse_decode_list_timeline_item(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3923,6 +3996,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TidalInformation sse_decode_tidal_information(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_date = sse_decode_Chrono_Utc(deserializer);
+    var var_height = sse_decode_f_64(deserializer);
+    var var_tide = sse_decode_tide_type(deserializer);
+    return TidalInformation(date: var_date, height: var_height, tide: var_tide);
+  }
+
+  @protected
+  TideType sse_decode_tide_type(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return TideType.values[inner];
+  }
+
+  @protected
   TimelineItem sse_decode_timeline_item(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_date = sse_decode_Chrono_Utc(deserializer);
@@ -4076,12 +4165,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_country = sse_decode_String(deserializer);
     var var_forecast =
         sse_decode_opt_box_autoadd_weather_forecast(deserializer);
+    var var_isCoastal = sse_decode_bool(deserializer);
+    var var_tidalInformationLastUpdated =
+        sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
+    var var_tidalInformation = sse_decode_list_tidal_information(deserializer);
     return TripLocationListModel(
         id: var_id,
         coordinates: var_coordinates,
         city: var_city,
         country: var_country,
-        forecast: var_forecast);
+        forecast: var_forecast,
+        isCoastal: var_isCoastal,
+        tidalInformationLastUpdated: var_tidalInformationLastUpdated,
+        tidalInformation: var_tidalInformation);
   }
 
   @protected
@@ -4941,6 +5037,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_tidal_information(
+      List<TidalInformation> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_tidal_information(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_timeline_item(
       List<TimelineItem> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5231,6 +5337,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_tidal_information(
+      TidalInformation self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Chrono_Utc(self.date, serializer);
+    sse_encode_f_64(self.height, serializer);
+    sse_encode_tide_type(self.tide, serializer);
+  }
+
+  @protected
+  void sse_encode_tide_type(TideType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Chrono_Utc(self.date, serializer);
@@ -5368,6 +5489,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.city, serializer);
     sse_encode_String(self.country, serializer);
     sse_encode_opt_box_autoadd_weather_forecast(self.forecast, serializer);
+    sse_encode_bool(self.isCoastal, serializer);
+    sse_encode_opt_box_autoadd_Chrono_Utc(
+        self.tidalInformationLastUpdated, serializer);
+    sse_encode_list_tidal_information(self.tidalInformation, serializer);
   }
 
   @protected

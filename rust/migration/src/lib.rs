@@ -9,6 +9,7 @@ mod m20250721_000700_bookings;
 mod m20250721_183500_add_reservation_category;
 mod m20250722_152400_trains;
 mod m20250728_163200_add_poi_phone_note;
+mod m20250728_174800_add_coastal_and_tidal_info;
 
 pub struct Migrator;
 
@@ -25,6 +26,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250721_183500_add_reservation_category::Migration),
             Box::new(m20250722_152400_trains::Migration),
             Box::new(m20250728_163200_add_poi_phone_note::Migration),
+            Box::new(m20250728_174800_add_coastal_and_tidal_info::Migration),
         ]
     }
 }
