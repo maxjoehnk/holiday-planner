@@ -1,7 +1,7 @@
 use std::ops::Deref;
 use sea_orm::ActiveValue::Set;
 use uuid::Uuid;
-use chrono::{DateTime, NaiveTime, Utc};
+use chrono::{DateTime, Local, NaiveDate, NaiveTime, TimeZone, Utc};
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
@@ -62,10 +62,10 @@ impl TripHandler {
     pub async fn get_upcoming_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting upcoming trips");
         let trips = repositories::trips::find_all(&self.db).await?;
-        let now = Utc::now();
+        let now = Local::now().date_naive();
 
         let trips = trips.into_iter()
-            .filter(|trip| trip.end_date >= now)
+            .filter(|trip| trip.end_date.to_local_date() >= now)
             .map(|trip| TripListModel {
                 id: trip.id,
                 name: trip.name,
@@ -81,10 +81,10 @@ impl TripHandler {
     pub async fn get_past_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting past trips");
         let trips = repositories::trips::find_all(&self.db).await?;
-        let now = Utc::now();
+        let now = Local::now().date_naive();
 
         let trips = trips.into_iter()
-            .filter(|trip| trip.end_date < now)
+            .filter(|trip| trip.end_date.to_local_date() < now)
             .map(|trip| TripListModel {
                 id: trip.id,
                 name: trip.name,
@@ -205,5 +205,15 @@ impl TripHandler {
         let image_bytes = unsplash::download_image(&image_url).await?;
         
         Ok(image_bytes)
+    }
+}
+
+trait DateExt {
+    fn to_local_date(&self) -> NaiveDate;
+}
+
+impl DateExt for DateTime<Utc> {
+    fn to_local_date(&self) -> NaiveDate {
+        Local.from_utc_datetime(&self.naive_utc()).date_naive()
     }
 }
