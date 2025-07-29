@@ -98,3 +98,15 @@ pub async fn update_coastal_flag(location_id: Uuid, is_coastal: bool) -> anyhow:
     handler.update_coastal_flag(location_id, is_coastal).await
 }
 
+#[tracing::instrument]
+pub async fn get_location_details(location_id: Uuid) -> anyhow::Result<TripLocationListModel> {
+    let handler = DB.try_get::<LocationHandler>().await?;
+    handler.get_location_details(location_id).await
+}
+
+#[tracing::instrument]
+pub async fn delete_location(location_id: Uuid) -> anyhow::Result<()> {
+    let handler = DB.try_get::<LocationHandler>().await?;
+    handler.delete_location(location_id).await
+}
+

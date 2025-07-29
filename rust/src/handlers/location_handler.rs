@@ -130,6 +130,50 @@ impl LocationHandler {
         Ok(())
     }
 
+    pub async fn get_location_details(&self, location_id: Uuid) -> anyhow::Result<TripLocationListModel> {
+        let location = repositories::locations::find_by_id(&self.db, location_id).await?
+            .ok_or_else(|| anyhow::anyhow!("Location not found"))?;
+        
+        let forecasts = repositories::weather_forecasts::load_forecasts_for_locations(&self.db, &vec![location.clone()]).await?;
+        let (daily_forecasts, hourly_forecasts) = forecasts.into_iter().next().unwrap_or_default();
+        
+        let tide_records = repositories::tidal_information::find_all_by_location_id(&self.db, location.id).await?;
+        let tidal_information = tide_records.into_iter()
+            .map(|tide_record| TidalInformation {
+                date: tide_record.date,
+                height: tide_record.height,
+                tide: tide_record.tide.into(),
+            })
+            .collect();
+
+        Ok(TripLocationListModel {
+            id: location.id,
+            coordinates: Coordinates {
+                latitude: location.coordinates_latitude,
+                longitude: location.coordinates_longitude,
+            },
+            country: location.country,
+            city: location.city,
+            is_coastal: location.is_coastal,
+            tidal_information_last_updated: location.tidal_information_last_updated,
+            tidal_information,
+            forecast: Some(WeatherForecast {
+                daily_forecast: daily_forecasts.into_iter().map(DailyWeatherForecast::from).collect(),
+                hourly_forecast: hourly_forecasts.into_iter().map(HourlyWeatherForecast::from).collect(),
+            }),
+        })
+    }
+
+    pub async fn delete_location(&self, location_id: Uuid) -> anyhow::Result<()> {
+        // First delete related tidal information
+        repositories::tidal_information::delete_by_location_id(self.db.deref(), location_id).await?;
+        
+        // Then delete the location itself
+        repositories::locations::delete_by_id(&self.db, location_id).await?;
+        
+        Ok(())
+    }
+
 }
 
 #[cfg(test)]

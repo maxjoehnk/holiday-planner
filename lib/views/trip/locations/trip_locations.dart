@@ -9,6 +9,7 @@ import 'package:holiday_planner/src/rust/models/tidal_information.dart';
 import 'package:holiday_planner/widgets/location_search.dart';
 import 'package:holiday_planner/views/trip/locations/forecast_detail_view.dart';
 import 'package:holiday_planner/views/trip/locations/tidal_detail_view.dart';
+import 'package:holiday_planner/views/trip/locations/location_detail_view.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -312,113 +313,134 @@ class _LocationCardState extends State<LocationCard> {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: colorScheme.outlineVariant,
-          width: 1,
+    return InkWell(
+      onTap: () async {
+        final result = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            builder: (context) => LocationDetailView(locationId: widget.location.id),
+          ),
+        );
+        
+        // If location was deleted, refresh the parent list
+        if (result == true && widget.onUpdate != null) {
+          widget.onUpdate!();
+        }
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: colorScheme.outlineVariant,
+            width: 1,
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      widget.location.isCoastal ? Icons.waves : Icons.location_on,
+                      size: 24,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
                   ),
-                  child: Icon(
-                    widget.location.isCoastal ? Icons.waves : Icons.location_on,
-                    size: 24,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              widget.location.city,
-                              style: textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w600,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                widget.location.city,
+                                style: textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          if (widget.location.isCoastal) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: colorScheme.secondaryContainer,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.waves,
-                                    size: 12,
-                                    color: colorScheme.onSecondaryContainer,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    "Coastal",
-                                    style: textTheme.labelSmall?.copyWith(
+                            if (widget.location.isCoastal) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.secondaryContainer,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.waves,
+                                      size: 12,
                                       color: colorScheme.onSecondaryContainer,
-                                      fontWeight: FontWeight.w600,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "Coastal",
+                                      style: textTheme.labelSmall?.copyWith(
+                                        color: colorScheme.onSecondaryContainer,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
+                            ],
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ],
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.location.country,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.location.country,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Tidal information display
+              if (widget.location.isCoastal && widget.location.tidalInformation.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                TidalInformationWidget(
+                  tidalInformation: widget.location.tidalInformation,
+                  location: widget.location,
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-            // Tidal information display
-            if (widget.location.isCoastal && widget.location.tidalInformation.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              TidalInformationWidget(
-                tidalInformation: widget.location.tidalInformation,
-                location: widget.location,
-              ),
+              if (widget.location.forecast != null) ...[
+                const SizedBox(height: 16),
+                LocationDailyForecast(
+                  forecast: widget.location.forecast!,
+                  location: widget.location,
+                ),
+              ],
             ],
-            if (widget.location.forecast != null) ...[
-              const SizedBox(height: 16),
-              LocationDailyForecast(
-                forecast: widget.location.forecast!,
-                location: widget.location,
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

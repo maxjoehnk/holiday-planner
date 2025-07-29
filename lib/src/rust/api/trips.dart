@@ -65,3 +65,11 @@ Future<void> updateCoastalFlag(
         {required UuidValue locationId, required bool isCoastal}) =>
     RustLib.instance.api.crateApiTripsUpdateCoastalFlag(
         locationId: locationId, isCoastal: isCoastal);
+
+Future<TripLocationListModel> getLocationDetails(
+        {required UuidValue locationId}) =>
+    RustLib.instance.api
+        .crateApiTripsGetLocationDetails(locationId: locationId);
+
+Future<void> deleteLocation({required UuidValue locationId}) =>
+    RustLib.instance.api.crateApiTripsDeleteLocation(locationId: locationId);
