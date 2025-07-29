@@ -240,15 +240,15 @@ class PointOfInterestCard extends StatelessWidget {
                 ),
                 if (pointOfInterest.website != null) ...[
                   const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: InkWell(
-                      onTap: () => _launchWebsite(pointOfInterest.website!),
-                      borderRadius: BorderRadius.circular(12),
+                  InkWell(
+                    onTap: () => _launchWebsite(pointOfInterest.website!),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Row(
                         children: [
                           Icon(
