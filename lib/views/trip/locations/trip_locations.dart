@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
-import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_location.dart';
 import 'package:holiday_planner/date_format.dart';
@@ -28,6 +27,7 @@ class TripLocations extends StatefulWidget {
 class _TripLocationsState extends State<TripLocations> {
   late StreamController<List<TripLocationListModel>> _locations;
   late Stream<List<TripLocationListModel>>? _locations$;
+  bool _isAddingLocation = false;
 
   @override
   void initState() {
@@ -104,10 +104,17 @@ class _TripLocationsState extends State<TripLocations> {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView.separated(
-              itemCount: locations.length,
+              itemCount: locations.length + (_isAddingLocation ? 1 : 0),
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
-                var location = locations[index];
+                // Show loading indicator as the first item when adding a location
+                if (_isAddingLocation && index == 0) {
+                  return _buildLoadingLocationCard(context);
+                }
+                
+                // Adjust index if loading card is shown
+                final locationIndex = _isAddingLocation ? index - 1 : index;
+                var location = locations[locationIndex];
                 return LocationCard(
                   location: location,
                   onUpdate: _fetch,
@@ -119,9 +126,18 @@ class _TripLocationsState extends State<TripLocations> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: "locations_fab",
-        onPressed: () => _addLocation(context),
-        icon: const Icon(Icons.add),
-        label: const Text("Add Location"),
+        onPressed: _isAddingLocation ? null : () => _addLocation(context),
+        icon: _isAddingLocation 
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : const Icon(Icons.add),
+        label: Text(_isAddingLocation ? "Adding..." : "Add Location"),
       ),
     );
   }
@@ -132,14 +148,150 @@ class _TripLocationsState extends State<TripLocations> {
     if (location == null) {
       return;
     }
-    await addTripLocation(
-        command: AddTripLocation(tripId: widget.tripId, location: location));
 
-    _fetch();
+    setState(() {
+      _isAddingLocation = true;
+    });
+
+    // Store context reference before async operations
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      await addTripLocation(
+          command: AddTripLocation(tripId: widget.tripId, location: location));
+      _fetch();
+      
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Location "${location.name}" added successfully'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Failed to add location: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAddingLocation = false;
+        });
+      }
+    }
   }
 
   _fetch() {
     _locations.addStream(getTripLocations(tripId: widget.tripId).asStream());
+  }
+
+  Widget _buildLoadingLocationCard(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+    var textTheme = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Adding new location...",
+                              style: textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Checking coastal status and fetching data...",
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceVariant.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Processing location data...",
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -154,51 +306,6 @@ class LocationCard extends StatefulWidget {
 }
 
 class _LocationCardState extends State<LocationCard> {
-  bool _isUpdatingCoastal = false;
-
-  Future<void> _updateCoastalFlag(bool isCoastal) async {
-    setState(() {
-      _isUpdatingCoastal = true;
-    });
-
-    try {
-      await updateCoastalFlag(locationId: widget.location.id, isCoastal: isCoastal);
-      
-      // If enabling coastal flag, trigger background job to fetch tidal data
-      if (isCoastal) {
-        try {
-          await runBackgroundJobs();
-        } catch (e) {
-          // Background job failed, but coastal flag was updated successfully
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Coastal flag updated, but tidal data sync failed: $e'),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          }
-        }
-      }
-      
-      widget.onUpdate?.call();
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to update coastal flag: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isUpdatingCoastal = false;
-        });
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,13 +346,47 @@ class _LocationCardState extends State<LocationCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.location.city,
-                        style: textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.location.city,
+                              style: textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (widget.location.isCoastal) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: colorScheme.secondaryContainer,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.waves,
+                                    size: 12,
+                                    color: colorScheme.onSecondaryContainer,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    "Coastal",
+                                    style: textTheme.labelSmall?.copyWith(
+                                      color: colorScheme.onSecondaryContainer,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -262,43 +403,6 @@ class _LocationCardState extends State<LocationCard> {
               ],
             ),
             const SizedBox(height: 16),
-            // Coastal flag toggle
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceVariant.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.waves,
-                    size: 16,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "Coastal Location",
-                    style: textTheme.titleSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (_isUpdatingCoastal)
-                    const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  else
-                    Switch(
-                      value: widget.location.isCoastal,
-                      onChanged: _updateCoastalFlag,
-                    ),
-                ],
-              ),
-            ),
             // Tidal information display
             if (widget.location.isCoastal && widget.location.tidalInformation.isNotEmpty) ...[
               const SizedBox(height: 12),
