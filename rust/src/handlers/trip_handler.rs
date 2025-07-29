@@ -5,7 +5,7 @@ use chrono::{DateTime, Local, NaiveDate, NaiveTime, TimeZone, Utc};
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
-use crate::handlers::{Handler, TripPackingListHandler};
+use crate::handlers::{Handler, TripPackingListHandler, LocationHandler};
 use crate::third_party::unsplash;
 
 pub struct TripHandler {
@@ -120,12 +120,21 @@ impl TripHandler {
         let accommodation_status = self.determine_accommodation_status(&accommodations, now);
         
         let locations = repositories::locations::find_all_by_trip(&self.db, id).await?;
-        let locations_list = locations.into_iter()
+        let locations_list = locations.iter()
             .map(|location| TripLocationSummary {
-                city: location.city,
-                country: location.country,
+                city: location.city.clone(),
+                country: location.country.clone(),
             })
             .collect();
+
+        // If there's exactly one location, fetch detailed weather/tidal data
+        let single_location_weather_tidal = if locations.len() == 1 {
+            let location_handler = LocationHandler::create(self.db.clone());
+            let detailed_locations = location_handler.get_trip_locations(id).await?;
+            detailed_locations.into_iter().next()
+        } else {
+            None
+        };
 
         let duration_days = ((trip.end_date.with_time(NaiveTime::default()).earliest().unwrap()) - (trip.start_date.with_time(NaiveTime::default()).earliest().unwrap())).num_days() + 1;
         let trip = TripOverviewModel {
@@ -142,6 +151,7 @@ impl TripHandler {
             bookings_count,
             accommodation_status,
             locations_list,
+            single_location_weather_tidal,
         };
 
         Ok(trip)

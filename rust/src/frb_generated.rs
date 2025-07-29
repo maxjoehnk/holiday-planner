@@ -2779,6 +2779,19 @@ impl SseDecode for Option<crate::models::AccommodationStatus> {
     }
 }
 
+impl SseDecode for Option<crate::models::TripLocationListModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::models::TripLocationListModel>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<usize> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3295,6 +3308,8 @@ impl SseDecode for crate::models::TripOverviewModel {
             <Option<crate::models::AccommodationStatus>>::sse_decode(deserializer);
         let mut var_locationsList =
             <Vec<crate::models::TripLocationSummary>>::sse_decode(deserializer);
+        let mut var_singleLocationWeatherTidal =
+            <Option<crate::models::TripLocationListModel>>::sse_decode(deserializer);
         return crate::models::TripOverviewModel {
             id: var_id,
             name: var_name,
@@ -3309,6 +3324,7 @@ impl SseDecode for crate::models::TripOverviewModel {
             bookings_count: var_bookingsCount,
             accommodation_status: var_accommodationStatus,
             locations_list: var_locationsList,
+            single_location_weather_tidal: var_singleLocationWeatherTidal,
         };
     }
 }
@@ -4899,6 +4915,9 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
             self.bookings_count.into_into_dart().into_dart(),
             self.accommodation_status.into_into_dart().into_dart(),
             self.locations_list.into_into_dart().into_dart(),
+            self.single_location_weather_tidal
+                .into_into_dart()
+                .into_dart(),
         ]
         .into_dart()
     }
@@ -5803,6 +5822,16 @@ impl SseEncode for Option<crate::models::AccommodationStatus> {
     }
 }
 
+impl SseEncode for Option<crate::models::TripLocationListModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::models::TripLocationListModel>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<usize> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6195,6 +6224,10 @@ impl SseEncode for crate::models::TripOverviewModel {
             serializer,
         );
         <Vec<crate::models::TripLocationSummary>>::sse_encode(self.locations_list, serializer);
+        <Option<crate::models::TripLocationListModel>>::sse_encode(
+            self.single_location_weather_tidal,
+            serializer,
+        );
     }
 }
 

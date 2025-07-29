@@ -1985,6 +1985,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TripLocationListModel dco_decode_box_autoadd_trip_location_list_model(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_trip_location_list_model(raw);
+  }
+
+  @protected
   UpdateCarRental dco_decode_box_autoadd_update_car_rental(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_update_car_rental(raw);
@@ -2346,6 +2353,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return raw == null
         ? null
         : dco_decode_box_autoadd_accommodation_status(raw);
+  }
+
+  @protected
+  TripLocationListModel? dco_decode_opt_box_autoadd_trip_location_list_model(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_trip_location_list_model(raw);
   }
 
   @protected
@@ -2723,8 +2739,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripOverviewModel dco_decode_trip_overview_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 13)
-      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
+    if (arr.length != 14)
+      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
     return TripOverviewModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2740,6 +2756,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       accommodationStatus:
           dco_decode_opt_box_autoadd_accommodation_status(arr[11]),
       locationsList: dco_decode_list_trip_location_summary(arr[12]),
+      singleLocationWeatherTidal:
+          dco_decode_opt_box_autoadd_trip_location_list_model(arr[13]),
     );
   }
 
@@ -3349,6 +3367,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TripLocationListModel sse_decode_box_autoadd_trip_location_list_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_trip_location_list_model(deserializer));
+  }
+
+  @protected
   UpdateCarRental sse_decode_box_autoadd_update_car_rental(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3847,6 +3872,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TripLocationListModel? sse_decode_opt_box_autoadd_trip_location_list_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_trip_location_list_model(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -4263,6 +4300,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_accommodationStatus =
         sse_decode_opt_box_autoadd_accommodation_status(deserializer);
     var var_locationsList = sse_decode_list_trip_location_summary(deserializer);
+    var var_singleLocationWeatherTidal =
+        sse_decode_opt_box_autoadd_trip_location_list_model(deserializer);
     return TripOverviewModel(
         id: var_id,
         name: var_name,
@@ -4276,7 +4315,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         pointsOfInterestCount: var_pointsOfInterestCount,
         bookingsCount: var_bookingsCount,
         accommodationStatus: var_accommodationStatus,
-        locationsList: var_locationsList);
+        locationsList: var_locationsList,
+        singleLocationWeatherTidal: var_singleLocationWeatherTidal);
   }
 
   @protected
@@ -4833,6 +4873,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_trip_location_list_model(
+      TripLocationListModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_trip_location_list_model(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_update_car_rental(
       UpdateCarRental self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5232,6 +5279,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_trip_location_list_model(
+      TripLocationListModel? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_trip_location_list_model(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_usize(
       BigInt? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5577,6 +5635,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_accommodation_status(
         self.accommodationStatus, serializer);
     sse_encode_list_trip_location_summary(self.locationsList, serializer);
+    sse_encode_opt_box_autoadd_trip_location_list_model(
+        self.singleLocationWeatherTidal, serializer);
   }
 
   @protected

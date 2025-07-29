@@ -38,6 +38,7 @@ pub struct TripOverviewModel {
     pub bookings_count: usize,
     pub accommodation_status: Option<AccommodationStatus>,
     pub locations_list: Vec<TripLocationSummary>,
+    pub single_location_weather_tidal: Option<TripLocationListModel>,
 }
 
 #[derive(Clone)]

@@ -535,6 +535,7 @@ class TripOverviewModel {
   final BigInt bookingsCount;
   final AccommodationStatus? accommodationStatus;
   final List<TripLocationSummary> locationsList;
+  final TripLocationListModel? singleLocationWeatherTidal;
 
   const TripOverviewModel({
     required this.id,
@@ -550,6 +551,7 @@ class TripOverviewModel {
     required this.bookingsCount,
     this.accommodationStatus,
     required this.locationsList,
+    this.singleLocationWeatherTidal,
   });
 
   @override
@@ -566,7 +568,8 @@ class TripOverviewModel {
       pointsOfInterestCount.hashCode ^
       bookingsCount.hashCode ^
       accommodationStatus.hashCode ^
-      locationsList.hashCode;
+      locationsList.hashCode ^
+      singleLocationWeatherTidal.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -585,7 +588,8 @@ class TripOverviewModel {
           pointsOfInterestCount == other.pointsOfInterestCount &&
           bookingsCount == other.bookingsCount &&
           accommodationStatus == other.accommodationStatus &&
-          locationsList == other.locationsList;
+          locationsList == other.locationsList &&
+          singleLocationWeatherTidal == other.singleLocationWeatherTidal;
 }
 
 class TripPackingListEntry {

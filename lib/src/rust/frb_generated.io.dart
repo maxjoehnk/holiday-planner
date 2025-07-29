@@ -173,6 +173,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SearchWebImages dco_decode_box_autoadd_search_web_images(dynamic raw);
 
   @protected
+  TripLocationListModel dco_decode_box_autoadd_trip_location_list_model(
+      dynamic raw);
+
+  @protected
   UpdateCarRental dco_decode_box_autoadd_update_car_rental(dynamic raw);
 
   @protected
@@ -313,6 +317,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AccommodationStatus? dco_decode_opt_box_autoadd_accommodation_status(
+      dynamic raw);
+
+  @protected
+  TripLocationListModel? dco_decode_opt_box_autoadd_trip_location_list_model(
       dynamic raw);
 
   @protected
@@ -578,6 +586,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  TripLocationListModel sse_decode_box_autoadd_trip_location_list_model(
+      SseDeserializer deserializer);
+
+  @protected
   UpdateCarRental sse_decode_box_autoadd_update_car_rental(
       SseDeserializer deserializer);
 
@@ -736,6 +748,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AccommodationStatus? sse_decode_opt_box_autoadd_accommodation_status(
+      SseDeserializer deserializer);
+
+  @protected
+  TripLocationListModel? sse_decode_opt_box_autoadd_trip_location_list_model(
       SseDeserializer deserializer);
 
   @protected
@@ -1022,6 +1038,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SearchWebImages self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_trip_location_list_model(
+      TripLocationListModel self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_update_car_rental(
       UpdateCarRental self, SseSerializer serializer);
 
@@ -1184,6 +1204,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_accommodation_status(
       AccommodationStatus? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_trip_location_list_model(
+      TripLocationListModel? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);

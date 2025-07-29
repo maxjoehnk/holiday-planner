@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
+import 'package:holiday_planner/src/rust/models/tidal_information.dart';
 import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.dart';
 import 'package:holiday_planner/views/trip/bookings/trip_bookings.dart';
 import 'package:holiday_planner/views/trip/transits/trip_transits.dart';
@@ -148,6 +149,104 @@ class TransitCard extends StatelessWidget {
   }
 }
 
+class WeatherTidalCard extends StatelessWidget {
+  final TripLocationListModel location;
+  final Function() refresh;
+
+  const WeatherTidalCard({super.key, required this.location, required this.refresh});
+
+  @override
+  Widget build(BuildContext context) {
+    var todayCondition = location.forecast?.dailyForecast.firstOrNull?.condition;
+    return SummaryCard(
+      icon: _getWeatherIcon(),
+      label: "${location.city}, ${location.country}",
+      subtitle: _buildSubtitle(),
+      color: todayCondition != null ? _getWeatherConditionColor(todayCondition) : WEATHER_COLOR,
+    );
+  }
+
+  String _buildSubtitle() {
+    List<String> subtitleParts = [];
+    
+    // Add weather information
+    if (location.forecast?.dailyForecast.isNotEmpty == true) {
+      final today = location.forecast!.dailyForecast.first;
+      final tempRange = "${today.minTemperature.round()}° - ${today.maxTemperature.round()}°C";
+      final condition = _getWeatherConditionText(today.condition);
+      subtitleParts.add("$tempRange, $condition");
+      
+      if (today.precipitationProbability > 0.1) {
+        subtitleParts.add("${(today.precipitationProbability * 100).round()}% rain");
+      }
+    } else {
+      subtitleParts.add("No weather data");
+    }
+    
+    // Add tidal information if available
+    if (location.isCoastal && location.tidalInformation.isNotEmpty) {
+      final nextTide = location.tidalInformation.first;
+      final isHigh = nextTide.tide == TideType.high;
+      final time = "${nextTide.date.hour.toString().padLeft(2, '0')}:${nextTide.date.minute.toString().padLeft(2, '0')}";
+      subtitleParts.add("${isHigh ? 'High' : 'Low'} tide at $time");
+    }
+    
+    return subtitleParts.join(" • ");
+  }
+
+  IconData _getWeatherIcon() {
+    if (location.forecast?.dailyForecast.isNotEmpty == true) {
+      return _getWeatherConditionIcon(location.forecast!.dailyForecast.first.condition);
+    }
+    return Icons.wb_sunny;
+  }
+
+  IconData _getWeatherConditionIcon(WeatherCondition condition) {
+    switch (condition) {
+      case WeatherCondition.sunny:
+        return Icons.wb_sunny;
+      case WeatherCondition.rain:
+        return Icons.grain;
+      case WeatherCondition.clouds:
+        return Icons.cloud;
+      case WeatherCondition.snow:
+        return Icons.ac_unit;
+      case WeatherCondition.thunderstorm:
+        return Icons.thunderstorm;
+    }
+  }
+
+  MaterialColor _getWeatherConditionColor(WeatherCondition condition) {
+    switch (condition) {
+      case WeatherCondition.sunny:
+        return Colors.orange;
+      case WeatherCondition.rain:
+        return Colors.blue;
+      case WeatherCondition.clouds:
+        return Colors.grey;
+      case WeatherCondition.snow:
+        return Colors.lightBlue;
+      case WeatherCondition.thunderstorm:
+        return Colors.purple;
+    }
+  }
+
+  String _getWeatherConditionText(WeatherCondition condition) {
+    switch (condition) {
+      case WeatherCondition.sunny:
+        return "Sunny";
+      case WeatherCondition.rain:
+        return "Rain";
+      case WeatherCondition.clouds:
+        return "Cloudy";
+      case WeatherCondition.snow:
+        return "Snow";
+      case WeatherCondition.thunderstorm:
+        return "Thunderstorm";
+    }
+  }
+}
+
 class WeatherCard extends StatelessWidget {
   const WeatherCard({super.key});
 
@@ -185,8 +284,6 @@ class LocationsCard extends StatelessWidget {
         });
   }
 }
-
-
 
 class SummaryCard extends StatelessWidget {
   final IconData icon;
