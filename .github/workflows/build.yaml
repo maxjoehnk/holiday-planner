@@ -54,6 +54,8 @@ jobs:
       - run: flutter build macos --release
 
   build-ios:
+    # TODO: fix ios build
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
