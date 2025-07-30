@@ -1967,6 +1967,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LocationEntry dco_decode_box_autoadd_location_entry(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_location_entry(raw);
+  }
+
+  @protected
   ParseTrainData dco_decode_box_autoadd_parse_train_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_parse_train_data(raw);
@@ -2082,13 +2088,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   CreateTrip dco_decode_create_trip(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return CreateTrip(
       name: dco_decode_String(arr[0]),
       startDate: dco_decode_Chrono_Utc(arr[1]),
       endDate: dco_decode_Chrono_Utc(arr[2]),
       headerImage: dco_decode_opt_list_prim_u_8_strict(arr[3]),
+      location: dco_decode_opt_box_autoadd_location_entry(arr[4]),
     );
   }
 
@@ -2353,6 +2360,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return raw == null
         ? null
         : dco_decode_box_autoadd_accommodation_status(raw);
+  }
+
+  @protected
+  LocationEntry? dco_decode_opt_box_autoadd_location_entry(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_location_entry(raw);
   }
 
   @protected
@@ -3347,6 +3360,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LocationEntry sse_decode_box_autoadd_location_entry(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_location_entry(deserializer));
+  }
+
+  @protected
   ParseTrainData sse_decode_box_autoadd_parse_train_data(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3472,11 +3492,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_startDate = sse_decode_Chrono_Utc(deserializer);
     var var_endDate = sse_decode_Chrono_Utc(deserializer);
     var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
+    var var_location = sse_decode_opt_box_autoadd_location_entry(deserializer);
     return CreateTrip(
         name: var_name,
         startDate: var_startDate,
         endDate: var_endDate,
-        headerImage: var_headerImage);
+        headerImage: var_headerImage,
+        location: var_location);
   }
 
   @protected
@@ -3866,6 +3888,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_accommodation_status(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  LocationEntry? sse_decode_opt_box_autoadd_location_entry(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_location_entry(deserializer));
     } else {
       return null;
     }
@@ -4852,6 +4886,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_location_entry(
+      LocationEntry self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_location_entry(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_parse_train_data(
       ParseTrainData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4968,6 +5009,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_Chrono_Utc(self.startDate, serializer);
     sse_encode_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
+    sse_encode_opt_box_autoadd_location_entry(self.location, serializer);
   }
 
   @protected
@@ -5275,6 +5317,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_accommodation_status(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_location_entry(
+      LocationEntry? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_location_entry(self, serializer);
     }
   }
 

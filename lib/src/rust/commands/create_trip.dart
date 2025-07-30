@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 class CreateTrip {
@@ -11,12 +12,14 @@ class CreateTrip {
   final DateTime startDate;
   final DateTime endDate;
   final Uint8List? headerImage;
+  final LocationEntry? location;
 
   const CreateTrip({
     required this.name,
     required this.startDate,
     required this.endDate,
     this.headerImage,
+    this.location,
   });
 
   @override
@@ -24,7 +27,8 @@ class CreateTrip {
       name.hashCode ^
       startDate.hashCode ^
       endDate.hashCode ^
-      headerImage.hashCode;
+      headerImage.hashCode ^
+      location.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -34,5 +38,6 @@ class CreateTrip {
           name == other.name &&
           startDate == other.startDate &&
           endDate == other.endDate &&
-          headerImage == other.headerImage;
+          headerImage == other.headerImage &&
+          location == other.location;
 }

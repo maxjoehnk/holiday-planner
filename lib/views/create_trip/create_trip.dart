@@ -5,7 +5,9 @@ import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/commands/create_trip.dart';
+import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
+import 'package:holiday_planner/widgets/location_search.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../trip/trip_view.dart';
@@ -26,6 +28,7 @@ class _CreateTripViewState extends State<CreateTripView> {
   DateTime? endDate;
   XFile? image;
   Uint8List? _webImageBytes;
+  LocationEntry? selectedLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +202,78 @@ class _CreateTripViewState extends State<CreateTripView> {
                 ),
               ),
               const SizedBox(height: 32),
+
+              // Location Selection Section
+              Text(
+                "Destination",
+                style: textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              LocationSearch(
+                onSelect: (location) {
+                  setState(() {
+                    selectedLocation = location;
+                  });
+                },
+              ),
+              if (selectedLocation != null) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: colorScheme.primary,
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: colorScheme.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              selectedLocation!.name,
+                              style: textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              selectedLocation!.country,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedLocation = null;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: colorScheme.primary,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -241,7 +316,8 @@ class _CreateTripViewState extends State<CreateTripView> {
             name: _nameController.text,
             startDate: startDate!,
             endDate: endDate!,
-            headerImage: headerImageBytes));
+            headerImage: headerImageBytes,
+            location: selectedLocation));
 
     Navigator.pushReplacement(
       context,

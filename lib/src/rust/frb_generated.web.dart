@@ -166,6 +166,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  LocationEntry dco_decode_box_autoadd_location_entry(dynamic raw);
+
+  @protected
   ParseTrainData dco_decode_box_autoadd_parse_train_data(dynamic raw);
 
   @protected
@@ -320,6 +323,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AccommodationStatus? dco_decode_opt_box_autoadd_accommodation_status(
       dynamic raw);
+
+  @protected
+  LocationEntry? dco_decode_opt_box_autoadd_location_entry(dynamic raw);
 
   @protected
   TripLocationListModel? dco_decode_opt_box_autoadd_trip_location_list_model(
@@ -577,6 +583,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  LocationEntry sse_decode_box_autoadd_location_entry(
+      SseDeserializer deserializer);
+
+  @protected
   ParseTrainData sse_decode_box_autoadd_parse_train_data(
       SseDeserializer deserializer);
 
@@ -750,6 +760,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AccommodationStatus? sse_decode_opt_box_autoadd_accommodation_status(
+      SseDeserializer deserializer);
+
+  @protected
+  LocationEntry? sse_decode_opt_box_autoadd_location_entry(
       SseDeserializer deserializer);
 
   @protected
@@ -1028,6 +1042,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ImportParsedTrainJourney self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_location_entry(
+      LocationEntry self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_parse_train_data(
       ParseTrainData self, SseSerializer serializer);
 
@@ -1206,6 +1224,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_accommodation_status(
       AccommodationStatus? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_location_entry(
+      LocationEntry? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_trip_location_list_model(

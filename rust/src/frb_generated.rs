@@ -2349,11 +2349,13 @@ impl SseDecode for crate::commands::create_trip::CreateTrip {
         let mut var_startDate = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
         let mut var_endDate = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
         let mut var_headerImage = <Option<Vec<u8>>>::sse_decode(deserializer);
+        let mut var_location = <Option<crate::models::LocationEntry>>::sse_decode(deserializer);
         return crate::commands::create_trip::CreateTrip {
             name: var_name,
             start_date: var_startDate,
             end_date: var_endDate,
             header_image: var_headerImage,
+            location: var_location,
         };
     }
 }
@@ -2773,6 +2775,17 @@ impl SseDecode for Option<crate::models::AccommodationStatus> {
             return Some(<crate::models::AccommodationStatus>::sse_decode(
                 deserializer,
             ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::models::LocationEntry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::models::LocationEntry>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -4191,6 +4204,7 @@ impl flutter_rust_bridge::IntoDart for crate::commands::create_trip::CreateTrip 
             self.start_date.into_into_dart().into_dart(),
             self.end_date.into_into_dart().into_dart(),
             self.header_image.into_into_dart().into_dart(),
+            self.location.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5505,6 +5519,7 @@ impl SseEncode for crate::commands::create_trip::CreateTrip {
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.start_date, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.end_date, serializer);
         <Option<Vec<u8>>>::sse_encode(self.header_image, serializer);
+        <Option<crate::models::LocationEntry>>::sse_encode(self.location, serializer);
     }
 }
 
@@ -5818,6 +5833,16 @@ impl SseEncode for Option<crate::models::AccommodationStatus> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::models::AccommodationStatus>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::models::LocationEntry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::models::LocationEntry>::sse_encode(value, serializer);
         }
     }
 }

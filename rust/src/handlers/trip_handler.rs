@@ -166,6 +166,12 @@ impl TripHandler {
             ..Default::default()
         };
         let trip = repositories::trips::create(&self.db, model).await?;
+        
+        if let Some(location) = command.location {
+            let location_handler = LocationHandler::create(self.db.clone());
+            location_handler.add_trip_location(trip.id, location).await?;
+        }
+        
         let trip = self.get_trip_overview(trip.id).await?;
 
         Ok(trip)
