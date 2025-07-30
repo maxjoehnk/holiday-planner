@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/src/rust/models/tidal_information.dart';
 import 'package:holiday_planner/views/trip/attachments/add_attachment.dart';
 import 'package:holiday_planner/views/trip/attachments/trip_attachments.dart';
 import 'package:holiday_planner/views/trip/edit_trip.dart';
@@ -65,6 +66,71 @@ class _TripViewState extends State<TripView> {
       return formatDate(trip.startDate);
     } else {
       return '${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}';
+    }
+  }
+
+  String _buildWeatherTidalInfo(TripLocationListModel location) {
+    List<String> infoParts = [];
+    
+    // Add weather information
+    if (location.forecast?.dailyForecast.isNotEmpty == true) {
+      final today = location.forecast!.dailyForecast.first;
+      final tempRange = "${today.minTemperature.round()}° - ${today.maxTemperature.round()}°C";
+      final condition = _getWeatherConditionText(today.condition);
+      infoParts.add("$tempRange, $condition");
+      
+      if (today.precipitationProbability > 0.1) {
+        infoParts.add("${(today.precipitationProbability * 100).round()}% rain");
+      }
+    } else {
+      infoParts.add("No weather data");
+    }
+    
+    // Add tidal information if available
+    if (location.isCoastal && location.tidalInformation.isNotEmpty) {
+      final nextTide = location.tidalInformation.first;
+      final isHigh = nextTide.tide == TideType.high;
+      final time = "${nextTide.date.hour.toString().padLeft(2, '0')}:${nextTide.date.minute.toString().padLeft(2, '0')}";
+      infoParts.add("${isHigh ? 'High' : 'Low'} tide at $time");
+    }
+    
+    return infoParts.join(" • ");
+  }
+
+  IconData _getWeatherIcon(TripLocationListModel location) {
+    if (location.forecast?.dailyForecast.isNotEmpty == true) {
+      return _getWeatherConditionIcon(location.forecast!.dailyForecast.first.condition);
+    }
+    return Icons.wb_sunny;
+  }
+
+  IconData _getWeatherConditionIcon(WeatherCondition condition) {
+    switch (condition) {
+      case WeatherCondition.sunny:
+        return Icons.wb_sunny;
+      case WeatherCondition.rain:
+        return Icons.grain;
+      case WeatherCondition.clouds:
+        return Icons.cloud;
+      case WeatherCondition.snow:
+        return Icons.ac_unit;
+      case WeatherCondition.thunderstorm:
+        return Icons.thunderstorm;
+    }
+  }
+
+  String _getWeatherConditionText(WeatherCondition condition) {
+    switch (condition) {
+      case WeatherCondition.sunny:
+        return "Sunny";
+      case WeatherCondition.rain:
+        return "Rain";
+      case WeatherCondition.clouds:
+        return "Cloudy";
+      case WeatherCondition.snow:
+        return "Snow";
+      case WeatherCondition.thunderstorm:
+        return "Thunderstorm";
     }
   }
 
@@ -172,6 +238,32 @@ class _TripViewState extends State<TripView> {
                               ),
                             ],
                           ),
+                          if (trip.singleLocationWeatherTidal != null) ...[
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Icon(
+                                  _getWeatherIcon(trip.singleLocationWeatherTidal!),
+                                  size: 16,
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    _buildWeatherTidalInfo(trip.singleLocationWeatherTidal!),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Colors.white.withOpacity(0.9),
+                                        ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),

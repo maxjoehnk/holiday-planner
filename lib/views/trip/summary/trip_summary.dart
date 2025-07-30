@@ -13,25 +13,12 @@ class TripSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     var summaryCards = <Widget>[
       PackingListCard(trip: trip, refresh: refresh),
-    ];
-
-    // Add WeatherTidalCard if single location weather/tidal data is available
-    if (trip.singleLocationWeatherTidal != null) {
-      summaryCards.add(
-        WeatherTidalCard(
-          location: trip.singleLocationWeatherTidal!,
-          refresh: refresh,
-        ),
-      );
-    }
-
-    summaryCards.addAll([
       TransitCard(trip: trip, refresh: refresh),
       PointsOfInterestsCard(trip: trip, refresh: refresh),
       AccommodationsCard(trip: trip, refresh: refresh),
       LocationsCard(trip: trip, refresh: refresh),
       BookingsCard(trip: trip, refresh: refresh),
-    ]);
+    ];
 
     return SliverList(
         delegate: SliverChildBuilderDelegate(
