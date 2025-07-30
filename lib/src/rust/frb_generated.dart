@@ -141,7 +141,7 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiPointsOfInterestAddTripPointOfInterest(
       {required AddTripPointOfInterest command});
 
-  Future<void> crateApiConnectDb();
+  Future<void> crateApiConnectDb({required String path});
 
   Future<TripOverviewModel> crateApiTripsCreateTrip(
       {required CreateTrip command});
@@ -505,10 +505,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiConnectDb() {
+  Future<void> crateApiConnectDb({required String path}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 10, port: port_);
       },
@@ -517,14 +518,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiConnectDbConstMeta,
-      argValues: [],
+      argValues: [path],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiConnectDbConstMeta => const TaskConstMeta(
         debugName: "connect_db",
-        argNames: [],
+        argNames: ["path"],
       );
 
   @override

@@ -1,16 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/frb_generated.dart';
 import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
 import 'package:intl/intl_standalone.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'dart:async';
 import 'package:holiday_planner/views/share_receiver/shared_train_handler.dart';
 
 Future<void> main() async {
   await RustLib.init();
-  await connectDb();
+  WidgetsFlutterBinding.ensureInitialized();
+  var directory = await getApplicationDocumentsDirectory();
+  await connectDb(path: directory.path);
   await findSystemLocale();
+
   runApp(const MyApp());
 }
 

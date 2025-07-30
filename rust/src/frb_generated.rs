@@ -390,11 +390,12 @@ fn wire__crate__api__connect_db_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_path = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok = crate::api::connect_db().await?;
+                        let output_ok = crate::api::connect_db(api_path).await?;
                         Ok(output_ok)
                     })()
                     .await,

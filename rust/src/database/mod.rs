@@ -9,16 +9,33 @@ pub mod repositories;
 
 #[cfg(target_os = "android")]
 mod storage {
-    pub fn get_path() -> &'static str {
-        "/data/data/me.maxjoehnk.holiday_planner/files/database"
+    use std::borrow::Cow;
+
+    pub fn get_path(_path: String) -> Cow<'static, str> {
+        Cow::Borrowed("/data/data/me.maxjoehnk.holiday_planner/files/database")
+    }
+}
+
+#[cfg(target_os = "ios")]
+mod storage {
+    use std::borrow::Cow;
+
+    pub fn get_path(path: String) -> Cow<'static, str> {
+        let path = format!("{path}/database");
+
+        tracing::info!("Opening database in folder: {:?}", path);
+
+        Cow::Owned(path)
     }
 }
 
 #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
 mod storage {
-    pub fn get_path() -> &'static str {
+    use std::borrow::Cow;
+
+    pub fn get_path(_path: String) -> Cow<'static, str> {
         tracing::info!("Opening database in folder: {:?}", std::env::current_dir());
-        "db.sqlite"
+        Cow::Borrowed("db.sqlite")
     }
 }
 
@@ -38,8 +55,8 @@ impl Deref for Database {
 }
 
 impl Database {
-    pub async fn new() -> anyhow::Result<Self> {
-        let path = storage::get_path();
+    pub async fn new(path: String) -> anyhow::Result<Self> {
+        let path = storage::get_path(path);
         let connection = sea_orm::Database::connect(&format!("sqlite://{path}?mode=rwc")).await?;
 
         // Migrator::refresh(&connection).await?;

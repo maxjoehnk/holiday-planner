@@ -34,4 +34,3 @@ tokio = { version = "*", features = ["test-util", "macros"] }
 
 [target.'cfg(target_os = "android")'.dependencies]
 tracing-android = "0.2"
-

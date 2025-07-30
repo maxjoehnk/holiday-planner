@@ -53,14 +53,13 @@ pub fn init_app() {
     crate::logger::init();
 }
 
-pub async fn connect_db() -> anyhow::Result<()> {
-    let database = Database::new().await?;
+pub async fn connect_db(path: String) -> anyhow::Result<()> {
+    let database = Database::new(path).await?;
     let mut db = DB.write().await;
     *db = Some(database);
 
     Ok(())
 }
-
 
 #[tracing::instrument]
 pub async fn run_background_jobs() -> anyhow::Result<()> {

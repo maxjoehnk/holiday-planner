@@ -1,6 +1,6 @@
 use tracing_subscriber::prelude::*;
 
-#[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+#[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows", target_os = "ios"))]
 pub fn init() {
     use tracing_subscriber::filter::EnvFilter;
 
