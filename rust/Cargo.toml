@@ -12,7 +12,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 flutter_rust_bridge = { version = "=2.11.1", features = ["chrono", "uuid"] }
 anyhow = "1"
-uuid = { version = "1.4", features = ["v4", "serde"] }
+uuid = { version = "1.17", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 typed-sled = "0.2"
 sled = "0.34"
@@ -23,11 +23,11 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 geojson = { version = "0.24" }
 infer = "0.16.0"
-sea-orm = { version = "1.1.0-rc.1", features = ["runtime-tokio-rustls", "with-uuid", "with-chrono", "sqlx-sqlite", "debug-print"] }
+sea-orm = { version = "1.1.14", features = ["runtime-tokio-rustls", "with-uuid", "with-chrono", "sqlx-sqlite", "debug-print"] }
 migration = { path = "migration" }
 futures = "0.3"
 itertools = "0.13"
-regex = "1.10"
+regex = "1.11"
 
 [dev-dependencies]
 tokio = { version = "*", features = ["test-util", "macros"] }
