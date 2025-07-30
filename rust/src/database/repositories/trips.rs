@@ -1,12 +1,24 @@
 use std::ops::Deref;
 use crate::database::entities::trip::{self, Entity as Trip};
-use sea_orm::{EntityTrait, QueryOrder};
+use sea_orm::{EntityTrait, QueryOrder, QueryFilter, ColumnTrait};
 use sea_orm::ActiveValue::Set;
 use uuid::Uuid;
 use crate::database::Database;
+use chrono::Utc;
 
 pub async fn find_all(db: &Database) -> anyhow::Result<Vec<trip::Model>> {
     let trips = Trip::find()
+        .order_by_asc(trip::Column::StartDate)
+        .all(db.deref())
+        .await?;
+
+    Ok(trips)
+}
+
+pub async fn find_upcoming(db: &Database) -> anyhow::Result<Vec<trip::Model>> {
+    let now = Utc::now();
+    let trips = Trip::find()
+        .filter(trip::Column::StartDate.gt(now))
         .order_by_asc(trip::Column::StartDate)
         .all(db.deref())
         .await?;

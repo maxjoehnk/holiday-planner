@@ -21,7 +21,7 @@ impl Job for TidalSyncJob {
     async fn run(&self) -> anyhow::Result<()> {
         tracing::info!("Running tidal sync job");
         
-        let locations_to_update = repositories::locations::find_coastal_locations_needing_tidal_update(&self.db, 168).await.context("Fetching coastal locations needing tidal data updates")?;
+        let locations_to_update = repositories::locations::find_coastal_locations_for_upcoming_trips_needing_tidal_update(&self.db, 168).await.context("Fetching coastal locations needing tidal data updates")?;
         
         tracing::info!("Found {} coastal locations needing tidal data updates (outdated or missing)", locations_to_update.len());
         

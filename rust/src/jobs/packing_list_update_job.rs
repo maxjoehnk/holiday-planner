@@ -24,7 +24,7 @@ impl Job for PackingListUpdateJob {
         tracing::info!("Running packing list job");
         let packing_list_entries = repositories::packing_list_entries::find_all(&self.db).await?;
         let packing_list_entries = packing_list_entries.into_iter().map(PackingListEntry::from).collect::<Vec<_>>();
-        let trips = repositories::trips::find_all(&self.db).await?;
+        let trips = repositories::trips::find_upcoming(&self.db).await?;
         for trip in trips {
             tracing::debug!("Updating packing list for trip {}", trip.name);
             

@@ -21,7 +21,7 @@ impl WeatherSyncJob {
 impl Job for WeatherSyncJob {
     async fn run(&self) -> anyhow::Result<()> {
         tracing::info!("Running weather sync job");
-        let locations = repositories::locations::find_all(&self.db).await?;
+        let locations = repositories::locations::find_for_upcoming_trips(&self.db).await?;
         for location in locations {
             tracing::debug!("Fetching forecast for location {} - {}", location.city, location.country);
             let coordinates = Coordinates {
