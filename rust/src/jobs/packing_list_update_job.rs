@@ -34,12 +34,16 @@ impl Job for PackingListUpdateJob {
                 .flat_map(|(daily, _)| daily.into_iter().map(DailyWeatherForecast::from))
                 .collect();
             
+            // Load trip tags for condition matching
+            let trip_tags = repositories::tags::find_by_trip_id(&self.db, trip.id).await?;
+            let trip_tag_ids: Vec<uuid::Uuid> = trip_tags.into_iter().map(|tag| tag.id).collect();
+            
             let packing_entries = repositories::trip_packing_list_entries::find_trip_entries_by_trip(&self.db, trip.id).await?;
             let mut packing_entries = packing_entries.into_iter()
                 .map(|entry| (entry.packing_list_entry_id, entry.into_active_model()))
                 .collect::<HashMap<_, _>>();
             for packing_list_entry in &packing_list_entries {
-                if packing_list_entry.conditions.iter().any(|condition| condition.matches(&trip, &daily_forecasts)) {
+                if packing_list_entry.conditions.iter().any(|condition| condition.matches(&trip, &daily_forecasts, &trip_tag_ids)) {
                     let quantity = packing_list_entry.quantity.calculate(trip.start_date, trip.end_date);
                     if let Some(mut model) = packing_entries.remove(&packing_list_entry.id) {
                         model.quantity = Set(quantity.map(|q| q as i64));
@@ -66,7 +70,7 @@ impl Job for PackingListUpdateJob {
 }
 
 impl PackingListEntryCondition {
-    pub(crate) fn matches(&self, trip: &Trip, daily_forecasts: &[DailyWeatherForecast]) -> bool {
+    pub(crate) fn matches(&self, trip: &Trip, daily_forecasts: &[DailyWeatherForecast], trip_tag_ids: &[uuid::Uuid]) -> bool {
         match self {
             Self::MinTripDuration { length } => {
                 let duration = trip.end_date.signed_duration_since(trip.start_date);
@@ -105,7 +109,9 @@ impl PackingListEntryCondition {
                 let probability = matching_days as f64 / total_days as f64;
                 probability >= *min_probability
             }
-            _ => false,
+            Self::Tag { tag_id } => {
+                trip_tag_ids.contains(tag_id)
+            }
         }
     }
 }
@@ -150,7 +156,7 @@ mod tests {
         let condition = PackingListEntryCondition::MinTripDuration { length: 3 };
         let forecasts = vec![];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(result, "Trip duration of 4 days should match minimum duration of 3 days");
     }
@@ -163,7 +169,7 @@ mod tests {
         let condition = PackingListEntryCondition::MinTripDuration { length: 5 };
         let forecasts = vec![];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(!result, "Trip duration of 2 days should not match minimum duration of 5 days");
     }
@@ -176,7 +182,7 @@ mod tests {
         let condition = PackingListEntryCondition::MaxTripDuration { length: 5 };
         let forecasts = vec![];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(result, "Trip duration of 2 days should match maximum duration of 5 days");
     }
@@ -189,7 +195,7 @@ mod tests {
         let condition = PackingListEntryCondition::MaxTripDuration { length: 5 };
         let forecasts = vec![];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(!result, "Trip duration of 7 days should not match maximum duration of 5 days");
     }
@@ -205,7 +211,7 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 2, 0, 0, 0).unwrap(), 22.0, 28.0, WeatherCondition::Sunny),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(result, "Should match when at least one day has min temperature >= 20.0");
     }
@@ -221,7 +227,7 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 2, 0, 0, 0).unwrap(), 20.0, 24.0, WeatherCondition::Sunny),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(!result, "Should not match when no day has min temperature >= 25.0");
     }
@@ -237,7 +243,7 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 2, 0, 0, 0).unwrap(), 15.0, 22.0, WeatherCondition::Clouds),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(result, "Should match when at least one day has max temperature <= 25.0");
     }
@@ -253,7 +259,7 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 2, 0, 0, 0).unwrap(), 20.0, 28.0, WeatherCondition::Sunny),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(!result, "Should not match when no day has max temperature <= 20.0");
     }
@@ -274,7 +280,7 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 4, 0, 0, 0).unwrap(), 19.0, 26.0, WeatherCondition::Sunny),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(result, "Should match when 2 out of 4 days (50%) have rain condition");
     }
@@ -295,7 +301,7 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 4, 0, 0, 0).unwrap(), 19.0, 26.0, WeatherCondition::Sunny),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(!result, "Should not match when only 1 out of 4 days (25%) have rain condition, but 75% is required");
     }
@@ -315,8 +321,54 @@ mod tests {
             create_test_forecast(Utc.with_ymd_and_hms(2023, 7, 4, 0, 0, 0).unwrap(), 28.0, 32.0, WeatherCondition::Sunny),
         ];
 
-        let result = condition.matches(&trip, &forecasts);
+        let result = condition.matches(&trip, &forecasts, &[]);
 
         assert!(!result, "Should only consider forecasts within trip dates, ignoring high temperatures outside the trip");
+    }
+
+    #[test]
+    fn test_tag_condition_matches() {
+        let start_date = Utc.with_ymd_and_hms(2023, 7, 1, 0, 0, 0).unwrap();
+        let end_date = Utc.with_ymd_and_hms(2023, 7, 3, 0, 0, 0).unwrap();
+        let trip = create_test_trip(start_date, end_date);
+        let tag_id = uuid::Uuid::new_v4();
+        let condition = PackingListEntryCondition::Tag { tag_id };
+        let forecasts = vec![];
+        let trip_tags = vec![tag_id];
+
+        let result = condition.matches(&trip, &forecasts, &trip_tags);
+
+        assert!(result, "Should match when trip has the required tag");
+    }
+
+    #[test]
+    fn test_tag_condition_does_not_match() {
+        let start_date = Utc.with_ymd_and_hms(2023, 7, 1, 0, 0, 0).unwrap();
+        let end_date = Utc.with_ymd_and_hms(2023, 7, 3, 0, 0, 0).unwrap();
+        let trip = create_test_trip(start_date, end_date);
+        let tag_id = uuid::Uuid::new_v4();
+        let other_tag_id = uuid::Uuid::new_v4();
+        let condition = PackingListEntryCondition::Tag { tag_id };
+        let forecasts = vec![];
+        let trip_tags = vec![other_tag_id];
+
+        let result = condition.matches(&trip, &forecasts, &trip_tags);
+
+        assert!(!result, "Should not match when trip does not have the required tag");
+    }
+
+    #[test]
+    fn test_tag_condition_empty_tags() {
+        let start_date = Utc.with_ymd_and_hms(2023, 7, 1, 0, 0, 0).unwrap();
+        let end_date = Utc.with_ymd_and_hms(2023, 7, 3, 0, 0, 0).unwrap();
+        let trip = create_test_trip(start_date, end_date);
+        let tag_id = uuid::Uuid::new_v4();
+        let condition = PackingListEntryCondition::Tag { tag_id };
+        let forecasts = vec![];
+        let trip_tags = vec![];
+
+        let result = condition.matches(&trip, &forecasts, &trip_tags);
+
+        assert!(!result, "Should not match when trip has no tags");
     }
 }

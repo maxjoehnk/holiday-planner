@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
+import 'package:holiday_planner/src/rust/api/tags.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
+import 'package:holiday_planner/widgets/tag_selection_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'web_image_search.dart';
@@ -30,22 +32,23 @@ class _EditTripViewState extends State<EditTripView> {
   bool _isLoading = false;
   String? _errorMessage;
   Uint8List? _headerImage;
+  List<TagModel> selectedTags = [];
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.trip.name);
     _headerImage = widget.trip.headerImage;
+    startDate = widget.trip.startDate.toLocal();
+    endDate = widget.trip.endDate.toLocal();
 
-    getTrips().then((trips) {
-      final tripDetails = trips.firstWhere((t) => t.id == widget.trip.id);
+    getTripTags(tripId: widget.trip.id).then((tags) {
       setState(() {
-        startDate = tripDetails.startDate.toLocal();
-        endDate = tripDetails.endDate.toLocal();
+        selectedTags = tags;
       });
     }).catchError((error) {
       setState(() {
-        _errorMessage = "Failed to load trip dates: $error";
+        _errorMessage = "Failed to load tags: $error";
       });
     });
   }
@@ -275,6 +278,13 @@ class _EditTripViewState extends State<EditTripView> {
                 ),
               ),
               const SizedBox(height: 32),
+
+              // Tag Selection Section
+              TagSelectionWidget(
+                selectedTags: selectedTags,
+                onTagsChanged: (tags) => setState(() => selectedTags = tags),
+              ),
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -331,6 +341,7 @@ class _EditTripViewState extends State<EditTripView> {
         startDate: startDate!,
         endDate: endDate!,
         headerImage: headerImageBytes,
+        tagIds: selectedTags.map((tag) => tag.id).toList(),
       );
 
       await updateTrip(command: command);

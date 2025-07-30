@@ -1,5 +1,6 @@
 use chrono::Utc;
 use crate::models::LocationEntry;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct CreateTrip {
@@ -8,4 +9,5 @@ pub struct CreateTrip {
     pub end_date: chrono::DateTime<Utc>,
     pub header_image: Option<Vec<u8>>,
     pub location: Option<LocationEntry>,
+    pub tag_ids: Vec<Uuid>,
 }

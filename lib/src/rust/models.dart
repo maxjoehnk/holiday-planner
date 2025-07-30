@@ -315,7 +315,7 @@ sealed class PackingListEntryCondition with _$PackingListEntryCondition {
     required double minProbability,
   }) = PackingListEntryCondition_Weather;
   const factory PackingListEntryCondition.tag({
-    required String tag,
+    required UuidValue tagId,
   }) = PackingListEntryCondition_Tag;
 }
 
@@ -388,6 +388,27 @@ class Quantity {
           perDay == other.perDay &&
           perNight == other.perNight &&
           fixed == other.fixed;
+}
+
+class TagModel {
+  final UuidValue id;
+  final String name;
+
+  const TagModel({
+    required this.id,
+    required this.name,
+  });
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TagModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
 }
 
 class TripAttachment {

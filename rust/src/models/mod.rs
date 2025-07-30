@@ -143,6 +143,12 @@ pub struct TripAttachment {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TagModel {
+    pub id: Uuid,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Location {
     pub coordinates: Coordinates,
     pub city: String,
@@ -249,7 +255,7 @@ pub enum PackingListEntryCondition {
         min_probability: f64,
     },
     Tag {
-        tag: String,
+        tag_id: Uuid,
     },
 }
 

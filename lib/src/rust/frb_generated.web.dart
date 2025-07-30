@@ -12,6 +12,7 @@ import 'api/attachments.dart';
 import 'api/bookings.dart';
 import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
+import 'api/tags.dart';
 import 'api/timeline.dart';
 import 'api/transits.dart';
 import 'api/trips.dart';
@@ -19,19 +20,24 @@ import 'commands/add_accommodation_attachment.dart';
 import 'commands/add_car_rental.dart';
 import 'commands/add_packing_list_entry.dart';
 import 'commands/add_reservation.dart';
+import 'commands/add_tag_to_trip.dart';
 import 'commands/add_train.dart';
 import 'commands/add_trip_accommodation.dart';
 import 'commands/add_trip_attachment.dart';
 import 'commands/add_trip_location.dart';
 import 'commands/add_trip_point_of_interest.dart';
+import 'commands/create_tag.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
 import 'commands/parse_shared_train_data.dart';
 import 'commands/parse_train_data.dart';
+import 'commands/remove_tag_from_trip.dart';
 import 'commands/search_web_images.dart';
+import 'commands/set_trip_tags.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
+import 'commands/update_tag.dart';
 import 'commands/update_train.dart';
 import 'commands/update_trip.dart';
 import 'commands/update_trip_accommodation.dart';
@@ -91,6 +97,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddReservation dco_decode_add_reservation(dynamic raw);
 
   @protected
+  AddTagToTrip dco_decode_add_tag_to_trip(dynamic raw);
+
+  @protected
   AddTrain dco_decode_add_train(dynamic raw);
 
   @protected
@@ -135,6 +144,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddReservation dco_decode_box_autoadd_add_reservation(dynamic raw);
 
   @protected
+  AddTagToTrip dco_decode_box_autoadd_add_tag_to_trip(dynamic raw);
+
+  @protected
   AddTrain dco_decode_box_autoadd_add_train(dynamic raw);
 
   @protected
@@ -155,6 +167,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CarRental dco_decode_box_autoadd_car_rental(dynamic raw);
 
   @protected
+  CreateTag dco_decode_box_autoadd_create_tag(dynamic raw);
+
+  @protected
   CreateTrip dco_decode_box_autoadd_create_trip(dynamic raw);
 
   @protected
@@ -172,10 +187,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ParseTrainData dco_decode_box_autoadd_parse_train_data(dynamic raw);
 
   @protected
+  RemoveTagFromTrip dco_decode_box_autoadd_remove_tag_from_trip(dynamic raw);
+
+  @protected
   Reservation dco_decode_box_autoadd_reservation(dynamic raw);
 
   @protected
   SearchWebImages dco_decode_box_autoadd_search_web_images(dynamic raw);
+
+  @protected
+  SetTripTags dco_decode_box_autoadd_set_trip_tags(dynamic raw);
+
+  @protected
+  TagModel dco_decode_box_autoadd_tag_model(dynamic raw);
 
   @protected
   TripLocationListModel dco_decode_box_autoadd_trip_location_list_model(
@@ -190,6 +214,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation dco_decode_box_autoadd_update_reservation(dynamic raw);
+
+  @protected
+  UpdateTag dco_decode_box_autoadd_update_tag(dynamic raw);
 
   @protected
   UpdateTrain dco_decode_box_autoadd_update_train(dynamic raw);
@@ -218,6 +245,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Coordinates dco_decode_coordinates(dynamic raw);
 
   @protected
+  CreateTag dco_decode_create_tag(dynamic raw);
+
+  @protected
   CreateTrip dco_decode_create_trip(dynamic raw);
 
   @protected
@@ -240,6 +270,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ImportParsedTrainJourney dco_decode_import_parsed_train_journey(dynamic raw);
+
+  @protected
+  List<UuidValue> dco_decode_list_Uuid(dynamic raw);
 
   @protected
   List<AccommodationModel> dco_decode_list_accommodation_model(dynamic raw);
@@ -277,6 +310,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<TagModel> dco_decode_list_tag_model(dynamic raw);
 
   @protected
   List<TidalInformation> dco_decode_list_tidal_information(dynamic raw);
@@ -328,6 +364,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LocationEntry? dco_decode_opt_box_autoadd_location_entry(dynamic raw);
 
   @protected
+  TagModel? dco_decode_opt_box_autoadd_tag_model(dynamic raw);
+
+  @protected
   TripLocationListModel? dco_decode_opt_box_autoadd_trip_location_list_model(
       dynamic raw);
 
@@ -363,6 +402,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Quantity dco_decode_quantity(dynamic raw);
 
   @protected
+  RemoveTagFromTrip dco_decode_remove_tag_from_trip(dynamic raw);
+
+  @protected
   Reservation dco_decode_reservation(dynamic raw);
 
   @protected
@@ -370,6 +412,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SearchWebImages dco_decode_search_web_images(dynamic raw);
+
+  @protected
+  SetTripTags dco_decode_set_trip_tags(dynamic raw);
+
+  @protected
+  TagModel dco_decode_tag_model(dynamic raw);
 
   @protected
   TidalInformation dco_decode_tidal_information(dynamic raw);
@@ -435,6 +483,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UpdateReservation dco_decode_update_reservation(dynamic raw);
 
   @protected
+  UpdateTag dco_decode_update_tag(dynamic raw);
+
+  @protected
   UpdateTrain dco_decode_update_train(dynamic raw);
 
   @protected
@@ -498,6 +549,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AddReservation sse_decode_add_reservation(SseDeserializer deserializer);
 
   @protected
+  AddTagToTrip sse_decode_add_tag_to_trip(SseDeserializer deserializer);
+
+  @protected
   AddTrain sse_decode_add_train(SseDeserializer deserializer);
 
   @protected
@@ -550,6 +604,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AddTagToTrip sse_decode_box_autoadd_add_tag_to_trip(
+      SseDeserializer deserializer);
+
+  @protected
   AddTrain sse_decode_box_autoadd_add_train(SseDeserializer deserializer);
 
   @protected
@@ -572,6 +630,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CarRental sse_decode_box_autoadd_car_rental(SseDeserializer deserializer);
 
   @protected
+  CreateTag sse_decode_box_autoadd_create_tag(SseDeserializer deserializer);
+
+  @protected
   CreateTrip sse_decode_box_autoadd_create_trip(SseDeserializer deserializer);
 
   @protected
@@ -591,11 +652,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  RemoveTagFromTrip sse_decode_box_autoadd_remove_tag_from_trip(
+      SseDeserializer deserializer);
+
+  @protected
   Reservation sse_decode_box_autoadd_reservation(SseDeserializer deserializer);
 
   @protected
   SearchWebImages sse_decode_box_autoadd_search_web_images(
       SseDeserializer deserializer);
+
+  @protected
+  SetTripTags sse_decode_box_autoadd_set_trip_tags(
+      SseDeserializer deserializer);
+
+  @protected
+  TagModel sse_decode_box_autoadd_tag_model(SseDeserializer deserializer);
 
   @protected
   TripLocationListModel sse_decode_box_autoadd_trip_location_list_model(
@@ -612,6 +684,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   UpdateReservation sse_decode_box_autoadd_update_reservation(
       SseDeserializer deserializer);
+
+  @protected
+  UpdateTag sse_decode_box_autoadd_update_tag(SseDeserializer deserializer);
 
   @protected
   UpdateTrain sse_decode_box_autoadd_update_train(SseDeserializer deserializer);
@@ -642,6 +717,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Coordinates sse_decode_coordinates(SseDeserializer deserializer);
 
   @protected
+  CreateTag sse_decode_create_tag(SseDeserializer deserializer);
+
+  @protected
   CreateTrip sse_decode_create_trip(SseDeserializer deserializer);
 
   @protected
@@ -668,6 +746,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ImportParsedTrainJourney sse_decode_import_parsed_train_journey(
       SseDeserializer deserializer);
+
+  @protected
+  List<UuidValue> sse_decode_list_Uuid(SseDeserializer deserializer);
 
   @protected
   List<AccommodationModel> sse_decode_list_accommodation_model(
@@ -710,6 +791,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<TagModel> sse_decode_list_tag_model(SseDeserializer deserializer);
 
   @protected
   List<TidalInformation> sse_decode_list_tidal_information(
@@ -767,6 +851,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  TagModel? sse_decode_opt_box_autoadd_tag_model(SseDeserializer deserializer);
+
+  @protected
   TripLocationListModel? sse_decode_opt_box_autoadd_trip_location_list_model(
       SseDeserializer deserializer);
 
@@ -806,6 +893,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Quantity sse_decode_quantity(SseDeserializer deserializer);
 
   @protected
+  RemoveTagFromTrip sse_decode_remove_tag_from_trip(
+      SseDeserializer deserializer);
+
+  @protected
   Reservation sse_decode_reservation(SseDeserializer deserializer);
 
   @protected
@@ -814,6 +905,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SearchWebImages sse_decode_search_web_images(SseDeserializer deserializer);
+
+  @protected
+  SetTripTags sse_decode_set_trip_tags(SseDeserializer deserializer);
+
+  @protected
+  TagModel sse_decode_tag_model(SseDeserializer deserializer);
 
   @protected
   TidalInformation sse_decode_tidal_information(SseDeserializer deserializer);
@@ -887,6 +984,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UpdateReservation sse_decode_update_reservation(SseDeserializer deserializer);
 
   @protected
+  UpdateTag sse_decode_update_tag(SseDeserializer deserializer);
+
+  @protected
   UpdateTrain sse_decode_update_train(SseDeserializer deserializer);
 
   @protected
@@ -953,6 +1053,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddReservation self, SseSerializer serializer);
 
   @protected
+  void sse_encode_add_tag_to_trip(AddTagToTrip self, SseSerializer serializer);
+
+  @protected
   void sse_encode_add_train(AddTrain self, SseSerializer serializer);
 
   @protected
@@ -1006,6 +1109,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AddReservation self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_add_tag_to_trip(
+      AddTagToTrip self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_add_train(
       AddTrain self, SseSerializer serializer);
 
@@ -1030,6 +1137,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CarRental self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_create_tag(
+      CreateTag self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_create_trip(
       CreateTrip self, SseSerializer serializer);
 
@@ -1050,12 +1161,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ParseTrainData self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_remove_tag_from_trip(
+      RemoveTagFromTrip self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_reservation(
       Reservation self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_search_web_images(
       SearchWebImages self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_set_trip_tags(
+      SetTripTags self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_tag_model(
+      TagModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_trip_location_list_model(
@@ -1072,6 +1195,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_update_tag(
+      UpdateTag self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_update_train(
@@ -1103,6 +1230,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_coordinates(Coordinates self, SseSerializer serializer);
 
   @protected
+  void sse_encode_create_tag(CreateTag self, SseSerializer serializer);
+
+  @protected
   void sse_encode_create_trip(CreateTrip self, SseSerializer serializer);
 
   @protected
@@ -1129,6 +1259,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_import_parsed_train_journey(
       ImportParsedTrainJourney self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_Uuid(List<UuidValue> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_accommodation_model(
@@ -1172,6 +1305,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_tag_model(List<TagModel> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_tidal_information(
@@ -1230,6 +1366,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       LocationEntry? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_tag_model(
+      TagModel? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_trip_location_list_model(
       TripLocationListModel? self, SseSerializer serializer);
 
@@ -1272,6 +1412,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_quantity(Quantity self, SseSerializer serializer);
 
   @protected
+  void sse_encode_remove_tag_from_trip(
+      RemoveTagFromTrip self, SseSerializer serializer);
+
+  @protected
   void sse_encode_reservation(Reservation self, SseSerializer serializer);
 
   @protected
@@ -1281,6 +1425,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_search_web_images(
       SearchWebImages self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_set_trip_tags(SetTripTags self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tag_model(TagModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_tidal_information(
@@ -1356,6 +1506,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_tag(UpdateTag self, SseSerializer serializer);
 
   @protected
   void sse_encode_update_train(UpdateTrain self, SseSerializer serializer);

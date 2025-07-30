@@ -9,6 +9,7 @@ import 'condition_selector.dart';
 import 'conditions.dart';
 import 'temperature_selector.dart';
 import 'trip_duration_selector.dart';
+import 'tag_selector.dart';
 
 class EditItemDialog extends StatefulWidget {
   final PackingListEntry? entry;
@@ -267,7 +268,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
       minTemperature: (temperature) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.min, temperature: temperature.temperature),
       maxTemperature: (temperature) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.max, temperature: temperature.temperature),
       weather: (_) => throw UnimplementedError(),
-      tag: (_) => throw UnimplementedError(),
+      tag: (tag) => TagSelector(onSelect: onSelect, currentTagId: tag.tagId),
     );
 
     showDialog(context: context, builder: (context) => nextDialog);

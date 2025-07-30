@@ -9,6 +9,7 @@ import 'api/attachments.dart';
 import 'api/bookings.dart';
 import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
+import 'api/tags.dart';
 import 'api/timeline.dart';
 import 'api/transits.dart';
 import 'api/trips.dart';
@@ -16,19 +17,24 @@ import 'commands/add_accommodation_attachment.dart';
 import 'commands/add_car_rental.dart';
 import 'commands/add_packing_list_entry.dart';
 import 'commands/add_reservation.dart';
+import 'commands/add_tag_to_trip.dart';
 import 'commands/add_train.dart';
 import 'commands/add_trip_accommodation.dart';
 import 'commands/add_trip_attachment.dart';
 import 'commands/add_trip_location.dart';
 import 'commands/add_trip_point_of_interest.dart';
+import 'commands/create_tag.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
 import 'commands/parse_shared_train_data.dart';
 import 'commands/parse_train_data.dart';
+import 'commands/remove_tag_from_trip.dart';
 import 'commands/search_web_images.dart';
+import 'commands/set_trip_tags.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
+import 'commands/update_tag.dart';
 import 'commands/update_train.dart';
 import 'commands/update_trip.dart';
 import 'commands/update_trip_accommodation.dart';
@@ -106,7 +112,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1164171368;
+  int get rustContentHash => 1959395527;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -128,6 +134,8 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiBookingsAddReservation(
       {required AddReservation command});
 
+  Future<void> crateApiTagsAddTagToTrip({required AddTagToTrip command});
+
   Future<void> crateApiTransitsAddTrain({required AddTrain command});
 
   Future<void> crateApiAccommodationsAddTripAccommodation(
@@ -142,6 +150,8 @@ abstract class RustLibApi extends BaseApi {
       {required AddTripPointOfInterest command});
 
   Future<void> crateApiConnectDb({required String path});
+
+  Future<TagModel> crateApiTagsCreateTag({required CreateTag command});
 
   Future<TripOverviewModel> crateApiTripsCreateTrip(
       {required CreateTrip command});
@@ -166,6 +176,8 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiBookingsDeleteReservation(
       {required UuidValue reservationId});
 
+  Future<void> crateApiTagsDeleteTag({required UuidValue id});
+
   Future<void> crateApiTransitsDeleteTrain({required UuidValue trainId});
 
   Future<Uint8List> crateApiTripsDownloadWebImage({required String imageUrl});
@@ -174,12 +186,16 @@ abstract class RustLibApi extends BaseApi {
       crateApiAttachmentsGetAccommodationAttachments(
           {required UuidValue accommodationId});
 
+  Future<List<TagModel>> crateApiTagsGetAllTags();
+
   Future<TripLocationListModel> crateApiTripsGetLocationDetails(
       {required UuidValue locationId});
 
   Future<List<PackingListEntry>> crateApiPackingListGetPackingList();
 
   Future<List<TripListModel>> crateApiTripsGetPastTrips();
+
+  Future<TagModel?> crateApiTagsGetTagById({required UuidValue id});
 
   Future<TripOverviewModel> crateApiTripsGetTrip({required UuidValue id});
 
@@ -201,6 +217,8 @@ abstract class RustLibApi extends BaseApi {
   Future<List<PointOfInterestModel>>
       crateApiPointsOfInterestGetTripPointsOfInterest(
           {required UuidValue tripId});
+
+  Future<List<TagModel>> crateApiTagsGetTripTags({required UuidValue tripId});
 
   Future<TimelineModel> crateApiTimelineGetTripTimeline(
       {required UuidValue tripId});
@@ -232,6 +250,9 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiAttachmentsRemoveAccommodationAttachment(
       {required UuidValue accommodationId, required UuidValue attachmentId});
 
+  Future<void> crateApiTagsRemoveTagFromTrip(
+      {required RemoveTagFromTrip command});
+
   Future<void> crateApiRunBackgroundJobs();
 
   Future<List<LocationEntry>> crateApiTripsSearchLocations(
@@ -239,6 +260,8 @@ abstract class RustLibApi extends BaseApi {
 
   Future<List<WebImage>> crateApiTripsSearchWebImages(
       {required SearchWebImages command});
+
+  Future<void> crateApiTagsSetTripTags({required SetTripTags command});
 
   Future<void> crateApiBookingsUpdateCarRental(
       {required UpdateCarRental command});
@@ -251,6 +274,8 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiBookingsUpdateReservation(
       {required UpdateReservation command});
+
+  Future<TagModel> crateApiTagsUpdateTag({required UpdateTag command});
 
   Future<void> crateApiTransitsUpdateTrain({required UpdateTrain command});
 
@@ -377,13 +402,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiTagsAddTagToTrip({required AddTagToTrip command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_add_tag_to_trip(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsAddTagToTripConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsAddTagToTripConstMeta => const TaskConstMeta(
+        debugName: "add_tag_to_trip",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiTransitsAddTrain({required AddTrain command}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_add_train(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -408,7 +457,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_add_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -434,7 +483,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_add_trip_attachment(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -460,7 +509,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_add_trip_location(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -486,7 +535,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_add_trip_point_of_interest(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -511,7 +560,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -529,6 +578,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<TagModel> crateApiTagsCreateTag({required CreateTag command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_create_tag(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tag_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsCreateTagConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsCreateTagConstMeta => const TaskConstMeta(
+        debugName: "create_tag",
+        argNames: ["command"],
+      );
+
+  @override
   Future<TripOverviewModel> crateApiTripsCreateTrip(
       {required CreateTrip command}) {
     return handler.executeNormal(NormalTask(
@@ -536,7 +609,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_create_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -561,7 +634,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(accommodationId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 14, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -587,7 +660,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(attachmentId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 15, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -613,7 +686,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(carRentalId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 16, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -638,7 +711,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(locationId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 17, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -664,7 +737,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_delete_packing_list_entry(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -690,7 +763,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(pointOfInterestId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 19, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -716,7 +789,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(reservationId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -735,13 +808,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiTagsDeleteTag({required UuidValue id}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Uuid(id, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 21, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsDeleteTagConstMeta,
+      argValues: [id],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsDeleteTagConstMeta => const TaskConstMeta(
+        debugName: "delete_tag",
+        argNames: ["id"],
+      );
+
+  @override
   Future<void> crateApiTransitsDeleteTrain({required UuidValue trainId}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(trainId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -766,7 +863,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(imageUrl, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -793,7 +890,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(accommodationId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 21, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_attachment_list_model,
@@ -812,6 +909,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<TagModel>> crateApiTagsGetAllTags() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 25, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_tag_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsGetAllTagsConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsGetAllTagsConstMeta => const TaskConstMeta(
+        debugName: "get_all_tags",
+        argNames: [],
+      );
+
+  @override
   Future<TripLocationListModel> crateApiTripsGetLocationDetails(
       {required UuidValue locationId}) {
     return handler.executeNormal(NormalTask(
@@ -819,7 +939,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(locationId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 22, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_location_list_model,
@@ -843,7 +963,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_packing_list_entry,
@@ -867,7 +987,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trip_list_model,
@@ -885,13 +1005,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<TagModel?> crateApiTagsGetTagById({required UuidValue id}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Uuid(id, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 29, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_tag_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsGetTagByIdConstMeta,
+      argValues: [id],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsGetTagByIdConstMeta => const TaskConstMeta(
+        debugName: "get_tag_by_id",
+        argNames: ["id"],
+      );
+
+  @override
   Future<TripOverviewModel> crateApiTripsGetTrip({required UuidValue id}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(id, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -916,7 +1060,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_accommodation_model,
@@ -942,7 +1086,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 27, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_attachment_list_model,
@@ -968,7 +1112,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_booking,
@@ -994,7 +1138,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trip_location_list_model,
@@ -1020,7 +1164,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_packing_list_model,
@@ -1047,7 +1191,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_point_of_interest_model,
@@ -1066,6 +1210,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<TagModel>> crateApiTagsGetTripTags({required UuidValue tripId}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Uuid(tripId, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 37, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_tag_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsGetTripTagsConstMeta,
+      argValues: [tripId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsGetTripTagsConstMeta => const TaskConstMeta(
+        debugName: "get_trip_tags",
+        argNames: ["tripId"],
+      );
+
+  @override
   Future<TimelineModel> crateApiTimelineGetTripTimeline(
       {required UuidValue tripId}) {
     return handler.executeNormal(NormalTask(
@@ -1073,7 +1241,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_timeline_model,
@@ -1099,7 +1267,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_train,
@@ -1123,7 +1291,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 40, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trip_list_model,
@@ -1146,7 +1314,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
+            funcId: 41, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trip_list_model,
@@ -1172,7 +1340,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_import_parsed_train_journey(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 36, port: port_);
+            funcId: 42, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1196,7 +1364,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
+            funcId: 43, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1222,7 +1390,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(entryId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 44, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1248,7 +1416,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(entryId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 39, port: port_);
+            funcId: 45, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1274,7 +1442,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_parse_train_data(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 40, port: port_);
+            funcId: 46, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_parsed_train_journey,
@@ -1301,7 +1469,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(attachmentId, serializer);
         sse_encode_String(targetPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 41, port: port_);
+            funcId: 47, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1328,7 +1496,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(accommodationId, serializer);
         sse_encode_Uuid(attachmentId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 42, port: port_);
+            funcId: 48, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1348,12 +1516,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<void> crateApiTagsRemoveTagFromTrip(
+      {required RemoveTagFromTrip command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_remove_tag_from_trip(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 49, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsRemoveTagFromTripConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsRemoveTagFromTripConstMeta =>
+      const TaskConstMeta(
+        debugName: "remove_tag_from_trip",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiRunBackgroundJobs() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 43, port: port_);
+            funcId: 50, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1378,7 +1572,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(query, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 44, port: port_);
+            funcId: 51, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_location_entry,
@@ -1404,7 +1598,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_search_web_images(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 45, port: port_);
+            funcId: 52, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_web_image,
@@ -1423,6 +1617,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiTagsSetTripTags({required SetTripTags command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_set_trip_tags(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 53, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsSetTripTagsConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsSetTripTagsConstMeta => const TaskConstMeta(
+        debugName: "set_trip_tags",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiBookingsUpdateCarRental(
       {required UpdateCarRental command}) {
     return handler.executeNormal(NormalTask(
@@ -1430,7 +1648,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_car_rental(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 46, port: port_);
+            funcId: 54, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1457,7 +1675,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(locationId, serializer);
         sse_encode_bool(isCoastal, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 47, port: port_);
+            funcId: 55, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1483,7 +1701,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_packing_list_entry(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 48, port: port_);
+            funcId: 56, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1509,7 +1727,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_reservation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 49, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1528,13 +1746,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<TagModel> crateApiTagsUpdateTag({required UpdateTag command}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_update_tag(command, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 58, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tag_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTagsUpdateTagConstMeta,
+      argValues: [command],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTagsUpdateTagConstMeta => const TaskConstMeta(
+        debugName: "update_tag",
+        argNames: ["command"],
+      );
+
+  @override
   Future<void> crateApiTransitsUpdateTrain({required UpdateTrain command}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_train(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 50, port: port_);
+            funcId: 59, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1560,7 +1802,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 51, port: port_);
+            funcId: 60, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -1585,7 +1827,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 52, port: port_);
+            funcId: 61, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1612,7 +1854,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_update_trip_point_of_interest(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 53, port: port_);
+            funcId: 62, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1751,6 +1993,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       link: dco_decode_opt_String(arr[5]),
       bookingNumber: dco_decode_opt_String(arr[6]),
       category: dco_decode_reservation_category(arr[7]),
+    );
+  }
+
+  @protected
+  AddTagToTrip dco_decode_add_tag_to_trip(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return AddTagToTrip(
+      tripId: dco_decode_Uuid(arr[0]),
+      tagId: dco_decode_Uuid(arr[1]),
     );
   }
 
@@ -1910,6 +2164,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AddTagToTrip dco_decode_box_autoadd_add_tag_to_trip(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_add_tag_to_trip(raw);
+  }
+
+  @protected
   AddTrain dco_decode_box_autoadd_add_train(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_add_train(raw);
@@ -1948,6 +2208,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateTag dco_decode_box_autoadd_create_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_create_tag(raw);
+  }
+
+  @protected
   CreateTrip dco_decode_box_autoadd_create_trip(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_create_trip(raw);
@@ -1980,6 +2246,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RemoveTagFromTrip dco_decode_box_autoadd_remove_tag_from_trip(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_remove_tag_from_trip(raw);
+  }
+
+  @protected
   Reservation dco_decode_box_autoadd_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_reservation(raw);
@@ -1989,6 +2261,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SearchWebImages dco_decode_box_autoadd_search_web_images(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_search_web_images(raw);
+  }
+
+  @protected
+  SetTripTags dco_decode_box_autoadd_set_trip_tags(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_set_trip_tags(raw);
+  }
+
+  @protected
+  TagModel dco_decode_box_autoadd_tag_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_tag_model(raw);
   }
 
   @protected
@@ -2015,6 +2299,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   UpdateReservation dco_decode_box_autoadd_update_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_update_reservation(raw);
+  }
+
+  @protected
+  UpdateTag dco_decode_box_autoadd_update_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_update_tag(raw);
   }
 
   @protected
@@ -2086,17 +2376,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateTag dco_decode_create_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return CreateTag(
+      name: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
   CreateTrip dco_decode_create_trip(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return CreateTrip(
       name: dco_decode_String(arr[0]),
       startDate: dco_decode_Chrono_Utc(arr[1]),
       endDate: dco_decode_Chrono_Utc(arr[2]),
       headerImage: dco_decode_opt_list_prim_u_8_strict(arr[3]),
       location: dco_decode_opt_box_autoadd_location_entry(arr[4]),
+      tagIds: dco_decode_list_Uuid(arr[5]),
     );
   }
 
@@ -2179,6 +2481,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<UuidValue> dco_decode_list_Uuid(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    const kUuidSizeInBytes = 16;
+    final bytes = dco_decode_list_prim_u_8_strict(raw);
+    return List.generate(
+      bytes.lengthInBytes ~/ kUuidSizeInBytes,
+      (i) => UuidValue.fromByteList(
+          Uint8List.view(bytes.buffer, i * kUuidSizeInBytes, kUuidSizeInBytes)),
+      growable: false,
+    );
+  }
+
+  @protected
   List<AccommodationModel> dco_decode_list_accommodation_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_accommodation_model).toList();
@@ -2256,6 +2571,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<TagModel> dco_decode_list_tag_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_tag_model).toList();
   }
 
   @protected
@@ -2370,6 +2691,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TagModel? dco_decode_opt_box_autoadd_tag_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_tag_model(raw);
+  }
+
+  @protected
   TripLocationListModel? dco_decode_opt_box_autoadd_trip_location_list_model(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2440,7 +2767,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 5:
         return PackingListEntryCondition_Tag(
-          tag: dco_decode_String(raw[1]),
+          tagId: dco_decode_Uuid(raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -2523,6 +2850,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RemoveTagFromTrip dco_decode_remove_tag_from_trip(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return RemoveTagFromTrip(
+      tripId: dco_decode_Uuid(arr[0]),
+      tagId: dco_decode_Uuid(arr[1]),
+    );
+  }
+
+  @protected
   Reservation dco_decode_reservation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2555,6 +2894,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
     return SearchWebImages(
       query: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  SetTripTags dco_decode_set_trip_tags(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SetTripTags(
+      tripId: dco_decode_Uuid(arr[0]),
+      tagIds: dco_decode_list_Uuid(arr[1]),
+    );
+  }
+
+  @protected
+  TagModel dco_decode_tag_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return TagModel(
+      id: dco_decode_Uuid(arr[0]),
+      name: dco_decode_String(arr[1]),
     );
   }
 
@@ -2883,6 +3246,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UpdateTag dco_decode_update_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return UpdateTag(
+      id: dco_decode_Uuid(arr[0]),
+      name: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
   UpdateTrain dco_decode_update_train(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2908,14 +3283,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   UpdateTrip dco_decode_update_trip(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return UpdateTrip(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
       startDate: dco_decode_Chrono_Utc(arr[2]),
       endDate: dco_decode_Chrono_Utc(arr[3]),
       headerImage: dco_decode_opt_list_prim_u_8_strict(arr[4]),
+      tagIds: dco_decode_list_Uuid(arr[5]),
     );
   }
 
@@ -3132,6 +3508,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AddTagToTrip sse_decode_add_tag_to_trip(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tripId = sse_decode_Uuid(deserializer);
+    var var_tagId = sse_decode_Uuid(deserializer);
+    return AddTagToTrip(tripId: var_tripId, tagId: var_tagId);
+  }
+
+  @protected
   AddTrain sse_decode_add_train(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_tripId = sse_decode_Uuid(deserializer);
@@ -3301,6 +3685,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AddTagToTrip sse_decode_box_autoadd_add_tag_to_trip(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_add_tag_to_trip(deserializer));
+  }
+
+  @protected
   AddTrain sse_decode_box_autoadd_add_train(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_add_train(deserializer));
@@ -3341,6 +3732,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateTag sse_decode_box_autoadd_create_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_create_tag(deserializer));
+  }
+
+  @protected
   CreateTrip sse_decode_box_autoadd_create_trip(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_create_trip(deserializer));
@@ -3375,6 +3772,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RemoveTagFromTrip sse_decode_box_autoadd_remove_tag_from_trip(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_remove_tag_from_trip(deserializer));
+  }
+
+  @protected
   Reservation sse_decode_box_autoadd_reservation(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_reservation(deserializer));
@@ -3385,6 +3789,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_search_web_images(deserializer));
+  }
+
+  @protected
+  SetTripTags sse_decode_box_autoadd_set_trip_tags(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_set_trip_tags(deserializer));
+  }
+
+  @protected
+  TagModel sse_decode_box_autoadd_tag_model(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_tag_model(deserializer));
   }
 
   @protected
@@ -3413,6 +3830,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_update_reservation(deserializer));
+  }
+
+  @protected
+  UpdateTag sse_decode_box_autoadd_update_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_update_tag(deserializer));
   }
 
   @protected
@@ -3487,6 +3910,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CreateTag sse_decode_create_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_name = sse_decode_String(deserializer);
+    return CreateTag(name: var_name);
+  }
+
+  @protected
   CreateTrip sse_decode_create_trip(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
@@ -3494,12 +3924,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_endDate = sse_decode_Chrono_Utc(deserializer);
     var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
     var var_location = sse_decode_opt_box_autoadd_location_entry(deserializer);
+    var var_tagIds = sse_decode_list_Uuid(deserializer);
     return CreateTrip(
         name: var_name,
         startDate: var_startDate,
         endDate: var_endDate,
         headerImage: var_headerImage,
-        location: var_location);
+        location: var_location,
+        tagIds: var_tagIds);
   }
 
   @protected
@@ -3583,6 +4015,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_tripId = sse_decode_Uuid(deserializer);
     var var_journey = sse_decode_parsed_train_journey(deserializer);
     return ImportParsedTrainJourney(tripId: var_tripId, journey: var_journey);
+  }
+
+  @protected
+  List<UuidValue> sse_decode_list_Uuid(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <UuidValue>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_Uuid(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -3719,6 +4163,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<TagModel> sse_decode_list_tag_model(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TagModel>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_tag_model(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -3907,6 +4363,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TagModel? sse_decode_opt_box_autoadd_tag_model(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_tag_model(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   TripLocationListModel? sse_decode_opt_box_autoadd_trip_location_list_model(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3998,8 +4465,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return PackingListEntryCondition_Weather(
             condition: var_condition, minProbability: var_minProbability);
       case 5:
-        var var_tag = sse_decode_String(deserializer);
-        return PackingListEntryCondition_Tag(tag: var_tag);
+        var var_tagId = sse_decode_Uuid(deserializer);
+        return PackingListEntryCondition_Tag(tagId: var_tagId);
       default:
         throw UnimplementedError('');
     }
@@ -4085,6 +4552,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RemoveTagFromTrip sse_decode_remove_tag_from_trip(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tripId = sse_decode_Uuid(deserializer);
+    var var_tagId = sse_decode_Uuid(deserializer);
+    return RemoveTagFromTrip(tripId: var_tripId, tagId: var_tagId);
+  }
+
+  @protected
   Reservation sse_decode_reservation(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_Uuid(deserializer);
@@ -4121,6 +4597,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_query = sse_decode_String(deserializer);
     return SearchWebImages(query: var_query);
+  }
+
+  @protected
+  SetTripTags sse_decode_set_trip_tags(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tripId = sse_decode_Uuid(deserializer);
+    var var_tagIds = sse_decode_list_Uuid(deserializer);
+    return SetTripTags(tripId: var_tripId, tagIds: var_tagIds);
+  }
+
+  @protected
+  TagModel sse_decode_tag_model(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_Uuid(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    return TagModel(id: var_id, name: var_name);
   }
 
   @protected
@@ -4468,6 +4960,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UpdateTag sse_decode_update_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_Uuid(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    return UpdateTag(id: var_id, name: var_name);
+  }
+
+  @protected
   UpdateTrain sse_decode_update_train(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_Uuid(deserializer);
@@ -4505,12 +5005,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_startDate = sse_decode_Chrono_Utc(deserializer);
     var var_endDate = sse_decode_Chrono_Utc(deserializer);
     var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
+    var var_tagIds = sse_decode_list_Uuid(deserializer);
     return UpdateTrip(
         id: var_id,
         name: var_name,
         startDate: var_startDate,
         endDate: var_endDate,
-        headerImage: var_headerImage);
+        headerImage: var_headerImage,
+        tagIds: var_tagIds);
   }
 
   @protected
@@ -4694,6 +5196,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_add_tag_to_trip(AddTagToTrip self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.tripId, serializer);
+    sse_encode_Uuid(self.tagId, serializer);
+  }
+
+  @protected
   void sse_encode_add_train(AddTrain self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.tripId, serializer);
@@ -4824,6 +5333,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_add_tag_to_trip(
+      AddTagToTrip self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_add_tag_to_trip(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_add_train(
       AddTrain self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4866,6 +5382,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_create_tag(
+      CreateTag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_create_tag(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_create_trip(
       CreateTrip self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4901,6 +5424,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_remove_tag_from_trip(
+      RemoveTagFromTrip self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_remove_tag_from_trip(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_reservation(
       Reservation self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4912,6 +5442,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SearchWebImages self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_search_web_images(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_set_trip_tags(
+      SetTripTags self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_set_trip_tags(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_tag_model(
+      TagModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_tag_model(self, serializer);
   }
 
   @protected
@@ -4940,6 +5484,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       UpdateReservation self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_update_reservation(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_update_tag(
+      UpdateTag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_update_tag(self, serializer);
   }
 
   @protected
@@ -5004,6 +5555,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_create_tag(CreateTag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.name, serializer);
+  }
+
+  @protected
   void sse_encode_create_trip(CreateTrip self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.name, serializer);
@@ -5011,6 +5568,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
     sse_encode_opt_box_autoadd_location_entry(self.location, serializer);
+    sse_encode_list_Uuid(self.tagIds, serializer);
   }
 
   @protected
@@ -5073,6 +5631,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.tripId, serializer);
     sse_encode_parsed_train_journey(self.journey, serializer);
+  }
+
+  @protected
+  void sse_encode_list_Uuid(List<UuidValue> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_Uuid(item, serializer);
+    }
   }
 
   @protected
@@ -5180,6 +5747,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_tag_model(
+      List<TagModel> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_tag_model(item, serializer);
+    }
   }
 
   @protected
@@ -5333,6 +5910,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_tag_model(
+      TagModel? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_tag_model(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_trip_location_list_model(
       TripLocationListModel? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5416,9 +6004,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(4, serializer);
         sse_encode_weather_condition(condition, serializer);
         sse_encode_f_64(minProbability, serializer);
-      case PackingListEntryCondition_Tag(tag: final tag):
+      case PackingListEntryCondition_Tag(tagId: final tagId):
         sse_encode_i_32(5, serializer);
-        sse_encode_String(tag, serializer);
+        sse_encode_Uuid(tagId, serializer);
     }
   }
 
@@ -5477,6 +6065,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_remove_tag_from_trip(
+      RemoveTagFromTrip self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.tripId, serializer);
+    sse_encode_Uuid(self.tagId, serializer);
+  }
+
+  @protected
   void sse_encode_reservation(Reservation self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.id, serializer);
@@ -5502,6 +6098,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SearchWebImages self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.query, serializer);
+  }
+
+  @protected
+  void sse_encode_set_trip_tags(SetTripTags self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.tripId, serializer);
+    sse_encode_list_Uuid(self.tagIds, serializer);
+  }
+
+  @protected
+  void sse_encode_tag_model(TagModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.id, serializer);
+    sse_encode_String(self.name, serializer);
   }
 
   @protected
@@ -5776,6 +6386,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_update_tag(UpdateTag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Uuid(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+  }
+
+  @protected
   void sse_encode_update_train(UpdateTrain self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.id, serializer);
@@ -5800,6 +6417,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_Chrono_Utc(self.startDate, serializer);
     sse_encode_Chrono_Utc(self.endDate, serializer);
     sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
+    sse_encode_list_Uuid(self.tagIds, serializer);
   }
 
   @protected

@@ -166,12 +166,17 @@ impl TripHandler {
             ..Default::default()
         };
         let trip = repositories::trips::create(&self.db, model).await?;
-        
+
         if let Some(location) = command.location {
             let location_handler = LocationHandler::create(self.db.clone());
             location_handler.add_trip_location(trip.id, location).await?;
         }
-        
+
+        // Set trip tags
+        for tag_id in command.tag_ids {
+            repositories::tags::add_tag_to_trip(&self.db, trip.id, tag_id).await?;
+        }
+
         let trip = self.get_trip_overview(trip.id).await?;
 
         Ok(trip)
@@ -192,6 +197,12 @@ impl TripHandler {
         };
         repositories::trips::update(&self.db, model).await?;
         
+        // Update trip tags
+        repositories::tags::clear_trip_tags(&self.db, command.id).await?;
+        for tag_id in command.tag_ids {
+            repositories::tags::add_tag_to_trip(&self.db, command.id, tag_id).await?;
+        }
+
         let trip = self.get_trip_overview(command.id).await?;
         
         Ok(trip)

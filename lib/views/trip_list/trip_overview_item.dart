@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
+import 'package:holiday_planner/widgets/condensed_tag_display.dart';
 
 class TripOverviewItem extends StatelessWidget {
   final TripListModel trip;
@@ -57,7 +58,7 @@ class TripOverviewItem extends StatelessWidget {
                     child: Icon(
                       Icons.luggage,
                       size: 48,
-                      color: colorScheme.onPrimaryContainer.withOpacity(0.6),
+                      color: colorScheme.onPrimaryContainer.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -71,7 +72,7 @@ class TripOverviewItem extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.7),
+                        Colors.black.withValues(alpha: 0.7),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -90,13 +91,19 @@ class TripOverviewItem extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 6),
+                      CondensedTagDisplay(
+                        tripId: trip.id,
+                        maxTags: 3,
+                        chipHeight: 18,
+                      ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Icon(
                             Icons.calendar_today,
                             size: 16,
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                           const SizedBox(width: 6),
                           Expanded(
@@ -105,7 +112,7 @@ class TripOverviewItem extends StatelessWidget {
                                   ? start
                                   : "$start - $end",
                               style: textTheme.bodyMedium?.copyWith(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha: 0.9),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -115,7 +122,7 @@ class TripOverviewItem extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(

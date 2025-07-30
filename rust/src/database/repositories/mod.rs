@@ -5,6 +5,7 @@ pub mod locations;
 pub mod packing_list_conditions;
 pub mod packing_list_entries;
 pub mod points_of_interest;
+pub mod tags;
 pub mod tidal_information;
 pub mod transits;
 pub mod trips;

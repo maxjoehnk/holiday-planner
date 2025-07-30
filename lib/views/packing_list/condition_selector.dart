@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:uuid/uuid_value.dart';
 
 import 'trip_duration_selector.dart';
 import 'temperature_selector.dart';
 import 'weather_selector.dart';
+import 'tag_selector.dart';
 
 class ConditionSelector extends StatelessWidget {
   final Function(PackingListEntryCondition) onSelect;
@@ -111,6 +113,17 @@ class ConditionSelector extends StatelessWidget {
                   const PackingListEntryCondition.weather(
                       condition: WeatherCondition.rain, minProbability: 0.5)),
             ),
+            const SizedBox(height: 12),
+            _ConditionOption(
+              icon: Icons.label,
+              title: "Trip Tag",
+              subtitle: "Include when trip has a specific tag",
+              color: colorScheme.surfaceContainerHighest,
+              onColor: colorScheme.onSurface,
+              onTap: () => _onSelect(
+                  context,
+                  PackingListEntryCondition.tag(tagId: UuidValue.fromString("00000000-0000-0000-0000-000000000000"))),
+            ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -134,7 +147,7 @@ class ConditionSelector extends StatelessWidget {
       minTemperature: (_) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.min),
       maxTemperature: (_) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.max),
       weather: (weather) => WeatherSelector(onSelect: onSelect, condition: weather.condition, minProbability: weather.minProbability),
-      tag: (_) => throw UnimplementedError(),
+      tag: (_) => TagSelector(onSelect: onSelect),
     );
     Navigator.pop(context);
     showDialog(context: context, builder: (context) => nextDialog);

@@ -8,6 +8,7 @@ import 'package:holiday_planner/src/rust/commands/create_trip.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:holiday_planner/widgets/location_search.dart';
+import 'package:holiday_planner/widgets/tag_selection_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../trip/trip_view.dart';
@@ -29,6 +30,7 @@ class _CreateTripViewState extends State<CreateTripView> {
   XFile? image;
   Uint8List? _webImageBytes;
   LocationEntry? selectedLocation;
+  List<TagModel> selectedTags = [];
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +205,13 @@ class _CreateTripViewState extends State<CreateTripView> {
               ),
               const SizedBox(height: 32),
 
+              // Tag Selection Section
+              TagSelectionWidget(
+                selectedTags: selectedTags,
+                onTagsChanged: (tags) => setState(() => selectedTags = tags),
+              ),
+              const SizedBox(height: 32),
+
               // Location Selection Section
               Text(
                 "Destination",
@@ -317,7 +326,8 @@ class _CreateTripViewState extends State<CreateTripView> {
             startDate: startDate!,
             endDate: endDate!,
             headerImage: headerImageBytes,
-            location: selectedLocation));
+            location: selectedLocation,
+            tagIds: selectedTags.map((tag) => tag.id).toList()));
 
     Navigator.pushReplacement(
       context,

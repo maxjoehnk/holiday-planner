@@ -8,4 +8,5 @@ pub struct UpdateTrip {
     pub start_date: chrono::DateTime<Utc>,
     pub end_date: chrono::DateTime<Utc>,
     pub header_image: Option<Vec<u8>>,
+    pub tag_ids: Vec<Uuid>,
 }

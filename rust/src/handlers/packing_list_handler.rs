@@ -103,9 +103,14 @@ impl PackingListHandler {
                     repositories::packing_list_conditions::insert(&self.db, entry_id, condition).await?;
                 }
                 PackingListEntryCondition::Tag {
-                    tag
+                    tag_id
                 } => {
-                    todo!();
+                    let condition = entities::packing_list_condition::ActiveModel {
+                        packing_list_entry_id: Set(entry_id),
+                        tag: Set(Some(tag_id)),
+                        ..Default::default()
+                    };
+                    repositories::packing_list_conditions::insert(&self.db, entry_id, condition).await?;
                 }
             }
         }
@@ -189,11 +194,10 @@ impl From<entities::packing_list_condition::Model> for PackingListEntryCondition
                 condition: condition.into(),
                 min_probability: weather_min_probability,
             }
-        } else if let Some(tag) = condition.tag {
-            todo!();
-            // PackingListEntryCondition::Tag {
-            //     
-            // }
+        } else if let Some(tag_id) = condition.tag {
+            PackingListEntryCondition::Tag {
+                tag_id
+            }
         } else {
             unreachable!()
         }

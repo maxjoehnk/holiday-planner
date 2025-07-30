@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/src/rust/api/tags.dart';
+import 'package:uuid/uuid_value.dart';
 
 Map<WeatherCondition, IconData> _weatherIcons = {
   WeatherCondition.sunny: Icons.wb_sunny,
@@ -55,11 +57,8 @@ class ConditionTag extends StatelessWidget {
           color: CONDITION_WEATHER_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
-      tag: (tag) => ConditionChip(
-          tooltip: "Tag",
-          label: tag.tag,
-          iconData: Icons.label,
-          color: CONDITION_TAG_COLOR,
+      tag: (tag) => TagConditionChip(
+          tagId: tag.tagId,
           onEdit: onEdit,
           onRemove: onRemove,
       ),
@@ -132,6 +131,84 @@ class ConditionChip extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
+    );
+  }
+}
+
+class TagConditionChip extends StatefulWidget {
+  final UuidValue tagId;
+  final Function()? onRemove;
+  final Function()? onEdit;
+
+  const TagConditionChip({
+    super.key,
+    required this.tagId,
+    this.onRemove,
+    this.onEdit,
+  });
+
+  @override
+  State<TagConditionChip> createState() => _TagConditionChipState();
+}
+
+class _TagConditionChipState extends State<TagConditionChip> {
+  String? tagName;
+  bool isLoading = true;
+  bool hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTagName();
+  }
+
+  @override
+  void didUpdateWidget(TagConditionChip oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If the tag ID changed, refetch the tag name
+    if (oldWidget.tagId != widget.tagId) {
+      _fetchTagName();
+    }
+  }
+
+  Future<void> _fetchTagName() async {
+    try {
+      final tag = await getTagById(id: widget.tagId);
+      if (mounted) {
+        setState(() {
+          tagName = tag?.name;
+          isLoading = false;
+          hasError = tag == null;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          hasError = true;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String label;
+    if (isLoading) {
+      label = "Loading...";
+    } else if (hasError || tagName == null) {
+      label = "Unknown Tag";
+    } else {
+      label = tagName!;
+    }
+
+    return ConditionChip(
+      tooltip: "Tag",
+      label: label,
+      iconData: Icons.label,
+      color: CONDITION_TAG_COLOR,
+      onEdit: widget.onEdit,
+      onRemove: widget.onRemove,
     );
   }
 }

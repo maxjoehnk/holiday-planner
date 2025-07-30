@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateTrip {
   final String name;
@@ -13,6 +14,7 @@ class CreateTrip {
   final DateTime endDate;
   final Uint8List? headerImage;
   final LocationEntry? location;
+  final List<UuidValue> tagIds;
 
   const CreateTrip({
     required this.name,
@@ -20,6 +22,7 @@ class CreateTrip {
     required this.endDate,
     this.headerImage,
     this.location,
+    required this.tagIds,
   });
 
   @override
@@ -28,7 +31,8 @@ class CreateTrip {
       startDate.hashCode ^
       endDate.hashCode ^
       headerImage.hashCode ^
-      location.hashCode;
+      location.hashCode ^
+      tagIds.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -39,5 +43,6 @@ class CreateTrip {
           startDate == other.startDate &&
           endDate == other.endDate &&
           headerImage == other.headerImage &&
-          location == other.location;
+          location == other.location &&
+          tagIds == other.tagIds;
 }

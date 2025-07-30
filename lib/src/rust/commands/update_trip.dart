@@ -13,6 +13,7 @@ class UpdateTrip {
   final DateTime startDate;
   final DateTime endDate;
   final Uint8List? headerImage;
+  final List<UuidValue> tagIds;
 
   const UpdateTrip({
     required this.id,
@@ -20,6 +21,7 @@ class UpdateTrip {
     required this.startDate,
     required this.endDate,
     this.headerImage,
+    required this.tagIds,
   });
 
   @override
@@ -28,7 +30,8 @@ class UpdateTrip {
       name.hashCode ^
       startDate.hashCode ^
       endDate.hashCode ^
-      headerImage.hashCode;
+      headerImage.hashCode ^
+      tagIds.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -39,5 +42,6 @@ class UpdateTrip {
           name == other.name &&
           startDate == other.startDate &&
           endDate == other.endDate &&
-          headerImage == other.headerImage;
+          headerImage == other.headerImage &&
+          tagIds == other.tagIds;
 }

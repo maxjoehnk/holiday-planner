@@ -24,7 +24,7 @@ mixin _$PackingListEntryCondition {
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,7 +35,7 @@ mixin _$PackingListEntryCondition {
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -46,7 +46,7 @@ mixin _$PackingListEntryCondition {
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -200,7 +200,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) {
     return minTripDuration(length);
   }
@@ -214,7 +214,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) {
     return minTripDuration?.call(length);
   }
@@ -228,7 +228,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) {
     if (minTripDuration != null) {
@@ -393,7 +393,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) {
     return maxTripDuration(length);
   }
@@ -407,7 +407,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) {
     return maxTripDuration?.call(length);
   }
@@ -421,7 +421,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) {
     if (maxTripDuration != null) {
@@ -587,7 +587,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) {
     return minTemperature(temperature);
   }
@@ -601,7 +601,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) {
     return minTemperature?.call(temperature);
   }
@@ -615,7 +615,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) {
     if (minTemperature != null) {
@@ -781,7 +781,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) {
     return maxTemperature(temperature);
   }
@@ -795,7 +795,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) {
     return maxTemperature?.call(temperature);
   }
@@ -809,7 +809,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) {
     if (maxTemperature != null) {
@@ -983,7 +983,7 @@ class _$PackingListEntryCondition_WeatherImpl
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) {
     return weather(condition, minProbability);
   }
@@ -997,7 +997,7 @@ class _$PackingListEntryCondition_WeatherImpl
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) {
     return weather?.call(condition, minProbability);
   }
@@ -1011,7 +1011,7 @@ class _$PackingListEntryCondition_WeatherImpl
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) {
     if (weather != null) {
@@ -1102,7 +1102,7 @@ abstract class _$$PackingListEntryCondition_TagImplCopyWith<$Res> {
           $Res Function(_$PackingListEntryCondition_TagImpl) then) =
       __$$PackingListEntryCondition_TagImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String tag});
+  $Res call({UuidValue tagId});
 }
 
 /// @nodoc
@@ -1120,13 +1120,13 @@ class __$$PackingListEntryCondition_TagImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tag = null,
+    Object? tagId = null,
   }) {
     return _then(_$PackingListEntryCondition_TagImpl(
-      tag: null == tag
-          ? _value.tag
-          : tag // ignore: cast_nullable_to_non_nullable
-              as String,
+      tagId: null == tagId
+          ? _value.tagId
+          : tagId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
     ));
   }
 }
@@ -1135,14 +1135,14 @@ class __$$PackingListEntryCondition_TagImplCopyWithImpl<$Res>
 
 class _$PackingListEntryCondition_TagImpl
     extends PackingListEntryCondition_Tag {
-  const _$PackingListEntryCondition_TagImpl({required this.tag}) : super._();
+  const _$PackingListEntryCondition_TagImpl({required this.tagId}) : super._();
 
   @override
-  final String tag;
+  final UuidValue tagId;
 
   @override
   String toString() {
-    return 'PackingListEntryCondition.tag(tag: $tag)';
+    return 'PackingListEntryCondition.tag(tagId: $tagId)';
   }
 
   @override
@@ -1150,11 +1150,11 @@ class _$PackingListEntryCondition_TagImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PackingListEntryCondition_TagImpl &&
-            (identical(other.tag, tag) || other.tag == tag));
+            (identical(other.tagId, tagId) || other.tagId == tagId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tag);
+  int get hashCode => Object.hash(runtimeType, tagId);
 
   /// Create a copy of PackingListEntryCondition
   /// with the given fields replaced by the non-null parameter values.
@@ -1175,9 +1175,9 @@ class _$PackingListEntryCondition_TagImpl
     required TResult Function(double temperature) maxTemperature,
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
-    required TResult Function(String tag) tag,
+    required TResult Function(UuidValue tagId) tag,
   }) {
-    return tag(this.tag);
+    return tag(tagId);
   }
 
   @override
@@ -1189,9 +1189,9 @@ class _$PackingListEntryCondition_TagImpl
     TResult? Function(double temperature)? maxTemperature,
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult? Function(String tag)? tag,
+    TResult? Function(UuidValue tagId)? tag,
   }) {
-    return tag?.call(this.tag);
+    return tag?.call(tagId);
   }
 
   @override
@@ -1203,11 +1203,11 @@ class _$PackingListEntryCondition_TagImpl
     TResult Function(double temperature)? maxTemperature,
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
-    TResult Function(String tag)? tag,
+    TResult Function(UuidValue tagId)? tag,
     required TResult orElse(),
   }) {
     if (tag != null) {
-      return tag(this.tag);
+      return tag(tagId);
     }
     return orElse();
   }
@@ -1269,11 +1269,11 @@ class _$PackingListEntryCondition_TagImpl
 }
 
 abstract class PackingListEntryCondition_Tag extends PackingListEntryCondition {
-  const factory PackingListEntryCondition_Tag({required final String tag}) =
-      _$PackingListEntryCondition_TagImpl;
+  const factory PackingListEntryCondition_Tag(
+      {required final UuidValue tagId}) = _$PackingListEntryCondition_TagImpl;
   const PackingListEntryCondition_Tag._() : super._();
 
-  String get tag;
+  UuidValue get tagId;
 
   /// Create a copy of PackingListEntryCondition
   /// with the given fields replaced by the non-null parameter values.
