@@ -91,7 +91,7 @@ class _TripViewState extends State<TripView> {
     if (location.isCoastal && location.tidalInformation.isNotEmpty) {
       final nextTide = location.tidalInformation.first;
       final isHigh = nextTide.tide == TideType.high;
-      final time = "${nextTide.date.hour.toString().padLeft(2, '0')}:${nextTide.date.minute.toString().padLeft(2, '0')}";
+      final time = formatTime(nextTide.date);
       infoParts.add("${isHigh ? 'High' : 'Low'} tide at $time");
     }
     
