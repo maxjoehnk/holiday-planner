@@ -21,8 +21,17 @@ impl WeatherSyncJob {
 impl Job for WeatherSyncJob {
     async fn run(&self) -> anyhow::Result<()> {
         tracing::info!("Running weather sync job");
-        let locations = repositories::locations::find_for_upcoming_trips(&self.db).await?;
-        for location in locations {
+        
+        let locations_to_update = repositories::locations::find_locations_for_upcoming_trips_needing_weather_update(&self.db, 1).await.context("Fetching locations needing weather data updates")?;
+        
+        tracing::info!("Found {} locations needing weather data updates (outdated or missing)", locations_to_update.len());
+        
+        if locations_to_update.is_empty() {
+            tracing::info!("All locations have up-to-date weather information");
+            return Ok(());
+        }
+        
+        for location in locations_to_update {
             tracing::debug!("Fetching forecast for location {} - {}", location.city, location.country);
             let coordinates = Coordinates {
                 latitude: location.coordinates_latitude,
@@ -50,9 +59,12 @@ impl Job for WeatherSyncJob {
                         repositories::weather_forecasts::insert_hourly_forecast(transaction, hourly).await?;
                     }
 
+                    repositories::locations::update_weather_information_timestamp(transaction, location.id).await?;
                     Ok(())
                 })
-            }).await?;
+            }).await.context("Updating stored weather information for location")?;
+
+            tracing::debug!("Updated weather information for location {}", location.id);
         }
         tracing::info!("Finished weather sync job");
 

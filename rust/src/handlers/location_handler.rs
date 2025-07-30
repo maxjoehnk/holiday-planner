@@ -113,6 +113,7 @@ impl LocationHandler {
             city: Set(location.name), // TODO: this mapping is false
             is_coastal: Set(is_coastal), // Automatically determined based on coordinates
             tidal_information_last_updated: Set(None),
+            weather_information_last_updated: Set(None),
         };
         
         repositories::locations::insert(&self.db, location).await?;

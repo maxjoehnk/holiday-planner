@@ -59,6 +59,20 @@ pub async fn update_tidal_information_timestamp(db: &impl ConnectionTrait, id: U
     Ok(())
 }
 
+pub async fn update_weather_information_timestamp(db: &impl ConnectionTrait, id: Uuid) -> DbResult<()> {
+    let location = Location::find_by_id(id)
+        .one(db)
+        .await?;
+
+    if let Some(location) = location {
+        let mut active_model: location::ActiveModel = location.into();
+        active_model.weather_information_last_updated = Set(Some(Utc::now()));
+        active_model.update(db).await?;
+    }
+
+    Ok(())
+}
+
 pub async fn find_for_upcoming_trips(db: &Database) -> anyhow::Result<Vec<location::Model>> {
     let now = Utc::now();
     
@@ -82,6 +96,23 @@ pub async fn find_coastal_locations_for_upcoming_trips_needing_tidal_update(db: 
         .filter(
             location::Column::TidalInformationLastUpdated.is_null()
                 .or(location::Column::TidalInformationLastUpdated.lt(threshold_time.naive_utc()))
+        )
+        .all(db.deref())
+        .await?;
+
+    Ok(locations)
+}
+
+pub async fn find_locations_for_upcoming_trips_needing_weather_update(db: &Database, hours_threshold: i64) -> anyhow::Result<Vec<location::Model>> {
+    let threshold_time = Utc::now() - chrono::Duration::hours(hours_threshold);
+    let now = Utc::now();
+    
+    let locations = Location::find()
+        .join(JoinType::InnerJoin, location::Relation::Trip.def())
+        .filter(trip::Column::EndDate.gt(now))
+        .filter(
+            location::Column::WeatherInformationLastUpdated.is_null()
+                .or(location::Column::WeatherInformationLastUpdated.lt(threshold_time.naive_utc()))
         )
         .all(db.deref())
         .await?;

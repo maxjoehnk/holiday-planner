@@ -15,6 +15,7 @@ pub struct Model {
     pub country: String,
     pub is_coastal: bool,
     pub tidal_information_last_updated: Option<DateTimeUtc>,
+    pub weather_information_last_updated: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
