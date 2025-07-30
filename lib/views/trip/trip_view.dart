@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/date_format.dart';
@@ -136,6 +137,7 @@ class _TripViewState extends State<TripView> {
 
   @override
   Widget build(BuildContext context) {
+    bool isCupertino = Platform.isMacOS ||Platform.isIOS;
     return Scaffold(
       floatingActionButton: _fab(),
       body: StreamBuilder(
@@ -176,7 +178,7 @@ class _TripViewState extends State<TripView> {
                   ],
                   flexibleSpace: FlexibleSpaceBar(
                     title: Padding(
-                      padding: const EdgeInsets.only(right: 48.0),
+                      padding: EdgeInsets.only(right: 48.0, left: isCupertino ? 64 : 0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
