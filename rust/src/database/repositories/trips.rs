@@ -18,7 +18,7 @@ pub async fn find_all(db: &Database) -> anyhow::Result<Vec<trip::Model>> {
 pub async fn find_upcoming(db: &Database) -> anyhow::Result<Vec<trip::Model>> {
     let now = Utc::now();
     let trips = Trip::find()
-        .filter(trip::Column::StartDate.gt(now))
+        .filter(trip::Column::StartDate.gt(now).or(trip::Column::EndDate.gt(now)))
         .order_by_asc(trip::Column::StartDate)
         .all(db.deref())
         .await?;
