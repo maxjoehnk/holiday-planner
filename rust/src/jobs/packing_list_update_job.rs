@@ -43,7 +43,7 @@ impl Job for PackingListUpdateJob {
                 .map(|entry| (entry.packing_list_entry_id, entry.into_active_model()))
                 .collect::<HashMap<_, _>>();
             for packing_list_entry in &packing_list_entries {
-                if packing_list_entry.conditions.iter().any(|condition| condition.matches(&trip, &daily_forecasts, &trip_tag_ids)) {
+                if packing_list_entry.conditions.is_empty() || packing_list_entry.conditions.iter().any(|condition| condition.matches(&trip, &daily_forecasts, &trip_tag_ids)) {
                     let quantity = packing_list_entry.quantity.calculate(trip.start_date, trip.end_date);
                     if let Some(mut model) = packing_entries.remove(&packing_list_entry.id) {
                         model.quantity = Set(quantity.map(|q| q as i64));
