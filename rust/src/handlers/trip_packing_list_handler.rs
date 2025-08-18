@@ -21,7 +21,7 @@ impl TripPackingListHandler {
     pub async fn get_trip_packing_list(&self, trip_id: Uuid) -> anyhow::Result<TripPackingListModel> {
         let trip_packing_list_entries = repositories::trip_packing_list_entries::find_packing_list_entries_by_trip(&self.db, trip_id).await?;
 
-        let entries = trip_packing_list_entries
+        let mut entries: Vec<TripPackingListEntry> = trip_packing_list_entries
             .into_iter()
             .filter_map(|(entry, packing_list_entry)| {
                 let packing_list_entry = packing_list_entry?;
@@ -34,6 +34,8 @@ impl TripPackingListHandler {
                 })
             })
             .collect();
+
+        entries.sort_by(|a, b| a.packing_list_entry.name.to_lowercase().cmp(&b.packing_list_entry.name.to_lowercase()));
 
         Ok(TripPackingListModel {
             entries,

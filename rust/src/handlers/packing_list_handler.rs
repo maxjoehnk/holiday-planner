@@ -21,10 +21,12 @@ impl Handler for PackingListHandler {
 impl PackingListHandler {
     pub async fn get_packing_list(&self) -> anyhow::Result<Vec<PackingListEntry>> {
         let packing_list_entries = repositories::packing_list_entries::find_all(&self.db).await?;
-        let packing_list_entries = packing_list_entries
+        let mut packing_list_entries: Vec<PackingListEntry> = packing_list_entries
             .into_iter()
             .map(PackingListEntry::from)
             .collect();
+
+        packing_list_entries.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
 
         Ok(packing_list_entries)
     }
