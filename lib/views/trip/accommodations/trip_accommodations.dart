@@ -6,6 +6,7 @@ import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/views/trip/accommodations/add_accommodation.dart';
 import 'package:holiday_planner/views/trip/accommodations/edit_accommodation.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 class TripAccommodations extends StatefulWidget {
@@ -215,6 +216,15 @@ class AccommodationCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (accommodation.address != null)
+                      IconButton(
+                        onPressed: () => _launchNavigation(accommodation.address!),
+                        icon: Icon(
+                          Icons.directions,
+                          color: colorScheme.primary,
+                        ),
+                        tooltip: 'Open in navigation app',
+                      ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -281,5 +291,15 @@ class AccommodationCard extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  void _launchNavigation(String address) async {
+    final encodedAddress = Uri.encodeComponent(address);
+    final url = 'https://www.google.com/maps/search/?api=1&query=$encodedAddress';
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
   }
 }
