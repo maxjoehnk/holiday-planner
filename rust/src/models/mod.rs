@@ -219,8 +219,13 @@ impl Quantity {
     pub(crate) fn calculate(&self, start_date: DateTime<Utc>, end_date: DateTime<Utc>) -> Option<usize> {
         let mut quantity = self.fixed.unwrap_or_default();
         let duration = end_date.signed_duration_since(start_date);
+        let duration = duration + chrono::Duration::days(1);
         let days = duration.num_days() as usize;
         let nights = days.saturating_sub(1);
+        tracing::debug!(
+            "Calculating from {} to {} quantity: fixed: {:?}, per_day: {:?}, per_night: {:?}, days: {}, nights: {}",
+            start_date, end_date, self.fixed, self.per_day, self.per_night, days, nights
+        );
         if let Some(per_day) = self.per_day {
             quantity += per_day * days;
         }
@@ -305,4 +310,72 @@ pub struct PackingList {
 pub struct PackingListCategory {
     pub name: String,
     pub entries: Vec<PackingListEntry>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_case::test_case;
+    use googletest::prelude::*;
+    use chrono::TimeZone;
+
+    fn dt(y: i32, m: u32, d: u32) -> DateTime<Utc> {
+        Utc.with_ymd_and_hms(y, m, d, 0, 0, 0).single().expect("valid date")
+    }
+
+    #[test_case(2)]
+    #[test_case(5)]
+    fn calculate_fixed_only_returns_fixed(count: usize) {
+        let q = Quantity { per_day: None, per_night: None, fixed: Some(count) };
+        let start = dt(2024, 1, 1);
+        let end = dt(2024, 1, 1);
+
+        let result = q.calculate(start, end);
+
+        assert_that!(result, eq(Some(count)));
+    }
+
+    #[test_case(dt(2024, 1, 1), dt(2024, 1, 1), Some(2); "same day -> 1 day")]
+    #[test_case(dt(2024, 1, 1), dt(2024, 1, 2), Some(4); "two consecutive days -> 2 days")]
+    #[test_case(dt(2024, 1, 1), dt(2024, 1, 3), Some(6); "three consecutive days -> 3 days")]
+    fn calculate_per_day_only(start: DateTime<Utc>, end: DateTime<Utc>, expected: Option<usize>) {
+        let q = Quantity { per_day: Some(2), per_night: None, fixed: None };
+
+        let result = q.calculate(start, end);
+
+        assert_that!(result, eq(expected));
+    }
+
+    #[test_case(dt(2024, 2, 10), dt(2024, 2, 10), None; "same day -> 0 nights")]
+    #[test_case(dt(2024, 2, 10), dt(2024, 2, 11), Some(1); "two days -> 1 night")]
+    #[test_case(dt(2024, 2, 10), dt(2024, 2, 12), Some(2); "three days -> 2 nights")]
+    fn calculate_per_night_only(start: DateTime<Utc>, end: DateTime<Utc>, expected: Option<usize>) {
+        let q = Quantity { per_day: None, per_night: Some(1), fixed: None };
+
+        let result = q.calculate(start, end);
+
+        assert_that!(result, eq(expected));
+    }
+
+    #[test]
+    fn calculate_combined_components() {
+        let q = Quantity { per_day: Some(2), per_night: Some(1), fixed: Some(5) };
+        let start = dt(2024, 3, 5);
+        let end = dt(2024, 3, 8);
+
+        let result = q.calculate(start, end);
+
+        assert_that!(result, eq(Some(16)));
+    }
+
+    #[test]
+    fn calculate_returns_none_when_zero() {
+        let q = Quantity { per_day: None, per_night: None, fixed: None };
+        let start = dt(2024, 3, 5);
+        let end = dt(2024, 3, 8);
+
+        let result = q.calculate(start, end);
+
+        assert_that!(result, eq(None));
+    }
 }

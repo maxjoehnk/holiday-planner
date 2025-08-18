@@ -1212,6 +1212,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "googletest"
+version = "0.14.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06597b7d02ee58b9a37f522785ac15b9e18c6b178747c4439a6c03fbb35ea753"
+dependencies = [
+ "googletest_macro",
+ "num-traits",
+ "regex",
+ "rustversion",
+]
+
+[[package]]
+name = "googletest_macro"
+version = "0.14.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c31d9f07c9c19b855faebf71637be3b43f8e13a518aece5d61a3beee7710b4ef"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2472,6 +2495,7 @@ dependencies = [
  "flutter_rust_bridge",
  "futures",
  "geojson",
+ "googletest",
  "infer",
  "itertools",
  "migration",
@@ -2480,6 +2504,7 @@ dependencies = [
  "sea-orm",
  "serde",
  "sled",
+ "test-case",
  "tokio",
  "tracing",
  "tracing-android",
@@ -3207,6 +3232,39 @@ name = "tap"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
+
+[[package]]
+name = "test-case"
+version = "3.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb2550dd13afcd286853192af8601920d959b14c401fcece38071d53bf0768a8"
+dependencies = [
+ "test-case-macros",
+]
+
+[[package]]
+name = "test-case-core"
+version = "3.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "adcb7fd841cd518e279be3d5a3eb0636409487998a4aff22f3de87b81e88384f"
+dependencies = [
+ "cfg-if",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+]
+
+[[package]]
+name = "test-case-macros"
+version = "3.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c89e72a01ed4c579669add59014b9a524d609c0c88c6a585ce37485879f6ffb"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+ "test-case-core",
+]
 
 [[package]]
 name = "thiserror"
