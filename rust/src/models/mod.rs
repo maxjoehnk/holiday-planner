@@ -32,7 +32,6 @@ pub struct TripOverviewModel {
     pub duration_days: i64,
     pub header_image: Option<Vec<u8>>,
     pub pending_packing_list_items: usize,
-    pub packed_packing_list_items: usize,
     pub total_packing_list_items: usize,
     pub points_of_interest_count: usize,
     pub bookings_count: usize,

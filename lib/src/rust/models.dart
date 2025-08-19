@@ -550,7 +550,6 @@ class TripOverviewModel {
   final PlatformInt64 durationDays;
   final Uint8List? headerImage;
   final BigInt pendingPackingListItems;
-  final BigInt packedPackingListItems;
   final BigInt totalPackingListItems;
   final BigInt pointsOfInterestCount;
   final BigInt bookingsCount;
@@ -566,7 +565,6 @@ class TripOverviewModel {
     required this.durationDays,
     this.headerImage,
     required this.pendingPackingListItems,
-    required this.packedPackingListItems,
     required this.totalPackingListItems,
     required this.pointsOfInterestCount,
     required this.bookingsCount,
@@ -584,7 +582,6 @@ class TripOverviewModel {
       durationDays.hashCode ^
       headerImage.hashCode ^
       pendingPackingListItems.hashCode ^
-      packedPackingListItems.hashCode ^
       totalPackingListItems.hashCode ^
       pointsOfInterestCount.hashCode ^
       bookingsCount.hashCode ^
@@ -604,7 +601,6 @@ class TripOverviewModel {
           durationDays == other.durationDays &&
           headerImage == other.headerImage &&
           pendingPackingListItems == other.pendingPackingListItems &&
-          packedPackingListItems == other.packedPackingListItems &&
           totalPackingListItems == other.totalPackingListItems &&
           pointsOfInterestCount == other.pointsOfInterestCount &&
           bookingsCount == other.bookingsCount &&

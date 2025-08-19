@@ -104,14 +104,9 @@ impl TripHandler {
             anyhow::bail!("Trip not found");
         };
 
-        // TODO: we should not depend upon another handler
-        // Also we don't need to fetch all the packing list items for the overview
-        let trip_packing_list_handler = TripPackingListHandler::create(self.db.clone());
-        let packing_items = trip_packing_list_handler.get_trip_packing_list(id).await?;
-        let pending_packing_list_items = packing_items.entries.iter().filter(|entry| !entry.is_packed).count();
-        let packed_packing_list_items = packing_items.entries.iter().filter(|entry| entry.is_packed).count();
-        let total_packing_list_items = packing_items.entries.len();
-        
+        let total_packing_list_items = repositories::trip_packing_list_entries::count_by_trip(&self.db, id).await?;
+        let pending_packing_list_items = repositories::trip_packing_list_entries::count_pending_by_trip(&self.db, id).await?;
+
         let points_of_interest_count = repositories::points_of_interest::count_by_trip(self.db.deref(), id).await? as usize;
         let bookings_count = repositories::bookings::count_all_bookings_by_trip(self.db.deref(), id).await? as usize;
 
@@ -146,7 +141,6 @@ impl TripHandler {
             header_image: trip.header_image,
             pending_packing_list_items,
             total_packing_list_items,
-            packed_packing_list_items,
             points_of_interest_count,
             bookings_count,
             accommodation_status,

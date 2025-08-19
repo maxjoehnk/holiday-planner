@@ -3116,8 +3116,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripOverviewModel dco_decode_trip_overview_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 14)
-      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
+    if (arr.length != 13)
+      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
     return TripOverviewModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -3126,15 +3126,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       durationDays: dco_decode_i_64(arr[4]),
       headerImage: dco_decode_opt_list_prim_u_8_strict(arr[5]),
       pendingPackingListItems: dco_decode_usize(arr[6]),
-      packedPackingListItems: dco_decode_usize(arr[7]),
-      totalPackingListItems: dco_decode_usize(arr[8]),
-      pointsOfInterestCount: dco_decode_usize(arr[9]),
-      bookingsCount: dco_decode_usize(arr[10]),
+      totalPackingListItems: dco_decode_usize(arr[7]),
+      pointsOfInterestCount: dco_decode_usize(arr[8]),
+      bookingsCount: dco_decode_usize(arr[9]),
       accommodationStatus:
-          dco_decode_opt_box_autoadd_accommodation_status(arr[11]),
-      locationsList: dco_decode_list_trip_location_summary(arr[12]),
+          dco_decode_opt_box_autoadd_accommodation_status(arr[10]),
+      locationsList: dco_decode_list_trip_location_summary(arr[11]),
       singleLocationWeatherTidal:
-          dco_decode_opt_box_autoadd_trip_location_list_model(arr[13]),
+          dco_decode_opt_box_autoadd_trip_location_list_model(arr[12]),
     );
   }
 
@@ -4820,7 +4819,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_durationDays = sse_decode_i_64(deserializer);
     var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
     var var_pendingPackingListItems = sse_decode_usize(deserializer);
-    var var_packedPackingListItems = sse_decode_usize(deserializer);
     var var_totalPackingListItems = sse_decode_usize(deserializer);
     var var_pointsOfInterestCount = sse_decode_usize(deserializer);
     var var_bookingsCount = sse_decode_usize(deserializer);
@@ -4837,7 +4835,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         durationDays: var_durationDays,
         headerImage: var_headerImage,
         pendingPackingListItems: var_pendingPackingListItems,
-        packedPackingListItems: var_packedPackingListItems,
         totalPackingListItems: var_totalPackingListItems,
         pointsOfInterestCount: var_pointsOfInterestCount,
         bookingsCount: var_bookingsCount,
@@ -6292,7 +6289,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_64(self.durationDays, serializer);
     sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
     sse_encode_usize(self.pendingPackingListItems, serializer);
-    sse_encode_usize(self.packedPackingListItems, serializer);
     sse_encode_usize(self.totalPackingListItems, serializer);
     sse_encode_usize(self.pointsOfInterestCount, serializer);
     sse_encode_usize(self.bookingsCount, serializer);

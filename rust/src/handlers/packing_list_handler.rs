@@ -20,10 +20,32 @@ impl Handler for PackingListHandler {
 
 impl PackingListHandler {
     pub async fn get_packing_list(&self) -> anyhow::Result<Vec<PackingListEntry>> {
-        let packing_list_entries = repositories::packing_list_entries::find_all(&self.db).await?;
-        let mut packing_list_entries: Vec<PackingListEntry> = packing_list_entries
+        let raw = repositories::packing_list_entries::find_all(&self.db).await?;
+
+        let mut group_ids: Vec<Uuid> = raw.iter().filter_map(|(e, _)| e.group_id).collect();
+        group_ids.sort();
+        group_ids.dedup();
+
+        let groups_models = repositories::packing_list_groups::find_by_ids(&self.db, &group_ids).await?;
+        let groups_map = repositories::packing_list_groups::to_map_by_id(groups_models);
+
+        let mut packing_list_entries: Vec<PackingListEntry> = raw
             .into_iter()
-            .map(PackingListEntry::from)
+            .map(|(entry, conditions)| {
+                let category = entry.group_id.and_then(|id| groups_map.get(&id).map(|g| g.name.clone()));
+                PackingListEntry {
+                    id: entry.id,
+                    name: entry.name,
+                    description: entry.description,
+                    conditions: conditions.into_iter().map(PackingListEntryCondition::from).collect(),
+                    quantity: Quantity {
+                        per_day: entry.quantity_per_day.map(|q| q as usize),
+                        per_night: entry.quantity_per_night.map(|q| q as usize),
+                        fixed: entry.quantity_fixed.map(|q| q as usize),
+                    },
+                    category,
+                }
+            })
             .collect();
 
         packing_list_entries.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
@@ -33,6 +55,10 @@ impl PackingListHandler {
 
     pub async fn add_packing_list_entry(&self, command: AddPackingListEntry) -> anyhow::Result<()> {
         let entry_id = Uuid::new_v4();
+        let group_id = if let Some(name) = command.category.as_deref() {
+            let group = repositories::packing_list_groups::get_or_create_by_name(&self.db, name).await?;
+            Some(group.id)
+        } else { None };
         let entry = entities::packing_list_entry::ActiveModel {
             id: Set(entry_id),
             name: Set(command.name),
@@ -40,7 +66,7 @@ impl PackingListHandler {
             quantity_per_day: Set(command.quantity.per_day.map(|quantity| quantity as i64)),
             quantity_per_night: Set(command.quantity.per_night.map(|quantity| quantity as i64)),
             quantity_fixed: Set(command.quantity.fixed.map(|quantity| quantity as i64)),
-            group_id: Set(None),
+            group_id: Set(group_id),
         };
         repositories::packing_list_entries::insert(&self.db, entry).await?;
 
@@ -130,6 +156,11 @@ impl PackingListHandler {
         entry.quantity_fixed.set_if_not_equals(command.quantity.fixed.map(|q| q as i64));
         entry.quantity_per_day.set_if_not_equals(command.quantity.per_day.map(|q| q as i64));
         entry.quantity_per_night.set_if_not_equals(command.quantity.per_night.map(|q| q as i64));
+        let group_id = if let Some(name) = command.category.as_deref() {
+            let group = repositories::packing_list_groups::get_or_create_by_name(&self.db, name).await?;
+            Some(group.id)
+        } else { None };
+        entry.group_id = Set(group_id);
 
         repositories::packing_list_entries::update(&self.db, entry).await?;
 

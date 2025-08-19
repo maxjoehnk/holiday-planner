@@ -23,21 +23,43 @@ class EditItemDialog extends StatefulWidget {
 class _EditItemDialogState extends State<EditItemDialog> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _fixedQuantityController = TextEditingController();
   final TextEditingController _perDayController = TextEditingController();
   final TextEditingController _perNightController = TextEditingController();
   List<PackingListEntryCondition> conditions = [];
-
+  List<String> _categorySuggestions = [];
 
   @override
   void initState() {
     super.initState();
     _nameController.text = widget.entry?.name ?? "";
     _descriptionController.text = widget.entry?.description ?? "";
+    _categoryController.text = widget.entry?.category ?? "";
     _fixedQuantityController.text = widget.entry?.quantity.fixed?.toString() ?? "";
     _perDayController.text = widget.entry?.quantity.perDay?.toString() ?? "";
     _perNightController.text = widget.entry?.quantity.perNight?.toString() ?? "";
     conditions = widget.entry?.conditions ?? [];
+    _loadCategorySuggestions();
+  }
+
+  void _loadCategorySuggestions() async {
+    try {
+      final items = await getPackingList();
+      final names = items
+          .map((e) => e.category)
+          .whereType<String>()
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toSet()
+          .toList()
+        ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+      if (mounted) {
+        setState(() => _categorySuggestions = names);
+      }
+    } catch (_) {
+      // ignore suggestion load errors quietly
+    }
   }
 
   @override
@@ -97,6 +119,75 @@ class _EditItemDialogState extends State<EditItemDialog> {
               decoration: AppInputDecoration(labelText: "Description",
                   hintText: "Optional description",
                   icon: Icons.description_outlined),
+            ),
+            const SizedBox(height: 16),
+            Autocomplete<String>(
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                final q = textEditingValue.text.trim().toLowerCase();
+                if (q.isEmpty) {
+                  return _categorySuggestions;
+                }
+                return _categorySuggestions.where(
+                      (option) => option.toLowerCase().contains(q),
+                );
+              },
+              initialValue: TextEditingValue(text: _categoryController.text),
+              onSelected: (String selection) {
+                _categoryController.text = selection;
+              },
+              fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                controller.text = _categoryController.text;
+                controller.addListener(() {
+                  if (_categoryController.text != controller.text) {
+                    _categoryController.text = controller.text;
+                  }
+                });
+                return TextFormField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  onFieldSubmitted: (value) => onFieldSubmitted(),
+                  decoration: AppInputDecoration(
+                    labelText: "Category",
+                    hintText: "Type to search or create",
+                    icon: Icons.folder_outlined,
+                  ),
+                );
+              },
+              optionsViewBuilder: (context, onSelected, options) {
+                final theme = Theme.of(context);
+                return Align(
+                  alignment: Alignment.topLeft,
+                  child: Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(12),
+                    color: theme.colorScheme.surface,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 200, minWidth: 280),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        shrinkWrap: true,
+                        itemCount: options.length,
+                        itemBuilder: (context, index) {
+                          final option = options.elementAt(index);
+                          return InkWell(
+                            onTap: () => onSelected(option),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.folder_outlined, size: 18),
+                                  const SizedBox(width: 8),
+                                  Expanded(child: Text(option, style: theme.textTheme.bodyMedium)),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
             Container(
@@ -288,10 +379,17 @@ class _EditItemDialogState extends State<EditItemDialog> {
       perNight: BigInt.tryParse(_perNightController.text),
       fixed: BigInt.tryParse(_fixedQuantityController.text),
     );
+    String? category = _categoryController.text.trim();
+    if (category.isEmpty) category = null;
     if (widget.entry == null) {
       await addPackingListEntry(
           command: AddPackingListEntry(
-              name: name, description: description, conditions: conditions, quantity: quantity));
+              name: name,
+              description: description,
+              conditions: conditions,
+              quantity: quantity,
+              category: category,
+          ));
     }else {
       await updatePackingListEntry(command: UpdatePackingListEntry(
           id: widget.entry!.id,
@@ -299,6 +397,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
           description: description,
           conditions: conditions,
           quantity: quantity,
+          category: category,
       ));
     }
     Navigator.pop(context);

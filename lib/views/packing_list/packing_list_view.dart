@@ -143,19 +143,98 @@ class PackingList extends StatelessWidget {
         ),
       );
     }
+
+    final Map<String, List<PackingListEntry>> byCategory = {};
+    final List<PackingListEntry> uncategorized = [];
+    for (final e in packingList) {
+      final cat = e.category;
+      if (cat == null || cat.isEmpty) {
+        uncategorized.add(e);
+      } else {
+        byCategory.putIfAbsent(cat, () => []).add(e);
+      }
+    }
+
+    final sortedCategoryNames = byCategory.keys.toList()..sort((a,b)=>a.toLowerCase().compareTo(b.toLowerCase()));
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ListView.separated(
-        itemCount: packingList.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          return PackingListItem(
-              entry: packingList[index],
-              onDelete: () => onRemove(packingList[index]),
-              onEdit: () => onEdit(packingList[index])
-          );
-        },
+      child: ListView(
+        children: [
+          for (final name in sortedCategoryNames)
+            _CategorySection(
+              name: name,
+              entries: byCategory[name]!..sort((a,b)=>a.name.toLowerCase().compareTo(b.name.toLowerCase())),
+              onRemove: onRemove,
+              onEdit: onEdit,
+            ),
+          if (uncategorized.isNotEmpty) ...[
+            for (final e in (uncategorized..sort((a,b)=>a.name.toLowerCase().compareTo(b.name.toLowerCase())))) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: PackingListItem(
+                  entry: e,
+                  onDelete: () => onRemove(e),
+                  onEdit: () => onEdit(e),
+                ),
+              ),
+            ]
+          ]
+        ],
       ),
+    );
+  }
+}
+
+class _CategorySection extends StatefulWidget {
+  final String name;
+  final List<PackingListEntry> entries;
+  final Function(PackingListEntry) onRemove;
+  final Function(PackingListEntry) onEdit;
+  const _CategorySection({required this.name, required this.entries, required this.onRemove, required this.onEdit});
+
+  @override
+  State<_CategorySection> createState() => _CategorySectionState();
+}
+
+class _CategorySectionState extends State<_CategorySection> {
+  bool _expanded = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final allCount = widget.entries.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ExpansionTile(
+          initiallyExpanded: _expanded,
+          shape: const Border(),
+          onExpansionChanged: (v) => setState(() => _expanded = v),
+          title: Row(
+            children: [
+              Expanded(child: Text(widget.name, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600))),
+              Text("$allCount items", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant))
+            ],
+          ),
+          children: [
+            const SizedBox(height: 4),
+            for (final e in widget.entries) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
+                child: PackingListItem(
+                  entry: e,
+                  onDelete: () => widget.onRemove(e),
+                  onEdit: () => widget.onEdit(e),
+                ),
+              )
+            ],
+            const SizedBox(height: 4),
+          ],
+        ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

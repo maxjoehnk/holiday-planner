@@ -3737,7 +3737,6 @@ impl SseDecode for crate::models::TripOverviewModel {
         let mut var_durationDays = <i64>::sse_decode(deserializer);
         let mut var_headerImage = <Option<Vec<u8>>>::sse_decode(deserializer);
         let mut var_pendingPackingListItems = <usize>::sse_decode(deserializer);
-        let mut var_packedPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_totalPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_pointsOfInterestCount = <usize>::sse_decode(deserializer);
         let mut var_bookingsCount = <usize>::sse_decode(deserializer);
@@ -3755,7 +3754,6 @@ impl SseDecode for crate::models::TripOverviewModel {
             duration_days: var_durationDays,
             header_image: var_headerImage,
             pending_packing_list_items: var_pendingPackingListItems,
-            packed_packing_list_items: var_packedPackingListItems,
             total_packing_list_items: var_totalPackingListItems,
             points_of_interest_count: var_pointsOfInterestCount,
             bookings_count: var_bookingsCount,
@@ -5467,7 +5465,6 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
             self.duration_days.into_into_dart().into_dart(),
             self.header_image.into_into_dart().into_dart(),
             self.pending_packing_list_items.into_into_dart().into_dart(),
-            self.packed_packing_list_items.into_into_dart().into_dart(),
             self.total_packing_list_items.into_into_dart().into_dart(),
             self.points_of_interest_count.into_into_dart().into_dart(),
             self.bookings_count.into_into_dart().into_dart(),
@@ -6876,7 +6873,6 @@ impl SseEncode for crate::models::TripOverviewModel {
         <i64>::sse_encode(self.duration_days, serializer);
         <Option<Vec<u8>>>::sse_encode(self.header_image, serializer);
         <usize>::sse_encode(self.pending_packing_list_items, serializer);
-        <usize>::sse_encode(self.packed_packing_list_items, serializer);
         <usize>::sse_encode(self.total_packing_list_items, serializer);
         <usize>::sse_encode(self.points_of_interest_count, serializer);
         <usize>::sse_encode(self.bookings_count, serializer);

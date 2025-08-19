@@ -1,5 +1,5 @@
 use std::ops::Deref;
-use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
+use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, PaginatorTrait, ModelTrait};
 use uuid::Uuid;
 use crate::database::Database;
 use crate::database::entities::trip_packing_list_entry::{self, Entity as TripPackingListEntry};
@@ -22,6 +22,24 @@ pub async fn find_packing_list_entries_by_trip(db: &Database, trip_id: Uuid) -> 
         .await?;
 
     Ok(packing_list_entries)
+}
+
+pub async fn count_by_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<usize> {
+    let count = TripPackingListEntry::find()
+        .filter(trip_packing_list_entry::Column::TripId.eq(trip_id))
+        .count(db.deref())
+        .await?;
+
+    Ok(count as usize)
+}
+
+pub async fn count_pending_by_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<usize> {
+    let count = TripPackingListEntry::find()
+        .filter(trip_packing_list_entry::Column::TripId.eq(trip_id).and(trip_packing_list_entry::Column::IsPacked.eq(false)))
+        .count(db.deref())
+        .await?;
+
+    Ok(count as usize)
 }
 
 pub async fn insert(db: &Database, model: trip_packing_list_entry::ActiveModel) -> anyhow::Result<()> {
