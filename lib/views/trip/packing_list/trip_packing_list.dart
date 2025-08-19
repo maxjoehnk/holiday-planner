@@ -131,7 +131,7 @@ class PackingList extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -228,7 +228,7 @@ class PackingList extends StatelessWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         side: BorderSide(
           color: packingListEntry.isPacked 
               ? colorScheme.primary.withOpacity(0.5)
@@ -238,9 +238,9 @@ class PackingList extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () => _toggle(packingListEntry),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             children: [
               Checkbox(
@@ -250,7 +250,7 @@ class PackingList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: Row(
                   children: [
@@ -267,7 +267,7 @@ class PackingList extends StatelessWidget {
                               : null,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                     ],
                     Expanded(
                       child: Column(
@@ -308,7 +308,7 @@ class PackingList extends StatelessWidget {
                 Icon(
                   Icons.check_circle,
                   color: colorScheme.primary,
-                  size: 20,
+                  size: 18,
                 ),
             ],
           ),
@@ -363,6 +363,7 @@ class _GroupSectionState extends State<_GroupSection> {
           initiallyExpanded: _expanded,
           onExpansionChanged: (v) => setState(() => _expanded = v),
           shape: const Border(),
+          childrenPadding: const EdgeInsets.all(0),
           title: Row(
             children: [
               Icon(allPacked ? Icons.check_circle : Icons.folder_outlined,
@@ -377,33 +378,20 @@ class _GroupSectionState extends State<_GroupSection> {
             ],
           ),
           children: [
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             for (final e in widget.group.entries) ...[
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
-                child: _GroupEntryItem(
+                    const EdgeInsets.only(left: 8.0),
+                child: _TripPackingItemContent(
                     entry: e, onToggle: () => widget.onToggle(e)),
               )
             ],
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
       ],
-    );
-  }
-}
-
-class _GroupEntryItem extends StatelessWidget {
-  final TripPackingListEntry entry;
-  final VoidCallback onToggle;
-  const _GroupEntryItem({required this.entry, required this.onToggle});
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onToggle,
-      child: _TripPackingItemContent(entry: entry, onToggle: onToggle),
     );
   }
 }
@@ -419,7 +407,7 @@ class _TripPackingItemContent extends StatelessWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         side: BorderSide(
           color: entry.isPacked 
               ? colorScheme.primary.withOpacity(0.5)
@@ -429,9 +417,9 @@ class _TripPackingItemContent extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onToggle,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             children: [
               Checkbox(
@@ -441,7 +429,7 @@ class _TripPackingItemContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: Row(
                   children: [
@@ -458,7 +446,7 @@ class _TripPackingItemContent extends StatelessWidget {
                               : null,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                     ],
                     Expanded(
                       child: Column(
@@ -494,12 +482,12 @@ class _TripPackingItemContent extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               if (entry.isPacked)
                 Icon(
                   Icons.check_circle,
                   color: Theme.of(context).colorScheme.primary,
-                  size: 20,
+                  size: 18,
                 ),
             ],
           ),
