@@ -2,7 +2,7 @@ pub use weather_sync_job::WeatherSyncJob;
 pub use tidal_sync_job::TidalSyncJob;
 use crate::database::Database;
 use crate::handlers::Handler;
-use crate::jobs::packing_list_update_job::PackingListUpdateJob;
+pub use crate::jobs::packing_list_update_job::PackingListUpdateJob;
 
 mod weather_sync_job;
 mod packing_list_update_job;

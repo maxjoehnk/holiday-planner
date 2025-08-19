@@ -72,6 +72,8 @@ impl PackingListHandler {
 
         self.add_packing_list_conditions(entry_id, command.conditions).await?;
 
+        queue_packing_list_update_job(&self.db);
+
         Ok(())
     }
 
@@ -168,6 +170,8 @@ impl PackingListHandler {
 
         self.add_packing_list_conditions(command.id, command.conditions).await?;
 
+        queue_packing_list_update_job(&self.db);
+
         Ok(())
     }
 
@@ -259,4 +263,15 @@ impl From<WeatherCondition> for enums::WeatherCondition {
             WeatherCondition::Thunderstorm => enums::WeatherCondition::Thunderstorm,
         }
     }
+}
+
+fn queue_packing_list_update_job(db: &Database) {
+    let db = db.clone();
+    use crate::jobs::Job;
+    tokio::spawn(async move {
+        let job = crate::jobs::PackingListUpdateJob::new(db);
+        if let Err(err) = job.run().await {
+            tracing::error!("Failed to run packing list update job: {err:?}");
+        }
+    });
 }
