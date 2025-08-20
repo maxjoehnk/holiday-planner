@@ -24,7 +24,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Holiday Planner"),
+        title: const Text("Trippy"),
         centerTitle: true,
         elevation: 0,
       ),

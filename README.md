@@ -1,3 +1,3 @@
-# holiday_planner
+# Trippy
 
 A mobile application allowing you to better plan and navigate through your holidays.

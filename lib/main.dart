@@ -78,7 +78,7 @@ class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      title: 'Holiday Planner',
+      title: 'Trippy',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.teal,
