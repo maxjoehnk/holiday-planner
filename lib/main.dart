@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/frb_generated.dart';
@@ -17,17 +17,17 @@ Future<void> main() async {
   await connectDb(path: directory.path);
   await findSystemLocale();
 
-  runApp(const MyApp());
+  runApp(const HolidayPlannerApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class HolidayPlannerApp extends StatefulWidget {
+  const HolidayPlannerApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<HolidayPlannerApp> createState() => _HolidayPlannerAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
   late StreamSubscription _intentDataStreamSubscription;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -38,14 +38,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _initSharingIntent() {
-    // Listen to media sharing coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
       _handleSharedMedia(value);
     }, onError: (err) {
-      print("getMediaStream error: $err");
+      log("getMediaStream error: $err");
     });
 
-    // Get the media sharing coming from outside the app while the app is closed
     ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
       if (value.isNotEmpty) {
         _handleSharedMedia(value);
@@ -54,19 +52,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _handleSharedMedia(List<SharedMediaFile> sharedMedia) {
-    // Extract text from shared media files
     for (final media in sharedMedia) {
-      // Check if it's text content
       if (media.mimeType == 'text/plain' || media.message != null) {
         final textContent = media.message ?? media.path;
         _handleSharedText(textContent);
-        break; // Process only the first text content
+        break;
       }
     }
   }
 
   void _handleSharedText(String sharedText) {
-    // Get the current context from the navigator
     final context = navigatorKey.currentContext;
     if (context != null) {
       SharedTrainHandler.handleSharedText(context, sharedText);
