@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1952859969;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1714382313;
 
 // Section: executor
 
@@ -844,6 +844,42 @@ fn wire__crate__api__transits__delete_train_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok = crate::api::transits::delete_train(api_train_id).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__trips__delete_trip_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "delete_trip",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_trip_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::trips::delete_trip(api_trip_id).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -4285,106 +4321,107 @@ fn pde_ffi_dispatcher_primary_impl(
         }
         21 => wire__crate__api__tags__delete_tag_impl(port, ptr, rust_vec_len, data_len),
         22 => wire__crate__api__transits__delete_train_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__attachments__get_accommodation_attachments_impl(
+        23 => wire__crate__api__trips__delete_trip_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__attachments__get_accommodation_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__tags__get_all_tags_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__trips__get_location_details_impl(port, ptr, rust_vec_len, data_len),
-        27 => {
+        26 => wire__crate__api__tags__get_all_tags_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__trips__get_location_details_impl(port, ptr, rust_vec_len, data_len),
+        28 => {
             wire__crate__api__packing_list__get_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        28 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__tags__get_tag_by_id_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__accommodations__get_trip_accommodations_impl(
+        29 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__tags__get_tag_by_id_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__accommodations__get_trip_accommodations_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__attachments__get_trip_attachments_impl(
+        33 => wire__crate__api__attachments__get_trip_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
-        34 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
-        35 => {
+        34 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
+        35 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
+        36 => {
             wire__crate__api__trips__get_trip_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        36 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+        37 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
-        39 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__transits__import_parsed_train_journey_impl(
+        38 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
+        41 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__transits__import_parsed_train_journey_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        44 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
-        47 => {
+        44 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
+        48 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        48 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
+        49 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
-        50 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
+        50 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
+        51 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        53 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
+        54 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        54 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        55 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        56 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        57 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
-        58 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        55 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        57 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        58 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => {
+        60 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        60 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        63 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        61 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
+        62 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        64 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        65 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,

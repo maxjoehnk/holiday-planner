@@ -202,6 +202,17 @@ impl TripHandler {
         Ok(trip)
     }
     
+    pub async fn delete_trip(&self, trip_id: Uuid) -> anyhow::Result<()> {
+        let trip = repositories::trips::find_by_id(&self.db, trip_id).await?;
+        if trip.is_none() {
+            anyhow::bail!("Trip not found");
+        }
+
+        repositories::trips::delete(&self.db, trip_id).await?;
+        
+        Ok(())
+    }
+    
     pub async fn search_web_images(&self, command: SearchWebImages) -> anyhow::Result<Vec<WebImage>> {
         tracing::debug!("Searching web images for query: {}", command.query);
         

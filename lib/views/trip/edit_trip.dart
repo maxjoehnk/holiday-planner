@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -7,6 +8,7 @@ import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/api/tags.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/views/home.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:holiday_planner/widgets/tag_selection_widget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,13 +87,16 @@ class _EditTripViewState extends State<EditTripView> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
               if (_errorMessage != null) ...[
                 Container(
                   width: double.infinity,
@@ -175,15 +180,13 @@ class _EditTripViewState extends State<EditTripView> {
                                     Icon(
                                       Icons.add_a_photo_outlined,
                                       size: 48,
-                                      color: colorScheme.onPrimaryContainer
-                                          .withOpacity(0.6),
+                                      color: colorScheme.onPrimaryContainer.withOpacity(0.6),
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
                                       "Change Header Image",
                                       style: textTheme.bodyLarge?.copyWith(
-                                        color: colorScheme.onPrimaryContainer
-                                            .withOpacity(0.8),
+                                        color: colorScheme.onPrimaryContainer.withOpacity(0.8),
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -229,12 +232,9 @@ class _EditTripViewState extends State<EditTripView> {
                     child: DateTimeFormField(
                       mode: DateTimeFieldPickerMode.date,
                       initialValue: startDate,
-                      firstDate: DateTime.now()
-                          .subtract(const Duration(days: 365 * 5)),
-                      lastDate:
-                          DateTime.now().add(const Duration(days: 365 * 5)),
-                      onChanged: (value) =>
-                          setState(() => startDate = value),
+                      firstDate: DateTime.now().subtract(const Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                      onChanged: (value) => setState(() => startDate = value),
                       decoration: AppInputDecoration(
                         labelText: "Start Date",
                         icon: Icons.calendar_month,
@@ -248,13 +248,10 @@ class _EditTripViewState extends State<EditTripView> {
                     child: DateTimeFormField(
                       mode: DateTimeFieldPickerMode.date,
                       initialValue: endDate,
-                      firstDate: startDate ??
-                          DateTime.now()
-                              .subtract(const Duration(days: 365 * 5)),
-                      lastDate:
-                          DateTime.now().add(const Duration(days: 365 * 5)),
-                      onChanged: (value) =>
-                          setState(() => endDate = value),
+                      firstDate:
+                          startDate ?? DateTime.now().subtract(const Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                      onChanged: (value) => setState(() => endDate = value),
                       decoration: AppInputDecoration(
                         labelText: "End Date",
                         icon: Icons.calendar_month,
@@ -285,9 +282,28 @@ class _EditTripViewState extends State<EditTripView> {
                 onTagsChanged: (tags) => setState(() => selectedTags = tags),
               ),
               const SizedBox(height: 32),
-            ],
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _isLoading ? null : _showDeleteConfirmation,
+                icon: const Icon(Icons.delete_outline),
+                label: const Text("Delete Trip"),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                  side: BorderSide(color: Theme.of(context).colorScheme.error),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -362,6 +378,65 @@ class _EditTripViewState extends State<EditTripView> {
     }
   }
 
+  _showDeleteConfirmation() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Trip'),
+          content: const Text(
+              'Are you sure you want to delete this trip? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      _deleteTrip();
+    }
+  }
+
+  _deleteTrip() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await deleteTrip(tripId: widget.trip.id);
+
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                settings: const RouteSettings(name: "/"),
+                builder: (_) => const HomeView()), (route) => false);
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to delete trip: $e";
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   _pickImage() async {
     final source = await showDialog<ImageSource?>(
       context: context,
@@ -405,7 +480,7 @@ class _EditTripViewState extends State<EditTripView> {
           builder: (context) => const WebImageSearchView(),
         ),
       );
-      
+
       if (webImage != null) {
         setState(() {
           _headerImage = webImage;

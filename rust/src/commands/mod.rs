@@ -1,5 +1,6 @@
 pub use create_trip::*;
 pub use update_trip::*;
+pub use delete_trip::*;
 pub use add_packing_list_entry::*;
 pub use add_trip_accommodation::*;
 pub use update_trip_accommodation::*;
@@ -28,6 +29,7 @@ pub use set_trip_tags::*;
 
 pub mod create_trip;
 pub mod update_trip;
+pub mod delete_trip;
 pub mod add_packing_list_entry;
 pub mod add_trip_accommodation;
 pub mod update_trip_accommodation;

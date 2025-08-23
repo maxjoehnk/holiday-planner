@@ -56,3 +56,11 @@ pub async fn update(db: &Database, model: trip::ActiveModel) -> anyhow::Result<(
     
     Ok(())
 }
+
+pub async fn delete(db: &Database, id: Uuid) -> anyhow::Result<()> {
+    Trip::delete_by_id(id)
+        .exec(db.deref())
+        .await?;
+    
+    Ok(())
+}

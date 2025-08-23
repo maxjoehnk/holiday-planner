@@ -32,6 +32,9 @@ Future<TripOverviewModel> createTrip({required CreateTrip command}) =>
 Future<TripOverviewModel> updateTrip({required UpdateTrip command}) =>
     RustLib.instance.api.crateApiTripsUpdateTrip(command: command);
 
+Future<void> deleteTrip({required UuidValue tripId}) =>
+    RustLib.instance.api.crateApiTripsDeleteTrip(tripId: tripId);
+
 Future<TripPackingListModel> getTripPackingList({required UuidValue tripId}) =>
     RustLib.instance.api.crateApiTripsGetTripPackingList(tripId: tripId);
 
