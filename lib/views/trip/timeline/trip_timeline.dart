@@ -304,10 +304,10 @@ class TimelineCard extends StatelessWidget {
       reservation: (item) => item.title,
       checkIn: (_) => "Check-In",
       checkOut: (_) => "Check-Out",
-      flightTakeOff: (flight) => flight.airport,
-      flightLanding: (flight) => flight.airport,
-      trainOrigin: (train) => train.station,
-      trainDestination: (train) => train.station,
+      flightTakeOff: (flight) => "Take Off",
+      flightLanding: (flight) => "Landing",
+      trainOrigin: (train) => "Departure",
+      trainDestination: (train) => "Arrival",
     );
   }
 
