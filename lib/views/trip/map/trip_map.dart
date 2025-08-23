@@ -262,26 +262,23 @@ class _TripMapState extends State<TripMap> {
               final zoom = _calculateZoom(locations, pois);
               final markers = [..._buildLocationMarkers(locations), ..._buildPoiMarkers(pois)];
 
-              return SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height - 300,
-                  child: FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter: center,
-                      initialZoom: zoom,
-                      minZoom: 1.0,
-                      maxZoom: 18.0,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'me.maxjoehnk.holiday_planner',
-                      ),
-                      MarkerLayer(markers: markers),
-                      const SimpleAttributionWidget(source: Text("OpenStreetMap Contributors")),
-                    ],
+              return SliverFillRemaining(
+                child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: center,
+                    initialZoom: zoom,
+                    minZoom: 1.0,
+                    maxZoom: 18.0,
                   ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'me.maxjoehnk.holiday_planner',
+                    ),
+                    MarkerLayer(markers: markers),
+                    const SimpleAttributionWidget(source: Text("OpenStreetMap Contributors")),
+                  ],
                 ),
               );
             },
