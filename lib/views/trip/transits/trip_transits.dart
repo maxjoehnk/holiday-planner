@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/api/transits.dart';
 import 'package:holiday_planner/src/rust/models/transits.dart';
 import 'package:holiday_planner/date_format.dart';
@@ -82,7 +83,6 @@ class _TripTransitsState extends State<TripTransits> {
     return TrainCard(
       train: train,
       onEdit: () => _editTrain(context, train, index),
-      onDelete: () => _deleteTrain(context, train, index),
     );
   }
 
@@ -159,44 +159,6 @@ class _TripTransitsState extends State<TripTransits> {
     _fetch();
   }
 
-  void _deleteTrain(BuildContext context, Train train, int index) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Train Booking'),
-        content: Text(
-            'Are you sure you want to delete the train from ${train.departure.name} to ${train.arrival.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        // Note: We need train ID for deletion, but Train model doesn't include it
-        // For now, we'll use a placeholder UUID based on index
-        final trainId =
-            UuidValue.fromString('00000000-0000-0000-0000-${index.toString().padLeft(12, '0')}');
-        await deleteTrain(trainId: trainId);
-        _fetch();
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting train booking: $e')),
-          );
-        }
-      }
-    }
-  }
-
   _fetch() {
     _trains.addStream(getTripTrains(tripId: widget.tripId).asStream());
   }
@@ -211,12 +173,10 @@ class _TripTransitsState extends State<TripTransits> {
 class TrainCard extends StatelessWidget {
   final Train train;
   final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
 
   const TrainCard({
     required this.train,
     this.onEdit,
-    this.onDelete,
     super.key,
   });
 
@@ -224,22 +184,7 @@ class TrainCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    const color = Colors.blue; // Train color
-
-    // Helper function to format station location
-    String formatStationLocation(TrainStation station) {
-      final city = station.city;
-      final country = station.country;
-      if (city != null && country != null) {
-        return "$city, $country";
-      } else if (city != null) {
-        return city;
-      } else if (country != null) {
-        return country;
-      } else {
-        return ""; // No location info available
-      }
-    }
+    const color = TRANSITS_COLOR;
 
     return Card(
       elevation: 0,
@@ -277,16 +222,16 @@ class TrainCard extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4,
                       children: [
-                        Text(
-                          "${train.departure.name} → ${train.arrival.name}",
+                        if (train.trainNumber != null) Text(
+                          train.trainNumber!,
                           style: textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 4),
                         Text(
-                          "${formatStationLocation(train.departure)} → ${formatStationLocation(train.arrival)}",
+                          "${train.departure.name} → ${train.arrival.name}",
                           style: textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
