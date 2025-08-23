@@ -13,6 +13,12 @@ import 'package:holiday_planner/views/trip/summary/trip_summary.dart';
 import 'package:uuid/uuid.dart';
 
 import 'timeline/trip_timeline.dart';
+import 'map/trip_map.dart';
+
+const overviewTabIndex = 0;
+const timelineTabIndex = 1;
+const mapTabIndex = 2;
+const attachmentsTabIndex = 3;
 
 class TripView extends StatefulWidget {
   final UuidValue tripId;
@@ -73,7 +79,6 @@ class _TripViewState extends State<TripView> {
   String _buildWeatherTidalInfo(TripLocationListModel location) {
     List<String> infoParts = [];
     
-    // Add weather information
     if (location.forecast?.dailyForecast.isNotEmpty == true) {
       final today = location.forecast!.dailyForecast.first;
       final tempRange = "${today.minTemperature.round()}° - ${today.maxTemperature.round()}°C";
@@ -87,7 +92,6 @@ class _TripViewState extends State<TripView> {
       infoParts.add("No weather data");
     }
     
-    // Add tidal information if available
     if (location.isCoastal && location.tidalInformation.isNotEmpty) {
       final nextTide = location.tidalInformation.first;
       final isHigh = nextTide.tide == TideType.high;
@@ -292,9 +296,10 @@ class _TripViewState extends State<TripView> {
                   ),
                 ),
                 const SliverPadding(padding: EdgeInsets.all(4)),
-                if (_selectedTab == 0) TripSummary(trip, refresh: _fetch),
-                if (_selectedTab == 1) TripTimeline(tripId: widget.tripId),
-                if (_selectedTab == 2) TripAttachments(tripId: widget.tripId),
+                if (_selectedTab == overviewTabIndex) TripSummary(trip, refresh: _fetch),
+                if (_selectedTab == timelineTabIndex) TripTimeline(tripId: widget.tripId),
+                if (_selectedTab == mapTabIndex) TripMap(tripId: widget.tripId),
+                if (_selectedTab == attachmentsTabIndex) TripAttachments(tripId: widget.tripId),
               ],
             );
           }),
@@ -310,13 +315,15 @@ class _TripViewState extends State<TripView> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.timeline), label: "Timeline"),
             BottomNavigationBarItem(
+                icon: Icon(Icons.map), label: "Map"),
+            BottomNavigationBarItem(
                 icon: Icon(Icons.attachment), label: "Attachments"),
           ]),
     );
   }
 
   Widget? _fab() {
-    if (_selectedTab == 2) {
+    if (_selectedTab == attachmentsTabIndex) {
       return FloatingActionButton.extended(
         heroTag: "trip_view_fab",
         onPressed: () {
