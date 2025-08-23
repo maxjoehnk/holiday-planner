@@ -2325,6 +2325,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FlightOverviewModel dco_decode_box_autoadd_flight_overview_model(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_flight_overview_model(raw);
+  }
+
+  @protected
   ImportParsedTrainJourney dco_decode_box_autoadd_import_parsed_train_journey(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2371,6 +2378,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TagModel dco_decode_box_autoadd_tag_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_tag_model(raw);
+  }
+
+  @protected
+  TrainOverviewModel dco_decode_box_autoadd_train_overview_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_train_overview_model(raw);
+  }
+
+  @protected
+  TransitOverviewModel dco_decode_box_autoadd_transit_overview_model(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_transit_overview_model(raw);
   }
 
   @protected
@@ -2536,6 +2556,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double dco_decode_f_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
+  }
+
+  @protected
+  FlightOverviewModel dco_decode_flight_overview_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return FlightOverviewModel(
+      flightNumber: dco_decode_String(arr[0]),
+      airline: dco_decode_String(arr[1]),
+      time: dco_decode_Chrono_Utc(arr[2]),
+      airport: dco_decode_String(arr[3]),
+      terminal: dco_decode_String(arr[4]),
+    );
   }
 
   @protected
@@ -2807,6 +2842,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TagModel? dco_decode_opt_box_autoadd_tag_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_tag_model(raw);
+  }
+
+  @protected
+  TransitOverviewModel? dco_decode_opt_box_autoadd_transit_overview_model(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_transit_overview_model(raw);
   }
 
   @protected
@@ -3183,6 +3227,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TrainOverviewModel dco_decode_train_overview_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return TrainOverviewModel(
+      trainNumber: dco_decode_opt_String(arr[0]),
+      time: dco_decode_Chrono_Utc(arr[1]),
+      station: dco_decode_String(arr[2]),
+      platform: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
   TrainStation dco_decode_train_station(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -3195,6 +3253,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       city: dco_decode_opt_String(arr[3]),
       country: dco_decode_opt_String(arr[4]),
     );
+  }
+
+  @protected
+  TransitOverviewModel dco_decode_transit_overview_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return TransitOverviewModel_UpcomingTransits(
+          dco_decode_usize(raw[1]),
+        );
+      case 1:
+        return TransitOverviewModel_DepartingTrain(
+          dco_decode_box_autoadd_train_overview_model(raw[1]),
+        );
+      case 2:
+        return TransitOverviewModel_ArrivingTrain(
+          dco_decode_box_autoadd_train_overview_model(raw[1]),
+        );
+      case 3:
+        return TransitOverviewModel_DepartingFlight(
+          dco_decode_box_autoadd_flight_overview_model(raw[1]),
+        );
+      case 4:
+        return TransitOverviewModel_ArrivingFlight(
+          dco_decode_box_autoadd_flight_overview_model(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -3261,8 +3348,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripOverviewModel dco_decode_trip_overview_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 13)
-      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
+    if (arr.length != 14)
+      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
     return TripOverviewModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -3274,11 +3361,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       totalPackingListItems: dco_decode_usize(arr[7]),
       pointsOfInterestCount: dco_decode_usize(arr[8]),
       bookingsCount: dco_decode_usize(arr[9]),
+      nextTransit: dco_decode_opt_box_autoadd_transit_overview_model(arr[10]),
       accommodationStatus:
-          dco_decode_opt_box_autoadd_accommodation_status(arr[10]),
-      locationsList: dco_decode_list_trip_location_summary(arr[11]),
+          dco_decode_opt_box_autoadd_accommodation_status(arr[11]),
+      locationsList: dco_decode_list_trip_location_summary(arr[12]),
       singleLocationWeatherTidal:
-          dco_decode_opt_box_autoadd_trip_location_list_model(arr[12]),
+          dco_decode_opt_box_autoadd_trip_location_list_model(arr[13]),
     );
   }
 
@@ -3910,6 +3998,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FlightOverviewModel sse_decode_box_autoadd_flight_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_flight_overview_model(deserializer));
+  }
+
+  @protected
   ImportParsedTrainJourney sse_decode_box_autoadd_import_parsed_train_journey(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3961,6 +4056,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TagModel sse_decode_box_autoadd_tag_model(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_tag_model(deserializer));
+  }
+
+  @protected
+  TrainOverviewModel sse_decode_box_autoadd_train_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_train_overview_model(deserializer));
+  }
+
+  @protected
+  TransitOverviewModel sse_decode_box_autoadd_transit_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_transit_overview_model(deserializer));
   }
 
   @protected
@@ -4134,6 +4243,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double sse_decode_f_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  FlightOverviewModel sse_decode_flight_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_flightNumber = sse_decode_String(deserializer);
+    var var_airline = sse_decode_String(deserializer);
+    var var_time = sse_decode_Chrono_Utc(deserializer);
+    var var_airport = sse_decode_String(deserializer);
+    var var_terminal = sse_decode_String(deserializer);
+    return FlightOverviewModel(
+        flightNumber: var_flightNumber,
+        airline: var_airline,
+        time: var_time,
+        airport: var_airport,
+        terminal: var_terminal);
   }
 
   @protected
@@ -4559,6 +4685,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TransitOverviewModel? sse_decode_opt_box_autoadd_transit_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_transit_overview_model(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   TripLocationListModel? sse_decode_opt_box_autoadd_trip_location_list_model(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4951,6 +5089,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TrainOverviewModel sse_decode_train_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_trainNumber = sse_decode_opt_String(deserializer);
+    var var_time = sse_decode_Chrono_Utc(deserializer);
+    var var_station = sse_decode_String(deserializer);
+    var var_platform = sse_decode_String(deserializer);
+    return TrainOverviewModel(
+        trainNumber: var_trainNumber,
+        time: var_time,
+        station: var_station,
+        platform: var_platform);
+  }
+
+  @protected
   TrainStation sse_decode_train_station(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
@@ -4964,6 +5117,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         actualPlatform: var_actualPlatform,
         city: var_city,
         country: var_country);
+  }
+
+  @protected
+  TransitOverviewModel sse_decode_transit_overview_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_usize(deserializer);
+        return TransitOverviewModel_UpcomingTransits(var_field0);
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_train_overview_model(deserializer);
+        return TransitOverviewModel_DepartingTrain(var_field0);
+      case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_train_overview_model(deserializer);
+        return TransitOverviewModel_ArrivingTrain(var_field0);
+      case 3:
+        var var_field0 =
+            sse_decode_box_autoadd_flight_overview_model(deserializer);
+        return TransitOverviewModel_DepartingFlight(var_field0);
+      case 4:
+        var var_field0 =
+            sse_decode_box_autoadd_flight_overview_model(deserializer);
+        return TransitOverviewModel_ArrivingFlight(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -5044,6 +5228,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_totalPackingListItems = sse_decode_usize(deserializer);
     var var_pointsOfInterestCount = sse_decode_usize(deserializer);
     var var_bookingsCount = sse_decode_usize(deserializer);
+    var var_nextTransit =
+        sse_decode_opt_box_autoadd_transit_overview_model(deserializer);
     var var_accommodationStatus =
         sse_decode_opt_box_autoadd_accommodation_status(deserializer);
     var var_locationsList = sse_decode_list_trip_location_summary(deserializer);
@@ -5060,6 +5246,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         totalPackingListItems: var_totalPackingListItems,
         pointsOfInterestCount: var_pointsOfInterestCount,
         bookingsCount: var_bookingsCount,
+        nextTransit: var_nextTransit,
         accommodationStatus: var_accommodationStatus,
         locationsList: var_locationsList,
         singleLocationWeatherTidal: var_singleLocationWeatherTidal);
@@ -5638,6 +5825,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_flight_overview_model(
+      FlightOverviewModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_flight_overview_model(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_import_parsed_train_journey(
       ImportParsedTrainJourney self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5691,6 +5885,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       TagModel self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_tag_model(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_train_overview_model(
+      TrainOverviewModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_train_overview_model(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_transit_overview_model(
+      TransitOverviewModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_transit_overview_model(self, serializer);
   }
 
   @protected
@@ -5834,6 +6042,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_f_64(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_flight_overview_model(
+      FlightOverviewModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.flightNumber, serializer);
+    sse_encode_String(self.airline, serializer);
+    sse_encode_Chrono_Utc(self.time, serializer);
+    sse_encode_String(self.airport, serializer);
+    sse_encode_String(self.terminal, serializer);
   }
 
   @protected
@@ -6177,6 +6396,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_transit_overview_model(
+      TransitOverviewModel? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_transit_overview_model(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_trip_location_list_model(
       TripLocationListModel? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6507,6 +6737,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_train_overview_model(
+      TrainOverviewModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.trainNumber, serializer);
+    sse_encode_Chrono_Utc(self.time, serializer);
+    sse_encode_String(self.station, serializer);
+    sse_encode_String(self.platform, serializer);
+  }
+
+  @protected
   void sse_encode_train_station(TrainStation self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.name, serializer);
@@ -6514,6 +6754,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.actualPlatform, serializer);
     sse_encode_opt_String(self.city, serializer);
     sse_encode_opt_String(self.country, serializer);
+  }
+
+  @protected
+  void sse_encode_transit_overview_model(
+      TransitOverviewModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case TransitOverviewModel_UpcomingTransits(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_usize(field0, serializer);
+      case TransitOverviewModel_DepartingTrain(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_train_overview_model(field0, serializer);
+      case TransitOverviewModel_ArrivingTrain(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_train_overview_model(field0, serializer);
+      case TransitOverviewModel_DepartingFlight(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_box_autoadd_flight_overview_model(field0, serializer);
+      case TransitOverviewModel_ArrivingFlight(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_box_autoadd_flight_overview_model(field0, serializer);
+    }
   }
 
   @protected
@@ -6574,6 +6837,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_usize(self.totalPackingListItems, serializer);
     sse_encode_usize(self.pointsOfInterestCount, serializer);
     sse_encode_usize(self.bookingsCount, serializer);
+    sse_encode_opt_box_autoadd_transit_overview_model(
+        self.nextTransit, serializer);
     sse_encode_opt_box_autoadd_accommodation_status(
         self.accommodationStatus, serializer);
     sse_encode_list_trip_location_summary(self.locationsList, serializer);

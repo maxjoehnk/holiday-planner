@@ -1282,3 +1282,1000 @@ abstract class PackingListEntryCondition_Tag extends PackingListEntryCondition {
           _$PackingListEntryCondition_TagImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$TransitOverviewModel {
+  Object get field0 => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) upcomingTransits,
+    required TResult Function(TrainOverviewModel field0) departingTrain,
+    required TResult Function(TrainOverviewModel field0) arrivingTrain,
+    required TResult Function(FlightOverviewModel field0) departingFlight,
+    required TResult Function(FlightOverviewModel field0) arrivingFlight,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? upcomingTransits,
+    TResult? Function(TrainOverviewModel field0)? departingTrain,
+    TResult? Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult? Function(FlightOverviewModel field0)? departingFlight,
+    TResult? Function(FlightOverviewModel field0)? arrivingFlight,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? upcomingTransits,
+    TResult Function(TrainOverviewModel field0)? departingTrain,
+    TResult Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult Function(FlightOverviewModel field0)? departingFlight,
+    TResult Function(FlightOverviewModel field0)? arrivingFlight,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransitOverviewModel_UpcomingTransits value)
+        upcomingTransits,
+    required TResult Function(TransitOverviewModel_DepartingTrain value)
+        departingTrain,
+    required TResult Function(TransitOverviewModel_ArrivingTrain value)
+        arrivingTrain,
+    required TResult Function(TransitOverviewModel_DepartingFlight value)
+        departingFlight,
+    required TResult Function(TransitOverviewModel_ArrivingFlight value)
+        arrivingFlight,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult? Function(TransitOverviewModel_DepartingTrain value)?
+        departingTrain,
+    TResult? Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult? Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult? Function(TransitOverviewModel_ArrivingFlight value)?
+        arrivingFlight,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult Function(TransitOverviewModel_DepartingTrain value)? departingTrain,
+    TResult Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult Function(TransitOverviewModel_ArrivingFlight value)? arrivingFlight,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $TransitOverviewModelCopyWith<$Res> {
+  factory $TransitOverviewModelCopyWith(TransitOverviewModel value,
+          $Res Function(TransitOverviewModel) then) =
+      _$TransitOverviewModelCopyWithImpl<$Res, TransitOverviewModel>;
+}
+
+/// @nodoc
+class _$TransitOverviewModelCopyWithImpl<$Res,
+        $Val extends TransitOverviewModel>
+    implements $TransitOverviewModelCopyWith<$Res> {
+  _$TransitOverviewModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$TransitOverviewModel_UpcomingTransitsImplCopyWith<$Res> {
+  factory _$$TransitOverviewModel_UpcomingTransitsImplCopyWith(
+          _$TransitOverviewModel_UpcomingTransitsImpl value,
+          $Res Function(_$TransitOverviewModel_UpcomingTransitsImpl) then) =
+      __$$TransitOverviewModel_UpcomingTransitsImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({BigInt field0});
+}
+
+/// @nodoc
+class __$$TransitOverviewModel_UpcomingTransitsImplCopyWithImpl<$Res>
+    extends _$TransitOverviewModelCopyWithImpl<$Res,
+        _$TransitOverviewModel_UpcomingTransitsImpl>
+    implements _$$TransitOverviewModel_UpcomingTransitsImplCopyWith<$Res> {
+  __$$TransitOverviewModel_UpcomingTransitsImplCopyWithImpl(
+      _$TransitOverviewModel_UpcomingTransitsImpl _value,
+      $Res Function(_$TransitOverviewModel_UpcomingTransitsImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$TransitOverviewModel_UpcomingTransitsImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransitOverviewModel_UpcomingTransitsImpl
+    extends TransitOverviewModel_UpcomingTransits {
+  const _$TransitOverviewModel_UpcomingTransitsImpl(this.field0) : super._();
+
+  @override
+  final BigInt field0;
+
+  @override
+  String toString() {
+    return 'TransitOverviewModel.upcomingTransits(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransitOverviewModel_UpcomingTransitsImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransitOverviewModel_UpcomingTransitsImplCopyWith<
+          _$TransitOverviewModel_UpcomingTransitsImpl>
+      get copyWith => __$$TransitOverviewModel_UpcomingTransitsImplCopyWithImpl<
+          _$TransitOverviewModel_UpcomingTransitsImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) upcomingTransits,
+    required TResult Function(TrainOverviewModel field0) departingTrain,
+    required TResult Function(TrainOverviewModel field0) arrivingTrain,
+    required TResult Function(FlightOverviewModel field0) departingFlight,
+    required TResult Function(FlightOverviewModel field0) arrivingFlight,
+  }) {
+    return upcomingTransits(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? upcomingTransits,
+    TResult? Function(TrainOverviewModel field0)? departingTrain,
+    TResult? Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult? Function(FlightOverviewModel field0)? departingFlight,
+    TResult? Function(FlightOverviewModel field0)? arrivingFlight,
+  }) {
+    return upcomingTransits?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? upcomingTransits,
+    TResult Function(TrainOverviewModel field0)? departingTrain,
+    TResult Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult Function(FlightOverviewModel field0)? departingFlight,
+    TResult Function(FlightOverviewModel field0)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (upcomingTransits != null) {
+      return upcomingTransits(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransitOverviewModel_UpcomingTransits value)
+        upcomingTransits,
+    required TResult Function(TransitOverviewModel_DepartingTrain value)
+        departingTrain,
+    required TResult Function(TransitOverviewModel_ArrivingTrain value)
+        arrivingTrain,
+    required TResult Function(TransitOverviewModel_DepartingFlight value)
+        departingFlight,
+    required TResult Function(TransitOverviewModel_ArrivingFlight value)
+        arrivingFlight,
+  }) {
+    return upcomingTransits(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult? Function(TransitOverviewModel_DepartingTrain value)?
+        departingTrain,
+    TResult? Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult? Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult? Function(TransitOverviewModel_ArrivingFlight value)?
+        arrivingFlight,
+  }) {
+    return upcomingTransits?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult Function(TransitOverviewModel_DepartingTrain value)? departingTrain,
+    TResult Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult Function(TransitOverviewModel_ArrivingFlight value)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (upcomingTransits != null) {
+      return upcomingTransits(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransitOverviewModel_UpcomingTransits
+    extends TransitOverviewModel {
+  const factory TransitOverviewModel_UpcomingTransits(final BigInt field0) =
+      _$TransitOverviewModel_UpcomingTransitsImpl;
+  const TransitOverviewModel_UpcomingTransits._() : super._();
+
+  @override
+  BigInt get field0;
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransitOverviewModel_UpcomingTransitsImplCopyWith<
+          _$TransitOverviewModel_UpcomingTransitsImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransitOverviewModel_DepartingTrainImplCopyWith<$Res> {
+  factory _$$TransitOverviewModel_DepartingTrainImplCopyWith(
+          _$TransitOverviewModel_DepartingTrainImpl value,
+          $Res Function(_$TransitOverviewModel_DepartingTrainImpl) then) =
+      __$$TransitOverviewModel_DepartingTrainImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TrainOverviewModel field0});
+}
+
+/// @nodoc
+class __$$TransitOverviewModel_DepartingTrainImplCopyWithImpl<$Res>
+    extends _$TransitOverviewModelCopyWithImpl<$Res,
+        _$TransitOverviewModel_DepartingTrainImpl>
+    implements _$$TransitOverviewModel_DepartingTrainImplCopyWith<$Res> {
+  __$$TransitOverviewModel_DepartingTrainImplCopyWithImpl(
+      _$TransitOverviewModel_DepartingTrainImpl _value,
+      $Res Function(_$TransitOverviewModel_DepartingTrainImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$TransitOverviewModel_DepartingTrainImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as TrainOverviewModel,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransitOverviewModel_DepartingTrainImpl
+    extends TransitOverviewModel_DepartingTrain {
+  const _$TransitOverviewModel_DepartingTrainImpl(this.field0) : super._();
+
+  @override
+  final TrainOverviewModel field0;
+
+  @override
+  String toString() {
+    return 'TransitOverviewModel.departingTrain(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransitOverviewModel_DepartingTrainImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransitOverviewModel_DepartingTrainImplCopyWith<
+          _$TransitOverviewModel_DepartingTrainImpl>
+      get copyWith => __$$TransitOverviewModel_DepartingTrainImplCopyWithImpl<
+          _$TransitOverviewModel_DepartingTrainImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) upcomingTransits,
+    required TResult Function(TrainOverviewModel field0) departingTrain,
+    required TResult Function(TrainOverviewModel field0) arrivingTrain,
+    required TResult Function(FlightOverviewModel field0) departingFlight,
+    required TResult Function(FlightOverviewModel field0) arrivingFlight,
+  }) {
+    return departingTrain(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? upcomingTransits,
+    TResult? Function(TrainOverviewModel field0)? departingTrain,
+    TResult? Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult? Function(FlightOverviewModel field0)? departingFlight,
+    TResult? Function(FlightOverviewModel field0)? arrivingFlight,
+  }) {
+    return departingTrain?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? upcomingTransits,
+    TResult Function(TrainOverviewModel field0)? departingTrain,
+    TResult Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult Function(FlightOverviewModel field0)? departingFlight,
+    TResult Function(FlightOverviewModel field0)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (departingTrain != null) {
+      return departingTrain(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransitOverviewModel_UpcomingTransits value)
+        upcomingTransits,
+    required TResult Function(TransitOverviewModel_DepartingTrain value)
+        departingTrain,
+    required TResult Function(TransitOverviewModel_ArrivingTrain value)
+        arrivingTrain,
+    required TResult Function(TransitOverviewModel_DepartingFlight value)
+        departingFlight,
+    required TResult Function(TransitOverviewModel_ArrivingFlight value)
+        arrivingFlight,
+  }) {
+    return departingTrain(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult? Function(TransitOverviewModel_DepartingTrain value)?
+        departingTrain,
+    TResult? Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult? Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult? Function(TransitOverviewModel_ArrivingFlight value)?
+        arrivingFlight,
+  }) {
+    return departingTrain?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult Function(TransitOverviewModel_DepartingTrain value)? departingTrain,
+    TResult Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult Function(TransitOverviewModel_ArrivingFlight value)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (departingTrain != null) {
+      return departingTrain(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransitOverviewModel_DepartingTrain
+    extends TransitOverviewModel {
+  const factory TransitOverviewModel_DepartingTrain(
+          final TrainOverviewModel field0) =
+      _$TransitOverviewModel_DepartingTrainImpl;
+  const TransitOverviewModel_DepartingTrain._() : super._();
+
+  @override
+  TrainOverviewModel get field0;
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransitOverviewModel_DepartingTrainImplCopyWith<
+          _$TransitOverviewModel_DepartingTrainImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransitOverviewModel_ArrivingTrainImplCopyWith<$Res> {
+  factory _$$TransitOverviewModel_ArrivingTrainImplCopyWith(
+          _$TransitOverviewModel_ArrivingTrainImpl value,
+          $Res Function(_$TransitOverviewModel_ArrivingTrainImpl) then) =
+      __$$TransitOverviewModel_ArrivingTrainImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TrainOverviewModel field0});
+}
+
+/// @nodoc
+class __$$TransitOverviewModel_ArrivingTrainImplCopyWithImpl<$Res>
+    extends _$TransitOverviewModelCopyWithImpl<$Res,
+        _$TransitOverviewModel_ArrivingTrainImpl>
+    implements _$$TransitOverviewModel_ArrivingTrainImplCopyWith<$Res> {
+  __$$TransitOverviewModel_ArrivingTrainImplCopyWithImpl(
+      _$TransitOverviewModel_ArrivingTrainImpl _value,
+      $Res Function(_$TransitOverviewModel_ArrivingTrainImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$TransitOverviewModel_ArrivingTrainImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as TrainOverviewModel,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransitOverviewModel_ArrivingTrainImpl
+    extends TransitOverviewModel_ArrivingTrain {
+  const _$TransitOverviewModel_ArrivingTrainImpl(this.field0) : super._();
+
+  @override
+  final TrainOverviewModel field0;
+
+  @override
+  String toString() {
+    return 'TransitOverviewModel.arrivingTrain(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransitOverviewModel_ArrivingTrainImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransitOverviewModel_ArrivingTrainImplCopyWith<
+          _$TransitOverviewModel_ArrivingTrainImpl>
+      get copyWith => __$$TransitOverviewModel_ArrivingTrainImplCopyWithImpl<
+          _$TransitOverviewModel_ArrivingTrainImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) upcomingTransits,
+    required TResult Function(TrainOverviewModel field0) departingTrain,
+    required TResult Function(TrainOverviewModel field0) arrivingTrain,
+    required TResult Function(FlightOverviewModel field0) departingFlight,
+    required TResult Function(FlightOverviewModel field0) arrivingFlight,
+  }) {
+    return arrivingTrain(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? upcomingTransits,
+    TResult? Function(TrainOverviewModel field0)? departingTrain,
+    TResult? Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult? Function(FlightOverviewModel field0)? departingFlight,
+    TResult? Function(FlightOverviewModel field0)? arrivingFlight,
+  }) {
+    return arrivingTrain?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? upcomingTransits,
+    TResult Function(TrainOverviewModel field0)? departingTrain,
+    TResult Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult Function(FlightOverviewModel field0)? departingFlight,
+    TResult Function(FlightOverviewModel field0)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (arrivingTrain != null) {
+      return arrivingTrain(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransitOverviewModel_UpcomingTransits value)
+        upcomingTransits,
+    required TResult Function(TransitOverviewModel_DepartingTrain value)
+        departingTrain,
+    required TResult Function(TransitOverviewModel_ArrivingTrain value)
+        arrivingTrain,
+    required TResult Function(TransitOverviewModel_DepartingFlight value)
+        departingFlight,
+    required TResult Function(TransitOverviewModel_ArrivingFlight value)
+        arrivingFlight,
+  }) {
+    return arrivingTrain(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult? Function(TransitOverviewModel_DepartingTrain value)?
+        departingTrain,
+    TResult? Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult? Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult? Function(TransitOverviewModel_ArrivingFlight value)?
+        arrivingFlight,
+  }) {
+    return arrivingTrain?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult Function(TransitOverviewModel_DepartingTrain value)? departingTrain,
+    TResult Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult Function(TransitOverviewModel_ArrivingFlight value)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (arrivingTrain != null) {
+      return arrivingTrain(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransitOverviewModel_ArrivingTrain extends TransitOverviewModel {
+  const factory TransitOverviewModel_ArrivingTrain(
+          final TrainOverviewModel field0) =
+      _$TransitOverviewModel_ArrivingTrainImpl;
+  const TransitOverviewModel_ArrivingTrain._() : super._();
+
+  @override
+  TrainOverviewModel get field0;
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransitOverviewModel_ArrivingTrainImplCopyWith<
+          _$TransitOverviewModel_ArrivingTrainImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransitOverviewModel_DepartingFlightImplCopyWith<$Res> {
+  factory _$$TransitOverviewModel_DepartingFlightImplCopyWith(
+          _$TransitOverviewModel_DepartingFlightImpl value,
+          $Res Function(_$TransitOverviewModel_DepartingFlightImpl) then) =
+      __$$TransitOverviewModel_DepartingFlightImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FlightOverviewModel field0});
+}
+
+/// @nodoc
+class __$$TransitOverviewModel_DepartingFlightImplCopyWithImpl<$Res>
+    extends _$TransitOverviewModelCopyWithImpl<$Res,
+        _$TransitOverviewModel_DepartingFlightImpl>
+    implements _$$TransitOverviewModel_DepartingFlightImplCopyWith<$Res> {
+  __$$TransitOverviewModel_DepartingFlightImplCopyWithImpl(
+      _$TransitOverviewModel_DepartingFlightImpl _value,
+      $Res Function(_$TransitOverviewModel_DepartingFlightImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$TransitOverviewModel_DepartingFlightImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FlightOverviewModel,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransitOverviewModel_DepartingFlightImpl
+    extends TransitOverviewModel_DepartingFlight {
+  const _$TransitOverviewModel_DepartingFlightImpl(this.field0) : super._();
+
+  @override
+  final FlightOverviewModel field0;
+
+  @override
+  String toString() {
+    return 'TransitOverviewModel.departingFlight(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransitOverviewModel_DepartingFlightImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransitOverviewModel_DepartingFlightImplCopyWith<
+          _$TransitOverviewModel_DepartingFlightImpl>
+      get copyWith => __$$TransitOverviewModel_DepartingFlightImplCopyWithImpl<
+          _$TransitOverviewModel_DepartingFlightImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) upcomingTransits,
+    required TResult Function(TrainOverviewModel field0) departingTrain,
+    required TResult Function(TrainOverviewModel field0) arrivingTrain,
+    required TResult Function(FlightOverviewModel field0) departingFlight,
+    required TResult Function(FlightOverviewModel field0) arrivingFlight,
+  }) {
+    return departingFlight(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? upcomingTransits,
+    TResult? Function(TrainOverviewModel field0)? departingTrain,
+    TResult? Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult? Function(FlightOverviewModel field0)? departingFlight,
+    TResult? Function(FlightOverviewModel field0)? arrivingFlight,
+  }) {
+    return departingFlight?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? upcomingTransits,
+    TResult Function(TrainOverviewModel field0)? departingTrain,
+    TResult Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult Function(FlightOverviewModel field0)? departingFlight,
+    TResult Function(FlightOverviewModel field0)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (departingFlight != null) {
+      return departingFlight(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransitOverviewModel_UpcomingTransits value)
+        upcomingTransits,
+    required TResult Function(TransitOverviewModel_DepartingTrain value)
+        departingTrain,
+    required TResult Function(TransitOverviewModel_ArrivingTrain value)
+        arrivingTrain,
+    required TResult Function(TransitOverviewModel_DepartingFlight value)
+        departingFlight,
+    required TResult Function(TransitOverviewModel_ArrivingFlight value)
+        arrivingFlight,
+  }) {
+    return departingFlight(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult? Function(TransitOverviewModel_DepartingTrain value)?
+        departingTrain,
+    TResult? Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult? Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult? Function(TransitOverviewModel_ArrivingFlight value)?
+        arrivingFlight,
+  }) {
+    return departingFlight?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult Function(TransitOverviewModel_DepartingTrain value)? departingTrain,
+    TResult Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult Function(TransitOverviewModel_ArrivingFlight value)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (departingFlight != null) {
+      return departingFlight(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransitOverviewModel_DepartingFlight
+    extends TransitOverviewModel {
+  const factory TransitOverviewModel_DepartingFlight(
+          final FlightOverviewModel field0) =
+      _$TransitOverviewModel_DepartingFlightImpl;
+  const TransitOverviewModel_DepartingFlight._() : super._();
+
+  @override
+  FlightOverviewModel get field0;
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransitOverviewModel_DepartingFlightImplCopyWith<
+          _$TransitOverviewModel_DepartingFlightImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransitOverviewModel_ArrivingFlightImplCopyWith<$Res> {
+  factory _$$TransitOverviewModel_ArrivingFlightImplCopyWith(
+          _$TransitOverviewModel_ArrivingFlightImpl value,
+          $Res Function(_$TransitOverviewModel_ArrivingFlightImpl) then) =
+      __$$TransitOverviewModel_ArrivingFlightImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FlightOverviewModel field0});
+}
+
+/// @nodoc
+class __$$TransitOverviewModel_ArrivingFlightImplCopyWithImpl<$Res>
+    extends _$TransitOverviewModelCopyWithImpl<$Res,
+        _$TransitOverviewModel_ArrivingFlightImpl>
+    implements _$$TransitOverviewModel_ArrivingFlightImplCopyWith<$Res> {
+  __$$TransitOverviewModel_ArrivingFlightImplCopyWithImpl(
+      _$TransitOverviewModel_ArrivingFlightImpl _value,
+      $Res Function(_$TransitOverviewModel_ArrivingFlightImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$TransitOverviewModel_ArrivingFlightImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FlightOverviewModel,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransitOverviewModel_ArrivingFlightImpl
+    extends TransitOverviewModel_ArrivingFlight {
+  const _$TransitOverviewModel_ArrivingFlightImpl(this.field0) : super._();
+
+  @override
+  final FlightOverviewModel field0;
+
+  @override
+  String toString() {
+    return 'TransitOverviewModel.arrivingFlight(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransitOverviewModel_ArrivingFlightImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransitOverviewModel_ArrivingFlightImplCopyWith<
+          _$TransitOverviewModel_ArrivingFlightImpl>
+      get copyWith => __$$TransitOverviewModel_ArrivingFlightImplCopyWithImpl<
+          _$TransitOverviewModel_ArrivingFlightImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) upcomingTransits,
+    required TResult Function(TrainOverviewModel field0) departingTrain,
+    required TResult Function(TrainOverviewModel field0) arrivingTrain,
+    required TResult Function(FlightOverviewModel field0) departingFlight,
+    required TResult Function(FlightOverviewModel field0) arrivingFlight,
+  }) {
+    return arrivingFlight(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? upcomingTransits,
+    TResult? Function(TrainOverviewModel field0)? departingTrain,
+    TResult? Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult? Function(FlightOverviewModel field0)? departingFlight,
+    TResult? Function(FlightOverviewModel field0)? arrivingFlight,
+  }) {
+    return arrivingFlight?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? upcomingTransits,
+    TResult Function(TrainOverviewModel field0)? departingTrain,
+    TResult Function(TrainOverviewModel field0)? arrivingTrain,
+    TResult Function(FlightOverviewModel field0)? departingFlight,
+    TResult Function(FlightOverviewModel field0)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (arrivingFlight != null) {
+      return arrivingFlight(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransitOverviewModel_UpcomingTransits value)
+        upcomingTransits,
+    required TResult Function(TransitOverviewModel_DepartingTrain value)
+        departingTrain,
+    required TResult Function(TransitOverviewModel_ArrivingTrain value)
+        arrivingTrain,
+    required TResult Function(TransitOverviewModel_DepartingFlight value)
+        departingFlight,
+    required TResult Function(TransitOverviewModel_ArrivingFlight value)
+        arrivingFlight,
+  }) {
+    return arrivingFlight(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult? Function(TransitOverviewModel_DepartingTrain value)?
+        departingTrain,
+    TResult? Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult? Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult? Function(TransitOverviewModel_ArrivingFlight value)?
+        arrivingFlight,
+  }) {
+    return arrivingFlight?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransitOverviewModel_UpcomingTransits value)?
+        upcomingTransits,
+    TResult Function(TransitOverviewModel_DepartingTrain value)? departingTrain,
+    TResult Function(TransitOverviewModel_ArrivingTrain value)? arrivingTrain,
+    TResult Function(TransitOverviewModel_DepartingFlight value)?
+        departingFlight,
+    TResult Function(TransitOverviewModel_ArrivingFlight value)? arrivingFlight,
+    required TResult orElse(),
+  }) {
+    if (arrivingFlight != null) {
+      return arrivingFlight(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransitOverviewModel_ArrivingFlight
+    extends TransitOverviewModel {
+  const factory TransitOverviewModel_ArrivingFlight(
+          final FlightOverviewModel field0) =
+      _$TransitOverviewModel_ArrivingFlightImpl;
+  const TransitOverviewModel_ArrivingFlight._() : super._();
+
+  @override
+  FlightOverviewModel get field0;
+
+  /// Create a copy of TransitOverviewModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransitOverviewModel_ArrivingFlightImplCopyWith<
+          _$TransitOverviewModel_ArrivingFlightImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}

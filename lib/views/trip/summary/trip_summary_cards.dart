@@ -135,8 +135,9 @@ class TransitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SummaryCard(
-        icon: Icons.directions_transit,
+        icon: _icon,
         label: "Transits",
+        subtitleChild: _subtitle,
         color: TRANSITS_COLOR,
         onTap: () async {
           await Navigator.push(
@@ -144,6 +145,55 @@ class TransitCard extends StatelessWidget {
             MaterialPageRoute(builder: (context) => TripTransits(tripId: trip.id)),
           );
           refresh();
+        });
+  }
+
+  IconData get _icon {
+    if (trip.nextTransit == null) {
+      return Icons.directions_transit;
+    }
+    return trip.nextTransit!.maybeMap(
+      orElse: () => Icons.directions_transit,
+      departingTrain: (_) => Icons.train,
+      arrivingTrain: (_) => Icons.train,
+      departingFlight: (_) => Icons.flight,
+      arrivingFlight: (_) => Icons.flight,
+    );
+  }
+
+  Widget? get _subtitle {
+    if (trip.nextTransit == null) {
+      return null;
+    }
+    return trip.nextTransit!.mapOrNull(
+        upcomingTransits: (transits) => Text("${transits.field0} upcoming"),
+        departingTrain: (train) {
+          return Text.rich(
+            TextSpan(
+              children: [
+                const TextSpan(text: "Departing at "),
+                TextSpan(text: formatTime(train.field0.time), style: const TextStyle(fontWeight: FontWeight.w500)),
+                const TextSpan(text: " from "),
+                TextSpan(text: train.field0.station, style: const TextStyle(fontWeight: FontWeight.w500)),
+                const TextSpan(text: " - Platform "),
+                TextSpan(text: train.field0.platform, style: const TextStyle(fontWeight: FontWeight.w500)),
+              ],
+            ),
+          );
+        },
+        arrivingTrain: (train) {
+          return Text.rich(
+            TextSpan(
+              children: [
+                const TextSpan(text: "Arriving at "),
+                TextSpan(text: formatTime(train.field0.time), style: const TextStyle(fontWeight: FontWeight.w500)),
+                const TextSpan(text: " in "),
+                TextSpan(text: train.field0.station, style: const TextStyle(fontWeight: FontWeight.w500)),
+                const TextSpan(text: " - Platform "),
+                TextSpan(text: train.field0.platform, style: const TextStyle(fontWeight: FontWeight.w500)),
+              ],
+            ),
+          );
         });
   }
 }
@@ -190,11 +240,12 @@ class SummaryCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final String? subtitle;
+  final Widget? subtitleChild;
   final MaterialColor? color;
   final Function()? onTap;
 
   const SummaryCard(
-      {super.key, required this.icon, required this.label, this.color, this.onTap, this.subtitle});
+      {super.key, required this.icon, required this.label, this.color, this.onTap, this.subtitle, this.subtitleChild});
 
   @override
   Widget build(BuildContext context) {
@@ -252,6 +303,10 @@ class SummaryCard extends StatelessWidget {
                           ),
                         ),
                       ],
+                      if (subtitleChild != null) ...[
+                        const SizedBox(height: 4),
+                        subtitleChild!,
+                      ]
                     ],
                   ),
                 ),

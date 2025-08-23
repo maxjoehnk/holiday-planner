@@ -181,6 +181,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  FlightOverviewModel dco_decode_box_autoadd_flight_overview_model(dynamic raw);
+
+  @protected
   ImportParsedTrainJourney dco_decode_box_autoadd_import_parsed_train_journey(
       dynamic raw);
 
@@ -204,6 +207,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TagModel dco_decode_box_autoadd_tag_model(dynamic raw);
+
+  @protected
+  TrainOverviewModel dco_decode_box_autoadd_train_overview_model(dynamic raw);
+
+  @protected
+  TransitOverviewModel dco_decode_box_autoadd_transit_overview_model(
+      dynamic raw);
 
   @protected
   TripLocationListModel dco_decode_box_autoadd_trip_location_list_model(
@@ -262,6 +272,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double dco_decode_f_64(dynamic raw);
+
+  @protected
+  FlightOverviewModel dco_decode_flight_overview_model(dynamic raw);
 
   @protected
   HourlyWeatherForecast dco_decode_hourly_weather_forecast(dynamic raw);
@@ -378,6 +391,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TagModel? dco_decode_opt_box_autoadd_tag_model(dynamic raw);
 
   @protected
+  TransitOverviewModel? dco_decode_opt_box_autoadd_transit_overview_model(
+      dynamic raw);
+
+  @protected
   TripLocationListModel? dco_decode_opt_box_autoadd_trip_location_list_model(
       dynamic raw);
 
@@ -456,7 +473,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Train dco_decode_train(dynamic raw);
 
   @protected
+  TrainOverviewModel dco_decode_train_overview_model(dynamic raw);
+
+  @protected
   TrainStation dco_decode_train_station(dynamic raw);
+
+  @protected
+  TransitOverviewModel dco_decode_transit_overview_model(dynamic raw);
 
   @protected
   TripAttachment dco_decode_trip_attachment(dynamic raw);
@@ -664,6 +687,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FlightOverviewModel sse_decode_box_autoadd_flight_overview_model(
+      SseDeserializer deserializer);
+
+  @protected
   ImportParsedTrainJourney sse_decode_box_autoadd_import_parsed_train_journey(
       SseDeserializer deserializer);
 
@@ -692,6 +719,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TagModel sse_decode_box_autoadd_tag_model(SseDeserializer deserializer);
+
+  @protected
+  TrainOverviewModel sse_decode_box_autoadd_train_overview_model(
+      SseDeserializer deserializer);
+
+  @protected
+  TransitOverviewModel sse_decode_box_autoadd_transit_overview_model(
+      SseDeserializer deserializer);
 
   @protected
   TripLocationListModel sse_decode_box_autoadd_trip_location_list_model(
@@ -756,6 +791,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  FlightOverviewModel sse_decode_flight_overview_model(
+      SseDeserializer deserializer);
 
   @protected
   HourlyWeatherForecast sse_decode_hourly_weather_forecast(
@@ -887,6 +926,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TagModel? sse_decode_opt_box_autoadd_tag_model(SseDeserializer deserializer);
 
   @protected
+  TransitOverviewModel? sse_decode_opt_box_autoadd_transit_overview_model(
+      SseDeserializer deserializer);
+
+  @protected
   TripLocationListModel? sse_decode_opt_box_autoadd_trip_location_list_model(
       SseDeserializer deserializer);
 
@@ -973,7 +1016,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Train sse_decode_train(SseDeserializer deserializer);
 
   @protected
+  TrainOverviewModel sse_decode_train_overview_model(
+      SseDeserializer deserializer);
+
+  @protected
   TrainStation sse_decode_train_station(SseDeserializer deserializer);
+
+  @protected
+  TransitOverviewModel sse_decode_transit_overview_model(
+      SseDeserializer deserializer);
 
   @protected
   TripAttachment sse_decode_trip_attachment(SseDeserializer deserializer);
@@ -1197,6 +1248,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeletePackingListEntry self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_flight_overview_model(
+      FlightOverviewModel self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_import_parsed_train_journey(
       ImportParsedTrainJourney self, SseSerializer serializer);
 
@@ -1227,6 +1282,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_tag_model(
       TagModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_train_overview_model(
+      TrainOverviewModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_transit_overview_model(
+      TransitOverviewModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_trip_location_list_model(
@@ -1293,6 +1356,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_flight_overview_model(
+      FlightOverviewModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_hourly_weather_forecast(
@@ -1426,6 +1493,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TagModel? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_transit_overview_model(
+      TransitOverviewModel? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_trip_location_list_model(
       TripLocationListModel? self, SseSerializer serializer);
 
@@ -1517,7 +1588,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_train(Train self, SseSerializer serializer);
 
   @protected
+  void sse_encode_train_overview_model(
+      TrainOverviewModel self, SseSerializer serializer);
+
+  @protected
   void sse_encode_train_station(TrainStation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_transit_overview_model(
+      TransitOverviewModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_trip_attachment(

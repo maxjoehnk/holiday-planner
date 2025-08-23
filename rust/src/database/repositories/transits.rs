@@ -1,9 +1,22 @@
 use std::ops::Deref;
+use chrono::Utc;
 use crate::database::entities::train;
 use crate::database::entities::train::Entity as Train;
 use sea_orm::{EntityTrait, QueryFilter, QueryOrder, ColumnTrait};
 use uuid::Uuid;
 use crate::database::Database;
+
+pub async fn find_upcoming_trains(db: &Database, trip_id: Uuid) -> anyhow::Result<Vec<train::Model>> {
+    let now = Utc::now();
+    let train = Train::find()
+        .filter(train::Column::TripId.eq(trip_id))
+        .filter(train::Column::ScheduledDepartureTime.gt(now).or(train::Column::ScheduledArrivalTime.gt(now)))
+        .order_by_asc(train::Column::ScheduledDepartureTime)
+        .all(db.deref())
+        .await?;
+
+    Ok(train)
+}
 
 pub async fn find_all_trains_by_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<Vec<train::Model>> {
     let trains = Train::find()

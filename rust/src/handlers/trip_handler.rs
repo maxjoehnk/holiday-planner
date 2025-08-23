@@ -5,7 +5,7 @@ use chrono::{DateTime, Local, NaiveDate, NaiveTime, TimeZone, Utc};
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
-use crate::handlers::{Handler, TripPackingListHandler, LocationHandler};
+use crate::handlers::{Handler, LocationHandler};
 use crate::third_party::unsplash;
 
 pub struct TripHandler {
@@ -130,8 +130,32 @@ impl TripHandler {
         } else {
             None
         };
-
         let duration_days = ((trip.end_date.with_time(NaiveTime::default()).earliest().unwrap()) - (trip.start_date.with_time(NaiveTime::default()).earliest().unwrap())).num_days() + 1;
+
+        let next_trains = repositories::transits::find_upcoming_trains(&self.db, id).await?;
+        let next_transit = match next_trains.as_slice() {
+            [] => None,
+            [train] if train.scheduled_departure_time < now => {
+                let train = train.clone();
+                Some(TransitOverviewModel::ArrivingTrain(TrainOverviewModel {
+                    train_number: train.train_number,
+                    station: train.arrival_station_name,
+                    platform: train.arrival_scheduled_platform,
+                    time: train.scheduled_arrival_time,
+                }))
+            },
+            [train] => {
+                let train = train.clone();
+                Some(TransitOverviewModel::DepartingTrain(TrainOverviewModel {
+                    train_number: train.train_number,
+                    station: train.departure_station_name,
+                    platform: train.departure_scheduled_platform,
+                    time: train.scheduled_departure_time,
+                }))
+            },
+            trains => Some(TransitOverviewModel::UpcomingTransits(trains.len())),
+        };
+
         let trip = TripOverviewModel {
             id: trip.id,
             name: trip.name,
@@ -139,6 +163,7 @@ impl TripHandler {
             end_date: trip.end_date,
             duration_days,
             header_image: trip.header_image,
+            next_transit,
             pending_packing_list_items,
             total_packing_list_items,
             points_of_interest_count,

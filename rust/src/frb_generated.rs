@@ -2877,6 +2877,24 @@ impl SseDecode for f64 {
     }
 }
 
+impl SseDecode for crate::models::FlightOverviewModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_flightNumber = <String>::sse_decode(deserializer);
+        let mut var_airline = <String>::sse_decode(deserializer);
+        let mut var_time = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_airport = <String>::sse_decode(deserializer);
+        let mut var_terminal = <String>::sse_decode(deserializer);
+        return crate::models::FlightOverviewModel {
+            flight_number: var_flightNumber,
+            airline: var_airline,
+            time: var_time,
+            airport: var_airport,
+            terminal: var_terminal,
+        };
+    }
+}
+
 impl SseDecode for crate::models::HourlyWeatherForecast {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3320,6 +3338,19 @@ impl SseDecode for Option<crate::models::TagModel> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<crate::models::TagModel>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::models::TransitOverviewModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::models::TransitOverviewModel>::sse_decode(
+                deserializer,
+            ));
         } else {
             return None;
         }
@@ -3821,6 +3852,22 @@ impl SseDecode for crate::models::transits::Train {
     }
 }
 
+impl SseDecode for crate::models::TrainOverviewModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_trainNumber = <Option<String>>::sse_decode(deserializer);
+        let mut var_time = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_station = <String>::sse_decode(deserializer);
+        let mut var_platform = <String>::sse_decode(deserializer);
+        return crate::models::TrainOverviewModel {
+            train_number: var_trainNumber,
+            time: var_time,
+            station: var_station,
+            platform: var_platform,
+        };
+    }
+}
+
 impl SseDecode for crate::models::transits::TrainStation {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3836,6 +3883,38 @@ impl SseDecode for crate::models::transits::TrainStation {
             city: var_city,
             country: var_country,
         };
+    }
+}
+
+impl SseDecode for crate::models::TransitOverviewModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <usize>::sse_decode(deserializer);
+                return crate::models::TransitOverviewModel::UpcomingTransits(var_field0);
+            }
+            1 => {
+                let mut var_field0 = <crate::models::TrainOverviewModel>::sse_decode(deserializer);
+                return crate::models::TransitOverviewModel::DepartingTrain(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <crate::models::TrainOverviewModel>::sse_decode(deserializer);
+                return crate::models::TransitOverviewModel::ArrivingTrain(var_field0);
+            }
+            3 => {
+                let mut var_field0 = <crate::models::FlightOverviewModel>::sse_decode(deserializer);
+                return crate::models::TransitOverviewModel::DepartingFlight(var_field0);
+            }
+            4 => {
+                let mut var_field0 = <crate::models::FlightOverviewModel>::sse_decode(deserializer);
+                return crate::models::TransitOverviewModel::ArrivingFlight(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -3924,6 +4003,8 @@ impl SseDecode for crate::models::TripOverviewModel {
         let mut var_totalPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_pointsOfInterestCount = <usize>::sse_decode(deserializer);
         let mut var_bookingsCount = <usize>::sse_decode(deserializer);
+        let mut var_nextTransit =
+            <Option<crate::models::TransitOverviewModel>>::sse_decode(deserializer);
         let mut var_accommodationStatus =
             <Option<crate::models::AccommodationStatus>>::sse_decode(deserializer);
         let mut var_locationsList =
@@ -3941,6 +4022,7 @@ impl SseDecode for crate::models::TripOverviewModel {
             total_packing_list_items: var_totalPackingListItems,
             points_of_interest_count: var_pointsOfInterestCount,
             bookings_count: var_bookingsCount,
+            next_transit: var_nextTransit,
             accommodation_status: var_accommodationStatus,
             locations_list: var_locationsList,
             single_location_weather_tidal: var_singleLocationWeatherTidal,
@@ -4963,6 +5045,30 @@ impl
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::FlightOverviewModel {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.flight_number.into_into_dart().into_dart(),
+            self.airline.into_into_dart().into_dart(),
+            self.time.into_into_dart().into_dart(),
+            self.airport.into_into_dart().into_dart(),
+            self.terminal.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::FlightOverviewModel
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::FlightOverviewModel>
+    for crate::models::FlightOverviewModel
+{
+    fn into_into_dart(self) -> crate::models::FlightOverviewModel {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::models::HourlyWeatherForecast {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5599,6 +5705,29 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::transits::Train>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::TrainOverviewModel {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.train_number.into_into_dart().into_dart(),
+            self.time.into_into_dart().into_dart(),
+            self.station.into_into_dart().into_dart(),
+            self.platform.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::TrainOverviewModel
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::TrainOverviewModel>
+    for crate::models::TrainOverviewModel
+{
+    fn into_into_dart(self) -> crate::models::TrainOverviewModel {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::models::transits::TrainStation {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5619,6 +5748,42 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::transits::TrainStation>
     for crate::models::transits::TrainStation
 {
     fn into_into_dart(self) -> crate::models::transits::TrainStation {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::TransitOverviewModel {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::models::TransitOverviewModel::UpcomingTransits(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::models::TransitOverviewModel::DepartingTrain(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::models::TransitOverviewModel::ArrivingTrain(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::models::TransitOverviewModel::DepartingFlight(field0) => {
+                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::models::TransitOverviewModel::ArrivingFlight(field0) => {
+                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::TransitOverviewModel
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::TransitOverviewModel>
+    for crate::models::TransitOverviewModel
+{
+    fn into_into_dart(self) -> crate::models::TransitOverviewModel {
         self
     }
 }
@@ -5727,6 +5892,7 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
             self.total_packing_list_items.into_into_dart().into_dart(),
             self.points_of_interest_count.into_into_dart().into_dart(),
             self.bookings_count.into_into_dart().into_dart(),
+            self.next_transit.into_into_dart().into_dart(),
             self.accommodation_status.into_into_dart().into_dart(),
             self.locations_list.into_into_dart().into_dart(),
             self.single_location_weather_tidal
@@ -6394,6 +6560,17 @@ impl SseEncode for f64 {
     }
 }
 
+impl SseEncode for crate::models::FlightOverviewModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.flight_number, serializer);
+        <String>::sse_encode(self.airline, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.time, serializer);
+        <String>::sse_encode(self.airport, serializer);
+        <String>::sse_encode(self.terminal, serializer);
+    }
+}
+
 impl SseEncode for crate::models::HourlyWeatherForecast {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6735,6 +6912,16 @@ impl SseEncode for Option<crate::models::TagModel> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::models::TagModel>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::models::TransitOverviewModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::models::TransitOverviewModel>::sse_encode(value, serializer);
         }
     }
 }
@@ -7109,6 +7296,16 @@ impl SseEncode for crate::models::transits::Train {
     }
 }
 
+impl SseEncode for crate::models::TrainOverviewModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.train_number, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.time, serializer);
+        <String>::sse_encode(self.station, serializer);
+        <String>::sse_encode(self.platform, serializer);
+    }
+}
+
 impl SseEncode for crate::models::transits::TrainStation {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -7117,6 +7314,37 @@ impl SseEncode for crate::models::transits::TrainStation {
         <Option<String>>::sse_encode(self.actual_platform, serializer);
         <Option<String>>::sse_encode(self.city, serializer);
         <Option<String>>::sse_encode(self.country, serializer);
+    }
+}
+
+impl SseEncode for crate::models::TransitOverviewModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::models::TransitOverviewModel::UpcomingTransits(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <usize>::sse_encode(field0, serializer);
+            }
+            crate::models::TransitOverviewModel::DepartingTrain(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <crate::models::TrainOverviewModel>::sse_encode(field0, serializer);
+            }
+            crate::models::TransitOverviewModel::ArrivingTrain(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <crate::models::TrainOverviewModel>::sse_encode(field0, serializer);
+            }
+            crate::models::TransitOverviewModel::DepartingFlight(field0) => {
+                <i32>::sse_encode(3, serializer);
+                <crate::models::FlightOverviewModel>::sse_encode(field0, serializer);
+            }
+            crate::models::TransitOverviewModel::ArrivingFlight(field0) => {
+                <i32>::sse_encode(4, serializer);
+                <crate::models::FlightOverviewModel>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -7182,6 +7410,7 @@ impl SseEncode for crate::models::TripOverviewModel {
         <usize>::sse_encode(self.total_packing_list_items, serializer);
         <usize>::sse_encode(self.points_of_interest_count, serializer);
         <usize>::sse_encode(self.bookings_count, serializer);
+        <Option<crate::models::TransitOverviewModel>>::sse_encode(self.next_transit, serializer);
         <Option<crate::models::AccommodationStatus>>::sse_encode(
             self.accommodation_status,
             serializer,

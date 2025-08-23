@@ -190,6 +190,41 @@ class DailyWeatherForecast {
           windSpeed == other.windSpeed;
 }
 
+class FlightOverviewModel {
+  final String flightNumber;
+  final String airline;
+  final DateTime time;
+  final String airport;
+  final String terminal;
+
+  const FlightOverviewModel({
+    required this.flightNumber,
+    required this.airline,
+    required this.time,
+    required this.airport,
+    required this.terminal,
+  });
+
+  @override
+  int get hashCode =>
+      flightNumber.hashCode ^
+      airline.hashCode ^
+      time.hashCode ^
+      airport.hashCode ^
+      terminal.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FlightOverviewModel &&
+          runtimeType == other.runtimeType &&
+          flightNumber == other.flightNumber &&
+          airline == other.airline &&
+          time == other.time &&
+          airport == other.airport &&
+          terminal == other.terminal;
+}
+
 class HourlyWeatherForecast {
   final DateTime time;
   final double temperature;
@@ -419,6 +454,58 @@ class TagModel {
           name == other.name;
 }
 
+class TrainOverviewModel {
+  final String? trainNumber;
+  final DateTime time;
+  final String station;
+  final String platform;
+
+  const TrainOverviewModel({
+    this.trainNumber,
+    required this.time,
+    required this.station,
+    required this.platform,
+  });
+
+  @override
+  int get hashCode =>
+      trainNumber.hashCode ^
+      time.hashCode ^
+      station.hashCode ^
+      platform.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TrainOverviewModel &&
+          runtimeType == other.runtimeType &&
+          trainNumber == other.trainNumber &&
+          time == other.time &&
+          station == other.station &&
+          platform == other.platform;
+}
+
+@freezed
+sealed class TransitOverviewModel with _$TransitOverviewModel {
+  const TransitOverviewModel._();
+
+  const factory TransitOverviewModel.upcomingTransits(
+    BigInt field0,
+  ) = TransitOverviewModel_UpcomingTransits;
+  const factory TransitOverviewModel.departingTrain(
+    TrainOverviewModel field0,
+  ) = TransitOverviewModel_DepartingTrain;
+  const factory TransitOverviewModel.arrivingTrain(
+    TrainOverviewModel field0,
+  ) = TransitOverviewModel_ArrivingTrain;
+  const factory TransitOverviewModel.departingFlight(
+    FlightOverviewModel field0,
+  ) = TransitOverviewModel_DepartingFlight;
+  const factory TransitOverviewModel.arrivingFlight(
+    FlightOverviewModel field0,
+  ) = TransitOverviewModel_ArrivingFlight;
+}
+
 class TripAttachment {
   final UuidValue id;
   final String name;
@@ -561,6 +648,7 @@ class TripOverviewModel {
   final BigInt totalPackingListItems;
   final BigInt pointsOfInterestCount;
   final BigInt bookingsCount;
+  final TransitOverviewModel? nextTransit;
   final AccommodationStatus? accommodationStatus;
   final List<TripLocationSummary> locationsList;
   final TripLocationListModel? singleLocationWeatherTidal;
@@ -576,6 +664,7 @@ class TripOverviewModel {
     required this.totalPackingListItems,
     required this.pointsOfInterestCount,
     required this.bookingsCount,
+    this.nextTransit,
     this.accommodationStatus,
     required this.locationsList,
     this.singleLocationWeatherTidal,
@@ -593,6 +682,7 @@ class TripOverviewModel {
       totalPackingListItems.hashCode ^
       pointsOfInterestCount.hashCode ^
       bookingsCount.hashCode ^
+      nextTransit.hashCode ^
       accommodationStatus.hashCode ^
       locationsList.hashCode ^
       singleLocationWeatherTidal.hashCode;
@@ -612,6 +702,7 @@ class TripOverviewModel {
           totalPackingListItems == other.totalPackingListItems &&
           pointsOfInterestCount == other.pointsOfInterestCount &&
           bookingsCount == other.bookingsCount &&
+          nextTransit == other.nextTransit &&
           accommodationStatus == other.accommodationStatus &&
           locationsList == other.locationsList &&
           singleLocationWeatherTidal == other.singleLocationWeatherTidal;

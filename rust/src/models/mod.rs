@@ -36,9 +36,36 @@ pub struct TripOverviewModel {
     pub total_packing_list_items: usize,
     pub points_of_interest_count: usize,
     pub bookings_count: usize,
+    pub next_transit: Option<TransitOverviewModel>,
     pub accommodation_status: Option<AccommodationStatus>,
     pub locations_list: Vec<TripLocationSummary>,
     pub single_location_weather_tidal: Option<TripLocationListModel>,
+}
+
+#[derive(Clone)]
+pub enum TransitOverviewModel {
+    UpcomingTransits(usize),
+    DepartingTrain(TrainOverviewModel),
+    ArrivingTrain(TrainOverviewModel),
+    DepartingFlight(FlightOverviewModel),
+    ArrivingFlight(FlightOverviewModel),
+}
+
+#[derive(Clone)]
+pub struct TrainOverviewModel {
+    pub train_number: Option<String>,
+    pub time: DateTime<Utc>,
+    pub station: String,
+    pub platform: String,
+}
+
+#[derive(Clone)]
+pub struct FlightOverviewModel {
+    pub flight_number: String,
+    pub airline: String,
+    pub time: DateTime<Utc>,
+    pub airport: String,
+    pub terminal: String,
 }
 
 #[derive(Clone)]
