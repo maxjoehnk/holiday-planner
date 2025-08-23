@@ -108,11 +108,11 @@ class AttachmentListModel {
           contentType == other.contentType;
 }
 
-class Coordinates {
+class Coordinate {
   final double latitude;
   final double longitude;
 
-  const Coordinates({
+  const Coordinate({
     required this.latitude,
     required this.longitude,
   });
@@ -123,7 +123,7 @@ class Coordinates {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Coordinates &&
+      other is Coordinate &&
           runtimeType == other.runtimeType &&
           latitude == other.latitude &&
           longitude == other.longitude;
@@ -233,7 +233,7 @@ class HourlyWeatherForecast {
 
 class LocationEntry {
   final String name;
-  final Coordinates coordinates;
+  final Coordinate coordinates;
   final String country;
 
   const LocationEntry({
@@ -321,8 +321,10 @@ sealed class PackingListEntryCondition with _$PackingListEntryCondition {
 
 class PointOfInterestModel {
   final UuidValue id;
+  final UuidValue tripId;
   final String name;
   final String address;
+  final Coordinate? coordinates;
   final String? website;
   final String? openingHours;
   final String? price;
@@ -331,8 +333,10 @@ class PointOfInterestModel {
 
   const PointOfInterestModel({
     required this.id,
+    required this.tripId,
     required this.name,
     required this.address,
+    this.coordinates,
     this.website,
     this.openingHours,
     this.price,
@@ -343,8 +347,10 @@ class PointOfInterestModel {
   @override
   int get hashCode =>
       id.hashCode ^
+      tripId.hashCode ^
       name.hashCode ^
       address.hashCode ^
+      coordinates.hashCode ^
       website.hashCode ^
       openingHours.hashCode ^
       price.hashCode ^
@@ -357,8 +363,10 @@ class PointOfInterestModel {
       other is PointOfInterestModel &&
           runtimeType == other.runtimeType &&
           id == other.id &&
+          tripId == other.tripId &&
           name == other.name &&
           address == other.address &&
+          coordinates == other.coordinates &&
           website == other.website &&
           openingHours == other.openingHours &&
           price == other.price &&
@@ -476,7 +484,7 @@ class TripListModel {
 
 class TripLocationListModel {
   final UuidValue id;
-  final Coordinates coordinates;
+  final Coordinate coordinates;
   final String city;
   final String country;
   final WeatherForecast? forecast;

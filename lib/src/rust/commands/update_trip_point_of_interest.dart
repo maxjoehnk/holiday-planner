@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
@@ -16,6 +17,7 @@ class UpdateTripPointOfInterest {
   final String? price;
   final String? phoneNumber;
   final String? note;
+  final Coordinate? coordinate;
 
   const UpdateTripPointOfInterest({
     required this.id,
@@ -26,6 +28,7 @@ class UpdateTripPointOfInterest {
     this.price,
     this.phoneNumber,
     this.note,
+    this.coordinate,
   });
 
   @override
@@ -37,7 +40,8 @@ class UpdateTripPointOfInterest {
       openingHours.hashCode ^
       price.hashCode ^
       phoneNumber.hashCode ^
-      note.hashCode;
+      note.hashCode ^
+      coordinate.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -51,5 +55,6 @@ class UpdateTripPointOfInterest {
           openingHours == other.openingHours &&
           price == other.price &&
           phoneNumber == other.phoneNumber &&
-          note == other.note;
+          note == other.note &&
+          coordinate == other.coordinate;
 }

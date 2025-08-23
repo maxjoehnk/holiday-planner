@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:holiday_planner/widgets/required_fields_hint.dart';
+import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
+import 'package:holiday_planner/src/rust/models/point_of_interests.dart';
 import 'package:uuid/uuid.dart';
 
 class PointOfInterestFormData {
@@ -12,7 +15,7 @@ class PointOfInterestFormData {
   final String? phoneNumber;
   final String? note;
   final UuidValue? id;
-  final UuidValue? tripId;
+  final Coordinate? coordinate;
 
   PointOfInterestFormData({
     required this.name,
@@ -23,11 +26,12 @@ class PointOfInterestFormData {
     this.phoneNumber,
     this.note,
     this.id,
-    this.tripId,
+    this.coordinate,
   });
 }
 
 class PointOfInterestForm extends StatefulWidget {
+  final UuidValue tripId;
   final PointOfInterestFormData? initialData;
   final Function(PointOfInterestFormData) onSubmit;
   final bool isLoading;
@@ -36,6 +40,7 @@ class PointOfInterestForm extends StatefulWidget {
 
   const PointOfInterestForm({
     super.key,
+    required this.tripId,
     this.initialData,
     required this.onSubmit,
     this.isLoading = false,
@@ -56,6 +61,8 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
   late final TextEditingController _priceController;
   late final TextEditingController _phoneNumberController;
   late final TextEditingController _noteController;
+  Coordinate? _selectedCoordinate;
+  bool _isSelectedFromAutocomplete = false;
 
   @override
   void initState() {
@@ -71,7 +78,9 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
     _phoneNumberController = TextEditingController(text: data?.phoneNumber ?? '');
     _noteController = TextEditingController(text: data?.note ?? '');
 
-    _nameController.addListener(() => setState(() {}));
+    _nameController.addListener(() => setState(() {
+      _isSelectedFromAutocomplete = false;
+    }));
     _addressController.addListener(() => setState(() {}));
     _websiteController.addListener(() => setState(() {}));
     _openingHoursController.addListener(() => setState(() {}));
@@ -150,21 +159,171 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            TextFormField(
-              controller: _nameController,
-              textInputAction: TextInputAction.next,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Please enter a name";
+            Autocomplete<PointOfInterestSearchModel>(
+              optionsBuilder: (TextEditingValue textEditingValue) async {
+                if (textEditingValue.text.isEmpty || _isSelectedFromAutocomplete) {
+                  return const Iterable<PointOfInterestSearchModel>.empty();
                 }
-                return null;
+                // HACK: workaround to reduce unwanted api queries
+                // This value appears when selecting an option from the autocomplete
+                if (textEditingValue.text == "Instance of 'PointOfInterestSearchModel'") {
+                  return const Iterable<PointOfInterestSearchModel>.empty();
+                }
+                try {
+                  final results = await searchPointOfInterests(query: textEditingValue.text, tripId: widget.tripId);
+                  return results;
+                } catch (e) {
+                  return const Iterable<PointOfInterestSearchModel>.empty();
+                }
               },
-              decoration: AppInputDecoration(
-                  labelText: "Name",
-                  hintText: "Restaurant, Museum, Park, etc.",
-                  required: true,
-                  icon: Icons.explore_outlined
-              ),
+              onSelected: (PointOfInterestSearchModel selection) {
+                searchPointOfInterestDetails(id: selection.id)
+                .then((details) {
+                  if (details.openingHours != null && _openingHoursController.text.isEmpty) {
+                    _openingHoursController.text = details.openingHours!;
+                  }
+                  if (details.website != null && _websiteController.text.isEmpty) {
+                    _websiteController.text = details.website!;
+                  }
+                  if (details.phoneNumber != null && _phoneNumberController.text.isEmpty) {
+                    _phoneNumberController.text = details.phoneNumber!;
+                  }
+                });
+                _nameController.text = selection.name;
+                if (selection.address != null && selection.address!.isNotEmpty) {
+                  _addressController.text = selection.address!;
+                }
+                setState(() {
+                  _selectedCoordinate = selection.coordinate;
+                  _isSelectedFromAutocomplete = true;
+                });
+              },
+              optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<PointOfInterestSearchModel> onSelected, Iterable<PointOfInterestSearchModel> options) {
+                var colorScheme = Theme.of(context).colorScheme;
+                var textTheme = Theme.of(context).textTheme;
+                
+                return Align(
+                  alignment: Alignment.topLeft,
+                  child: Material(
+                    elevation: 4.0,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      constraints: const BoxConstraints(maxHeight: 300),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant,
+                          width: 1,
+                        ),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(8),
+                        itemCount: options.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 4),
+                        itemBuilder: (context, index) {
+                          final option = options.elementAt(index);
+                          return InkWell(
+                            onTap: () => onSelected(option),
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primaryContainer,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      Icons.explore,
+                                      size: 16,
+                                      color: colorScheme.onPrimaryContainer,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          option.name,
+                                          style: textTheme.titleSmall?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        if (option.address != null && option.address!.isNotEmpty) ...[
+                                          Text(
+                                            option.address!,
+                                            style: textTheme.bodySmall?.copyWith(
+                                              color: colorScheme.onSurfaceVariant,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                        ],
+                                        Text(
+                                          option.country,
+                                          style: textTheme.bodySmall?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 12,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+              fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+                if (textEditingController.text != _nameController.text) {
+                  textEditingController.text = _nameController.text;
+                }
+                textEditingController.addListener(() {
+                  if (_nameController.text != textEditingController.text) {
+                    _nameController.text = textEditingController.text;
+                  }
+                });
+                
+                return TextFormField(
+                  controller: textEditingController,
+                  focusNode: focusNode,
+                  textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter a name";
+                    }
+                    return null;
+                  },
+                  decoration: AppInputDecoration(
+                    labelText: "Name",
+                    hintText: "Restaurant, Museum, Park, etc.",
+                    required: true,
+                    icon: Icons.explore_outlined
+                  ),
+                  onFieldSubmitted: (String value) {
+                    onFieldSubmitted();
+                  },
+                );
+              },
             ),
             TextFormField(
               controller: _addressController,
@@ -189,7 +348,6 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
               keyboardType: TextInputType.url,
               validator: (value) {
                 if (value != null && value.isNotEmpty) {
-                  // Basic URL validation
                   if (!value.startsWith('http://') &&
                       !value.startsWith('https://')) {
                     return "Please enter a valid URL (starting with http:// or https://)";
@@ -488,7 +646,7 @@ class PointOfInterestFormState extends State<PointOfInterestForm> {
           ? null
           : _noteController.text.trim(),
       id: widget.initialData?.id,
-      tripId: widget.initialData?.tripId,
+      coordinate: _selectedCoordinate,
     );
   }
 

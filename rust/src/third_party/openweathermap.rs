@@ -3,11 +3,11 @@ use chrono::{Datelike, Timelike, TimeZone};
 use serde::Deserialize;
 use itertools::Itertools;
 
-use crate::models::{Coordinates, DailyWeatherForecast, HourlyWeatherForecast, WeatherCondition, WeatherForecast};
+use crate::models::{Coordinate, DailyWeatherForecast, HourlyWeatherForecast, WeatherCondition, WeatherForecast};
 
 const API_KEY: Option<&str> = option_env!("OPENWEATHERMAP_API_KEY");
 
-pub async fn get_forecast(coordinates: &Coordinates) -> anyhow::Result<OpenWeatherMap> {
+pub async fn get_forecast(coordinates: &Coordinate) -> anyhow::Result<OpenWeatherMap> {
     let Some(key) = API_KEY else {
         anyhow::bail!("OPENWEATHERMAP_API_KEY is not set");
     };

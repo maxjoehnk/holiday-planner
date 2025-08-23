@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::models::{Coordinates, TidalInformation, TideType};
+use crate::models::{Coordinate, TidalInformation, TideType};
 
 const API_KEY: Option<&str> = option_env!("WORLD_TIDES_API_KEY");
 
@@ -30,7 +30,7 @@ pub struct TideExtreme {
     pub tide_type: TideType,
 }
 
-pub async fn fetch_tidal_information(coordinates: &Coordinates) -> anyhow::Result<Vec<TidalInformation>> {
+pub async fn fetch_tidal_information(coordinates: &Coordinate) -> anyhow::Result<Vec<TidalInformation>> {
     let Some(api_key) = API_KEY else {
         anyhow::bail!("World Tides API key not provided");
     };
@@ -77,7 +77,7 @@ mod tests {
     #[tokio::test]
     #[ignore] // Requires API key
     async fn test_fetch_tidal_information() {
-        let coordinates = Coordinates {
+        let coordinates = Coordinate {
             latitude: 51.5074,
             longitude: -0.1278,
         };

@@ -21,7 +21,7 @@ impl Handler for LocationHandler {
 impl LocationHandler {
     pub async fn search_locations(&self, query: String) -> anyhow::Result<Vec<LocationEntry>> {
         tracing::debug!("Searching locations {query}");
-        let features = photon::search_locations(&query).await?;
+        let features = photon::search_cities(&query).await?;
 
         tracing::debug!("Received {} locations", features.len());
 
@@ -37,7 +37,7 @@ impl LocationHandler {
 
                         Some(LocationEntry {
                             name,
-                            coordinates: Coordinates {
+                            coordinates: Coordinate {
                                 latitude: coords[1],
                                 longitude: coords[0],
                             },
@@ -69,7 +69,7 @@ impl LocationHandler {
 
             result.push(TripLocationListModel {
                 id: location.id,
-                coordinates: Coordinates {
+                coordinates: Coordinate {
                     latitude: location.coordinates_latitude,
                     longitude: location.coordinates_longitude,
                 },
@@ -111,7 +111,7 @@ impl LocationHandler {
             coordinates_longitude: Set(location.coordinates.longitude),
             country: Set(location.country),
             city: Set(location.name), // TODO: this mapping is false
-            is_coastal: Set(is_coastal), // Automatically determined based on coordinates
+            is_coastal: Set(is_coastal),
             tidal_information_last_updated: Set(None),
             weather_information_last_updated: Set(None),
         };
@@ -149,7 +149,7 @@ impl LocationHandler {
 
         Ok(TripLocationListModel {
             id: location.id,
-            coordinates: Coordinates {
+            coordinates: Coordinate {
                 latitude: location.coordinates_latitude,
                 longitude: location.coordinates_longitude,
             },
@@ -166,10 +166,7 @@ impl LocationHandler {
     }
 
     pub async fn delete_location(&self, location_id: Uuid) -> anyhow::Result<()> {
-        // First delete related tidal information
         repositories::tidal_information::delete_by_location_id(self.db.deref(), location_id).await?;
-        
-        // Then delete the location itself
         repositories::locations::delete_by_id(&self.db, location_id).await?;
         
         Ok(())
@@ -180,45 +177,35 @@ impl LocationHandler {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::database::Database;
-    use uuid::Uuid;
 
     #[tokio::test]
     async fn test_coastal_detection_integration() {
-        // Test that coastal detection is automatically applied when adding locations
-        
-        // Create test locations - one coastal, one inland
         let miami_location = LocationEntry {
             name: "Miami".to_string(),
-            coordinates: Coordinates {
+            coordinates: Coordinate {
                 latitude: 25.7617,
                 longitude: -80.1918,
             },
             country: "United States".to_string(),
         };
-        
         let denver_location = LocationEntry {
             name: "Denver".to_string(),
-            coordinates: Coordinates {
+            coordinates: Coordinate {
                 latitude: 39.7392,
                 longitude: -104.9903,
             },
             country: "United States".to_string(),
         };
         
-        // Test the coastal detection directly using Overpass API
-        // Note: These tests may fail in environments without internet access
+        // These tests may fail in environments without internet access
         match overpass::is_coastal(miami_location.coordinates.latitude, miami_location.coordinates.longitude).await {
-            Ok(is_coastal) => println!("Miami coastal detection: {}", is_coastal),
-            Err(e) => println!("Miami coastal detection failed (expected in test environments): {}", e),
+            Ok(is_coastal) => assert!(is_coastal),
+            Err(e) => eprintln!("Miami coastal detection failed (expected in test environments): {}", e),
         }
-        
         match overpass::is_coastal(denver_location.coordinates.latitude, denver_location.coordinates.longitude).await {
-            Ok(is_coastal) => println!("Denver coastal detection: {}", is_coastal),
-            Err(e) => println!("Denver coastal detection failed (expected in test environments): {}", e),
+            Ok(is_coastal) => assert!(!is_coastal),
+            Err(e) => eprintln!("Denver coastal detection failed (expected in test environments): {}", e),
         }
-        
-        println!("Coastal detection integration test passed!");
     }
 }
 

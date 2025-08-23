@@ -7,8 +7,19 @@ import '../commands/add_trip_point_of_interest.dart';
 import '../commands/update_trip_point_of_interest.dart';
 import '../frb_generated.dart';
 import '../models.dart';
+import '../models/point_of_interests.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
+
+Future<List<PointOfInterestSearchModel>> searchPointOfInterests(
+        {required String query, required UuidValue tripId}) =>
+    RustLib.instance.api.crateApiPointsOfInterestSearchPointOfInterests(
+        query: query, tripId: tripId);
+
+Future<PointOfInterestOsmModel> searchPointOfInterestDetails(
+        {required BigInt id}) =>
+    RustLib.instance.api
+        .crateApiPointsOfInterestSearchPointOfInterestDetails(id: id);
 
 Future<List<PointOfInterestModel>> getTripPointsOfInterest(
         {required UuidValue tripId}) =>

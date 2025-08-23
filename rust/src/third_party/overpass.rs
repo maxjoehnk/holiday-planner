@@ -15,7 +15,8 @@ struct OverpassElement {
     #[serde(rename = "type")]
     element_type: String,
     id: u64,
-    tags: Option<HashMap<String, String>>,
+    #[serde(default)]
+    tags: HashMap<String, String>,
     lat: Option<f64>,
     lon: Option<f64>,
 }
@@ -23,14 +24,43 @@ struct OverpassElement {
 /// Determines if a location is coastal by querying the Overpass API for nearby water bodies
 pub async fn is_coastal(latitude: f64, longitude: f64) -> anyhow::Result<bool> {
      let query = format!(
-        r#"[out:json][timeout:25];
-        (
+        r#"(
           way["natural"="coastline"](around:{},{},{});
         );
         out geom;"#,
         RADIUS, latitude, longitude,
     );
+    let overpass_response = overpass_query(&query).await?;
 
+    let has_coastal_features = overpass_response.elements.iter().any(|element| element.tags.get("natural") == Some(&"coastline".to_string()));
+
+    tracing::debug!(
+        "Overpass API coastal check for ({}, {}): found {} elements, coastal: {}",
+        latitude,
+        longitude,
+        overpass_response.elements.len(),
+        has_coastal_features
+    );
+
+    Ok(has_coastal_features)
+}
+
+pub async fn get_point_of_interest_data(osm_id: u64) -> anyhow::Result<HashMap<String, String>> {
+    let query = format!(
+        r#"node({osm_id});
+        out tags;"#
+    );
+    let res = overpass_query(&query).await?;
+
+    let Some(element) = res.elements.into_iter().next() else {
+        anyhow::bail!("No element found with OSM ID {osm_id}");
+    };
+
+    Ok(element.tags)
+}
+
+async fn overpass_query(query: &str) -> anyhow::Result<OverpassResponse> {
+    let query = format!("[out:json][timeout:25];\n{query}");
     let client = reqwest::Client::new();
     let response = client
         .post("https://overpass-api.de/api/interpreter")
@@ -44,26 +74,8 @@ pub async fn is_coastal(latitude: f64, longitude: f64) -> anyhow::Result<bool> {
     }
 
     let overpass_response: OverpassResponse = response.json().await?;
-    
-    // Check if we found any coastal or water features
-    let has_coastal_features = overpass_response.elements.iter().any(|element| {
-        if let Some(tags) = &element.tags {
-            if tags.get("natural") == Some(&"coastline".to_string()) {
-                return true;
-            }
-        }
-        false
-    });
 
-    tracing::debug!(
-        "Overpass API coastal check for ({}, {}): found {} elements, coastal: {}",
-        latitude,
-        longitude,
-        overpass_response.elements.len(),
-        has_coastal_features
-    );
-
-    Ok(has_coastal_features)
+    Ok(overpass_response)
 }
 
 #[cfg(test)]

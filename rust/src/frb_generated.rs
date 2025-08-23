@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1959395527;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1952859969;
 
 // Section: executor
 
@@ -1925,6 +1925,87 @@ fn wire__crate__api__trips__search_locations_impl(
         },
     )
 }
+fn wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "search_point_of_interest_details",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_id = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::points_of_interest::search_point_of_interest_details(
+                                api_id,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__points_of_interest__search_point_of_interests_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "search_point_of_interests",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_query = <String>::sse_decode(&mut deserializer);
+            let api_trip_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::points_of_interest::search_point_of_interests(
+                            api_query,
+                            api_trip_id,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__trips__search_web_images_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2592,6 +2673,7 @@ impl SseDecode for crate::commands::add_trip_point_of_interest::AddTripPointOfIn
         let mut var_price = <Option<String>>::sse_decode(deserializer);
         let mut var_phoneNumber = <Option<String>>::sse_decode(deserializer);
         let mut var_note = <Option<String>>::sse_decode(deserializer);
+        let mut var_coordinate = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
         return crate::commands::add_trip_point_of_interest::AddTripPointOfInterest {
             trip_id: var_tripId,
             name: var_name,
@@ -2601,6 +2683,7 @@ impl SseDecode for crate::commands::add_trip_point_of_interest::AddTripPointOfIn
             price: var_price,
             phone_number: var_phoneNumber,
             note: var_note,
+            coordinate: var_coordinate,
         };
     }
 }
@@ -2673,12 +2756,12 @@ impl SseDecode for crate::models::bookings::CarRental {
     }
 }
 
-impl SseDecode for crate::models::Coordinates {
+impl SseDecode for crate::models::Coordinate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_latitude = <f64>::sse_decode(deserializer);
         let mut var_longitude = <f64>::sse_decode(deserializer);
-        return crate::models::Coordinates {
+        return crate::models::Coordinate {
             latitude: var_latitude,
             longitude: var_longitude,
         };
@@ -2951,6 +3034,22 @@ impl SseDecode for Vec<crate::models::PointOfInterestModel> {
     }
 }
 
+impl SseDecode for Vec<crate::models::point_of_interests::PointOfInterestSearchModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(
+                <crate::models::point_of_interests::PointOfInterestSearchModel>::sse_decode(
+                    deserializer,
+                ),
+            );
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3113,7 +3212,7 @@ impl SseDecode for crate::models::LocationEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_name = <String>::sse_decode(deserializer);
-        let mut var_coordinates = <crate::models::Coordinates>::sse_decode(deserializer);
+        let mut var_coordinates = <crate::models::Coordinate>::sse_decode(deserializer);
         let mut var_country = <String>::sse_decode(deserializer);
         return crate::models::LocationEntry {
             name: var_name,
@@ -3152,6 +3251,17 @@ impl SseDecode for Option<crate::models::AccommodationStatus> {
             return Some(<crate::models::AccommodationStatus>::sse_decode(
                 deserializer,
             ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::models::Coordinate> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::models::Coordinate>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -3354,8 +3464,10 @@ impl SseDecode for crate::models::PointOfInterestModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_address = <String>::sse_decode(deserializer);
+        let mut var_coordinates = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
         let mut var_website = <Option<String>>::sse_decode(deserializer);
         let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
         let mut var_price = <Option<String>>::sse_decode(deserializer);
@@ -3363,13 +3475,49 @@ impl SseDecode for crate::models::PointOfInterestModel {
         let mut var_note = <Option<String>>::sse_decode(deserializer);
         return crate::models::PointOfInterestModel {
             id: var_id,
+            trip_id: var_tripId,
             name: var_name,
             address: var_address,
+            coordinates: var_coordinates,
             website: var_website,
             opening_hours: var_openingHours,
             price: var_price,
             phone_number: var_phoneNumber,
             note: var_note,
+        };
+    }
+}
+
+impl SseDecode for crate::models::point_of_interests::PointOfInterestOsmModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <u64>::sse_decode(deserializer);
+        let mut var_openingHours = <Option<String>>::sse_decode(deserializer);
+        let mut var_website = <Option<String>>::sse_decode(deserializer);
+        let mut var_phoneNumber = <Option<String>>::sse_decode(deserializer);
+        return crate::models::point_of_interests::PointOfInterestOsmModel {
+            id: var_id,
+            opening_hours: var_openingHours,
+            website: var_website,
+            phone_number: var_phoneNumber,
+        };
+    }
+}
+
+impl SseDecode for crate::models::point_of_interests::PointOfInterestSearchModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <u64>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_address = <Option<String>>::sse_decode(deserializer);
+        let mut var_country = <String>::sse_decode(deserializer);
+        let mut var_coordinate = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
+        return crate::models::point_of_interests::PointOfInterestSearchModel {
+            id: var_id,
+            name: var_name,
+            address: var_address,
+            country: var_country,
+            coordinate: var_coordinate,
         };
     }
 }
@@ -3693,7 +3841,7 @@ impl SseDecode for crate::models::TripLocationListModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
-        let mut var_coordinates = <crate::models::Coordinates>::sse_decode(deserializer);
+        let mut var_coordinates = <crate::models::Coordinate>::sse_decode(deserializer);
         let mut var_city = <String>::sse_decode(deserializer);
         let mut var_country = <String>::sse_decode(deserializer);
         let mut var_forecast = <Option<crate::models::WeatherForecast>>::sse_decode(deserializer);
@@ -3808,6 +3956,13 @@ impl SseDecode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
     }
 }
 
@@ -3986,6 +4141,7 @@ impl SseDecode for crate::commands::update_trip_point_of_interest::UpdateTripPoi
         let mut var_price = <Option<String>>::sse_decode(deserializer);
         let mut var_phoneNumber = <Option<String>>::sse_decode(deserializer);
         let mut var_note = <Option<String>>::sse_decode(deserializer);
+        let mut var_coordinate = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
         return crate::commands::update_trip_point_of_interest::UpdateTripPointOfInterest {
             id: var_id,
             name: var_name,
@@ -3995,6 +4151,7 @@ impl SseDecode for crate::commands::update_trip_point_of_interest::UpdateTripPoi
             price: var_price,
             phone_number: var_phoneNumber,
             note: var_note,
+            coordinate: var_coordinate,
         };
     }
 }
@@ -4193,29 +4350,41 @@ fn pde_ffi_dispatcher_primary_impl(
         49 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
         50 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
         51 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        53 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        55 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
-        56 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        52 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => {
+        53 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        54 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        57 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        58 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        59 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        60 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        62 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        62 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        64 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4552,6 +4721,7 @@ impl flutter_rust_bridge::IntoDart
             self.price.into_into_dart().into_dart(),
             self.phone_number.into_into_dart().into_dart(),
             self.note.into_into_dart().into_dart(),
+            self.coordinate.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4647,7 +4817,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::bookings::CarRental>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::models::Coordinates {
+impl flutter_rust_bridge::IntoDart for crate::models::Coordinate {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.latitude.into_into_dart().into_dart(),
@@ -4656,9 +4826,9 @@ impl flutter_rust_bridge::IntoDart for crate::models::Coordinates {
         .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::models::Coordinates {}
-impl flutter_rust_bridge::IntoIntoDart<crate::models::Coordinates> for crate::models::Coordinates {
-    fn into_into_dart(self) -> crate::models::Coordinates {
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::models::Coordinate {}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::Coordinate> for crate::models::Coordinate {
+    fn into_into_dart(self) -> crate::models::Coordinate {
         self
     }
 }
@@ -4969,8 +5139,10 @@ impl flutter_rust_bridge::IntoDart for crate::models::PointOfInterestModel {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.id.into_into_dart().into_dart(),
+            self.trip_id.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
             self.address.into_into_dart().into_dart(),
+            self.coordinates.into_into_dart().into_dart(),
             self.website.into_into_dart().into_dart(),
             self.opening_hours.into_into_dart().into_dart(),
             self.price.into_into_dart().into_dart(),
@@ -4988,6 +5160,56 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::PointOfInterestModel>
     for crate::models::PointOfInterestModel
 {
     fn into_into_dart(self) -> crate::models::PointOfInterestModel {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::point_of_interests::PointOfInterestOsmModel {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.opening_hours.into_into_dart().into_dart(),
+            self.website.into_into_dart().into_dart(),
+            self.phone_number.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::point_of_interests::PointOfInterestOsmModel
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::point_of_interests::PointOfInterestOsmModel>
+    for crate::models::point_of_interests::PointOfInterestOsmModel
+{
+    fn into_into_dart(self) -> crate::models::point_of_interests::PointOfInterestOsmModel {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::models::point_of_interests::PointOfInterestSearchModel
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
+            self.country.into_into_dart().into_dart(),
+            self.coordinate.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::point_of_interests::PointOfInterestSearchModel
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<crate::models::point_of_interests::PointOfInterestSearchModel>
+    for crate::models::point_of_interests::PointOfInterestSearchModel
+{
+    fn into_into_dart(self) -> crate::models::point_of_interests::PointOfInterestSearchModel {
         self
     }
 }
@@ -5756,6 +5978,7 @@ impl flutter_rust_bridge::IntoDart
             self.price.into_into_dart().into_dart(),
             self.phone_number.into_into_dart().into_dart(),
             self.note.into_into_dart().into_dart(),
+            self.coordinate.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -6022,6 +6245,7 @@ impl SseEncode for crate::commands::add_trip_point_of_interest::AddTripPointOfIn
         <Option<String>>::sse_encode(self.price, serializer);
         <Option<String>>::sse_encode(self.phone_number, serializer);
         <Option<String>>::sse_encode(self.note, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinate, serializer);
     }
 }
 
@@ -6075,7 +6299,7 @@ impl SseEncode for crate::models::bookings::CarRental {
     }
 }
 
-impl SseEncode for crate::models::Coordinates {
+impl SseEncode for crate::models::Coordinate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <f64>::sse_encode(self.latitude, serializer);
@@ -6277,6 +6501,18 @@ impl SseEncode for Vec<crate::models::PointOfInterestModel> {
     }
 }
 
+impl SseEncode for Vec<crate::models::point_of_interests::PointOfInterestSearchModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::point_of_interests::PointOfInterestSearchModel>::sse_encode(
+                item, serializer,
+            );
+        }
+    }
+}
+
 impl SseEncode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6401,7 +6637,7 @@ impl SseEncode for crate::models::LocationEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.name, serializer);
-        <crate::models::Coordinates>::sse_encode(self.coordinates, serializer);
+        <crate::models::Coordinate>::sse_encode(self.coordinates, serializer);
         <String>::sse_encode(self.country, serializer);
     }
 }
@@ -6432,6 +6668,16 @@ impl SseEncode for Option<crate::models::AccommodationStatus> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::models::AccommodationStatus>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::models::Coordinate> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::models::Coordinate>::sse_encode(value, serializer);
         }
     }
 }
@@ -6583,13 +6829,36 @@ impl SseEncode for crate::models::PointOfInterestModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <uuid::Uuid>::sse_encode(self.id, serializer);
+        <uuid::Uuid>::sse_encode(self.trip_id, serializer);
         <String>::sse_encode(self.name, serializer);
         <String>::sse_encode(self.address, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinates, serializer);
         <Option<String>>::sse_encode(self.website, serializer);
         <Option<String>>::sse_encode(self.opening_hours, serializer);
         <Option<String>>::sse_encode(self.price, serializer);
         <Option<String>>::sse_encode(self.phone_number, serializer);
         <Option<String>>::sse_encode(self.note, serializer);
+    }
+}
+
+impl SseEncode for crate::models::point_of_interests::PointOfInterestOsmModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.id, serializer);
+        <Option<String>>::sse_encode(self.opening_hours, serializer);
+        <Option<String>>::sse_encode(self.website, serializer);
+        <Option<String>>::sse_encode(self.phone_number, serializer);
+    }
+}
+
+impl SseEncode for crate::models::point_of_interests::PointOfInterestSearchModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <Option<String>>::sse_encode(self.address, serializer);
+        <String>::sse_encode(self.country, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinate, serializer);
     }
 }
 
@@ -6839,7 +7108,7 @@ impl SseEncode for crate::models::TripLocationListModel {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <uuid::Uuid>::sse_encode(self.id, serializer);
-        <crate::models::Coordinates>::sse_encode(self.coordinates, serializer);
+        <crate::models::Coordinate>::sse_encode(self.coordinates, serializer);
         <String>::sse_encode(self.city, serializer);
         <String>::sse_encode(self.country, serializer);
         <Option<crate::models::WeatherForecast>>::sse_encode(self.forecast, serializer);
@@ -6918,6 +7187,13 @@ impl SseEncode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -7032,6 +7308,7 @@ impl SseEncode for crate::commands::update_trip_point_of_interest::UpdateTripPoi
         <Option<String>>::sse_encode(self.price, serializer);
         <Option<String>>::sse_encode(self.phone_number, serializer);
         <Option<String>>::sse_encode(self.note, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinate, serializer);
     }
 }
 

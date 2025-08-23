@@ -47,6 +47,7 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'models.dart';
 import 'models/bookings.dart';
+import 'models/point_of_interests.dart';
 import 'models/tidal_information.dart';
 import 'models/timeline.dart';
 import 'models/transits.dart';
@@ -167,6 +168,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CarRental dco_decode_box_autoadd_car_rental(dynamic raw);
 
   @protected
+  Coordinate dco_decode_box_autoadd_coordinate(dynamic raw);
+
+  @protected
   CreateTag dco_decode_box_autoadd_create_tag(dynamic raw);
 
   @protected
@@ -242,7 +246,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CarRental dco_decode_car_rental(dynamic raw);
 
   @protected
-  Coordinates dco_decode_coordinates(dynamic raw);
+  Coordinate dco_decode_coordinate(dynamic raw);
 
   @protected
   CreateTag dco_decode_create_tag(dynamic raw);
@@ -309,6 +313,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  List<PointOfInterestSearchModel>
+      dco_decode_list_point_of_interest_search_model(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
@@ -361,6 +369,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  Coordinate? dco_decode_opt_box_autoadd_coordinate(dynamic raw);
+
+  @protected
   LocationEntry? dco_decode_opt_box_autoadd_location_entry(dynamic raw);
 
   @protected
@@ -397,6 +408,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PointOfInterestModel dco_decode_point_of_interest_model(dynamic raw);
+
+  @protected
+  PointOfInterestOsmModel dco_decode_point_of_interest_osm_model(dynamic raw);
+
+  @protected
+  PointOfInterestSearchModel dco_decode_point_of_interest_search_model(
+      dynamic raw);
 
   @protected
   Quantity dco_decode_quantity(dynamic raw);
@@ -466,6 +484,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int dco_decode_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -630,6 +651,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CarRental sse_decode_box_autoadd_car_rental(SseDeserializer deserializer);
 
   @protected
+  Coordinate sse_decode_box_autoadd_coordinate(SseDeserializer deserializer);
+
+  @protected
   CreateTag sse_decode_box_autoadd_create_tag(SseDeserializer deserializer);
 
   @protected
@@ -714,7 +738,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CarRental sse_decode_car_rental(SseDeserializer deserializer);
 
   @protected
-  Coordinates sse_decode_coordinates(SseDeserializer deserializer);
+  Coordinate sse_decode_coordinate(SseDeserializer deserializer);
 
   @protected
   CreateTag sse_decode_create_tag(SseDeserializer deserializer);
@@ -790,6 +814,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<PointOfInterestSearchModel>
+      sse_decode_list_point_of_interest_search_model(
+          SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
@@ -847,6 +876,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  Coordinate? sse_decode_opt_box_autoadd_coordinate(
+      SseDeserializer deserializer);
+
+  @protected
   LocationEntry? sse_decode_opt_box_autoadd_location_entry(
       SseDeserializer deserializer);
 
@@ -887,6 +920,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PointOfInterestModel sse_decode_point_of_interest_model(
+      SseDeserializer deserializer);
+
+  @protected
+  PointOfInterestOsmModel sse_decode_point_of_interest_osm_model(
+      SseDeserializer deserializer);
+
+  @protected
+  PointOfInterestSearchModel sse_decode_point_of_interest_search_model(
       SseDeserializer deserializer);
 
   @protected
@@ -966,6 +1007,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -1137,6 +1181,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CarRental self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_coordinate(
+      Coordinate self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_create_tag(
       CreateTag self, SseSerializer serializer);
 
@@ -1227,7 +1275,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_car_rental(CarRental self, SseSerializer serializer);
 
   @protected
-  void sse_encode_coordinates(Coordinates self, SseSerializer serializer);
+  void sse_encode_coordinate(Coordinate self, SseSerializer serializer);
 
   @protected
   void sse_encode_create_tag(CreateTag self, SseSerializer serializer);
@@ -1303,6 +1351,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<PointOfInterestModel> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_point_of_interest_search_model(
+      List<PointOfInterestSearchModel> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
 
@@ -1362,6 +1414,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AccommodationStatus? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_coordinate(
+      Coordinate? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_location_entry(
       LocationEntry? self, SseSerializer serializer);
 
@@ -1407,6 +1463,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_point_of_interest_model(
       PointOfInterestModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_point_of_interest_osm_model(
+      PointOfInterestOsmModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_point_of_interest_search_model(
+      PointOfInterestSearchModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_quantity(Quantity self, SseSerializer serializer);
@@ -1488,6 +1552,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

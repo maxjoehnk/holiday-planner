@@ -47,6 +47,7 @@ class _EditPointOfInterestState extends State<EditPointOfInterest> {
         children: [
           Expanded(
             child: PointOfInterestForm(
+              tripId: widget.pointOfInterest.tripId,
               key: _formKey,
               initialData: PointOfInterestFormData(
                 id: widget.pointOfInterest.id,
@@ -101,6 +102,7 @@ class _EditPointOfInterestState extends State<EditPointOfInterest> {
         price: formData.price,
         phoneNumber: formData.phoneNumber,
         note: formData.note,
+        coordinate: formData.coordinate,
       );
 
       await updateTripPointOfInterest(command: command);

@@ -42,12 +42,8 @@ class _AddPointOfInterestState extends State<AddPointOfInterest> {
         ],
       ),
       body: PointOfInterestForm(
+        tripId: widget.tripId,
         key: _formKey,
-        initialData: PointOfInterestFormData(
-          name: '',
-          address: '',
-          tripId: widget.tripId,
-        ),
         onSubmit: _handleFormSubmit,
         isLoading: _isLoading,
         errorMessage: _errorMessage,
@@ -73,6 +69,7 @@ class _AddPointOfInterestState extends State<AddPointOfInterest> {
           phoneNumber: formData.phoneNumber,
           note: formData.note,
           tripId: widget.tripId,
+          coordinate: formData.coordinate,
         ),
       );
       

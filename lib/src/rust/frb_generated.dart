@@ -46,6 +46,7 @@ import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'models.dart';
 import 'models/bookings.dart';
+import 'models/point_of_interests.dart';
 import 'models/tidal_information.dart';
 import 'models/timeline.dart';
 import 'models/transits.dart';
@@ -112,7 +113,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1959395527;
+  int get rustContentHash => 1952859969;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -257,6 +258,14 @@ abstract class RustLibApi extends BaseApi {
 
   Future<List<LocationEntry>> crateApiTripsSearchLocations(
       {required String query});
+
+  Future<PointOfInterestOsmModel>
+      crateApiPointsOfInterestSearchPointOfInterestDetails(
+          {required BigInt id});
+
+  Future<List<PointOfInterestSearchModel>>
+      crateApiPointsOfInterestSearchPointOfInterests(
+          {required String query, required UuidValue tripId});
 
   Future<List<WebImage>> crateApiTripsSearchWebImages(
       {required SearchWebImages command});
@@ -1591,6 +1600,62 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<PointOfInterestOsmModel>
+      crateApiPointsOfInterestSearchPointOfInterestDetails(
+          {required BigInt id}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(id, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 52, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_point_of_interest_osm_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiPointsOfInterestSearchPointOfInterestDetailsConstMeta,
+      argValues: [id],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiPointsOfInterestSearchPointOfInterestDetailsConstMeta =>
+          const TaskConstMeta(
+            debugName: "search_point_of_interest_details",
+            argNames: ["id"],
+          );
+
+  @override
+  Future<List<PointOfInterestSearchModel>>
+      crateApiPointsOfInterestSearchPointOfInterests(
+          {required String query, required UuidValue tripId}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(query, serializer);
+        sse_encode_Uuid(tripId, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 53, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_point_of_interest_search_model,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiPointsOfInterestSearchPointOfInterestsConstMeta,
+      argValues: [query, tripId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiPointsOfInterestSearchPointOfInterestsConstMeta =>
+      const TaskConstMeta(
+        debugName: "search_point_of_interests",
+        argNames: ["query", "tripId"],
+      );
+
+  @override
   Future<List<WebImage>> crateApiTripsSearchWebImages(
       {required SearchWebImages command}) {
     return handler.executeNormal(NormalTask(
@@ -1598,7 +1663,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_search_web_images(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 52, port: port_);
+            funcId: 54, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_web_image,
@@ -1623,7 +1688,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_set_trip_tags(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 53, port: port_);
+            funcId: 55, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1648,7 +1713,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_car_rental(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 54, port: port_);
+            funcId: 56, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1675,7 +1740,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(locationId, serializer);
         sse_encode_bool(isCoastal, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 55, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1701,7 +1766,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_packing_list_entry(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 56, port: port_);
+            funcId: 58, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1727,7 +1792,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_reservation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 57, port: port_);
+            funcId: 59, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1752,7 +1817,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_tag(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 58, port: port_);
+            funcId: 60, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_tag_model,
@@ -1776,7 +1841,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_train(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 59, port: port_);
+            funcId: 61, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1802,7 +1867,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 60, port: port_);
+            funcId: 62, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -1827,7 +1892,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 61, port: port_);
+            funcId: 63, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1854,7 +1919,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_update_trip_point_of_interest(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 62, port: port_);
+            funcId: 64, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2074,8 +2139,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AddTripPointOfInterest dco_decode_add_trip_point_of_interest(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return AddTripPointOfInterest(
       tripId: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2085,6 +2150,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       price: dco_decode_opt_String(arr[5]),
       phoneNumber: dco_decode_opt_String(arr[6]),
       note: dco_decode_opt_String(arr[7]),
+      coordinate: dco_decode_opt_box_autoadd_coordinate(arr[8]),
     );
   }
 
@@ -2205,6 +2271,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   CarRental dco_decode_box_autoadd_car_rental(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_car_rental(raw);
+  }
+
+  @protected
+  Coordinate dco_decode_box_autoadd_coordinate(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_coordinate(raw);
   }
 
   @protected
@@ -2364,12 +2436,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Coordinates dco_decode_coordinates(dynamic raw) {
+  Coordinate dco_decode_coordinate(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
     if (arr.length != 2)
       throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return Coordinates(
+    return Coordinate(
       latitude: dco_decode_f_64(arr[0]),
       longitude: dco_decode_f_64(arr[1]),
     );
@@ -2568,6 +2640,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<PointOfInterestSearchModel>
+      dco_decode_list_point_of_interest_search_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_point_of_interest_search_model)
+        .toList();
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
@@ -2658,7 +2739,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return LocationEntry(
       name: dco_decode_String(arr[0]),
-      coordinates: dco_decode_coordinates(arr[1]),
+      coordinates: dco_decode_coordinate(arr[1]),
       country: dco_decode_String(arr[2]),
     );
   }
@@ -2682,6 +2763,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return raw == null
         ? null
         : dco_decode_box_autoadd_accommodation_status(raw);
+  }
+
+  @protected
+  Coordinate? dco_decode_opt_box_autoadd_coordinate(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_coordinate(raw);
   }
 
   @protected
@@ -2822,17 +2909,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PointOfInterestModel dco_decode_point_of_interest_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 10)
+      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
     return PointOfInterestModel(
       id: dco_decode_Uuid(arr[0]),
+      tripId: dco_decode_Uuid(arr[1]),
+      name: dco_decode_String(arr[2]),
+      address: dco_decode_String(arr[3]),
+      coordinates: dco_decode_opt_box_autoadd_coordinate(arr[4]),
+      website: dco_decode_opt_String(arr[5]),
+      openingHours: dco_decode_opt_String(arr[6]),
+      price: dco_decode_opt_String(arr[7]),
+      phoneNumber: dco_decode_opt_String(arr[8]),
+      note: dco_decode_opt_String(arr[9]),
+    );
+  }
+
+  @protected
+  PointOfInterestOsmModel dco_decode_point_of_interest_osm_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return PointOfInterestOsmModel(
+      id: dco_decode_u_64(arr[0]),
+      openingHours: dco_decode_opt_String(arr[1]),
+      website: dco_decode_opt_String(arr[2]),
+      phoneNumber: dco_decode_opt_String(arr[3]),
+    );
+  }
+
+  @protected
+  PointOfInterestSearchModel dco_decode_point_of_interest_search_model(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return PointOfInterestSearchModel(
+      id: dco_decode_u_64(arr[0]),
       name: dco_decode_String(arr[1]),
-      address: dco_decode_String(arr[2]),
-      website: dco_decode_opt_String(arr[3]),
-      openingHours: dco_decode_opt_String(arr[4]),
-      price: dco_decode_opt_String(arr[5]),
-      phoneNumber: dco_decode_opt_String(arr[6]),
-      note: dco_decode_opt_String(arr[7]),
+      address: dco_decode_opt_String(arr[2]),
+      country: dco_decode_String(arr[3]),
+      coordinate: dco_decode_opt_box_autoadd_coordinate(arr[4]),
     );
   }
 
@@ -3089,7 +3208,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return TripLocationListModel(
       id: dco_decode_Uuid(arr[0]),
-      coordinates: dco_decode_coordinates(arr[1]),
+      coordinates: dco_decode_coordinate(arr[1]),
       city: dco_decode_String(arr[2]),
       country: dco_decode_String(arr[3]),
       forecast: dco_decode_opt_box_autoadd_weather_forecast(arr[4]),
@@ -3179,6 +3298,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -3314,8 +3439,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return UpdateTripPointOfInterest(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -3325,6 +3450,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       price: dco_decode_opt_String(arr[5]),
       phoneNumber: dco_decode_opt_String(arr[6]),
       note: dco_decode_opt_String(arr[7]),
+      coordinate: dco_decode_opt_box_autoadd_coordinate(arr[8]),
     );
   }
 
@@ -3592,6 +3718,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_price = sse_decode_opt_String(deserializer);
     var var_phoneNumber = sse_decode_opt_String(deserializer);
     var var_note = sse_decode_opt_String(deserializer);
+    var var_coordinate = sse_decode_opt_box_autoadd_coordinate(deserializer);
     return AddTripPointOfInterest(
         tripId: var_tripId,
         name: var_name,
@@ -3600,7 +3727,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         openingHours: var_openingHours,
         price: var_price,
         phoneNumber: var_phoneNumber,
-        note: var_note);
+        note: var_note,
+        coordinate: var_coordinate);
   }
 
   @protected
@@ -3728,6 +3856,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   CarRental sse_decode_box_autoadd_car_rental(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_car_rental(deserializer));
+  }
+
+  @protected
+  Coordinate sse_decode_box_autoadd_coordinate(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_coordinate(deserializer));
   }
 
   @protected
@@ -3901,11 +4035,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Coordinates sse_decode_coordinates(SseDeserializer deserializer) {
+  Coordinate sse_decode_coordinate(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_latitude = sse_decode_f_64(deserializer);
     var var_longitude = sse_decode_f_64(deserializer);
-    return Coordinates(latitude: var_latitude, longitude: var_longitude);
+    return Coordinate(latitude: var_latitude, longitude: var_longitude);
   }
 
   @protected
@@ -4158,6 +4292,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<PointOfInterestSearchModel>
+      sse_decode_list_point_of_interest_search_model(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <PointOfInterestSearchModel>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_point_of_interest_search_model(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -4308,7 +4456,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   LocationEntry sse_decode_location_entry(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
-    var var_coordinates = sse_decode_coordinates(deserializer);
+    var var_coordinates = sse_decode_coordinate(deserializer);
     var var_country = sse_decode_String(deserializer);
     return LocationEntry(
         name: var_name, coordinates: var_coordinates, country: var_country);
@@ -4344,6 +4492,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_accommodation_status(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Coordinate? sse_decode_opt_box_autoadd_coordinate(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_coordinate(deserializer));
     } else {
       return null;
     }
@@ -4522,8 +4682,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_Uuid(deserializer);
+    var var_tripId = sse_decode_Uuid(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_address = sse_decode_String(deserializer);
+    var var_coordinates = sse_decode_opt_box_autoadd_coordinate(deserializer);
     var var_website = sse_decode_opt_String(deserializer);
     var var_openingHours = sse_decode_opt_String(deserializer);
     var var_price = sse_decode_opt_String(deserializer);
@@ -4531,13 +4693,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_note = sse_decode_opt_String(deserializer);
     return PointOfInterestModel(
         id: var_id,
+        tripId: var_tripId,
         name: var_name,
         address: var_address,
+        coordinates: var_coordinates,
         website: var_website,
         openingHours: var_openingHours,
         price: var_price,
         phoneNumber: var_phoneNumber,
         note: var_note);
+  }
+
+  @protected
+  PointOfInterestOsmModel sse_decode_point_of_interest_osm_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_u_64(deserializer);
+    var var_openingHours = sse_decode_opt_String(deserializer);
+    var var_website = sse_decode_opt_String(deserializer);
+    var var_phoneNumber = sse_decode_opt_String(deserializer);
+    return PointOfInterestOsmModel(
+        id: var_id,
+        openingHours: var_openingHours,
+        website: var_website,
+        phoneNumber: var_phoneNumber);
+  }
+
+  @protected
+  PointOfInterestSearchModel sse_decode_point_of_interest_search_model(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_u_64(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_address = sse_decode_opt_String(deserializer);
+    var var_country = sse_decode_String(deserializer);
+    var var_coordinate = sse_decode_opt_box_autoadd_coordinate(deserializer);
+    return PointOfInterestSearchModel(
+        id: var_id,
+        name: var_name,
+        address: var_address,
+        country: var_country,
+        coordinate: var_coordinate);
   }
 
   @protected
@@ -4779,7 +4975,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_Uuid(deserializer);
-    var var_coordinates = sse_decode_coordinates(deserializer);
+    var var_coordinates = sse_decode_coordinate(deserializer);
     var var_city = sse_decode_String(deserializer);
     var var_country = sse_decode_String(deserializer);
     var var_forecast =
@@ -4880,6 +5076,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -5041,6 +5243,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_price = sse_decode_opt_String(deserializer);
     var var_phoneNumber = sse_decode_opt_String(deserializer);
     var var_note = sse_decode_opt_String(deserializer);
+    var var_coordinate = sse_decode_opt_box_autoadd_coordinate(deserializer);
     return UpdateTripPointOfInterest(
         id: var_id,
         name: var_name,
@@ -5049,7 +5252,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         openingHours: var_openingHours,
         price: var_price,
         phoneNumber: var_phoneNumber,
-        note: var_note);
+        note: var_note,
+        coordinate: var_coordinate);
   }
 
   @protected
@@ -5256,6 +5460,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.price, serializer);
     sse_encode_opt_String(self.phoneNumber, serializer);
     sse_encode_opt_String(self.note, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinate, serializer);
   }
 
   @protected
@@ -5376,6 +5581,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       CarRental self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_car_rental(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_coordinate(
+      Coordinate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_coordinate(self, serializer);
   }
 
   @protected
@@ -5545,7 +5757,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_coordinates(Coordinates self, SseSerializer serializer) {
+  void sse_encode_coordinate(Coordinate self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.latitude, serializer);
     sse_encode_f_64(self.longitude, serializer);
@@ -5739,6 +5951,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_point_of_interest_search_model(
+      List<PointOfInterestSearchModel> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_point_of_interest_search_model(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5859,7 +6081,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_location_entry(LocationEntry self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.name, serializer);
-    sse_encode_coordinates(self.coordinates, serializer);
+    sse_encode_coordinate(self.coordinates, serializer);
     sse_encode_String(self.country, serializer);
   }
 
@@ -5892,6 +6114,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_accommodation_status(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_coordinate(
+      Coordinate? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_coordinate(self, serializer);
     }
   }
 
@@ -6044,13 +6277,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       PointOfInterestModel self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.id, serializer);
+    sse_encode_Uuid(self.tripId, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_String(self.address, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinates, serializer);
     sse_encode_opt_String(self.website, serializer);
     sse_encode_opt_String(self.openingHours, serializer);
     sse_encode_opt_String(self.price, serializer);
     sse_encode_opt_String(self.phoneNumber, serializer);
     sse_encode_opt_String(self.note, serializer);
+  }
+
+  @protected
+  void sse_encode_point_of_interest_osm_model(
+      PointOfInterestOsmModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.id, serializer);
+    sse_encode_opt_String(self.openingHours, serializer);
+    sse_encode_opt_String(self.website, serializer);
+    sse_encode_opt_String(self.phoneNumber, serializer);
+  }
+
+  @protected
+  void sse_encode_point_of_interest_search_model(
+      PointOfInterestSearchModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_opt_String(self.address, serializer);
+    sse_encode_String(self.country, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinate, serializer);
   }
 
   @protected
@@ -6260,7 +6516,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       TripLocationListModel self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Uuid(self.id, serializer);
-    sse_encode_coordinates(self.coordinates, serializer);
+    sse_encode_coordinate(self.coordinates, serializer);
     sse_encode_String(self.city, serializer);
     sse_encode_String(self.country, serializer);
     sse_encode_opt_box_autoadd_weather_forecast(self.forecast, serializer);
@@ -6329,6 +6585,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -6439,6 +6701,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.price, serializer);
     sse_encode_opt_String(self.phoneNumber, serializer);
     sse_encode_opt_String(self.note, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinate, serializer);
   }
 
   @protected

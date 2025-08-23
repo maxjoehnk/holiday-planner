@@ -15,6 +15,9 @@ pub struct Model {
     pub price: Option<String>,
     pub phone_number: Option<String>,
     pub note: Option<String>,
+    // TODO: see how this can be moved into a struct with sea_orm
+    pub coordinates_latitude: Option<f64>,
+    pub coordinates_longitude: Option<f64>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

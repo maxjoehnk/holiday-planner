@@ -3,7 +3,7 @@ use sea_orm::ActiveValue::Set;
 use sea_orm::{DbErr, TransactionTrait};
 use crate::database::{Database, repositories, entities};
 use crate::jobs::Job;
-use crate::models::{Coordinates, DailyWeatherForecast, HourlyWeatherForecast, WeatherForecast};
+use crate::models::{Coordinate, DailyWeatherForecast, HourlyWeatherForecast, WeatherForecast};
 use crate::third_party::openweathermap;
 
 pub struct WeatherSyncJob {
@@ -33,7 +33,7 @@ impl Job for WeatherSyncJob {
         
         for location in locations_to_update {
             tracing::debug!("Fetching forecast for location {} - {}", location.city, location.country);
-            let coordinates = Coordinates {
+            let coordinates = Coordinate {
                 latitude: location.coordinates_latitude,
                 longitude: location.coordinates_longitude,
             };

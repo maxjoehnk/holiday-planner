@@ -3,6 +3,19 @@ use crate::api::DB;
 use crate::commands::{AddTripPointOfInterest, UpdateTripPointOfInterest};
 use crate::handlers::{PointOfInterestHandler, HandlerCreator};
 use crate::models::{PointOfInterestModel};
+use crate::models::point_of_interests::{PointOfInterestOsmModel, PointOfInterestSearchModel};
+
+#[tracing::instrument]
+pub async fn search_point_of_interests(query: String, trip_id: Uuid) -> anyhow::Result<Vec<PointOfInterestSearchModel>> {
+    let handler = DB.try_get::<PointOfInterestHandler>().await?;
+    handler.search_point_of_interest(trip_id, query).await
+}
+
+#[tracing::instrument]
+pub async fn search_point_of_interest_details(id: u64) -> anyhow::Result<PointOfInterestOsmModel> {
+    let handler = DB.try_get::<PointOfInterestHandler>().await?;
+    handler.search_point_of_interest_details(id).await
+}
 
 #[tracing::instrument]
 pub async fn get_trip_points_of_interest(trip_id: Uuid) -> anyhow::Result<Vec<PointOfInterestModel>> {

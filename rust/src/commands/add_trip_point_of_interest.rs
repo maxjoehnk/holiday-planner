@@ -1,4 +1,5 @@
 use uuid::Uuid;
+use crate::models::Coordinate;
 
 #[derive(Debug)]
 pub struct AddTripPointOfInterest {
@@ -10,4 +11,5 @@ pub struct AddTripPointOfInterest {
     pub price: Option<String>,
     pub phone_number: Option<String>,
     pub note: Option<String>,
+    pub coordinate: Option<Coordinate>,
 }

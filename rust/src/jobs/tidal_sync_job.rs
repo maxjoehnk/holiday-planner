@@ -33,7 +33,7 @@ impl Job for TidalSyncJob {
         for location in locations_to_update {
             tracing::debug!("Fetching tidal data for location {} - {}", location.city, location.country);
             
-            let coordinates = Coordinates {
+            let coordinates = Coordinate {
                 latitude: location.coordinates_latitude,
                 longitude: location.coordinates_longitude,
             };

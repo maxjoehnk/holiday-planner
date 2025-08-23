@@ -13,6 +13,7 @@ pub mod transits;
 pub mod bookings;
 pub mod timeline;
 pub mod tidal_information;
+pub mod point_of_interests;
 
 #[derive(Clone)]
 pub struct TripListModel {
@@ -70,7 +71,7 @@ pub struct AttachmentListModel {
 #[derive(Clone)]
 pub struct TripLocationListModel {
     pub id: Uuid,
-    pub coordinates: Coordinates,
+    pub coordinates: Coordinate,
     pub city: String,
     pub country: String,
     pub forecast: Option<WeatherForecast>,
@@ -124,8 +125,10 @@ pub struct AccommodationModel {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PointOfInterestModel {
     pub id: Uuid,
+    pub trip_id: Uuid,
     pub name: String,
     pub address: String,
+    pub coordinates: Option<Coordinate>,
     pub website: Option<String>,
     pub opening_hours: Option<String>,
     pub price: Option<String>,
@@ -149,15 +152,15 @@ pub struct TagModel {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Location {
-    pub coordinates: Coordinates,
+    pub coordinates: Coordinate,
     pub city: String,
     pub country: String,
     pub forecast: Option<WeatherForecast>,
     pub attachments: Vec<TripAttachment>,
 }
 
-#[derive(Default, Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct Coordinates {
+#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+pub struct Coordinate {
     pub latitude: f64,
     pub longitude: f64,
 }
@@ -295,7 +298,7 @@ pub struct TripPackingListEntry {
 #[derive(Debug, Clone)]
 pub struct LocationEntry {
     pub name: String,
-    pub coordinates: Coordinates,
+    pub coordinates: Coordinate,
     pub country: String,
 }
 
