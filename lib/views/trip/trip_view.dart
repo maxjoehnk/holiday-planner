@@ -41,8 +41,7 @@ class _TripViewState extends State<TripView> {
     _trip = StreamController();
     _trip$ = _trip.stream.asBroadcastStream();
     _trip$.forEach((trip) {
-      _headerImage =
-          trip.headerImage != null ? MemoryImage(trip.headerImage!) : null;
+      _headerImage = trip.headerImage != null ? MemoryImage(trip.headerImage!) : null;
     });
 
     _fetch();
@@ -78,27 +77,27 @@ class _TripViewState extends State<TripView> {
 
   String _buildWeatherTidalInfo(TripLocationListModel location) {
     List<String> infoParts = [];
-    
+
     if (location.forecast?.dailyForecast.isNotEmpty == true) {
       final today = location.forecast!.dailyForecast.first;
       final tempRange = "${today.minTemperature.round()}° - ${today.maxTemperature.round()}°C";
       final condition = _getWeatherConditionText(today.condition);
       infoParts.add("$tempRange, $condition");
-      
+
       if (today.precipitationProbability > 0.1) {
         infoParts.add("${(today.precipitationProbability * 100).round()}% rain");
       }
     } else {
       infoParts.add("No weather data");
     }
-    
+
     if (location.isCoastal && location.tidalInformation.isNotEmpty) {
       final nextTide = location.tidalInformation.first;
       final isHigh = nextTide.tide == TideType.high;
       final time = formatTime(nextTide.date);
       infoParts.add("${isHigh ? 'High' : 'Low'} tide at $time");
     }
-    
+
     return infoParts.join(" • ");
   }
 
@@ -141,7 +140,7 @@ class _TripViewState extends State<TripView> {
 
   @override
   Widget build(BuildContext context) {
-    bool isCupertino = Platform.isMacOS ||Platform.isIOS;
+    bool isCupertino = Platform.isMacOS || Platform.isIOS;
     return Scaffold(
       floatingActionButton: _fab(),
       body: StreamBuilder(
@@ -171,8 +170,7 @@ class _TripViewState extends State<TripView> {
                         Navigator.of(context)
                             .push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    EditTripView(trip: trip),
+                                builder: (context) => EditTripView(trip: trip),
                               ),
                             )
                             .then((_) => _fetch());
@@ -189,10 +187,7 @@ class _TripViewState extends State<TripView> {
                         children: [
                           Text(
                             trip.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -211,10 +206,7 @@ class _TripViewState extends State<TripView> {
                               Expanded(
                                 child: Text(
                                   _buildDateString(trip),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         color: Colors.white.withOpacity(0.9),
                                       ),
                                   maxLines: 1,
@@ -223,20 +215,14 @@ class _TripViewState extends State<TripView> {
                               ),
                               const SizedBox(width: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  trip.durationDays == 1
-                                      ? "1 day"
-                                      : "${trip.durationDays} days",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
+                                  trip.durationDays == 1 ? "1 day" : "${trip.durationDays} days",
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -257,10 +243,7 @@ class _TripViewState extends State<TripView> {
                                 Expanded(
                                   child: Text(
                                     _buildWeatherTidalInfo(trip.singleLocationWeatherTidal!),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                           color: Colors.white.withOpacity(0.9),
                                         ),
                                     maxLines: 2,
@@ -295,7 +278,7 @@ class _TripViewState extends State<TripView> {
                           ),
                   ),
                 ),
-                const SliverPadding(padding: EdgeInsets.all(4)),
+                if (_selectedTab != mapTabIndex) const SliverPadding(padding: EdgeInsets.all(4)),
                 if (_selectedTab == overviewTabIndex) TripSummary(trip, refresh: _fetch),
                 if (_selectedTab == timelineTabIndex) TripTimeline(tripId: widget.tripId),
                 if (_selectedTab == mapTabIndex) TripMap(tripId: widget.tripId),
@@ -303,21 +286,16 @@ class _TripViewState extends State<TripView> {
               ],
             );
           }),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedTab,
-          onTap: (i) => setState(() {
+      bottomNavigationBar: NavigationBar(
+          selectedIndex: _selectedTab,
+          onDestinationSelected: (i) => setState(() {
                 _selectedTab = i;
               }),
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.dashboard), label: "Summary"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.timeline), label: "Timeline"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.map), label: "Map"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.attachment), label: "Attachments"),
+          destinations: const [
+            NavigationDestination(icon: Icon(Icons.dashboard), label: "Summary"),
+            NavigationDestination(icon: Icon(Icons.timeline), label: "Timeline"),
+            NavigationDestination(icon: Icon(Icons.map), label: "Map"),
+            NavigationDestination(icon: Icon(Icons.attachment), label: "Attachments"),
           ]),
     );
   }
@@ -327,8 +305,8 @@ class _TripViewState extends State<TripView> {
       return FloatingActionButton.extended(
         heroTag: "trip_view_fab",
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddAttachmentView(tripId: widget.tripId)));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => AddAttachmentView(tripId: widget.tripId)));
         },
         icon: const Icon(Icons.add),
         label: const Text("Add Attachment"),
