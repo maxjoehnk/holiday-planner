@@ -1,3 +1,5 @@
-Control Mizer from the same network.
+Plan your holidays with ease using Trippy!
 
-View your patch and highlight fixtures to quickly diagnose any dmx issues.
+Manage your transits, accommodations and bookings all in one place.
+Keep track of points of interests you want to visit.
+And remove all the stress in the days before with the automatic packing list generator.
