@@ -43,10 +43,8 @@ jobs:
           echo "keyAlias=$ANDROID_SIGNING_KEY_ALIAS" >> key.properties
           echo "storeFile=keystore.jks" >> key.properties
         working-directory: android
-      - name: Build
-        run: flutter build appbundle --release
-        env:
-          GRADLE_OPTS: "-Xmx4g"
+      - name: Fetch dependencies
+        run: flutter pub get
       # Upload to play store
       - name: Decode service account file
         env:
