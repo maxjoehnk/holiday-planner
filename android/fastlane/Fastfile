@@ -12,8 +12,7 @@ platform :android do
     upload_to_play_store(
         track: 'internal',
         aab: '../build/app/outputs/bundle/release/app-release.aab',
-        skip_upload_apk: true,
-        release_status: 'draft'
+        skip_upload_apk: true
     )
   end
 
