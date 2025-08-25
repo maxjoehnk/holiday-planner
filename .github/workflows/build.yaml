@@ -24,6 +24,11 @@ jobs:
             .dart_tool
           key: ${{ runner.os }}-linux-${{ hashFiles('pubspec.lock') }}
       - run: flutter build linux --release
+        env:
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          AVIATIONSTACK_API_KEY: ${{ secrets.AVIATIONSTACK_API_KEY }}
+          WORLD_TIDES_API_KEY: ${{ secrets.WORLD_TIDES_API_KEY }}
 #      - uses: actions/upload-artifact@v4
 #        with:
 #          name: linux
@@ -47,6 +52,11 @@ jobs:
             .dart_tool
           key: ${{ runner.os }}-macos-${{ hashFiles('pubspec.lock') }}
       - run: flutter build macos --release
+        env:
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          AVIATIONSTACK_API_KEY: ${{ secrets.AVIATIONSTACK_API_KEY }}
+          WORLD_TIDES_API_KEY: ${{ secrets.WORLD_TIDES_API_KEY }}
 
   build-ios:
     # TODO: fix ios build
@@ -68,3 +78,8 @@ jobs:
             .dart_tool
           key: ${{ runner.os }}-ios-${{ hashFiles('pubspec.lock') }}
       - run: flutter build ipa --release
+        env:
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          AVIATIONSTACK_API_KEY: ${{ secrets.AVIATIONSTACK_API_KEY }}
+          WORLD_TIDES_API_KEY: ${{ secrets.WORLD_TIDES_API_KEY }}

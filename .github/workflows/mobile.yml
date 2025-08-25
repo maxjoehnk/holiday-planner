@@ -43,10 +43,16 @@ jobs:
           echo "keyAlias=$ANDROID_SIGNING_KEY_ALIAS" >> key.properties
           echo "storeFile=keystore.jks" >> key.properties
         working-directory: android
+        # Build once so gradle is available
+        # TODO: is there a faster way to achieve this?
       - name: Build
         run: flutter build appbundle --release
         env:
           GRADLE_OPTS: "-Xmx4g"
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          AVIATIONSTACK_API_KEY: ${{ secrets.AVIATIONSTACK_API_KEY }}
+          WORLD_TIDES_API_KEY: ${{ secrets.WORLD_TIDES_API_KEY }}
       # Upload to play store
       - name: Decode service account file
         env:
@@ -63,3 +69,8 @@ jobs:
           bundle install
           bundle exec fastlane beta
         working-directory: android
+        env:
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          AVIATIONSTACK_API_KEY: ${{ secrets.AVIATIONSTACK_API_KEY }}
+          WORLD_TIDES_API_KEY: ${{ secrets.WORLD_TIDES_API_KEY }}
