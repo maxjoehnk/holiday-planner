@@ -9,9 +9,10 @@ class LocationMapDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+
     return Container(
     decoration: const BoxDecoration(
-      color: Colors.white,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
     child: SingleChildScrollView(
@@ -25,7 +26,7 @@ class LocationMapDetails extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: colorScheme.secondaryFixedDim,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -40,12 +41,12 @@ class LocationMapDetails extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+              Icon(Icons.location_on, size: 16, color: colorScheme.secondary),
               const SizedBox(width: 4),
               Text(
                 location.country,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
+                  color: colorScheme.secondary,
                 ),
               ),
             ],
@@ -69,10 +70,12 @@ class LocationMapDetails extends StatelessWidget {
   }
 
   Widget _buildWeatherInfo(BuildContext context, DailyWeatherForecast forecast) {
+    var colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.teal.withOpacity(0.1),
+        color: colorScheme.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -80,7 +83,7 @@ class LocationMapDetails extends StatelessWidget {
           Icon(
             _getWeatherIcon(forecast.condition),
             size: 32,
-            color: Colors.teal,
+            color: colorScheme.primary,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -102,7 +105,7 @@ class LocationMapDetails extends StatelessWidget {
                   Text(
                     '${(forecast.precipitationProbability * 100).round()}% chance of rain',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[600],
+                      color: colorScheme.secondary,
                     ),
                   ),
               ],

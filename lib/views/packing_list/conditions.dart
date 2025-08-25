@@ -86,19 +86,21 @@ class ConditionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
+    var colorScheme = ColorScheme.fromSeed(seedColor: color, brightness: Theme.of(context).brightness);
     
     if (onEdit == null) {
       return Chip(
         avatar: iconData != null ? Icon(
           iconData,
           size: 16,
-          color: color.shade700,
+          color: colorScheme.primary,
         ) : null,
-        backgroundColor: color.shade100,
+        backgroundColor: colorScheme.primaryContainer,
         label: Text(
           label,
           style: textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w500,
+            color: colorScheme.onPrimaryContainer,
           ),
         ),
         onDeleted: onRemove,

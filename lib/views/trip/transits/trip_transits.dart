@@ -184,7 +184,7 @@ class TrainCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    const color = TRANSITS_COLOR;
+    var transitColorScheme = ColorScheme.fromSeed(seedColor: TRANSITS_COLOR, brightness: colorScheme.brightness);
 
     return Card(
       elevation: 0,
@@ -209,12 +209,12 @@ class TrainCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: color.shade100,
+                      color: transitColorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       Icons.train,
-                      color: color.shade700,
+                      color: transitColorScheme.primary,
                       size: 24,
                     ),
                   ),

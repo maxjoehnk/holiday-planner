@@ -6,13 +6,15 @@ class PointOfInterestMapDetails extends StatelessWidget {
   final PointOfInterestModel poi;
   final ScrollController scrollController;
 
-  const PointOfInterestMapDetails({required this.poi, required this.scrollController, super.key});
+  const PointOfInterestMapDetails(
+      {required this.poi, required this.scrollController, super.key});
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: SingleChildScrollView(
@@ -26,7 +28,7 @@ class PointOfInterestMapDetails extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: colorScheme.secondaryFixedDim,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -34,12 +36,13 @@ class PointOfInterestMapDetails extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Icon(Icons.place, color: POINTS_OF_INTERESTS_COLOR, size: 24),
+                const Icon(Icons.place,
+                    color: POINTS_OF_INTERESTS_COLOR, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   'Point of Interest',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: colorScheme.secondary,
                         fontWeight: FontWeight.w500,
                       ),
                 ),
@@ -55,13 +58,13 @@ class PointOfInterestMapDetails extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+                Icon(Icons.location_on, size: 16, color: colorScheme.secondary),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     poi.address,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
+                          color: colorScheme.secondary,
                         ),
                   ),
                 ),
@@ -71,7 +74,7 @@ class PointOfInterestMapDetails extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.language, size: 16, color: Colors.grey[600]),
+                  Icon(Icons.language, size: 16, color: colorScheme.secondary),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
@@ -89,13 +92,14 @@ class PointOfInterestMapDetails extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
+                  Icon(Icons.access_time,
+                      size: 16, color: colorScheme.secondary),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       poi.openingHours!,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
+                            color: colorScheme.secondary,
                           ),
                     ),
                   ),
@@ -106,13 +110,14 @@ class PointOfInterestMapDetails extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.attach_money, size: 16, color: Colors.grey[600]),
+                  Icon(Icons.attach_money,
+                      size: 16, color: colorScheme.secondary),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       poi.price!,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
+                            color: colorScheme.secondary,
                           ),
                     ),
                   ),
@@ -123,13 +128,13 @@ class PointOfInterestMapDetails extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.phone, size: 16, color: Colors.grey[600]),
+                  Icon(Icons.phone, size: 16, color: colorScheme.secondary),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       poi.phoneNumber!,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
+                            color: colorScheme.secondary,
                           ),
                     ),
                   ),

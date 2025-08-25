@@ -241,15 +241,16 @@ class SummaryCard extends StatelessWidget {
   final String label;
   final String? subtitle;
   final Widget? subtitleChild;
-  final MaterialColor? color;
+  final MaterialColor color;
   final Function()? onTap;
 
   const SummaryCard(
-      {super.key, required this.icon, required this.label, this.color, this.onTap, this.subtitle, this.subtitleChild});
+      {super.key, required this.icon, required this.label, required this.color, this.onTap, this.subtitle, this.subtitleChild});
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
+    var sectionColorScheme = ColorScheme.fromSeed(seedColor: color, brightness: Theme.of(context).brightness);
     var textTheme = Theme.of(context).textTheme;
     
     return Padding(
@@ -274,13 +275,13 @@ class SummaryCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: color?.shade100 ?? colorScheme.primaryContainer,
+                    color: sectionColorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     icon,
                     size: 28,
-                    color: color?.shade700 ?? colorScheme.onPrimaryContainer,
+                    color: sectionColorScheme.primary,
                   ),
                 ),
                 const SizedBox(width: 16),

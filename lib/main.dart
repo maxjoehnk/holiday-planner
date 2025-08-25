@@ -85,6 +85,12 @@ class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
         ),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal,
+          brightness: Brightness.dark,
+        )
+      ),
       home: const HomeView(),
     );
   }

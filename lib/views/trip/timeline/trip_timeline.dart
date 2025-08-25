@@ -227,6 +227,8 @@ class TimelineCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
+    var sectionColorScheme = ColorScheme.fromSeed(
+        seedColor: color, brightness: colorScheme.brightness);
     var textTheme = Theme.of(context).textTheme;
 
     return Card(
@@ -246,13 +248,13 @@ class TimelineCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: color.shade100,
+                color: sectionColorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 icon,
                 size: 24,
-                color: color.shade700,
+                color: sectionColorScheme.primary,
               ),
             ),
             const SizedBox(width: 16),

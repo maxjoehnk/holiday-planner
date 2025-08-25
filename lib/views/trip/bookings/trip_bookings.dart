@@ -158,6 +158,9 @@ class _TripBookingsState extends State<TripBookings> {
   }
 
   void _showAddBookingMenu(BuildContext context) {
+    var bookingColorScheme = ColorScheme.fromSeed(seedColor: BOOKINGS_COLOR);
+    var carRentalColorScheme = ColorScheme.fromSeed(seedColor: CAR_RENTAL_COLOR);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -172,12 +175,12 @@ class _TripBookingsState extends State<TripBookings> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: BOOKINGS_COLOR.shade100,
+                    color: bookingColorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.restaurant,
-                    color: BOOKINGS_COLOR.shade700,
+                    color: bookingColorScheme.primary,
                     size: 24,
                   ),
                 ),
@@ -194,12 +197,12 @@ class _TripBookingsState extends State<TripBookings> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: CAR_RENTAL_COLOR.shade100,
+                    color: carRentalColorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.directions_car,
-                    color: CAR_RENTAL_COLOR.shade700,
+                    color: carRentalColorScheme.primary,
                     size: 24,
                   ),
                 ),
@@ -333,7 +336,7 @@ class ReservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
-    var color = BOOKINGS_COLOR;
+    var bookingColorScheme = ColorScheme.fromSeed(seedColor: BOOKINGS_COLOR, brightness: colorScheme.brightness);
     var textTheme = Theme.of(context).textTheme;
 
     return Card(
@@ -359,14 +362,14 @@ class ReservationCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: color.shade100,
+                      color: bookingColorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       reservation.category == ReservationCategory.restaurant 
                           ? Icons.restaurant 
                           : Icons.local_activity,
-                      color: color.shade700,
+                      color: bookingColorScheme.primary,
                       size: 24,
                     ),
                   ),
@@ -472,7 +475,7 @@ class CarRentalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
-    var color = CAR_RENTAL_COLOR;
+    var carRentalColorScheme = ColorScheme.fromSeed(seedColor: CAR_RENTAL_COLOR, brightness: colorScheme.brightness);
     var textTheme = Theme.of(context).textTheme;
 
     return Card(
@@ -498,12 +501,12 @@ class CarRentalCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: color.shade100,
+                      color: carRentalColorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       Icons.directions_car,
-                      color: color.shade700,
+                      color: carRentalColorScheme.primary,
                       size: 24,
                     ),
                   ),
