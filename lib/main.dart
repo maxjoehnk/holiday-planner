@@ -6,22 +6,34 @@ import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'dart:async';
 import 'package:holiday_planner/views/share_receiver/shared_train_handler.dart';
+import 'package:holiday_planner/settings.dart';
 
 Future<void> main() async {
-  await RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
+  SettingsModel settings = SettingsModel();
+  await Future.wait([
+    openDatabase(),
+    findSystemLocale(),
+    settings.loadThemeMode(),
+  ]);
+
+  runApp(HolidayPlannerApp(settings));
+}
+
+Future<void> openDatabase() async {
+  await RustLib.init();
   var directory = await getApplicationDocumentsDirectory();
   await connectDb(path: directory.path);
-  await findSystemLocale();
-
-  runApp(const HolidayPlannerApp());
 }
 
 class HolidayPlannerApp extends StatefulWidget {
-  const HolidayPlannerApp({super.key});
+  final SettingsModel settings;
+
+  const HolidayPlannerApp(this.settings, {super.key});
 
   @override
   State<HolidayPlannerApp> createState() => _HolidayPlannerAppState();
@@ -71,27 +83,36 @@ class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
   @override
   void dispose() {
     _intentDataStreamSubscription.cancel();
+    widget.settings.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'Holiday Planner',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-        ),
-        useMaterial3: true,
+    return ChangeNotifierProvider.value(
+      value: widget.settings,
+      child: Consumer<SettingsModel>(
+        builder: (context, settings, _) {
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            title: 'Holiday Planner',
+            themeMode: settings.themeMode,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.teal,
+              ),
+              useMaterial3: true,
+            ),
+            darkTheme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.teal,
+                brightness: Brightness.dark,
+              ),
+            ),
+            home: const HomeView(),
+          );
+        },
       ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-          brightness: Brightness.dark,
-        )
-      ),
-      home: const HomeView(),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api.dart';
+import 'package:holiday_planner/views/settings/settings_view.dart';
 
 import 'packing_list/packing_list_view.dart';
 import 'trip_list/trip_overview.dart';
@@ -27,6 +28,15 @@ class _HomeViewState extends State<HomeView> {
         title: const Text("Holiday Planner"),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(
+            tooltip: 'Settings',
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsView()));
+            },
+          ),
+        ],
       ),
       body: IndexedStack(
         index: _selectedIndex,
