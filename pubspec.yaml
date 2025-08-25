@@ -52,6 +52,7 @@ flutter_native_splash:
   android_12:
     image: assets/adaptive-icon-512.png
     color: "#ffffff"
+    color_dark: "#111111"
 
 flutter_launcher_icons:
   android: "launcher_icon"
