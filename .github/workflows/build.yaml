@@ -17,6 +17,12 @@ jobs:
         with:
           channel: stable
       - uses: Swatinem/rust-cache@v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            build
+            .dart_tool
+          key: ${{ runner.os }}-linux-${{ hashFiles('pubspec.lock') }}
       - run: flutter build linux --release
 #      - uses: actions/upload-artifact@v4
 #        with:
@@ -34,6 +40,12 @@ jobs:
         with:
           channel: stable
       - uses: Swatinem/rust-cache@v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            build
+            .dart_tool
+          key: ${{ runner.os }}-macos-${{ hashFiles('pubspec.lock') }}
       - run: flutter build macos --release
 
   build-ios:
@@ -49,4 +61,10 @@ jobs:
         with:
           channel: stable
       - uses: Swatinem/rust-cache@v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            build
+            .dart_tool
+          key: ${{ runner.os }}-ios-${{ hashFiles('pubspec.lock') }}
       - run: flutter build ipa --release
