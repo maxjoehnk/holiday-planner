@@ -4,6 +4,7 @@ import 'package:holiday_planner/src/rust/api/attachments.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_attachment.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:uuid/uuid.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 class AddAttachmentView extends StatefulWidget {
   final UuidValue tripId;
@@ -28,7 +29,7 @@ class _AddAttachmentViewState extends State<AddAttachmentView> {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Attachment"),
+        title: Text(AppLocalizations.of(context)!.attachmentsTab),
         centerTitle: true,
         elevation: 0,
         actions: [

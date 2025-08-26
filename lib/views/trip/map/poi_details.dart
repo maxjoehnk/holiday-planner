@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 class PointOfInterestMapDetails extends StatelessWidget {
   final PointOfInterestModel poi;
@@ -40,7 +41,7 @@ class PointOfInterestMapDetails extends StatelessWidget {
                     color: POINTS_OF_INTERESTS_COLOR, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Point of Interest',
+                  AppLocalizations.of(context)!.pointOfInterestLabel,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colorScheme.secondary,
                         fontWeight: FontWeight.w500,
@@ -144,7 +145,7 @@ class PointOfInterestMapDetails extends StatelessWidget {
             if (poi.note != null) ...[
               const SizedBox(height: 16),
               Text(
-                'Notes',
+                AppLocalizations.of(context)!.notesLabel,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),

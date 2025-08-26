@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 
 class TripSelectionDialog extends StatefulWidget {
@@ -19,14 +20,14 @@ class _TripSelectionDialogState extends State<TripSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Train Information'),
+      title: Text(AppLocalizations.of(context)!.addTrainInformationTitle),
       content: SizedBox(
         width: double.maxFinite,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Select a trip to add the train information to:'),
+            Text(AppLocalizations.of(context)!.selectTripToAddTrainInfo),
             const SizedBox(height: 16),
             Flexible(
               child: SingleChildScrollView(
@@ -55,7 +56,7 @@ class _TripSelectionDialogState extends State<TripSelectionDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         FilledButton(
           onPressed: _selectedTrip == null ? null : _addTrainInformation,

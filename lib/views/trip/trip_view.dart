@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
@@ -65,17 +66,21 @@ class _TripViewState extends State<TripView> {
       infoParts.add("$tempRange, $condition");
 
       if (today.precipitationProbability > 0.1) {
-        infoParts.add("${(today.precipitationProbability * 100).round()}% rain");
+        final percent = (today.precipitationProbability * 100).round();
+        infoParts.add(AppLocalizations.of(context)!.chanceOfRainPercent(percent));
       }
     } else {
-      infoParts.add("No weather data");
+      infoParts.add(AppLocalizations.of(context)!.noWeatherData);
     }
 
     if (location.isCoastal && location.tidalInformation.isNotEmpty) {
       final nextTide = location.tidalInformation.first;
       final isHigh = nextTide.tide == TideType.high;
       final time = formatTime(nextTide.date);
-      infoParts.add("${isHigh ? 'High' : 'Low'} tide at $time");
+      final tide = isHigh
+          ? AppLocalizations.of(context)!.highTide
+          : AppLocalizations.of(context)!.lowTide;
+      infoParts.add(AppLocalizations.of(context)!.tideAtTime(tide, time));
     }
 
     return infoParts.join(" • ");
@@ -106,15 +111,15 @@ class _TripViewState extends State<TripView> {
   String _getWeatherConditionText(WeatherCondition condition) {
     switch (condition) {
       case WeatherCondition.sunny:
-        return "Sunny";
+        return AppLocalizations.of(context)!.weatherSunny;
       case WeatherCondition.rain:
-        return "Rain";
+        return AppLocalizations.of(context)!.weatherRain;
       case WeatherCondition.clouds:
-        return "Cloudy";
+        return AppLocalizations.of(context)!.weatherCloudy;
       case WeatherCondition.snow:
-        return "Snow";
+        return AppLocalizations.of(context)!.weatherSnow;
       case WeatherCondition.thunderstorm:
-        return "Thunderstorm";
+        return AppLocalizations.of(context)!.weatherThunderstorm;
     }
   }
 
@@ -128,7 +133,7 @@ class _TripViewState extends State<TripView> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
-                child: Text("Error: ${snapshot.error}"),
+                child: Text(AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString())),
               );
             }
             if (!snapshot.hasData) {
@@ -154,7 +159,7 @@ class _TripViewState extends State<TripView> {
                           ),
                         );
                       },
-                      tooltip: "Edit Trip",
+                      tooltip: AppLocalizations.of(context)!.editTripTitle, 
                     ),
                   ],
                   flexibleSpace: FlexibleSpaceBar(
@@ -200,7 +205,10 @@ class _TripViewState extends State<TripView> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  trip.durationDays == 1 ? "1 day" : "${trip.durationDays} days",
+                                  trip.durationDays == 1
+                                      ? AppLocalizations.of(context)!.oneDay
+                                      : AppLocalizations.of(context)!
+                                          .daysCount(trip.durationDays),
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
@@ -270,11 +278,11 @@ class _TripViewState extends State<TripView> {
           onDestinationSelected: (i) => setState(() {
                 _selectedTab = i;
               }),
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.dashboard), label: "Summary"),
-            NavigationDestination(icon: Icon(Icons.timeline), label: "Timeline"),
-            NavigationDestination(icon: Icon(Icons.map), label: "Map"),
-            NavigationDestination(icon: Icon(Icons.attachment), label: "Attachments"),
+          destinations: [
+            NavigationDestination(icon: const Icon(Icons.dashboard), label: AppLocalizations.of(context)!.summaryTab),
+            NavigationDestination(icon: const Icon(Icons.timeline), label: AppLocalizations.of(context)!.timelineTab),
+            NavigationDestination(icon: const Icon(Icons.map), label: AppLocalizations.of(context)!.mapTab),
+            NavigationDestination(icon: const Icon(Icons.attachment), label: AppLocalizations.of(context)!.attachmentsTab),
           ]),
     );
   }

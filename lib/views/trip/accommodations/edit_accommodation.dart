@@ -11,6 +11,7 @@ import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
 import 'package:holiday_planner/widgets/attachment_card.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 class EditAccommodation extends StatefulWidget {
   final AccommodationModel accommodation;
@@ -162,7 +163,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Accommodation"),
+        title: Text(AppLocalizations.of(context)!.editAccommodationTitle),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -176,7 +177,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text("Save"),
+                  : Text(AppLocalizations.of(context)!.save),
             ),
           ),
         ],
@@ -318,7 +319,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
                       });
                     },
                     icon: const Icon(Icons.add),
-                    label: const Text("Add"),
+                    label: Text(AppLocalizations.of(context)!.add),
                   ),
                 ],
               ),
@@ -386,13 +387,13 @@ class _EditAccommodationState extends State<EditAccommodation> {
                                 OutlinedButton.icon(
                                   onPressed: _pickAttachmentFile,
                                   icon: const Icon(Icons.refresh),
-                                  label: const Text("Choose Different File"),
+                                  label: Text(AppLocalizations.of(context)!.chooseDifferentFile),
                                 ),
                               ] else ...[
                                 FilledButton.icon(
                                   onPressed: _pickAttachmentFile,
                                   icon: const Icon(Icons.attach_file),
-                                  label: const Text("Choose File"),
+                                  label: Text(AppLocalizations.of(context)!.chooseFile),
                                 ),
                               ],
                             ],
@@ -410,7 +411,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
                                   _attachmentFile = null;
                                 });
                               },
-                              child: const Text("Cancel"),
+                              child: Text(AppLocalizations.of(context)!.cancel),
                             ),
                             const SizedBox(width: 8),
                             FilledButton(
@@ -461,7 +462,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
                         child: Text(
-                          "No attachments added yet",
+                          AppLocalizations.of(context)!.noAttachmentsAddedYet,
                           style: textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -487,7 +488,7 @@ class _EditAccommodationState extends State<EditAccommodation> {
                 child: OutlinedButton.icon(
                   onPressed: _isLoading ? null : () => _deleteAccommodation(context),
                   icon: const Icon(Icons.delete_outline),
-                  label: const Text("Delete Accommodation"),
+                  label: Text(AppLocalizations.of(context)!.deleteAccommodationTitle),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: colorScheme.error,
                     side: BorderSide(color: colorScheme.error),
@@ -640,16 +641,16 @@ class _EditAccommodationState extends State<EditAccommodation> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Accommodation'),
-        content: Text('Are you sure you want to delete "${widget.accommodation.name}"?'),
+        title: Text(AppLocalizations.of(context)!.deleteAccommodationTitle),
+        content: Text(AppLocalizations.of(context)!.deleteAccommodationConfirm(widget.accommodation.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),

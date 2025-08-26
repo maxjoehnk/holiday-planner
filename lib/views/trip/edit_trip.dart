@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/api/tags.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip.dart';
@@ -68,7 +69,7 @@ class _EditTripViewState extends State<EditTripView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Trip"),
+        title: Text(AppLocalizations.of(context)!.editTripTitle),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -82,7 +83,7 @@ class _EditTripViewState extends State<EditTripView> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text("Save"),
+                  : Text(AppLocalizations.of(context)!.save),
             ),
           ),
         ],
@@ -184,7 +185,7 @@ class _EditTripViewState extends State<EditTripView> {
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      "Change Header Image",
+                                      AppLocalizations.of(context)!.changeHeaderImage,
                                       style: textTheme.bodyLarge?.copyWith(
                                         color: colorScheme.onPrimaryContainer.withOpacity(0.8),
                                         fontWeight: FontWeight.w500,
@@ -426,7 +427,7 @@ class _EditTripViewState extends State<EditTripView> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = "Failed to delete trip: $e";
+        _errorMessage = AppLocalizations.of(context)!.failedToDeleteTripWithError(e.toString());
       });
     } finally {
       if (mounted) {
@@ -442,18 +443,18 @@ class _EditTripViewState extends State<EditTripView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Image Source'),
+          title: Text(AppLocalizations.of(context)!.selectImageSource),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Device Gallery'),
+                title: Text(AppLocalizations.of(context)!.deviceGallery),
                 onTap: () => Navigator.pop(context, ImageSource.gallery),
               ),
               ListTile(
                 leading: const Icon(Icons.search),
-                title: const Text('Web Search'),
+                title: Text(AppLocalizations.of(context)!.webSearch),
                 onTap: () => Navigator.pop(context, null), // null indicates web search
               ),
             ],

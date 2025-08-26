@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 class LocationMapDetails extends StatelessWidget {
   final TripLocationListModel location;
@@ -54,7 +55,7 @@ class LocationMapDetails extends StatelessWidget {
           const SizedBox(height: 16),
           if (location.forecast?.dailyForecast.isNotEmpty == true) ...[
             Text(
-              'Weather Forecast',
+              AppLocalizations.of(context)!.weatherLabel,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -98,12 +99,12 @@ class LocationMapDetails extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _getWeatherConditionText(forecast.condition),
+                  _getWeatherConditionText(context, forecast.condition),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 if (forecast.precipitationProbability > 0.1)
                   Text(
-                    '${(forecast.precipitationProbability * 100).round()}% chance of rain',
+                    '${(forecast.precipitationProbability * 100).round()}% ${AppLocalizations.of(context)!.weatherRain.toLowerCase()}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: colorScheme.secondary,
                     ),
@@ -131,18 +132,18 @@ class LocationMapDetails extends StatelessWidget {
     }
   }
 
-  String _getWeatherConditionText(WeatherCondition condition) {
+  String _getWeatherConditionText(BuildContext context, WeatherCondition condition) {
     switch (condition) {
       case WeatherCondition.sunny:
-        return "Sunny";
+        return AppLocalizations.of(context)!.weatherSunny;
       case WeatherCondition.rain:
-        return "Rain";
+        return AppLocalizations.of(context)!.weatherRain;
       case WeatherCondition.clouds:
-        return "Cloudy";
+        return AppLocalizations.of(context)!.weatherCloudy;
       case WeatherCondition.snow:
-        return "Snow";
+        return AppLocalizations.of(context)!.weatherSnow;
       case WeatherCondition.thunderstorm:
-        return "Thunderstorm";
+        return AppLocalizations.of(context)!.weatherThunderstorm;
     }
   }
 

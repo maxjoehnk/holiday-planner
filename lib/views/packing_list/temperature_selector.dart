@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 enum Temperature { min, max }
 
@@ -66,8 +67,8 @@ class _TemperatureSelectorState extends State<TemperatureSelector> {
                   Expanded(
                     child: Text(
                       widget.threshold == Temperature.min 
-                          ? "Min Temperature" 
-                          : "Max Temperature",
+                          ? AppLocalizations.of(context)!.temperatureSelectorMinTitle 
+                          : AppLocalizations.of(context)!.temperatureSelectorMaxTitle,
                       style: textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -78,8 +79,8 @@ class _TemperatureSelectorState extends State<TemperatureSelector> {
               const SizedBox(height: 24),
               Text(
                 widget.threshold == Temperature.min 
-                    ? "Set the minimum temperature for this item to be included in your packing list."
-                    : "Set the maximum temperature for this item to be included in your packing list.",
+                    ? AppLocalizations.of(context)!.temperatureSelectorMinDescription
+                    : AppLocalizations.of(context)!.temperatureSelectorMaxDescription,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
@@ -89,8 +90,8 @@ class _TemperatureSelectorState extends State<TemperatureSelector> {
                 controller: _controller,
                 autofocus: true,
                 decoration: AppInputDecoration(
-                  labelText: "Temperature (°C)",
-                  hintText: "Enter temperature",
+                  labelText: AppLocalizations.of(context)!.temperatureFieldLabel,
+                  hintText: AppLocalizations.of(context)!.temperatureFieldHint,
                   icon: widget.threshold == Temperature.min
                         ? Icons.thermostat 
                         : Icons.ac_unit,
@@ -99,10 +100,10 @@ class _TemperatureSelectorState extends State<TemperatureSelector> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter a temperature";
+                    return AppLocalizations.of(context)!.temperatureValidationEmpty;
                   }
                   if (double.tryParse(value) == null) {
-                    return "Please enter a valid number";
+                    return AppLocalizations.of(context)!.temperatureValidationNaN;
                   }
                   return null;
                 },
@@ -114,7 +115,7 @@ class _TemperatureSelectorState extends State<TemperatureSelector> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel"),
+                    child: Text(AppLocalizations.of(context)!.cancel),
                   ),
                   const SizedBox(width: 12),
                   FilledButton(

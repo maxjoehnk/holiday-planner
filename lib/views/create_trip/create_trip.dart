@@ -10,6 +10,7 @@ import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:holiday_planner/widgets/location_search.dart';
 import 'package:holiday_planner/widgets/tag_selection_widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 import '../trip/trip_view.dart';
 import '../trip/web_image_search.dart';
@@ -39,13 +40,13 @@ class _CreateTripViewState extends State<CreateTripView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Trip"),
+        title: Text(AppLocalizations.of(context)!.createTripTitle),
         centerTitle: true,
         elevation: 0,
         actions: [
           FilledButton(
             onPressed: _submit,
-            child: const Text("Create"),
+            child: Text(AppLocalizations.of(context)!.create),
           ),
           const SizedBox(width: 16)
         ],
@@ -106,7 +107,7 @@ class _CreateTripViewState extends State<CreateTripView> {
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      "Add Header Image",
+                                      AppLocalizations.of(context)!.addHeaderImage,
                                       style: textTheme.bodyLarge?.copyWith(
                                         color: colorScheme.onPrimaryContainer
                                             .withOpacity(0.8),
@@ -123,7 +124,7 @@ class _CreateTripViewState extends State<CreateTripView> {
 
               // Trip Name Field
               Text(
-                "Trip Details",
+                AppLocalizations.of(context)!.tripDetails,
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -134,19 +135,19 @@ class _CreateTripViewState extends State<CreateTripView> {
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please enter a name";
+                      return AppLocalizations.of(context)!.pleaseEnterName;
                     }
                     return null;
                   },
                   decoration: AppInputDecoration(
-                    labelText: "Trip Name",
+                    labelText: AppLocalizations.of(context)!.tripName,
                     icon: Icons.luggage,
                   )),
               const SizedBox(height: 24),
 
               // Date Selection Section
               Text(
-                "Travel Dates",
+                AppLocalizations.of(context)!.travelDates,
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -162,7 +163,7 @@ class _CreateTripViewState extends State<CreateTripView> {
                       lastDate:
                           DateTime.now().add(const Duration(days: 365 * 5)),
                       decoration: AppInputDecoration(
-                        labelText: "Start Date",
+                        labelText: AppLocalizations.of(context)!.startDate,
                         icon: Icons.calendar_month,
                       ),
                       onChanged: (value) => setState(() => startDate = value),
@@ -179,7 +180,7 @@ class _CreateTripViewState extends State<CreateTripView> {
                       lastDate:
                           DateTime.now().add(const Duration(days: 365 * 5)),
                       decoration: AppInputDecoration(
-                        labelText: "End Date",
+                        labelText: AppLocalizations.of(context)!.endDate,
                         icon: Icons.calendar_month,
                       ),
                       onChanged: (value) => setState(() => endDate = value),
@@ -197,7 +198,7 @@ class _CreateTripViewState extends State<CreateTripView> {
                 child: OutlinedButton.icon(
                   onPressed: () => _selectDate(context),
                   icon: const Icon(Icons.calendar_month_outlined),
-                  label: const Text("Select Date Range"),
+                  label: Text(AppLocalizations.of(context)!.selectDateRange),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -214,7 +215,7 @@ class _CreateTripViewState extends State<CreateTripView> {
 
               // Location Selection Section
               Text(
-                "Destination",
+                AppLocalizations.of(context)!.destination,
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -342,18 +343,18 @@ class _CreateTripViewState extends State<CreateTripView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Image Source'),
+          title: Text(AppLocalizations.of(context)!.selectImageSource),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Device Gallery'),
+                title: Text(AppLocalizations.of(context)!.deviceGallery),
                 onTap: () => Navigator.pop(context, ImageSource.gallery),
               ),
               ListTile(
                 leading: const Icon(Icons.search),
-                title: const Text('Web Search'),
+                title: Text(AppLocalizations.of(context)!.webSearch),
                 onTap: () => Navigator.pop(context, null),
               ),
             ],

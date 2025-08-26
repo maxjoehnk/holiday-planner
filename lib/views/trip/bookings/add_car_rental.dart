@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/commands/add_car_rental.dart';
 import 'package:holiday_planner/views/trip/bookings/car_rental_form.dart';
@@ -22,7 +23,7 @@ class _AddCarRentalPageState extends State<AddCarRentalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Car Rental"),
+        title: Text(AppLocalizations.of(context)!.addCarRentalPageTitle),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -36,7 +37,7 @@ class _AddCarRentalPageState extends State<AddCarRentalPage> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text("Save"),
+                  : Text(AppLocalizations.of(context)!.save),
             ),
           ),
         ],
@@ -65,7 +66,7 @@ class _AddCarRentalPageState extends State<AddCarRentalPage> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) {
       setState(() {
-        _errorMessage = "Please fill in all required fields";
+        _errorMessage = AppLocalizations.of(context)!.pleaseFillRequiredFields;
       });
       return;
     }
@@ -92,12 +93,12 @@ class _AddCarRentalPageState extends State<AddCarRentalPage> {
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Car rental added successfully')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.carRentalAddedSuccessfully)), 
         );
       }
     } catch (e) {
       setState(() {
-        _errorMessage = "Failed to add car rental: $e";
+        _errorMessage = AppLocalizations.of(context)!.failedToAddCarRental(e.toString());
       });
     } finally {
       setState(() {

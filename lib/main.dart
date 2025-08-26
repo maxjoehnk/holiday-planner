@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/src/rust/frb_generated.dart';
 import 'package:holiday_planner/src/rust/api.dart';
@@ -98,7 +100,17 @@ class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
         builder: (context, settings, _) {
           return MaterialApp(
             navigatorKey: navigatorKey,
-            title: 'Holiday Planner',
+            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('de')
+            ],
             themeMode: settings.themeMode,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(

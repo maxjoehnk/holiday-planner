@@ -4,6 +4,7 @@ import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/packing_list.dart';
 import 'package:holiday_planner/src/rust/commands/delete_packing_list_entry.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 import 'edit_packing_list_entry.dart';
 import 'conditions.dart';
@@ -46,7 +47,7 @@ class _PackingListViewState extends State<PackingListView> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Error: ${snapshot.error}",
+                        AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString()),
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ),
@@ -66,7 +67,7 @@ class _PackingListViewState extends State<PackingListView> {
               heroTag: "packing_list_fab",
               onPressed: _addItem,
               icon: const Icon(Icons.add),
-              label: const Text("Add Item"),
+              label: Text(AppLocalizations.of(context)!.addItem),
             ))
       ],
     );
@@ -109,12 +110,12 @@ class PackingList extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              "No packing items",
+              AppLocalizations.of(context)!.noPackingItemsTitle,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              "Add items to your packing list to get started!",
+              AppLocalizations.of(context)!.noPackingItemsSubtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -196,7 +197,7 @@ class _CategorySectionState extends State<_CategorySection> {
           title: Row(
             children: [
               Expanded(child: Text(widget.name, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600))),
-              Text("$allCount items", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant))
+              Text(AppLocalizations.of(context)!.itemsCount(allCount), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant))
             ],
           ),
           children: [
@@ -281,7 +282,7 @@ class PackingListItem extends StatelessWidget {
                         if (_hasConfiguredQuantity(entry.quantity)) ...[
                           const SizedBox(height: 4),
                           Text(
-                            _formatConfiguredQuantity(entry.quantity),
+                            _formatConfiguredQuantity(context, entry.quantity),
                             style: textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant.withOpacity(0.8),
                               fontStyle: FontStyle.italic,
@@ -297,7 +298,7 @@ class PackingListItem extends StatelessWidget {
                       Icons.delete_outline,
                       color: colorScheme.error,
                     ),
-                    tooltip: "Delete item",
+                    tooltip: AppLocalizations.of(context)!.deleteItemTooltip,
                   ),
                 ],
               ),
@@ -325,23 +326,23 @@ class PackingListItem extends StatelessWidget {
            quantity.perNight != null;
   }
 
-  String _formatConfiguredQuantity(Quantity quantity) {
+  String _formatConfiguredQuantity(BuildContext context, Quantity quantity) {
     List<String> parts = [];
     
     if (quantity.fixed != null && quantity.fixed! > BigInt.zero) {
-      parts.add("${quantity.fixed} fixed");
+      parts.add(AppLocalizations.of(context)!.quantityFixed(quantity.fixed!.toInt()));
     }
     
     if (quantity.perDay != null && quantity.perDay! > BigInt.zero) {
-      parts.add("${quantity.perDay} per day");
+      parts.add(AppLocalizations.of(context)!.quantityPerDay(quantity.perDay!.toInt()));
     }
     
     if (quantity.perNight != null && quantity.perNight! > BigInt.zero) {
-      parts.add("${quantity.perNight} per night");
+      parts.add(AppLocalizations.of(context)!.quantityPerNight(quantity.perNight!.toInt()));
     }
     
     if (parts.isEmpty) {
-      return "No quantity configured";
+      return AppLocalizations.of(context)!.noQuantityConfigured;
     }
     
     return parts.join(" + ");

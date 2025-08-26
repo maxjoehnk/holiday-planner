@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/src/rust/api/transits.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/commands/parse_shared_train_data.dart';
@@ -24,7 +25,7 @@ class SharedTrainHandler {
 
       if (parsedJourney.segments.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No data found')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.noDataFound)),
         );
         return;
       }
@@ -75,8 +76,8 @@ class SharedTrainHandler {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Train information added successfully!'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.trainInfoAddedSuccessfully),
           backgroundColor: Colors.green,
         ),
       );
@@ -84,7 +85,7 @@ class SharedTrainHandler {
       if (!context.mounted) {
         return;
       }
-      _showErrorDialog(context, 'Failed to parse train information: $e');
+      _showErrorDialog(context, AppLocalizations.of(context)!.errorWithMessage('Failed to parse train information: $e'));
     }
   }
 
@@ -93,13 +94,12 @@ class SharedTrainHandler {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('No Trips Available'),
-          content: const Text(
-              'You need to create a trip first before adding train information.'),
+          title: Text(AppLocalizations.of(context)!.noTripsAvailable),
+          content: Text(AppLocalizations.of(context)!.needCreateTripFirstToAddTrainInfo),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)!.ok),
             ),
           ],
         );
@@ -112,12 +112,12 @@ class SharedTrainHandler {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: Text(AppLocalizations.of(context)!.errorTitle),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)!.ok),
             ),
           ],
         );

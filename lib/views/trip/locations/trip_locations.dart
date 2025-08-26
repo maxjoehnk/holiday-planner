@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
@@ -45,7 +46,7 @@ class _TripLocationsState extends State<TripLocations> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Locations"),
+        title: Text(AppLocalizations.of(context)!.locationsTitle),
         centerTitle: true,
         elevation: 0,
       ),
@@ -64,7 +65,7 @@ class _TripLocationsState extends State<TripLocations> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Error: ${snapshot.error}",
+                    AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString()),
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
@@ -166,7 +167,7 @@ class _TripLocationsState extends State<TripLocations> {
       if (mounted) {
         scaffoldMessenger.showSnackBar(
           SnackBar(
-            content: Text('Location "${location.name}" added successfully'),
+            content: Text(AppLocalizations.of(context)!.locationAddedSuccessfully(location.name)), 
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
@@ -176,7 +177,7 @@ class _TripLocationsState extends State<TripLocations> {
       if (mounted) {
         scaffoldMessenger.showSnackBar(
           SnackBar(
-            content: Text('Failed to add location: $e'),
+            content: Text(AppLocalizations.of(context)!.failedToAddLocation(e.toString())), 
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),

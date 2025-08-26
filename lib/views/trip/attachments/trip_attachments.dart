@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/attachments.dart';
@@ -43,7 +44,7 @@ class _TripAttachmentsState extends State<TripAttachments> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "Error: ${snapshot.error}",
+                  AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString()),
                   style: Theme.of(context).textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
@@ -80,12 +81,12 @@ class TripAttachmentList extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                "No attachments",
+                AppLocalizations.of(context)!.noAttachmentsTitle,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 8),
               Text(
-                "Add files to keep important documents with your trip",
+                AppLocalizations.of(context)!.noAttachmentsSubtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),

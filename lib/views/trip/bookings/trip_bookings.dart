@@ -5,6 +5,7 @@ import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
 import 'package:holiday_planner/date_format.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/views/trip/bookings/add_reservation.dart';
 import 'package:holiday_planner/views/trip/bookings/add_car_rental.dart';
 import 'package:holiday_planner/views/trip/bookings/edit_reservation.dart';
@@ -37,7 +38,7 @@ class _TripBookingsState extends State<TripBookings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Bookings"),
+        title: Text(AppLocalizations.of(context)!.bookingsTitle),
         centerTitle: true,
         elevation: 0,
       ),
@@ -61,8 +62,8 @@ class _TripBookingsState extends State<TripBookings> {
         if (bookings.isEmpty) {
           return _buildEmptyState(
             icon: Icons.book_online_outlined,
-            title: "No bookings",
-            subtitle: "Add reservations and car rental bookings for your trip",
+            title: AppLocalizations.of(context)!.noBookingsTitle, 
+            subtitle: AppLocalizations.of(context)!.noBookingsSubtitle, 
           );
         }
 
@@ -165,7 +166,7 @@ class _TripBookingsState extends State<TripBookings> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Booking'),
+          title: Text(AppLocalizations.of(context)!.addBookingTitle),
           contentPadding: const EdgeInsets.only(top: 20.0),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -184,8 +185,8 @@ class _TripBookingsState extends State<TripBookings> {
                     size: 24,
                   ),
                 ),
-                title: const Text('Add Reservation'),
-                subtitle: const Text('Restaurant, hotel, or other booking'),
+                title: Text(AppLocalizations.of(context)!.addReservationOptionTitle),
+                subtitle: Text(AppLocalizations.of(context)!.addReservationOptionSubtitle),
                 onTap: () {
                   Navigator.pop(context);
                   _addReservation(context);
@@ -206,8 +207,8 @@ class _TripBookingsState extends State<TripBookings> {
                     size: 24,
                   ),
                 ),
-                title: const Text('Add Car Rental'),
-                subtitle: const Text('Car rental booking'),
+                title: Text(AppLocalizations.of(context)!.addCarRentalOptionTitle),
+                subtitle: Text(AppLocalizations.of(context)!.addCarRentalOptionSubtitle),
                 onTap: () {
                   Navigator.pop(context);
                   _addCarRental(context);
@@ -218,7 +219,7 @@ class _TripBookingsState extends State<TripBookings> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
           ],
         );
@@ -250,16 +251,16 @@ class _TripBookingsState extends State<TripBookings> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Reservation'),
-        content: Text('Are you sure you want to delete "${reservation.title}"?'),
+        title: Text(AppLocalizations.of(context)!.deleteReservationTitle),
+        content: Text(AppLocalizations.of(context)!.deleteReservationConfirm(reservation.title)), 
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -271,7 +272,7 @@ class _TripBookingsState extends State<TripBookings> {
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting reservation: $e')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.errorDeletingReservation(e.toString()))),
           );
         }
       }
@@ -282,12 +283,12 @@ class _TripBookingsState extends State<TripBookings> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Car Rental'),
-        content: Text('Are you sure you want to delete the ${carRental.provider} rental?'),
+        title: Text(AppLocalizations.of(context)!.deleteCarRentalTitle),
+        content: Text(AppLocalizations.of(context)!.deleteCarRentalConfirm(carRental.provider)), 
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -303,7 +304,7 @@ class _TripBookingsState extends State<TripBookings> {
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting car rental: $e')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.errorDeletingCarRental(e.toString()))),
           );
         }
       }
@@ -432,7 +433,7 @@ class ReservationCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () => _launchUrl(reservation.link!),
                     icon: const Icon(Icons.open_in_new, size: 16),
-                    label: const Text("Open Link"),
+                    label: Text(AppLocalizations.of(context)!.openLink),
                   ),
                 ),
               ],

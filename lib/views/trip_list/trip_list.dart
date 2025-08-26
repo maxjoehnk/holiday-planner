@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/trip_view.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 import 'trip_overview_item.dart';
 
@@ -26,12 +27,12 @@ class TripList extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              "No trips found",
+              AppLocalizations.of(context)!.noTripsFoundTitle,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              "Start planning your next adventure!",
+              AppLocalizations.of(context)!.noTripsFoundSubtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

@@ -4,6 +4,7 @@ import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/create_trip/create_trip.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 import 'trip_list.dart';
 
@@ -39,16 +40,16 @@ class _TripOverviewState extends State<TripOverview> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: SegmentedButton<TripFilter>(
-            segments: const [
+            segments: [
               ButtonSegment<TripFilter>(
                 value: TripFilter.upcoming,
-                label: Text('Upcoming'),
-                icon: Icon(Icons.upcoming),
+                label: Text(AppLocalizations.of(context)!.tripFilterUpcoming),
+                icon: const Icon(Icons.upcoming),
               ),
               ButtonSegment<TripFilter>(
                 value: TripFilter.past,
-                label: Text('Past'),
-                icon: Icon(Icons.history),
+                label: Text(AppLocalizations.of(context)!.tripFilterPast),
+                icon: const Icon(Icons.history),
               ),
             ],
             selected: {_selectedFilter},
@@ -76,7 +77,7 @@ class _TripOverviewState extends State<TripOverview> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Error: ${snapshot.error}",
+                        AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString()),
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ),
@@ -103,7 +104,7 @@ class _TripOverviewState extends State<TripOverview> {
                         );
                       },
                       icon: const Icon(Icons.add),
-                      label: const Text("New Trip"),
+                      label: Text(AppLocalizations.of(context)!.newTrip),
                     ),
                   ),
                 ],

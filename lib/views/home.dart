@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/settings/settings_view.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 import 'packing_list/packing_list_view.dart';
 import 'trip_list/trip_overview.dart';
@@ -62,12 +63,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Holiday Planner"),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         centerTitle: true,
         elevation: 0,
         actions: [
           IconButton(
-            tooltip: 'Settings',
+            tooltip: AppLocalizations.of(context)!.homeSettingsTooltip,
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsView()));
@@ -89,16 +90,16 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
             _selectedIndex = index;
           });
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.luggage_outlined),
-            selectedIcon: Icon(Icons.luggage),
-            label: 'Trips',
+            icon: const Icon(Icons.luggage_outlined),
+            selectedIcon: const Icon(Icons.luggage),
+            label: AppLocalizations.of(context)!.navTrips,
           ),
           NavigationDestination(
-            icon: Icon(Icons.checklist_outlined),
-            selectedIcon: Icon(Icons.checklist),
-            label: 'Packing Lists',
+            icon: const Icon(Icons.checklist_outlined),
+            selectedIcon: const Icon(Icons.checklist),
+            label: AppLocalizations.of(context)!.navPackingLists,
           ),
         ],
       ),

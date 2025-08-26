@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
   cupertino_icons: ^1.0.6
   rust_lib_holiday_planner:
     path: rust_builder
@@ -16,7 +19,6 @@ dependencies:
   uuid: ^4.5.0
   image_picker: ^1.0.4
   file_selector: ^1.0.3
-  intl: ^0.18.0
   freezed_annotation: ^2.4.0
   flutter_native_splash: ^2.3.0
   flutter_rust_bridge: 2.11.1
@@ -47,6 +49,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
 flutter_native_splash:
   web: false

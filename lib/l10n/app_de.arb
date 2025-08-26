@@ -1,0 +1,242 @@
+{
+  "appTitle": "Holiday Planner",
+  "settingsTitle": "Einstellungen",
+  "appearanceSection": "Darstellung",
+  "useSystemTheme": "Systemdesign verwenden",
+  "themeLight": "Hell",
+  "themeDark": "Dunkel",
+  "aboutSection": "Über",
+  "aboutAppWithVersion": "Urlaubsplaner App {version}",
+
+  "homeSettingsTooltip": "Einstellungen",
+  "navTrips": "Reisen",
+  "navPackingLists": "Packlisten",
+
+  "tripFilterUpcoming": "Bevorstehend",
+  "tripFilterPast": "Vergangen",
+  "newTrip": "Neue Reise",
+
+  "addItem": "Element hinzufügen",
+  "noPackingItemsTitle": "Keine Packlisten-Einträge",
+  "noPackingItemsSubtitle": "Füge Elemente zu deiner Packliste hinzu, um zu starten!",
+  "itemsCount": "{count} Elemente",
+  "deleteItemTooltip": "Element löschen",
+
+  "quantityFixed": "{count} gesamt",
+  "quantityPerDay": "{count} pro Tag",
+  "quantityPerNight": "{count} pro Nacht",
+  "noQuantityConfigured": "Keine Menge konfiguriert",
+
+  "createTripTitle": "Reise erstellen",
+  "create": "Erstellen",
+  "addHeaderImage": "Kopfzeilenbild hinzufügen",
+  "tripDetails": "Reisedetails",
+  "pleaseEnterName": "Bitte einen Namen eingeben",
+  "tripName": "Reisename",
+  "travelDates": "Reisedaten",
+  "startDate": "Startdatum",
+  "endDate": "Enddatum",
+  "selectDateRange": "Datumsbereich auswählen",
+  "destination": "Ziel",
+
+  "selectImageSource": "Bildquelle auswählen",
+  "deviceGallery": "Gerätegalerie",
+  "webSearch": "Websuche",
+
+  "ok": "OK",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "retry": "Wiederholen",
+
+  "noDataFound": "Keine Daten gefunden",
+  "confirmTrainInformation": "Zuginformationen bestätigen",
+  "confirmAndSelectTrip": "Bestätigen & Reise auswählen",
+  "noTripsAvailable": "Keine Reisen verfügbar",
+  "addTrainInformationTitle": "Zuginformationen hinzufügen",
+  "selectTripToAddTrainInfo": "Wähle eine Reise aus, um die Zuginformationen hinzuzufügen:",
+
+  "errorWithMessage": "Fehler: {message}",
+
+  "noAttachmentsTitle": "Keine Anhänge",
+  "noAttachmentsSubtitle": "Füge Dateien hinzu, um wichtige Dokumente bei deiner Reise zu behalten",
+  "noAttachmentsAddedYet": "Noch keine Anhänge hinzugefügt",
+
+  "failedToDeleteTripWithError": "Reise konnte nicht gelöscht werden: {error}",
+
+  "weatherLabel": "Wetter",
+  "weatherSunny": "Sonnig",
+  "weatherCloudy": "Bewölkt",
+  "weatherRain": "Regen",
+  "weatherSnow": "Schnee",
+  "weatherThunderstorm": "Gewitter",
+
+  "weatherConditionTitle": "Wetterbedingung",
+  "weatherConditionDescription": "Lege die Wetterbedingung und die minimale Wahrscheinlichkeit fest, damit dieses Element in die Packliste aufgenommen wird.",
+  "minimumProbabilityLabel": "Minimale Wahrscheinlichkeit (%)",
+  "minimumProbabilityHint": "Wahrscheinlichkeit eingeben (0-100)",
+  "enterProbabilityValidation": "Bitte eine Wahrscheinlichkeit eingeben",
+  "enterValidNumberValidation": "Bitte eine gültige Zahl eingeben",
+  "probabilityRangeValidation": "Wahrscheinlichkeit muss zwischen 0 und 100 liegen",
+  "save": "Speichern",
+  "add": "Hinzufügen",
+
+  "weatherForecastTitle": "Wettervorhersage",
+  "chanceOfRainPercent": "{percent}% Regenwahrscheinlichkeit"
+,
+  "bookingsTitle": "Buchungen",
+  "noBookingsTitle": "Keine Buchungen",
+  "noBookingsSubtitle": "Füge Reservierungen und Mietwagenbuchungen für deine Reise hinzu",
+
+  "addBookingTitle": "Buchung hinzufügen",
+  "addReservationOptionTitle": "Reservierung hinzufügen",
+  "addReservationOptionSubtitle": "Restaurant-, Hotel- oder andere Buchung",
+  "addCarRentalOptionTitle": "Mietwagen hinzufügen",
+  "addCarRentalOptionSubtitle": "Mietwagenbuchung",
+  "openLink": "Link öffnen",
+
+  "deleteReservationTitle": "Reservierung löschen",
+  "deleteReservationConfirm": "Möchtest du \"{title}\" wirklich löschen?",
+  "errorDeletingReservation": "Fehler beim Löschen der Reservierung: {message}",
+
+  "deleteCarRentalTitle": "Mietwagen löschen",
+  "deleteCarRentalConfirm": "Möchtest du die {provider}-Buchung wirklich löschen?",
+  "errorDeletingCarRental": "Fehler beim Löschen der Mietwagenbuchung: {message}",
+
+  "locationsTitle": "Orte",
+  "locationAddedSuccessfully": "Ort \"{name}\" erfolgreich hinzugefügt",
+  "failedToAddLocation": "Ort konnte nicht hinzugefügt werden: {message}",
+
+  "deleteLocationTitle": "Ort löschen",
+  "deleteLocationConfirm": "Möchtest du \"{city}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "locationDeleted": "Ort \"{city}\" erfolgreich gelöscht",
+  "failedToDeleteLocation": "Fehler beim Löschen des Ortes: {message}",
+  "coastal": "küstennah",
+  "inland": "landeinwärts",
+  "coastalStatusUpdated": "Küstenstatus aktualisiert auf {status}",
+  "failedToUpdateCoastal": "Fehler beim Aktualisieren des Küstenstatus: {message}",
+  "locationNotFound": "Ort nicht gefunden",
+
+  "accommodationsTitle": "Unterkünfte",
+  "addAccommodation": "Unterkunft hinzufügen",
+  "editAccommodationTitle": "Unterkunft bearbeiten",
+  "deleteAccommodationTitle": "Unterkunft löschen",
+  "deleteAccommodationConfirm": "Möchtest du \"{name}\" wirklich löschen?",
+  "chooseDifferentFile": "Andere Datei auswählen",
+  "chooseFile": "Datei auswählen",
+
+  "editTripTitle": "Reise bearbeiten",
+  "deleteTripTitle": "Reise löschen",
+
+  "pointsOfInterestTitle": "Sehenswürdigkeiten",
+  "addPointOfInterest": "Sehenswürdigkeit hinzufügen",
+  "editPointOfInterestTitle": "Sehenswürdigkeit bearbeiten",
+  "deletePointOfInterestTitle": "Sehenswürdigkeit löschen",
+  "deletePointOfInterestConfirm": "Möchtest du \"{name}\" wirklich löschen?",
+  "errorDeletingPointOfInterest": "Fehler beim Löschen der Sehenswürdigkeit: {message}",
+
+  "pointOfInterestLabel": "Sehenswürdigkeit",
+  "notesLabel": "Notizen",
+
+  "noWeatherData": "Keine Wetterdaten",
+  "highTide": "Hoch",
+  "lowTide": "Niedrig",
+  "tideAtTime": "{tide}tide um {time}",
+
+  "summaryTab": "Übersicht",
+  "timelineTab": "Zeitstrahl",
+  "mapTab": "Karte",
+  "attachmentsTab": "Anhänge",
+
+  "noTripsFoundTitle": "Keine Reisen gefunden",
+  "noTripsFoundSubtitle": "Plane dein nächstes Abenteuer!",
+
+  "oneDay": "1 Tag",
+  "daysCount": "{count} Tage",
+
+  "changeHeaderImage": "Kopfzeilenbild ändern",
+
+  "addCarRentalPageTitle": "Mietwagen hinzufügen",
+  "pleaseFillRequiredFields": "Bitte alle Pflichtfelder ausfüllen",
+  "carRentalAddedSuccessfully": "Mietwagen erfolgreich hinzugefügt",
+  "failedToAddCarRental": "Mietwagen konnte nicht hinzugefügt werden: {message}",
+
+  "trainInfoAddedSuccessfully": "Zuginformationen erfolgreich hinzugefügt!",
+  "needCreateTripFirstToAddTrainInfo": "Du musst zuerst eine Reise erstellen, bevor du Zuginformationen hinzufügen kannst.",
+  "errorTitle": "Fehler",
+
+  "addTrains": "Züge hinzufügen",
+
+  "foundTrainSegments": "{count} Zugverbindungen gefunden:",
+  "fromLabel": "Von: {station}",
+  "toLabel": "Nach: {station}",
+  "platformLabel": "Gleis {platform}",
+
+  "searchWebImagesTitle": "Webbilder suchen",
+  "select": "Auswählen",
+  "search": "Suchen",
+  "searchImagesHint": "Nach Bildern suchen...",
+  "errorSearchingImages": "Fehler bei der Bildsuche: {message}",
+  "errorDownloadingImage": "Fehler beim Herunterladen des Bildes: {message}",
+  "pleaseEnterSearchTerm": "Bitte einen Suchbegriff eingeben",
+  "noImagesFoundTrySearching": "Keine Bilder gefunden. Versuche, nach etwas zu suchen.",
+  "downloadingImage": "Bild wird heruntergeladen...",
+  "backToResults": "Zurück zu den Ergebnissen",
+  "useThisImage": "Dieses Bild verwenden",
+  "imageByAuthor": "Von {author}",
+
+  "reservationAddedSuccessfully": "Reservierung erfolgreich hinzugefügt",
+  "failedToAddReservation": "Reservierung konnte nicht hinzugefügt werden: {message}",
+
+  "addConditionTitle": "Bedingung hinzufügen",
+  "conditionSelectorIntro": "Wähle, wann dieses Element in deine Packliste aufgenommen werden soll:",
+
+  "conditionMinTripDurationTitle": "Min. Reisedauer",
+  "conditionMinTripDurationSubtitle": "Für Reisen länger als X Tage einschließen",
+
+  "conditionMaxTripDurationTitle": "Max. Reisedauer",
+  "conditionMaxTripDurationSubtitle": "Für Reisen kürzer als X Tage einschließen",
+
+  "conditionMinTemperatureTitle": "Min. Temperatur",
+  "conditionMinTemperatureSubtitle": "Einbeziehen, wenn die Temperatur über X°C liegt",
+
+  "conditionMaxTemperatureTitle": "Max. Temperatur",
+  "conditionMaxTemperatureSubtitle": "Einbeziehen, wenn die Temperatur unter X°C liegt",
+
+  "conditionWeatherTitle": "Wetterbedingung",
+  "conditionWeatherSubtitle": "Basierend auf der Wettervorhersage einbeziehen",
+
+  "conditionTripTagTitle": "Reise-Schlagwort",
+  "conditionTripTagSubtitle": "Einbeziehen, wenn die Reise ein bestimmtes Schlagwort hat",
+
+  "temperatureSelectorMinTitle": "Min. Temperatur",
+  "temperatureSelectorMaxTitle": "Max. Temperatur",
+  "temperatureSelectorMinDescription": "Lege die minimale Temperatur fest, damit dieses Element in deine Packliste aufgenommen wird.",
+  "temperatureSelectorMaxDescription": "Lege die maximale Temperatur fest, damit dieses Element in deine Packliste aufgenommen wird.",
+  "temperatureFieldLabel": "Temperatur (°C)",
+  "temperatureFieldHint": "Temperatur eingeben",
+  "temperatureValidationEmpty": "Bitte eine Temperatur eingeben",
+  "temperatureValidationNaN": "Bitte eine gültige Zahl eingeben",
+
+  "tripDurationSelectorMinTitle": "Min. Reisedauer",
+  "tripDurationSelectorMaxTitle": "Max. Reisedauer",
+  "tripDurationSelectorMinDescription": "Lege die minimale Reisedauer fest, damit dieses Element in deine Packliste aufgenommen wird.",
+  "tripDurationSelectorMaxDescription": "Lege die maximale Reisedauer fest, damit dieses Element in deine Packliste aufgenommen wird.",
+  "tripDurationFieldLabel": "Dauer (Tage)",
+  "tripDurationFieldHint": "Anzahl der Tage eingeben",
+  "tripDurationValidationEmpty": "Bitte eine Dauer eingeben",
+  "tripDurationValidationNaN": "Bitte eine gültige Zahl eingeben",
+  "tripDurationValidationGtZero": "Dauer muss größer als 0 sein",
+
+  "tagSelectorEditTitle": "Schlagwort bearbeiten",
+  "tagSelectorSelectTitle": "Schlagwort auswählen",
+  "tagSelectorEditPrompt": "Wähle ein anderes Schlagwort für diese Bedingung:",
+  "tagSelectorSelectPrompt": "Wähle ein Schlagwort, das mit der Reise verknüpft sein muss:",
+  "newTag": "Neues Schlagwort",
+  "failedToLoadTags": "Schlagwörter konnten nicht geladen werden",
+  "noTagsAvailable": "Keine Schlagwörter verfügbar",
+  "createFirstTagHint": "Erstelle dein erstes Schlagwort, um es als Bedingung zu verwenden",
+  "createNewTagTitle": "Neues Schlagwort erstellen",
+  "tagNameLabel": "Schlagwort-Name",
+  "tagNameHint": "z. B. Strand, Stadt, Abenteuer",
+  "tagNameValidationEmpty": "Bitte einen Schlagwort-Namen eingeben"
+}

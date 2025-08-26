@@ -3,6 +3,7 @@ import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/api/tags.dart';
 import 'package:uuid/uuid_value.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 Map<WeatherCondition, IconData> _weatherIcons = {
   WeatherCondition.sunny: Icons.wb_sunny,
@@ -23,35 +24,35 @@ class ConditionTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return condition.map(
       minTripDuration: (duration) => ConditionChip(
-          tooltip: "Min Trip Duration",
+          tooltip: AppLocalizations.of(context)!.conditionMinTripDurationTitle,
           label: "> ${duration.length} Day(s)",
           iconData: Icons.schedule,
           color: CONDITION_DURATION_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       maxTripDuration: (duration) => ConditionChip(
-          tooltip: "Max Trip Duration",
+          tooltip: AppLocalizations.of(context)!.conditionMaxTripDurationTitle,
           label: "< ${duration.length} Day(s)",
           iconData: Icons.schedule,
           color: CONDITION_DURATION_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       minTemperature: (temperature) => ConditionChip(
-          tooltip: "Min Temperature",
+          tooltip: AppLocalizations.of(context)!.conditionMinTemperatureTitle,
           label: "> ${temperature.temperature}°C",
           iconData: Icons.thermostat,
           color: CONDITION_TEMPERATURE_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       maxTemperature: (temperature) => ConditionChip(
-          tooltip: "Max Temperature",
+          tooltip: AppLocalizations.of(context)!.conditionMaxTemperatureTitle,
           label: "< ${temperature.temperature}°C",
           iconData: Icons.thermostat,
           color: CONDITION_TEMPERATURE_COLOR,
           onEdit: onEdit,
           onRemove: onRemove),
       weather: (weather) => ConditionChip(
-          tooltip: "Weather",
+          tooltip: AppLocalizations.of(context)!.weatherLabel,
           label: "${(weather.minProbability * 100).round()}%",
           iconData: _weatherIcons[weather.condition],
           color: CONDITION_WEATHER_COLOR,

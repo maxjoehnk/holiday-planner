@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/condensed_tag_display.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 class TripOverviewItem extends StatelessWidget {
   final TripListModel trip;
@@ -127,8 +128,8 @@ class TripOverviewItem extends StatelessWidget {
                             ),
                             child: Text(
                               duration == 1
-                                  ? "1 day"
-                                  : "$duration days",
+                                  ? AppLocalizations.of(context)!.oneDay
+                                  : AppLocalizations.of(context)!.daysCount(duration),
                               style: textTheme.bodySmall?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
@@ -52,7 +53,7 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Error: ${snapshot.error}",
+                    AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString()),
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),

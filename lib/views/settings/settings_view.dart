@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/settings.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class SettingsView extends StatefulWidget {
@@ -22,20 +23,20 @@ class _SettingsViewState extends State<SettingsView> {
         final currentMode = settings.themeMode;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Settings'),
+            title: Text(AppLocalizations.of(context)!.settingsTitle),
             centerTitle: true,
           ),
           body: ListView(
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                 child: Text(
-                  'Appearance',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  AppLocalizations.of(context)!.appearanceSection,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
               RadioListTile<ThemeMode>(
-                title: const Text('Use system theme'),
+                title: Text(AppLocalizations.of(context)!.useSystemTheme),
                 value: ThemeMode.system,
                 groupValue: currentMode,
                 onChanged: (val) {
@@ -45,7 +46,7 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               RadioListTile<ThemeMode>(
-                title: const Text('Light'),
+                title: Text(AppLocalizations.of(context)!.themeLight),
                 value: ThemeMode.light,
                 groupValue: currentMode,
                 onChanged: (val) {
@@ -55,7 +56,7 @@ class _SettingsViewState extends State<SettingsView> {
                 },
               ),
               RadioListTile<ThemeMode>(
-                title: const Text('Dark'),
+                title: Text(AppLocalizations.of(context)!.themeDark),
                 value: ThemeMode.dark,
                 groupValue: currentMode,
                 onChanged: (val) {
@@ -64,11 +65,11 @@ class _SettingsViewState extends State<SettingsView> {
                   }
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                 child: Text(
-                  'About',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  AppLocalizations.of(context)!.aboutSection,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
               Padding(
@@ -79,8 +80,9 @@ class _SettingsViewState extends State<SettingsView> {
                       if (!asyncSnapshot.hasData) {
                         return Container();
                       }
+                      final version = asyncSnapshot.requireData.version;
                       return Text(
-                          'Holiday Planner App ${asyncSnapshot.requireData.version}',
+                          AppLocalizations.of(context)!.aboutAppWithVersion(version),
                           style: Theme.of(context).textTheme.bodyMedium);
                     }),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 Map<WeatherCondition, IconData> _weatherIcons = {
   WeatherCondition.sunny: Icons.wb_sunny,
@@ -9,13 +10,20 @@ Map<WeatherCondition, IconData> _weatherIcons = {
   WeatherCondition.thunderstorm: Icons.thunderstorm,
 };
 
-Map<WeatherCondition, String> _weatherLabels = {
-  WeatherCondition.sunny: "Sunny",
-  WeatherCondition.rain: "Rain",
-  WeatherCondition.clouds: "Cloudy",
-  WeatherCondition.snow: "Snow",
-  WeatherCondition.thunderstorm: "Thunderstorm",
-};
+String _labelFor(WeatherCondition c, BuildContext context) {
+  switch (c) {
+    case WeatherCondition.sunny:
+      return AppLocalizations.of(context)!.weatherSunny;
+    case WeatherCondition.rain:
+      return AppLocalizations.of(context)!.weatherRain;
+    case WeatherCondition.clouds:
+      return AppLocalizations.of(context)!.weatherCloudy;
+    case WeatherCondition.snow:
+      return AppLocalizations.of(context)!.weatherSnow;
+    case WeatherCondition.thunderstorm:
+      return AppLocalizations.of(context)!.weatherThunderstorm;
+  }
+}
 
 class WeatherSelector extends StatefulWidget {
   final WeatherCondition? condition;
@@ -83,7 +91,7 @@ class _WeatherSelectorState extends State<WeatherSelector> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      "Weather Condition",
+                      AppLocalizations.of(context)!.weatherConditionTitle,
                       style: textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -93,14 +101,14 @@ class _WeatherSelectorState extends State<WeatherSelector> {
               ),
               const SizedBox(height: 24),
               Text(
-                "Set the weather condition and minimum probability for this item to be included in your packing list.",
+                AppLocalizations.of(context)!.weatherConditionDescription,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 20),
               Text(
-                "Weather Condition",
+                AppLocalizations.of(context)!.weatherConditionTitle,
                 style: textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -127,7 +135,7 @@ class _WeatherSelectorState extends State<WeatherSelector> {
                           ? colorScheme.onSecondaryContainer 
                           : colorScheme.onSurfaceVariant,
                     ),
-                    label: Text(_weatherLabels[condition]!),
+                    label: Text(_labelFor(condition, context)),
                     backgroundColor: colorScheme.surface,
                     selectedColor: colorScheme.secondaryContainer,
                     checkmarkColor: colorScheme.onSecondaryContainer,
@@ -144,8 +152,8 @@ class _WeatherSelectorState extends State<WeatherSelector> {
                 controller: _controller,
                 autofocus: false,
                 decoration: InputDecoration(
-                  labelText: "Minimum Probability (%)",
-                  hintText: "Enter probability (0-100)",
+                  labelText: AppLocalizations.of(context)!.minimumProbabilityLabel,
+                  hintText: AppLocalizations.of(context)!.minimumProbabilityHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -156,14 +164,14 @@ class _WeatherSelectorState extends State<WeatherSelector> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter a probability";
+                    return AppLocalizations.of(context)!.enterProbabilityValidation;
                   }
                   final probability = double.tryParse(value);
                   if (probability == null) {
-                    return "Please enter a valid number";
+                    return AppLocalizations.of(context)!.enterValidNumberValidation;
                   }
                   if (probability < 0 || probability > 100) {
-                    return "Probability must be between 0 and 100";
+                    return AppLocalizations.of(context)!.probabilityRangeValidation;
                   }
                   return null;
                 },
@@ -175,12 +183,12 @@ class _WeatherSelectorState extends State<WeatherSelector> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel"),
+                    child: Text(AppLocalizations.of(context)!.cancel),
                   ),
                   const SizedBox(width: 12),
                   FilledButton(
                     onPressed: _onConfirm,
-                    child: Text(widget.condition != null ? "Save" : "Add"),
+                    child: Text(widget.condition != null ? AppLocalizations.of(context)!.save : AppLocalizations.of(context)!.add),
                   ),
                 ],
               ),

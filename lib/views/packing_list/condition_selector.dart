@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:uuid/uuid_value.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 import 'trip_duration_selector.dart';
 import 'temperature_selector.dart';
@@ -46,7 +47,7 @@ class ConditionSelector extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    "Add Condition",
+                    AppLocalizations.of(context)!.addConditionTitle,
                     style: textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -56,7 +57,7 @@ class ConditionSelector extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              "Choose when this item should be included in your packing list:",
+              AppLocalizations.of(context)!.conditionSelectorIntro,
               style: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -64,8 +65,8 @@ class ConditionSelector extends StatelessWidget {
             const SizedBox(height: 20),
             _ConditionOption(
               icon: Icons.schedule,
-              title: "Min Trip Duration",
-              subtitle: "Include for trips longer than X days",
+              title: AppLocalizations.of(context)!.conditionMinTripDurationTitle,
+              subtitle: AppLocalizations.of(context)!.conditionMinTripDurationSubtitle,
               color: colorScheme.tertiaryContainer,
               onColor: colorScheme.onTertiaryContainer,
               onTap: () => _onSelect(context,
@@ -74,8 +75,8 @@ class ConditionSelector extends StatelessWidget {
             const SizedBox(height: 12),
             _ConditionOption(
               icon: Icons.schedule,
-              title: "Max Trip Duration",
-              subtitle: "Include for trips shorter than X days",
+              title: AppLocalizations.of(context)!.conditionMaxTripDurationTitle,
+              subtitle: AppLocalizations.of(context)!.conditionMaxTripDurationSubtitle,
               color: colorScheme.tertiaryContainer,
               onColor: colorScheme.onTertiaryContainer,
               onTap: () => _onSelect(context,
@@ -84,8 +85,8 @@ class ConditionSelector extends StatelessWidget {
             const SizedBox(height: 12),
             _ConditionOption(
               icon: Icons.thermostat,
-              title: "Min Temperature",
-              subtitle: "Include when temperature is above X°C",
+              title: AppLocalizations.of(context)!.conditionMinTemperatureTitle,
+              subtitle: AppLocalizations.of(context)!.conditionMinTemperatureSubtitle,
               color: colorScheme.errorContainer,
               onColor: colorScheme.onErrorContainer,
               onTap: () => _onSelect(context,
@@ -94,8 +95,8 @@ class ConditionSelector extends StatelessWidget {
             const SizedBox(height: 12),
             _ConditionOption(
               icon: Icons.ac_unit,
-              title: "Max Temperature",
-              subtitle: "Include when temperature is below X°C",
+              title: AppLocalizations.of(context)!.conditionMaxTemperatureTitle,
+              subtitle: AppLocalizations.of(context)!.conditionMaxTemperatureSubtitle,
               color: colorScheme.primaryContainer,
               onColor: colorScheme.onPrimaryContainer,
               onTap: () => _onSelect(context,
@@ -104,8 +105,8 @@ class ConditionSelector extends StatelessWidget {
             const SizedBox(height: 12),
             _ConditionOption(
               icon: Icons.cloud,
-              title: "Weather Condition",
-              subtitle: "Include based on weather forecast",
+              title: AppLocalizations.of(context)!.conditionWeatherTitle,
+              subtitle: AppLocalizations.of(context)!.conditionWeatherSubtitle,
               color: colorScheme.secondaryContainer,
               onColor: colorScheme.onSecondaryContainer,
               onTap: () => _onSelect(
@@ -116,8 +117,8 @@ class ConditionSelector extends StatelessWidget {
             const SizedBox(height: 12),
             _ConditionOption(
               icon: Icons.label,
-              title: "Trip Tag",
-              subtitle: "Include when trip has a specific tag",
+              title: AppLocalizations.of(context)!.conditionTripTagTitle,
+              subtitle: AppLocalizations.of(context)!.conditionTripTagSubtitle,
               color: colorScheme.surfaceContainerHighest,
               onColor: colorScheme.onSurface,
               onTap: () => _onSelect(
@@ -130,7 +131,7 @@ class ConditionSelector extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel"),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
               ],
             ),

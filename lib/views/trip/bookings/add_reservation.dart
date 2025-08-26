@@ -4,6 +4,7 @@ import 'package:holiday_planner/src/rust/commands/add_reservation.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
 import 'package:holiday_planner/views/trip/bookings/reservation_form.dart';
 import 'package:uuid/uuid.dart';
+import 'package:holiday_planner/l10n/app_localizations.dart';
 
 class AddReservationPage extends StatefulWidget {
   final UuidValue tripId;
@@ -23,7 +24,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Reservation"),
+        title: Text(AppLocalizations.of(context)!.addReservationOptionTitle),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -37,7 +38,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text("Save"),
+                  : Text(AppLocalizations.of(context)!.save),
             ),
           ),
         ],
@@ -65,7 +66,7 @@ class _AddReservationPageState extends State<AddReservationPage> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) {
       setState(() {
-        _errorMessage = "Please fill in all required fields";
+        _errorMessage = AppLocalizations.of(context)!.pleaseFillRequiredFields;
       });
       return;
     }
@@ -93,12 +94,12 @@ class _AddReservationPageState extends State<AddReservationPage> {
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Reservation added successfully')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.reservationAddedSuccessfully)),
         );
       }
     } catch (e) {
       setState(() {
-        _errorMessage = "Failed to add reservation: $e";
+        _errorMessage = AppLocalizations.of(context)!.failedToAddReservation(e.toString());
       });
     } finally {
       setState(() {

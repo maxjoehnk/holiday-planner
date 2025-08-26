@@ -1,0 +1,444 @@
+{
+  "appTitle": "Holiday Planner",
+  "@appTitle": {
+    "description": "Application title shown in app bars and system title"
+  },
+  "settingsTitle": "Settings",
+  "appearanceSection": "Appearance",
+  "useSystemTheme": "Use system theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "aboutSection": "About",
+  "aboutAppWithVersion": "Holiday Planner App {version}",
+  "@aboutAppWithVersion": {
+    "description": "About section line showing app name and version",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.2.3"
+      }
+    }
+  },
+
+  "homeSettingsTooltip": "Settings",
+  "navTrips": "Trips",
+  "navPackingLists": "Packing Lists",
+
+  "tripFilterUpcoming": "Upcoming",
+  "tripFilterPast": "Past",
+  "newTrip": "New Trip",
+
+  "addItem": "Add Item",
+  "noPackingItemsTitle": "No packing items",
+  "noPackingItemsSubtitle": "Add items to your packing list to get started!",
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "description": "Label indicating how many items in a category",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "example": "5"
+      }
+    }
+  },
+  "deleteItemTooltip": "Delete item",
+
+  "quantityFixed": "{count} fixed",
+  "@quantityFixed": {
+    "description": "Quantity indicating a fixed total amount",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "example": "2"
+      }
+    }
+  },
+  "quantityPerDay": "{count} per day",
+  "@quantityPerDay": {
+    "description": "Quantity indicating how many per day",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "example": "1"
+      }
+    }
+  },
+  "quantityPerNight": "{count} per night",
+  "@quantityPerNight": {
+    "description": "Quantity indicating how many per night",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "example": "1"
+      }
+    }
+  },
+  "noQuantityConfigured": "No quantity configured",
+
+  "createTripTitle": "Create Trip",
+  "create": "Create",
+  "addHeaderImage": "Add Header Image",
+  "tripDetails": "Trip Details",
+  "pleaseEnterName": "Please enter a name",
+  "tripName": "Trip Name",
+  "travelDates": "Travel Dates",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "selectDateRange": "Select Date Range",
+  "destination": "Destination",
+
+  "selectImageSource": "Select Image Source",
+  "deviceGallery": "Device Gallery",
+  "webSearch": "Web Search",
+
+  "ok": "OK",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "retry": "Retry",
+
+  "noDataFound": "No data found",
+  "confirmTrainInformation": "Confirm Train Information",
+  "confirmAndSelectTrip": "Confirm & Select Trip",
+  "noTripsAvailable": "No Trips Available",
+  "addTrainInformationTitle": "Add Train Information",
+  "selectTripToAddTrainInfo": "Select a trip to add the train information to:",
+  "errorWithMessage": "Error: {message}",
+  "@errorWithMessage": {
+    "description": "Generic error text prefix combined with a message",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Network timeout"
+      }
+    }
+  },
+
+  "noAttachmentsTitle": "No attachments",
+  "@noAttachmentsTitle": {
+    "description": "Title shown when no attachments are available"
+  },
+  "noAttachmentsSubtitle": "Add files to keep important documents with your trip",
+  "@noAttachmentsSubtitle": {
+    "description": "Subtitle encouraging users to add attachments"
+  },
+  "noAttachmentsAddedYet": "No attachments added yet",
+  "@noAttachmentsAddedYet": {
+    "description": "Info text in edit accommodation when there are no attachments yet"
+  },
+
+  "failedToDeleteTripWithError": "Failed to delete trip: {error}",
+  "@failedToDeleteTripWithError": {
+    "description": "Error message shown when deleting a trip fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Database locked"
+      }
+    }
+  },
+
+  "weatherLabel": "Weather",
+  "@weatherLabel": {
+    "description": "Label for weather section or card"
+  },
+  "weatherSunny": "Sunny",
+  "@weatherSunny": {"description": "Weather condition label: sunny"},
+  "weatherCloudy": "Cloudy",
+  "@weatherCloudy": {"description": "Weather condition label: cloudy"},
+  "weatherRain": "Rain",
+  "@weatherRain": {"description": "Weather condition label: rain"},
+  "weatherSnow": "Snow",
+  "@weatherSnow": {"description": "Weather condition label: snow"},
+  "weatherThunderstorm": "Thunderstorm",
+  "@weatherThunderstorm": {"description": "Weather condition label: thunderstorm"},
+
+  "weatherConditionTitle": "Weather Condition",
+  "@weatherConditionTitle": {"description": "Title for the weather condition selector dialog"},
+  "weatherConditionDescription": "Set the weather condition and minimum probability for this item to be included in your packing list.",
+  "@weatherConditionDescription": {"description": "Description text in weather selector dialog"},
+  "minimumProbabilityLabel": "Minimum Probability (%)",
+  "@minimumProbabilityLabel": {"description": "Label for probability input"},
+  "minimumProbabilityHint": "Enter probability (0-100)",
+  "@minimumProbabilityHint": {"description": "Hint for probability input"},
+  "enterProbabilityValidation": "Please enter a probability",
+  "@enterProbabilityValidation": {"description": "Validation message: empty probability"},
+  "enterValidNumberValidation": "Please enter a valid number",
+  "@enterValidNumberValidation": {"description": "Validation message: not a number"},
+  "probabilityRangeValidation": "Probability must be between 0 and 100",
+  "@probabilityRangeValidation": {"description": "Validation message: range"},
+  "save": "Save",
+  "@save": {"description": "Generic save action label"},
+  "add": "Add",
+  "@add": {"description": "Generic add action label"},
+
+  "weatherForecastTitle": "Weather Forecast",
+  "@weatherForecastTitle": {"description": "Title for the weather forecast section"},
+  "chanceOfRainPercent": "{percent}% chance of rain",
+  "@chanceOfRainPercent": {
+    "description": "Label showing chance of rain as a percentage",
+    "placeholders": {
+      "percent": {
+        "type": "num",
+        "example": "70"
+      }
+    }
+  },
+
+  "addConditionTitle": "Add Condition",
+  "@addConditionTitle": {"description": "Title of the dialog to add a packing list condition"},
+  "conditionSelectorIntro": "Choose when this item should be included in your packing list:",
+  "@conditionSelectorIntro": {"description": "Intro text in the condition selector dialog"},
+
+  "conditionMinTripDurationTitle": "Min Trip Duration",
+  "@conditionMinTripDurationTitle": {"description": "Option title: minimum trip duration"},
+  "conditionMinTripDurationSubtitle": "Include for trips longer than X days",
+  "@conditionMinTripDurationSubtitle": {"description": "Option subtitle for min trip duration"},
+
+  "conditionMaxTripDurationTitle": "Max Trip Duration",
+  "@conditionMaxTripDurationTitle": {"description": "Option title: maximum trip duration"},
+  "conditionMaxTripDurationSubtitle": "Include for trips shorter than X days",
+  "@conditionMaxTripDurationSubtitle": {"description": "Option subtitle for max trip duration"},
+
+  "conditionMinTemperatureTitle": "Min Temperature",
+  "@conditionMinTemperatureTitle": {"description": "Option title: minimum temperature"},
+  "conditionMinTemperatureSubtitle": "Include when temperature is above X°C",
+  "@conditionMinTemperatureSubtitle": {"description": "Option subtitle for min temperature"},
+
+  "conditionMaxTemperatureTitle": "Max Temperature",
+  "@conditionMaxTemperatureTitle": {"description": "Option title: maximum temperature"},
+  "conditionMaxTemperatureSubtitle": "Include when temperature is below X°C",
+  "@conditionMaxTemperatureSubtitle": {"description": "Option subtitle for max temperature"},
+
+  "conditionWeatherTitle": "Weather Condition",
+  "@conditionWeatherTitle": {"description": "Option title: weather condition"},
+  "conditionWeatherSubtitle": "Include based on weather forecast",
+  "@conditionWeatherSubtitle": {"description": "Option subtitle: based on forecast"},
+
+  "conditionTripTagTitle": "Trip Tag",
+  "@conditionTripTagTitle": {"description": "Option title: trip tag"},
+  "conditionTripTagSubtitle": "Include when trip has a specific tag",
+  "@conditionTripTagSubtitle": {"description": "Option subtitle for trip tag condition"},
+
+  "temperatureSelectorMinTitle": "Min Temperature",
+  "@temperatureSelectorMinTitle": {"description": "Temperature selector title for min"},
+  "temperatureSelectorMaxTitle": "Max Temperature",
+  "@temperatureSelectorMaxTitle": {"description": "Temperature selector title for max"},
+  "temperatureSelectorMinDescription": "Set the minimum temperature for this item to be included in your packing list.",
+  "@temperatureSelectorMinDescription": {"description": "Description text in temperature selector (min)"},
+  "temperatureSelectorMaxDescription": "Set the maximum temperature for this item to be included in your packing list.",
+  "@temperatureSelectorMaxDescription": {"description": "Description text in temperature selector (max)"},
+  "temperatureFieldLabel": "Temperature (°C)",
+  "@temperatureFieldLabel": {"description": "Label for temperature input field"},
+  "temperatureFieldHint": "Enter temperature",
+  "@temperatureFieldHint": {"description": "Hint for temperature input field"},
+  "temperatureValidationEmpty": "Please enter a temperature",
+  "@temperatureValidationEmpty": {"description": "Validation message when temperature is empty"},
+  "temperatureValidationNaN": "Please enter a valid number",
+  "@temperatureValidationNaN": {"description": "Validation message when temperature is not a number"},
+
+  "tripDurationSelectorMinTitle": "Min Trip Duration",
+  "@tripDurationSelectorMinTitle": {"description": "Trip duration selector title for min"},
+  "tripDurationSelectorMaxTitle": "Max Trip Duration",
+  "@tripDurationSelectorMaxTitle": {"description": "Trip duration selector title for max"},
+  "tripDurationSelectorMinDescription": "Set the minimum trip duration for this item to be included in your packing list.",
+  "@tripDurationSelectorMinDescription": {"description": "Description in trip duration selector (min)"},
+  "tripDurationSelectorMaxDescription": "Set the maximum trip duration for this item to be included in your packing list.",
+  "@tripDurationSelectorMaxDescription": {"description": "Description in trip duration selector (max)"},
+  "tripDurationFieldLabel": "Duration (days)",
+  "@tripDurationFieldLabel": {"description": "Label for duration input (days)"},
+  "tripDurationFieldHint": "Enter number of days",
+  "@tripDurationFieldHint": {"description": "Hint for duration input"},
+  "tripDurationValidationEmpty": "Please enter a duration",
+  "@tripDurationValidationEmpty": {"description": "Validation: duration empty"},
+  "tripDurationValidationNaN": "Please enter a valid number",
+  "@tripDurationValidationNaN": {"description": "Validation: duration not a number"},
+  "tripDurationValidationGtZero": "Duration must be greater than 0",
+  "@tripDurationValidationGtZero": {"description": "Validation: duration > 0"},
+
+  "tagSelectorEditTitle": "Edit Tag",
+  "@tagSelectorEditTitle": {"description": "Title when editing tag condition"},
+  "tagSelectorSelectTitle": "Select Tag",
+  "@tagSelectorSelectTitle": {"description": "Title when selecting a tag"},
+  "tagSelectorEditPrompt": "Choose a different tag for this condition:",
+  "@tagSelectorEditPrompt": {"description": "Prompt when editing tag condition"},
+  "tagSelectorSelectPrompt": "Choose a tag that must be associated with the trip:",
+  "@tagSelectorSelectPrompt": {"description": "Prompt when selecting a tag"},
+  "newTag": "New Tag",
+  "@newTag": {"description": "Button label to create a new tag"},
+  "failedToLoadTags": "Failed to load tags",
+  "@failedToLoadTags": {"description": "Title shown when tags failed to load"},
+  "noTagsAvailable": "No tags available",
+  "@noTagsAvailable": {"description": "Title shown when there are no tags"},
+  "createFirstTagHint": "Create your first tag to use it as a condition",
+  "@createFirstTagHint": {"description": "Hint text encouraging the user to create a tag"},
+  "createNewTagTitle": "Create New Tag",
+  "@createNewTagTitle": {"description": "Dialog title to create a new tag"},
+  "tagNameLabel": "Tag Name",
+  "@tagNameLabel": {"description": "Label for tag name input"},
+  "tagNameHint": "e.g., Beach, City, Adventure",
+  "@tagNameHint": {"description": "Hint for tag name input"},
+  "tagNameValidationEmpty": "Please enter a tag name",
+  "@tagNameValidationEmpty": {"description": "Validation for empty tag name"}
+,
+  "bookingsTitle": "Bookings",
+  "noBookingsTitle": "No bookings",
+  "noBookingsSubtitle": "Add reservations and car rental bookings for your trip",
+
+  "addBookingTitle": "Add Booking",
+  "addReservationOptionTitle": "Add Reservation",
+  "addReservationOptionSubtitle": "Restaurant, hotel, or other booking",
+  "addCarRentalOptionTitle": "Add Car Rental",
+  "addCarRentalOptionSubtitle": "Car rental booking",
+  "openLink": "Open Link",
+
+  "deleteReservationTitle": "Delete Reservation",
+  "deleteReservationConfirm": "Are you sure you want to delete \"{title}\"?",
+  "@deleteReservationConfirm": {
+    "description": "Confirmation text to delete a reservation",
+    "placeholders": {"title": {"type": "String", "example": "Dinner at Luigi's"}}
+  },
+  "errorDeletingReservation": "Error deleting reservation: {message}",
+  "@errorDeletingReservation": {"description": "Snackbar error when deleting reservation fails","placeholders": {"message": {"type": "String", "example": "Network error"}}},
+
+  "deleteCarRentalTitle": "Delete Car Rental",
+  "deleteCarRentalConfirm": "Are you sure you want to delete the {provider} rental?",
+  "@deleteCarRentalConfirm": {"description": "Confirmation text for deleting car rental","placeholders": {"provider": {"type": "String", "example": "Hertz"}}},
+  "errorDeletingCarRental": "Error deleting car rental: {message}",
+  "@errorDeletingCarRental": {"description": "Snackbar error when deleting car rental fails","placeholders": {"message": {"type": "String", "example": "Timeout"}}},
+
+  "locationsTitle": "Locations",
+  "locationAddedSuccessfully": "Location \"{name}\" added successfully",
+  "@locationAddedSuccessfully": {"description": "Snackbar when a location was added","placeholders": {"name": {"type": "String", "example": "Berlin"}}},
+  "failedToAddLocation": "Failed to add location: {message}",
+  "@failedToAddLocation": {"description": "Snackbar when adding location failed","placeholders": {"message": {"type": "String", "example": "Invalid coordinates"}}},
+
+  "deleteLocationTitle": "Delete Location",
+  "deleteLocationConfirm": "Are you sure you want to delete \"{city}\"? This action cannot be undone.",
+  "@deleteLocationConfirm": {"description": "Location deletion confirmation","placeholders": {"city": {"type": "String", "example": "Paris"}}},
+  "locationDeleted": "Location \"{city}\" deleted successfully",
+  "@locationDeleted": {"description": "Snackbar when a location was deleted","placeholders": {"city": {"type": "String", "example": "Paris"}}},
+  "failedToDeleteLocation": "Failed to delete location: {message}",
+  "@failedToDeleteLocation": {"description": "Error deleting location","placeholders": {"message": {"type": "String", "example": "DB error"}}},
+  "coastal": "coastal",
+  "inland": "inland",
+  "coastalStatusUpdated": "Coastal status updated to {status}",
+  "@coastalStatusUpdated": {"description": "Snackbar after toggling coastal flag","placeholders": {"status": {"type": "String", "example": "coastal"}}},
+  "failedToUpdateCoastal": "Failed to update coastal status: {message}",
+  "@failedToUpdateCoastal": {"description": "Snackbar when coastal update fails","placeholders": {"message": {"type": "String", "example": "Network error"}}},
+  "locationNotFound": "Location not found",
+
+  "accommodationsTitle": "Accommodations",
+  "addAccommodation": "Add Accommodation",
+  "editAccommodationTitle": "Edit Accommodation",
+  "deleteAccommodationTitle": "Delete Accommodation",
+  "deleteAccommodationConfirm": "Are you sure you want to delete \"{name}\"?",
+  "@deleteAccommodationConfirm": {"description": "Confirm delete accommodation","placeholders": {"name": {"type": "String", "example": "Hotel Central"}}},
+  "chooseDifferentFile": "Choose Different File",
+  "chooseFile": "Choose File",
+
+  "editTripTitle": "Edit Trip",
+  "deleteTripTitle": "Delete Trip",
+
+  "pointsOfInterestTitle": "Points of Interest",
+  "addPointOfInterest": "Add Point of Interest",
+  "editPointOfInterestTitle": "Edit Point of Interest",
+  "deletePointOfInterestTitle": "Delete Point of Interest",
+  "deletePointOfInterestConfirm": "Are you sure you want to delete \"{name}\"?",
+  "@deletePointOfInterestConfirm": {"description": "Confirm delete POI","placeholders": {"name": {"type": "String", "example": "Eiffel Tower"}}},
+  "errorDeletingPointOfInterest": "Error deleting point of interest: {message}",
+  "@errorDeletingPointOfInterest": {"description": "Error when deleting POI","placeholders": {"message": {"type": "String", "example": "Server error"}}},
+
+  "pointOfInterestLabel": "Point of Interest",
+  "@pointOfInterestLabel": {"description": "Singular label for a point of interest chip/header"},
+  "notesLabel": "Notes",
+  "@notesLabel": {"description": "Label for notes section"},
+
+  "noWeatherData": "No weather data",
+  "@noWeatherData": {"description": "Shown when no weather forecast is available"},
+  "highTide": "High",
+  "@highTide": {"description": "Label for high tide"},
+  "lowTide": "Low",
+  "@lowTide": {"description": "Label for low tide"},
+  "tideAtTime": "{tide} tide at {time}",
+  "@tideAtTime": {"description": "Format for tide with time","placeholders": {"tide": {"type": "String", "example": "High"}, "time": {"type": "String", "example": "14:35"}}},
+
+  "summaryTab": "Summary",
+  "@summaryTab": {"description": "Bottom navigation tab label: Summary"},
+  "timelineTab": "Timeline",
+  "@timelineTab": {"description": "Bottom navigation tab label: Timeline"},
+  "mapTab": "Map",
+  "@mapTab": {"description": "Bottom navigation tab label: Map"},
+  "attachmentsTab": "Attachments",
+  "@attachmentsTab": {"description": "Bottom navigation tab label: Attachments"},
+
+  "noTripsFoundTitle": "No trips found",
+  "@noTripsFoundTitle": {"description": "Title shown when there are no trips in the list"},
+  "noTripsFoundSubtitle": "Start planning your next adventure!",
+  "@noTripsFoundSubtitle": {"description": "Subtitle shown when there are no trips"},
+
+  "oneDay": "1 day",
+  "@oneDay": {"description": "Duration label for exactly one day"},
+  "daysCount": "{count} days",
+  "@daysCount": {"description": "Duration label for N days","placeholders": {"count": {"type": "num", "example": "5"}}},
+
+  "changeHeaderImage": "Change Header Image",
+  "@changeHeaderImage": {"description": "Label on the header image placeholder to change the image"},
+
+  "addCarRentalPageTitle": "Add Car Rental",
+  "@addCarRentalPageTitle": {"description": "Title for the add car rental page"},
+  "pleaseFillRequiredFields": "Please fill in all required fields",
+  "@pleaseFillRequiredFields": {"description": "Validation error shown when required fields are missing"},
+  "carRentalAddedSuccessfully": "Car rental added successfully",
+  "@carRentalAddedSuccessfully": {"description": "Snackbar shown when a car rental has been added"},
+  "failedToAddCarRental": "Failed to add car rental: {message}",
+  "@failedToAddCarRental": {"description": "Error when adding car rental fails","placeholders": {"message": {"type": "String", "example": "Network error"}}},
+
+  "trainInfoAddedSuccessfully": "Train information added successfully!",
+  "@trainInfoAddedSuccessfully": {"description": "Snackbar when train information import succeeded"},
+  "needCreateTripFirstToAddTrainInfo": "You need to create a trip first before adding train information.",
+  "@needCreateTripFirstToAddTrainInfo": {"description": "Dialog content explaining that a trip is required"},
+  "errorTitle": "Error",
+  "@errorTitle": {"description": "Generic error dialog title"},
+
+  "addTrains": "Add Trains",
+  "@addTrains": {"description": "Button label to add trains"},
+
+  "foundTrainSegments": "Found {count} train segments:",
+  "@foundTrainSegments": {"description": "Header indicating how many train segments were found","placeholders": {"count": {"type": "int", "example": "3"}}},
+  "fromLabel": "From: {station}",
+  "@fromLabel": {"description": "Label for departure station","placeholders": {"station": {"type": "String", "example": "Berlin Hbf"}}},
+  "toLabel": "To: {station}",
+  "@toLabel": {"description": "Label for arrival station","placeholders": {"station": {"type": "String", "example": "Munich Hbf"}}},
+  "platformLabel": "Platform {platform}",
+  "@platformLabel": {"description": "Label for platform number","placeholders": {"platform": {"type": "String", "example": "7A"}}},
+
+  "searchWebImagesTitle": "Search Web Images",
+  "@searchWebImagesTitle": {"description": "Title for the web image search view"},
+  "select": "Select",
+  "@select": {"description": "Generic select action label"},
+  "search": "Search",
+  "@search": {"description": "Generic search action label"},
+  "searchImagesHint": "Search for images...",
+  "@searchImagesHint": {"description": "Hint text in the web image search field"},
+  "errorSearchingImages": "Error searching for images: {message}",
+  "@errorSearchingImages": {"description": "Error message when image search fails","placeholders": {"message": {"type": "String", "example": "Timeout"}}},
+  "errorDownloadingImage": "Error downloading image: {message}",
+  "@errorDownloadingImage": {"description": "Error message when image download fails","placeholders": {"message": {"type": "String", "example": "404 Not Found"}}},
+  "pleaseEnterSearchTerm": "Please enter a search term",
+  "@pleaseEnterSearchTerm": {"description": "Validation when search term is empty"},
+  "noImagesFoundTrySearching": "No images found. Try searching for something.",
+  "@noImagesFoundTrySearching": {"description": "Info text when no images are found"},
+  "downloadingImage": "Downloading image...",
+  "@downloadingImage": {"description": "Status text shown while downloading an image"},
+  "backToResults": "Back to results",
+  "@backToResults": {"description": "Button label to go back to search results"},
+  "useThisImage": "Use this image",
+  "@useThisImage": {"description": "Button label to confirm selected image"},
+  "imageByAuthor": "By {author}",
+  "@imageByAuthor": {"description": "Overlay showing image author","placeholders": {"author": {"type": "String", "example": "John Doe"}}},
+
+  "reservationAddedSuccessfully": "Reservation added successfully",
+  "@reservationAddedSuccessfully": {"description": "Snackbar shown when a reservation has been added"},
+  "failedToAddReservation": "Failed to add reservation: {message}",
+  "@failedToAddReservation": {"description": "Error when adding reservation fails","placeholders": {"message": {"type": "String", "example": "Network error"}}}
+  }
