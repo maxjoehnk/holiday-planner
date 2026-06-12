@@ -1,5 +1,6 @@
 use anyhow::Context;
 use sea_orm::{DbErr, TransactionTrait};
+use crate::api::events::{self, DataChangeEvent};
 use crate::database::{Database, repositories};
 use crate::jobs::Job;
 use crate::models::*;
@@ -32,12 +33,14 @@ impl Job for TidalSyncJob {
         
         for location in locations_to_update {
             tracing::debug!("Fetching tidal data for location {} - {}", location.city, location.country);
-            
+
             let coordinates = Coordinate {
                 latitude: location.coordinates_latitude,
                 longitude: location.coordinates_longitude,
             };
-            
+            let location_id = location.id;
+            let trip_id = location.trip_id;
+
             match world_tides::fetch_tidal_information(&coordinates).await {
                 Ok(tide_records) => {
                     let tide_data: Vec<(chrono::DateTime<chrono::Utc>, f64, TideType)> = tide_records
@@ -47,18 +50,20 @@ impl Job for TidalSyncJob {
 
                     self.db.transaction::<_, _, DbErr>(|transaction| {
                         Box::pin(async move {
-                            repositories::tidal_information::insert_multiple_tide_records(transaction, location.id, tide_data).await?;
+                            repositories::tidal_information::insert_multiple_tide_records(transaction, location_id, tide_data).await?;
 
-                            repositories::locations::update_tidal_information_timestamp(transaction, location.id).await?;
+                            repositories::locations::update_tidal_information_timestamp(transaction, location_id).await?;
                             Ok(())
                         })
                     }).await.context("Updating stored tidal information for location")?;
 
-                    tracing::debug!("Updated tidal information for location {}", location.id);
+                    events::emit(DataChangeEvent::TidesUpdated { trip_id, location_id });
+
+                    tracing::debug!("Updated tidal information for location {}", location_id);
                 }
                 Err(e) => {
-                    tracing::warn!("Failed to fetch tidal information for location {} ({}): {}", 
-                        location.city, location.id, e);
+                    tracing::warn!("Failed to fetch tidal information for location {} ({}): {}",
+                        location.city, location_id, e);
                 }
             }
         }

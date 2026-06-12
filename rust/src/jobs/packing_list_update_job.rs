@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{IntoActiveModel, TransactionTrait};
+use crate::api::events::{self, DataChangeEvent};
 use crate::database::{Database, repositories, entities};
 use crate::database::entities::trip::Model as Trip;
 use crate::database::entities::{weather_daily_forecast, weather_hourly_forecast};
@@ -42,12 +43,14 @@ impl Job for PackingListUpdateJob {
             let mut packing_entries = packing_entries.into_iter()
                 .map(|entry| (entry.packing_list_entry_id, entry.into_active_model()))
                 .collect::<HashMap<_, _>>();
+            let mut mutated = false;
             for packing_list_entry in &packing_list_entries {
                 if packing_list_entry.conditions.is_empty() || packing_list_entry.conditions.iter().any(|condition| condition.matches(&trip, &daily_forecasts, &trip_tag_ids)) {
                     let quantity = packing_list_entry.quantity.calculate(trip.start_date, trip.end_date);
                     if let Some(mut model) = packing_entries.remove(&packing_list_entry.id) {
                         model.quantity = Set(quantity.map(|q| q as i64));
                         repositories::trip_packing_list_entries::update(&self.db, trip.id, model).await?;
+                        mutated = true;
                     }else {
                         let model = entities::trip_packing_list_entry::ActiveModel {
                             packing_list_entry_id: Set(packing_list_entry.id),
@@ -56,11 +59,19 @@ impl Job for PackingListUpdateJob {
                             ..Default::default()
                         };
                         repositories::trip_packing_list_entries::insert(&self.db, model).await?;
+                        mutated = true;
                     }
                 }
             }
             let entries_to_be_removed = packing_entries.into_iter().map(|(id, _)| id).collect::<Vec<_>>();
+            if !entries_to_be_removed.is_empty() {
+                mutated = true;
+            }
             repositories::trip_packing_list_entries::delete_many_by_ids(&self.db, trip.id, entries_to_be_removed).await?;
+
+            if mutated {
+                events::emit(DataChangeEvent::PackingListChanged { trip_id: Some(trip.id) });
+            }
         }
 
         tracing::info!("Finished packing list job");

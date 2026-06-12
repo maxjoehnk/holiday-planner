@@ -1,5 +1,6 @@
 use uuid::Uuid;
 use crate::api::DB;
+use crate::api::events::{self, DataChangeEvent};
 use crate::commands::{AddTripAccommodation, UpdateTripAccommodation};
 use crate::handlers::{AccommodationHandler, HandlerCreator};
 use crate::models::{AccommodationModel};
@@ -13,17 +14,25 @@ pub async fn get_trip_accommodations(trip_id: Uuid) -> anyhow::Result<Vec<Accomm
 #[tracing::instrument]
 pub async fn add_trip_accommodation(command: AddTripAccommodation) -> anyhow::Result<()> {
     let handler = DB.try_get::<AccommodationHandler>().await?;
-    handler.add_accommodation(command).await
+    let trip_id = command.trip_id;
+    handler.add_accommodation(command).await?;
+    events::emit(DataChangeEvent::AccommodationsChanged { trip_id: Some(trip_id) });
+    events::emit(DataChangeEvent::TimelineChanged { trip_id });
+    Ok(())
 }
 
 #[tracing::instrument]
 pub async fn update_trip_accommodation(command: UpdateTripAccommodation) -> anyhow::Result<()> {
     let handler = DB.try_get::<AccommodationHandler>().await?;
-    handler.update_accommodation(command).await
+    handler.update_accommodation(command).await?;
+    events::emit(DataChangeEvent::AccommodationsChanged { trip_id: None });
+    Ok(())
 }
 
 #[tracing::instrument]
 pub async fn delete_accommodation(accommodation_id: Uuid) -> anyhow::Result<()> {
     let handler = DB.try_get::<AccommodationHandler>().await?;
-    handler.delete_accommodation(accommodation_id).await
+    handler.delete_accommodation(accommodation_id).await?;
+    events::emit(DataChangeEvent::AccommodationsChanged { trip_id: None });
+    Ok(())
 }

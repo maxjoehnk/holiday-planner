@@ -1,5 +1,6 @@
 use uuid::Uuid;
 use crate::api::DB;
+use crate::api::events::{self, DataChangeEvent};
 use crate::commands::{AddTripPointOfInterest, UpdateTripPointOfInterest};
 use crate::handlers::{PointOfInterestHandler, HandlerCreator};
 use crate::models::{PointOfInterestModel};
@@ -26,17 +27,24 @@ pub async fn get_trip_points_of_interest(trip_id: Uuid) -> anyhow::Result<Vec<Po
 #[tracing::instrument]
 pub async fn add_trip_point_of_interest(command: AddTripPointOfInterest) -> anyhow::Result<()> {
     let handler = DB.try_get::<PointOfInterestHandler>().await?;
-    handler.add_point_of_interest(command).await
+    let trip_id = command.trip_id;
+    handler.add_point_of_interest(command).await?;
+    events::emit(DataChangeEvent::PoisChanged { trip_id: Some(trip_id) });
+    Ok(())
 }
 
 #[tracing::instrument]
 pub async fn update_trip_point_of_interest(command: UpdateTripPointOfInterest) -> anyhow::Result<()> {
     let handler = DB.try_get::<PointOfInterestHandler>().await?;
-    handler.update_point_of_interest(command).await
+    handler.update_point_of_interest(command).await?;
+    events::emit(DataChangeEvent::PoisChanged { trip_id: None });
+    Ok(())
 }
 
 #[tracing::instrument]
 pub async fn delete_point_of_interest(point_of_interest_id: Uuid) -> anyhow::Result<()> {
     let handler = DB.try_get::<PointOfInterestHandler>().await?;
-    handler.delete_point_of_interest(point_of_interest_id).await
+    handler.delete_point_of_interest(point_of_interest_id).await?;
+    events::emit(DataChangeEvent::PoisChanged { trip_id: None });
+    Ok(())
 }

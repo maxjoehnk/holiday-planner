@@ -2,6 +2,7 @@ use std::ops::Deref;
 use sea_orm::ActiveValue::Set;
 use uuid::Uuid;
 use crate::database::{Database, repositories, entities};
+use crate::jobs::BackgroundJobHandler;
 use crate::models::*;
 use crate::handlers::Handler;
 use crate::third_party::{photon, overpass};
@@ -118,6 +119,8 @@ impl LocationHandler {
         
         repositories::locations::insert(&self.db, location).await?;
 
+        queue_background_sync_jobs(&self.db);
+
         Ok(())
     }
 
@@ -168,10 +171,22 @@ impl LocationHandler {
     pub async fn delete_location(&self, location_id: Uuid) -> anyhow::Result<()> {
         repositories::tidal_information::delete_by_location_id(self.db.deref(), location_id).await?;
         repositories::locations::delete_by_id(&self.db, location_id).await?;
-        
+
         Ok(())
     }
 
+    pub async fn find_trip_id_for_location(&self, location_id: Uuid) -> anyhow::Result<Option<Uuid>> {
+        Ok(repositories::locations::find_by_id(&self.db, location_id).await?.map(|location| location.trip_id))
+    }
+}
+
+fn queue_background_sync_jobs(db: &Database) {
+    let handler = BackgroundJobHandler::create(db.clone());
+    tokio::spawn(async move {
+        if let Err(err) = handler.run().await {
+            tracing::error!("Failed to run background sync jobs: {err:?}");
+        }
+    });
 }
 
 #[cfg(test)]

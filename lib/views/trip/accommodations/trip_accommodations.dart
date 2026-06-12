@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
@@ -19,15 +19,15 @@ class TripAccommodations extends StatefulWidget {
 }
 
 class _TripAccommodationsState extends State<TripAccommodations> {
-  late StreamController<List<AccommodationModel>> _accommodations;
-  late Stream<List<AccommodationModel>>? _accommodations$;
+  late final _accommodations = RefreshableData<List<AccommodationModel>>(
+    fetch: () => getTripAccommodations(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onAccommodationsChanged(widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _accommodations = StreamController();
-    _accommodations$ = _accommodations.stream;
-    _fetch();
+  void dispose() {
+    _accommodations.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,7 +39,7 @@ class _TripAccommodationsState extends State<TripAccommodations> {
         elevation: 0,
       ),
       body: StreamBuilder(
-        stream: _accommodations$,
+        stream: _accommodations.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -122,17 +122,11 @@ class _TripAccommodationsState extends State<TripAccommodations> {
   void _addAccommodation(BuildContext context) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => AddAccommodation(tripId: widget.tripId)));
-    _fetch();
   }
 
   void _editAccommodation(BuildContext context, AccommodationModel accommodation) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => EditAccommodation(accommodation: accommodation)));
-    _fetch();
-  }
-
-  _fetch() {
-    _accommodations.addStream(getTripAccommodations(tripId: widget.tripId).asStream());
   }
 }
 

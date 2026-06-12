@@ -1,7 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/views/trip/map/location_details.dart';
 import 'package:holiday_planner/views/trip/map/location_marker.dart';
 import 'package:holiday_planner/views/trip/map/poi_details.dart';
@@ -22,44 +22,21 @@ class TripMap extends StatefulWidget {
 }
 
 class _TripMapState extends State<TripMap> {
-  late StreamController<List<TripLocationListModel>> _locations;
-  late Stream<List<TripLocationListModel>>? _locations$;
-  late StreamController<List<PointOfInterestModel>> _pointsOfInterest;
-  late Stream<List<PointOfInterestModel>>? _pointsOfInterest$;
+  late final _locations = RefreshableData<List<TripLocationListModel>>(
+    fetch: () => getTripLocations(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onLocationsChanged(widget.tripId)],
+  );
+  late final _pointsOfInterest = RefreshableData<List<PointOfInterestModel>>(
+    fetch: () => getTripPointsOfInterest(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onPoisChanged(widget.tripId)],
+  );
   final MapController _mapController = MapController();
 
   @override
-  void initState() {
-    super.initState();
-    _locations = StreamController();
-    _locations$ = _locations.stream;
-    _pointsOfInterest = StreamController();
-    _pointsOfInterest$ = _pointsOfInterest.stream;
-    _fetch();
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    _fetch();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    _fetch();
-  }
-
-  @override
   void dispose() {
-    _locations.close();
-    _pointsOfInterest.close();
+    _locations.dispose();
+    _pointsOfInterest.dispose();
     super.dispose();
-  }
-
-  void _fetch() {
-    _locations.addStream(getTripLocations(tripId: widget.tripId).asStream());
-    _pointsOfInterest.addStream(getTripPointsOfInterest(tripId: widget.tripId).asStream());
   }
 
   List<Marker> _buildLocationMarkers(List<TripLocationListModel> locations) {
@@ -175,10 +152,10 @@ class _TripMapState extends State<TripMap> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<TripLocationListModel>>(
-        stream: _locations$,
+        stream: _locations.stream,
         builder: (context, locationsSnapshot) {
           return StreamBuilder<List<PointOfInterestModel>>(
-            stream: _pointsOfInterest$,
+            stream: _pointsOfInterest.stream,
             builder: (context, poisSnapshot) {
               if (locationsSnapshot.hasError) {
                 return SliverToBoxAdapter(

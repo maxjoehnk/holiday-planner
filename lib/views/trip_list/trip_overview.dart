@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/create_trip/create_trip.dart';
@@ -17,28 +17,19 @@ class TripOverview extends StatefulWidget {
 }
 
 class _TripOverviewState extends State<TripOverview> {
-  late StreamController<List<TripListModel>> _trips;
-  late Stream<List<TripListModel>>? _trips$;
   TripFilter _selectedFilter = TripFilter.upcoming;
+  late final _trips = RefreshableData<List<TripListModel>>(
+    fetch: () => switch (_selectedFilter) {
+      TripFilter.upcoming => getUpcomingTrips(),
+      TripFilter.past => getPastTrips(),
+    },
+    refreshOn: [DataChangeBus.instance.onTripsChanged()],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _trips = StreamController();
-    _trips$ = _trips.stream;
-    _fetch();
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    _fetch();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    _fetch();
+  void dispose() {
+    _trips.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,14 +55,14 @@ class _TripOverviewState extends State<TripOverview> {
             onSelectionChanged: (Set<TripFilter> newSelection) {
               setState(() {
                 _selectedFilter = newSelection.first;
-                _fetch();
+                _trips.refresh();
               });
             },
           ),
         ),
         Expanded(
           child: StreamBuilder(
-            stream: _trips$,
+            stream: _trips.stream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -122,16 +113,5 @@ class _TripOverviewState extends State<TripOverview> {
         ),
       ],
     );
-  }
-
-  _fetch() {
-    switch (_selectedFilter) {
-      case TripFilter.upcoming:
-        _trips.addStream(getUpcomingTrips().asStream());
-        break;
-      case TripFilter.past:
-        _trips.addStream(getPastTrips().asStream());
-        break;
-    }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/src/rust/frb_generated.dart';
 import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
@@ -20,6 +21,8 @@ Future<void> main() async {
     findSystemLocale(),
     settings.loadThemeMode(),
   ]);
+
+  DataChangeBus.instance.start();
 
   runApp(HolidayPlannerApp(settings));
 }

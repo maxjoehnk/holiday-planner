@@ -1,7 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/transits.dart';
 import 'package:holiday_planner/src/rust/models/transits.dart';
 import 'package:holiday_planner/date_format.dart';
@@ -20,16 +20,10 @@ class TripTransits extends StatefulWidget {
 }
 
 class _TripTransitsState extends State<TripTransits> {
-  late StreamController<List<Train>> _trains;
-  late Stream<List<Train>>? _trains$;
-
-  @override
-  void initState() {
-    super.initState();
-    _trains = StreamController();
-    _trains$ = _trains.stream;
-    _fetch();
-  }
+  late final _trains = RefreshableData<List<Train>>(
+    fetch: () => getTripTrains(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onTransitsChanged(widget.tripId)],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +40,7 @@ class _TripTransitsState extends State<TripTransits> {
 
   Widget _buildTransitsList() {
     return StreamBuilder<List<Train>>(
-      stream: _trains$,
+      stream: _trains.stream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return _buildErrorWidget(snapshot.error.toString());
@@ -150,22 +144,16 @@ class _TripTransitsState extends State<TripTransits> {
   void _addTrain(BuildContext context) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => AddTrainPage(tripId: widget.tripId)));
-    _fetch();
   }
 
   void _editTrain(BuildContext context, Train train, int index) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => EditTrainPage(train: train)));
-    _fetch();
-  }
-
-  _fetch() {
-    _trains.addStream(getTripTrains(tripId: widget.tripId).asStream());
   }
 
   @override
   void dispose() {
-    _trains.close();
+    _trains.dispose();
     super.dispose();
   }
 }

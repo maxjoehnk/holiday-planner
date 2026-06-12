@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:uuid/uuid.dart';
@@ -15,27 +15,15 @@ class TripPackingListView extends StatefulWidget {
 }
 
 class _TripPackingListViewState extends State<TripPackingListView> {
-  late StreamController<TripPackingListModel> _packingList;
-  late Stream<TripPackingListModel>? _packingList$;
+  late final _packingList = RefreshableData<TripPackingListModel>(
+    fetch: () => getTripPackingList(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onPackingListChanged(tripId: widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _packingList = StreamController();
-    _packingList$ = _packingList.stream;
-    _fetch();
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    _fetch();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    _fetch();
+  void dispose() {
+    _packingList.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,7 +35,7 @@ class _TripPackingListViewState extends State<TripPackingListView> {
         elevation: 0,
       ),
       body: StreamBuilder(
-        stream: _packingList$,
+        stream: _packingList.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -74,29 +62,21 @@ class _TripPackingListViewState extends State<TripPackingListView> {
           }
           return PackingList(
               tripId: widget.tripId,
-              packingList: snapshot.requireData,
-              onToggleItem: () => _fetch());
+              packingList: snapshot.requireData);
         },
       ),
     );
-  }
-
-  _fetch() {
-    _packingList
-        .addStream(getTripPackingList(tripId: widget.tripId).asStream());
   }
 }
 
 class PackingList extends StatelessWidget {
   final UuidValue tripId;
   final TripPackingListModel packingList;
-  final Function() onToggleItem;
 
   const PackingList(
       {super.key,
       required this.packingList,
-      required this.tripId,
-      required this.onToggleItem});
+      required this.tripId});
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +304,6 @@ class PackingList extends StatelessWidget {
       await markAsPacked(
           tripId: tripId, entryId: entry.packingListEntry.id);
     }
-    onToggleItem();
   }
 }
 

@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/attachments.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/attachment_card.dart';
@@ -16,20 +16,20 @@ class TripAttachments extends StatefulWidget {
 }
 
 class _TripAttachmentsState extends State<TripAttachments> {
-  late StreamController<List<AttachmentListModel>> _attachments;
-  late Stream<List<AttachmentListModel>>? _attachments$;
+  late final _attachments = RefreshableData<List<AttachmentListModel>>(
+    fetch: () => getTripAttachments(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onTripAttachmentsChanged(widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _attachments = StreamController();
-    _attachments$ = _attachments.stream;
-    _fetch();
+  void dispose() {
+    _attachments.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(stream: _attachments$, builder: (context, snapshot) {
+    return StreamBuilder(stream: _attachments.stream, builder: (context, snapshot) {
       if (snapshot.hasError) {
         return SliverFillRemaining(
           child: Center(
@@ -55,20 +55,15 @@ class _TripAttachmentsState extends State<TripAttachments> {
       if (!snapshot.hasData) {
         return const SliverFillRemaining(child: Center(child: CircularProgressIndicator()));
       }
-      return TripAttachmentList(attachments: snapshot.data ?? [], refresh: () => _fetch(),);
+      return TripAttachmentList(attachments: snapshot.data ?? []);
     });
-  }
-
-  _fetch() {
-    _attachments.addStream(getTripAttachments(tripId: widget.tripId).asStream());
   }
 }
 
 class TripAttachmentList extends StatelessWidget {
   final List<AttachmentListModel> attachments;
-  final Function() refresh;
 
-  const TripAttachmentList({super.key, required this.attachments, required this.refresh});
+  const TripAttachmentList({super.key, required this.attachments});
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +104,7 @@ class TripAttachmentList extends StatelessWidget {
             var attachment = attachments[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
-              child: AttachmentCard(attachment: attachment, onDelete: () => deleteAttachment(attachmentId: attachment.id).then((_) => refresh())),
+              child: AttachmentCard(attachment: attachment, onDelete: () => deleteAttachment(attachmentId: attachment.id)),
             );
           },
           childCount: attachments.length,

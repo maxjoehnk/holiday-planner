@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/packing_list.dart';
 import 'package:holiday_planner/src/rust/commands/delete_packing_list_entry.dart';
 import 'package:holiday_planner/src/rust/models.dart';
@@ -16,27 +16,15 @@ class PackingListView extends StatefulWidget {
 }
 
 class _PackingListViewState extends State<PackingListView> {
-  late StreamController<List<PackingListEntry>> _packingList;
-  late Stream<List<PackingListEntry>>? _packingList$;
+  late final _packingList = RefreshableData<List<PackingListEntry>>(
+    fetch: () => getPackingList(),
+    refreshOn: [DataChangeBus.instance.onPackingListChanged()],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _packingList = StreamController();
-    _packingList$ = _packingList.stream;
-    _fetch();
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    _fetch();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    _fetch();
+  void dispose() {
+    _packingList.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,7 +32,7 @@ class _PackingListViewState extends State<PackingListView> {
     return Stack(
       children: [
         StreamBuilder(
-            stream: _packingList$,
+            stream: _packingList.stream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -84,26 +72,19 @@ class _PackingListViewState extends State<PackingListView> {
     );
   }
 
-  void _fetch() {
-    _packingList.addStream(getPackingList().asStream());
-  }
-
   _addItem() async {
     await showAdaptiveDialog(
         context: context, builder: (context) => const EditItemDialog());
-    _fetch();
   }
 
   _editItem(PackingListEntry item) async {
     await showAdaptiveDialog(
         context: context, builder: (context) => EditItemDialog(entry: item));
-    _fetch();
   }
 
   _removeItem(PackingListEntry entry) async {
     await deletePackingListEntry(
         command: DeletePackingListEntry(id: entry.id));
-    _fetch();
   }
 }
 

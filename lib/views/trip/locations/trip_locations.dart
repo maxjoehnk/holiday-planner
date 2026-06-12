@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_location.dart';
@@ -26,16 +26,19 @@ class TripLocations extends StatefulWidget {
 }
 
 class _TripLocationsState extends State<TripLocations> {
-  late StreamController<List<TripLocationListModel>> _locations;
-  late Stream<List<TripLocationListModel>>? _locations$;
   bool _isAddingLocation = false;
+  late final _locations = RefreshableData<List<TripLocationListModel>>(
+    fetch: () => getTripLocations(tripId: widget.tripId),
+    refreshOn: [
+      DataChangeBus.instance.onLocationsChanged(widget.tripId),
+      DataChangeBus.instance.onWeatherOrTidesChanged(widget.tripId),
+    ],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _locations = StreamController();
-    _locations$ = _locations.stream;
-    _fetch();
+  void dispose() {
+    _locations.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,7 +50,7 @@ class _TripLocationsState extends State<TripLocations> {
         elevation: 0,
       ),
       body: StreamBuilder(
-        stream: _locations$,
+        stream: _locations.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -118,7 +121,6 @@ class _TripLocationsState extends State<TripLocations> {
                 var location = locations[locationIndex];
                 return LocationCard(
                   location: location,
-                  onUpdate: _fetch,
                 );
               },
             ),
@@ -160,7 +162,6 @@ class _TripLocationsState extends State<TripLocations> {
     try {
       await addTripLocation(
           command: AddTripLocation(tripId: widget.tripId, location: location));
-      _fetch();
       
       if (mounted) {
         scaffoldMessenger.showSnackBar(
@@ -188,10 +189,6 @@ class _TripLocationsState extends State<TripLocations> {
         });
       }
     }
-  }
-
-  _fetch() {
-    _locations.addStream(getTripLocations(tripId: widget.tripId).asStream());
   }
 
   Widget _buildLoadingLocationCard(BuildContext context) {
@@ -298,9 +295,8 @@ class _TripLocationsState extends State<TripLocations> {
 
 class LocationCard extends StatefulWidget {
   final TripLocationListModel location;
-  final VoidCallback? onUpdate;
 
-  const LocationCard({required this.location, this.onUpdate, super.key});
+  const LocationCard({required this.location, super.key});
 
   @override
   State<LocationCard> createState() => _LocationCardState();
@@ -314,17 +310,12 @@ class _LocationCardState extends State<LocationCard> {
     var textTheme = Theme.of(context).textTheme;
 
     return InkWell(
-      onTap: () async {
-        final result = await Navigator.of(context).push<bool>(
+      onTap: () {
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => LocationDetailView(locationId: widget.location.id),
           ),
         );
-        
-        // If location was deleted, refresh the parent list
-        if (result == true && widget.onUpdate != null) {
-          widget.onUpdate!();
-        }
       },
       borderRadius: BorderRadius.circular(16),
       child: Card(

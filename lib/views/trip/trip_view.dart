@@ -1,8 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/date_format.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/models/tidal_information.dart';
@@ -31,36 +32,15 @@ class TripView extends StatefulWidget {
 
 class _TripViewState extends State<TripView> {
   int _selectedTab = 0;
-  ImageProvider? _headerImage;
-  late StreamController<TripOverviewModel> _trip;
-  late Stream<TripOverviewModel> _trip$;
+  late final _trip = RefreshableData<TripOverviewModel>(
+    fetch: () => getTrip(id: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onAnyTripDataChanged(widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _trip = StreamController();
-    _trip$ = _trip.stream.asBroadcastStream();
-    _trip$.forEach((trip) {
-      _headerImage = trip.headerImage != null ? MemoryImage(trip.headerImage!) : null;
-    });
-
-    _fetch();
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    _fetch();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    _fetch();
-  }
-
-  void _fetch() {
-    _trip.addStream(getTrip(id: widget.tripId).asStream());
+  void dispose() {
+    _trip.dispose();
+    super.dispose();
   }
 
   String _buildDateString(TripOverviewModel trip) {
@@ -144,7 +124,7 @@ class _TripViewState extends State<TripView> {
     return Scaffold(
       floatingActionButton: _fab(),
       body: StreamBuilder(
-          stream: _trip$,
+          stream: _trip.stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -156,6 +136,7 @@ class _TripViewState extends State<TripView> {
             }
 
             var trip = snapshot.requireData;
+            final headerImage = trip.headerImage != null ? MemoryImage(trip.headerImage!) : null;
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -167,13 +148,11 @@ class _TripViewState extends State<TripView> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        Navigator.of(context)
-                            .push(
-                              MaterialPageRoute(
-                                builder: (context) => EditTripView(trip: trip),
-                              ),
-                            )
-                            .then((_) => _fetch());
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditTripView(trip: trip),
+                          ),
+                        );
                       },
                       tooltip: "Edit Trip",
                     ),
@@ -256,12 +235,12 @@ class _TripViewState extends State<TripView> {
                         ],
                       ),
                     ),
-                    background: _headerImage == null
+                    background: headerImage == null
                         ? null
                         : Stack(
                             fit: StackFit.expand,
                             children: [
-                              Image(image: _headerImage!, fit: BoxFit.cover),
+                              Image(image: headerImage, fit: BoxFit.cover),
                               Container(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -279,7 +258,7 @@ class _TripViewState extends State<TripView> {
                   ),
                 ),
                 if (_selectedTab != mapTabIndex) const SliverPadding(padding: EdgeInsets.all(4)),
-                if (_selectedTab == overviewTabIndex) TripSummary(trip, refresh: _fetch),
+                if (_selectedTab == overviewTabIndex) TripSummary(trip),
                 if (_selectedTab == timelineTabIndex) TripTimeline(tripId: widget.tripId),
                 if (_selectedTab == mapTabIndex) TripMap(tripId: widget.tripId),
                 if (_selectedTab == attachmentsTabIndex) TripAttachments(tripId: widget.tripId),

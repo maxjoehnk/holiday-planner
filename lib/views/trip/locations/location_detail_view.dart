@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:uuid/uuid.dart';
@@ -17,11 +20,21 @@ class _LocationDetailViewState extends State<LocationDetailView> {
   bool _isLoading = true;
   bool _isUpdating = false;
   String? _error;
+  StreamSubscription<void>? _changeSub;
 
   @override
   void initState() {
     super.initState();
+    _changeSub = DataChangeBus.instance
+        .onLocationDataChanged(widget.locationId)
+        .listen((_) => _loadLocationDetails());
     _loadLocationDetails();
+  }
+
+  @override
+  void dispose() {
+    _changeSub?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadLocationDetails() async {

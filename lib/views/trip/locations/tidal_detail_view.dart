@@ -1,11 +1,51 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:intl/intl.dart';
 
-class TidalDetailView extends StatelessWidget {
+class TidalDetailView extends StatefulWidget {
   final TripLocationListModel location;
 
   const TidalDetailView({super.key, required this.location});
+
+  @override
+  State<TidalDetailView> createState() => _TidalDetailViewState();
+}
+
+class _TidalDetailViewState extends State<TidalDetailView> {
+  late TripLocationListModel location;
+  StreamSubscription<void>? _changeSub;
+
+  @override
+  void initState() {
+    super.initState();
+    location = widget.location;
+    _changeSub = DataChangeBus.instance
+        .onLocationDataChanged(widget.location.id)
+        .listen((_) => _refresh());
+  }
+
+  @override
+  void dispose() {
+    _changeSub?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    try {
+      final updated = await getLocationDetails(locationId: widget.location.id);
+      if (mounted) {
+        setState(() {
+          location = updated;
+        });
+      }
+    } catch (_) {
+      // ignore — keep showing the existing tides
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

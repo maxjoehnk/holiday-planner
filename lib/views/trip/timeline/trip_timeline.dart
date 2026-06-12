@@ -1,7 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/timeline.dart';
 import 'package:holiday_planner/src/rust/models/timeline.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
@@ -21,34 +21,22 @@ class TripTimeline extends StatefulWidget {
 }
 
 class _TripTimelineState extends State<TripTimeline> {
-  late StreamController<TimelineModel> _timeline;
-  late Stream<TimelineModel>? _timeline$;
   TimelineFilter _selectedFilter = TimelineFilter.upcoming;
+  late final _timeline = RefreshableData<TimelineModel>(
+    fetch: () => getTripTimeline(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onTimelineChanged(widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _timeline = StreamController();
-    _timeline$ = _timeline.stream;
-    _fetch();
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    _fetch();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    _fetch();
+  void dispose() {
+    _timeline.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _timeline$,
+        stream: _timeline.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return SliverToBoxAdapter(
@@ -176,9 +164,6 @@ class _TripTimelineState extends State<TripTimeline> {
     );
   }
 
-  _fetch() {
-    _timeline.addStream(getTripTimeline(tripId: widget.tripId).asStream());
-  }
 }
 
 class TimelineEntry extends StatelessWidget {

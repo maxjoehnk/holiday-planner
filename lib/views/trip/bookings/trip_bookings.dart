@@ -1,7 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/bookings.dart';
 import 'package:holiday_planner/src/rust/models/bookings.dart';
 import 'package:holiday_planner/date_format.dart';
@@ -22,15 +22,15 @@ class TripBookings extends StatefulWidget {
 }
 
 class _TripBookingsState extends State<TripBookings> {
-  late StreamController<List<Booking>> _bookings;
-  late Stream<List<Booking>>? _bookings$;
+  late final _bookings = RefreshableData<List<Booking>>(
+    fetch: () => getTripBookings(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onBookingsChanged(widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _bookings = StreamController();
-    _bookings$ = _bookings.stream;
-    _fetch();
+  void dispose() {
+    _bookings.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,7 +48,7 @@ class _TripBookingsState extends State<TripBookings> {
 
   Widget _buildUnifiedBookingsList() {
     return StreamBuilder(
-      stream: _bookings$,
+      stream: _bookings.stream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return _buildErrorWidget(snapshot.error.toString());
@@ -229,25 +229,21 @@ class _TripBookingsState extends State<TripBookings> {
   void _addReservation(BuildContext context) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => AddReservationPage(tripId: widget.tripId)));
-    _fetch();
   }
 
   void _addCarRental(BuildContext context) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => AddCarRentalPage(tripId: widget.tripId)));
-    _fetch();
   }
 
   void _editReservation(BuildContext context, Reservation reservation) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => EditReservationPage(reservation: reservation)));
-    _fetch();
   }
 
   void _editCarRental(BuildContext context, CarRental carRental) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => EditCarRentalPage(carRental: carRental)));
-    _fetch();
   }
 
   void _deleteReservation(BuildContext context, Reservation reservation) async {
@@ -272,7 +268,6 @@ class _TripBookingsState extends State<TripBookings> {
     if (confirmed == true) {
       try {
         await deleteReservation(reservationId: reservation.id);
-        _fetch();
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -305,7 +300,6 @@ class _TripBookingsState extends State<TripBookings> {
     if (confirmed == true) {
       try {
         await deleteCarRental(carRentalId: carRental.id);
-        _fetch();
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -316,9 +310,6 @@ class _TripBookingsState extends State<TripBookings> {
     }
   }
 
-  _fetch() {
-    _bookings.addStream(getTripBookings(tripId: widget.tripId).asStream());
-  }
 }
 
 class ReservationCard extends StatelessWidget {

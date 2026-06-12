@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1714382313;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1284147690;
 
 // Section: executor
 
@@ -2117,6 +2117,46 @@ fn wire__crate__api__tags__set_trip_tags_impl(
         },
     )
 }
+fn wire__crate__api__events__subscribe_data_changes_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "subscribe_data_changes",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_sink = <StreamSink<
+                crate::api::events::DataChangeEvent,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::events::subscribe_data_changes(api_sink).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__bookings__update_car_rental_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2463,6 +2503,19 @@ impl SseDecode for chrono::DateTime<chrono::Utc> {
                 .naive_utc(),
             chrono::Utc,
         );
+    }
+}
+
+impl SseDecode
+    for StreamSink<
+        crate::api::events::DataChangeEvent,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
     }
 }
 
@@ -2859,6 +2912,96 @@ impl SseDecode for crate::models::DailyWeatherForecast {
             precipitation_probability: var_precipitationProbability,
             wind_speed: var_windSpeed,
         };
+    }
+}
+
+impl SseDecode for crate::api::events::DataChangeEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return crate::api::events::DataChangeEvent::TripsChanged;
+            }
+            1 => {
+                let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::TripChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            2 => {
+                let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::LocationsChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            3 => {
+                let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+                let mut var_locationId = <uuid::Uuid>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::WeatherUpdated {
+                    trip_id: var_tripId,
+                    location_id: var_locationId,
+                };
+            }
+            4 => {
+                let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+                let mut var_locationId = <uuid::Uuid>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::TidesUpdated {
+                    trip_id: var_tripId,
+                    location_id: var_locationId,
+                };
+            }
+            5 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::PackingListChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            6 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::AccommodationsChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            7 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::BookingsChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            8 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::TransitsChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            9 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::PoisChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            10 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                let mut var_accommodationId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::AttachmentsChanged {
+                    trip_id: var_tripId,
+                    accommodation_id: var_accommodationId,
+                };
+            }
+            11 => {
+                return crate::api::events::DataChangeEvent::TagsChanged;
+            }
+            12 => {
+                let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::TimelineChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -3281,6 +3424,17 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<uuid::Uuid> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<uuid::Uuid>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -4483,27 +4637,30 @@ fn pde_ffi_dispatcher_primary_impl(
         ),
         55 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
         56 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        57 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        58 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        57 => {
+            wire__crate__api__events__subscribe_data_changes_impl(port, ptr, rust_vec_len, data_len)
+        }
+        58 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        60 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        60 => {
+        61 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        61 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        63 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        64 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        62 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        65 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        65 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        66 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -5020,6 +5177,80 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::DailyWeatherForecast>
     for crate::models::DailyWeatherForecast
 {
     fn into_into_dart(self) -> crate::models::DailyWeatherForecast {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::events::DataChangeEvent {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::events::DataChangeEvent::TripsChanged => [0.into_dart()].into_dart(),
+            crate::api::events::DataChangeEvent::TripChanged { trip_id } => {
+                [1.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::LocationsChanged { trip_id } => {
+                [2.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::WeatherUpdated {
+                trip_id,
+                location_id,
+            } => [
+                3.into_dart(),
+                trip_id.into_into_dart().into_dart(),
+                location_id.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::events::DataChangeEvent::TidesUpdated {
+                trip_id,
+                location_id,
+            } => [
+                4.into_dart(),
+                trip_id.into_into_dart().into_dart(),
+                location_id.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::events::DataChangeEvent::PackingListChanged { trip_id } => {
+                [5.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::AccommodationsChanged { trip_id } => {
+                [6.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::BookingsChanged { trip_id } => {
+                [7.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::TransitsChanged { trip_id } => {
+                [8.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::PoisChanged { trip_id } => {
+                [9.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::events::DataChangeEvent::AttachmentsChanged {
+                trip_id,
+                accommodation_id,
+            } => [
+                10.into_dart(),
+                trip_id.into_into_dart().into_dart(),
+                accommodation_id.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::events::DataChangeEvent::TagsChanged => [11.into_dart()].into_dart(),
+            crate::api::events::DataChangeEvent::TimelineChanged { trip_id } => {
+                [12.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::events::DataChangeEvent
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::events::DataChangeEvent>
+    for crate::api::events::DataChangeEvent
+{
+    fn into_into_dart(self) -> crate::api::events::DataChangeEvent {
         self
     }
 }
@@ -6285,6 +6516,18 @@ impl SseEncode for chrono::DateTime<chrono::Utc> {
     }
 }
 
+impl SseEncode
+    for StreamSink<
+        crate::api::events::DataChangeEvent,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
+    }
+}
+
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6543,6 +6786,79 @@ impl SseEncode for crate::models::DailyWeatherForecast {
         <f64>::sse_encode(self.precipitation_amount, serializer);
         <f64>::sse_encode(self.precipitation_probability, serializer);
         <f64>::sse_encode(self.wind_speed, serializer);
+    }
+}
+
+impl SseEncode for crate::api::events::DataChangeEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::events::DataChangeEvent::TripsChanged => {
+                <i32>::sse_encode(0, serializer);
+            }
+            crate::api::events::DataChangeEvent::TripChanged { trip_id } => {
+                <i32>::sse_encode(1, serializer);
+                <uuid::Uuid>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::LocationsChanged { trip_id } => {
+                <i32>::sse_encode(2, serializer);
+                <uuid::Uuid>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::WeatherUpdated {
+                trip_id,
+                location_id,
+            } => {
+                <i32>::sse_encode(3, serializer);
+                <uuid::Uuid>::sse_encode(trip_id, serializer);
+                <uuid::Uuid>::sse_encode(location_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::TidesUpdated {
+                trip_id,
+                location_id,
+            } => {
+                <i32>::sse_encode(4, serializer);
+                <uuid::Uuid>::sse_encode(trip_id, serializer);
+                <uuid::Uuid>::sse_encode(location_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::PackingListChanged { trip_id } => {
+                <i32>::sse_encode(5, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::AccommodationsChanged { trip_id } => {
+                <i32>::sse_encode(6, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::BookingsChanged { trip_id } => {
+                <i32>::sse_encode(7, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::TransitsChanged { trip_id } => {
+                <i32>::sse_encode(8, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::PoisChanged { trip_id } => {
+                <i32>::sse_encode(9, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::AttachmentsChanged {
+                trip_id,
+                accommodation_id,
+            } => {
+                <i32>::sse_encode(10, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+                <Option<uuid::Uuid>>::sse_encode(accommodation_id, serializer);
+            }
+            crate::api::events::DataChangeEvent::TagsChanged => {
+                <i32>::sse_encode(11, serializer);
+            }
+            crate::api::events::DataChangeEvent::TimelineChanged { trip_id } => {
+                <i32>::sse_encode(12, serializer);
+                <uuid::Uuid>::sse_encode(trip_id, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -6862,6 +7178,16 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<uuid::Uuid> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <uuid::Uuid>::sse_encode(value, serializer);
         }
     }
 }

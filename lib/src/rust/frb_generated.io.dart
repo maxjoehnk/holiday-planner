@@ -7,6 +7,7 @@ import 'api.dart';
 import 'api/accommodations.dart';
 import 'api/attachments.dart';
 import 'api/bookings.dart';
+import 'api/events.dart';
 import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
 import 'api/tags.dart';
@@ -66,6 +67,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DateTime dco_decode_Chrono_Utc(dynamic raw);
+
+  @protected
+  RustStreamSink<DataChangeEvent> dco_decode_StreamSink_data_change_event_Sse(
+      dynamic raw);
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -266,6 +271,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DailyWeatherForecast dco_decode_daily_weather_forecast(dynamic raw);
 
   @protected
+  DataChangeEvent dco_decode_data_change_event(dynamic raw);
+
+  @protected
   DeletePackingListEntry dco_decode_delete_packing_list_entry(dynamic raw);
 
   @protected
@@ -371,6 +379,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  UuidValue? dco_decode_opt_Uuid(dynamic raw);
 
   @protected
   DateTime? dco_decode_opt_box_autoadd_Chrono_Utc(dynamic raw);
@@ -557,6 +568,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DateTime sse_decode_Chrono_Utc(SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<DataChangeEvent> sse_decode_StreamSink_data_change_event_Sse(
+      SseDeserializer deserializer);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -784,6 +799,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  DataChangeEvent sse_decode_data_change_event(SseDeserializer deserializer);
+
+  @protected
   DeletePackingListEntry sse_decode_delete_packing_list_entry(
       SseDeserializer deserializer);
 
@@ -904,6 +922,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  UuidValue? sse_decode_opt_Uuid(SseDeserializer deserializer);
 
   @protected
   DateTime? sse_decode_opt_box_autoadd_Chrono_Utc(SseDeserializer deserializer);
@@ -1111,6 +1132,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_Chrono_Utc(DateTime self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_data_change_event_Sse(
+      RustStreamSink<DataChangeEvent> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -1349,6 +1374,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DailyWeatherForecast self, SseSerializer serializer);
 
   @protected
+  void sse_encode_data_change_event(
+      DataChangeEvent self, SseSerializer serializer);
+
+  @protected
   void sse_encode_delete_packing_list_entry(
       DeletePackingListEntry self, SseSerializer serializer);
 
@@ -1469,6 +1498,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_Uuid(UuidValue? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_Chrono_Utc(

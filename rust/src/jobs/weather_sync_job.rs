@@ -1,6 +1,7 @@
 use anyhow::Context;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{DbErr, TransactionTrait};
+use crate::api::events::{self, DataChangeEvent};
 use crate::database::{Database, repositories, entities};
 use crate::jobs::Job;
 use crate::models::{Coordinate, DailyWeatherForecast, HourlyWeatherForecast, WeatherForecast};
@@ -40,13 +41,15 @@ impl Job for WeatherSyncJob {
             let weather = openweathermap::get_forecast(&coordinates).await.context("Fetching forecast")?;
             let forecast = WeatherForecast::from(weather);
             let forecast_id = uuid::Uuid::new_v4();
+            let location_id = location.id;
+            let trip_id = location.trip_id;
             let location_forecast = entities::weather_forecast::ActiveModel {
-                location_id: Set(location.id),
+                location_id: Set(location_id),
                 id: Set(forecast_id),
             };
             self.db.transaction::<_, _, DbErr>(|transaction| {
                 Box::pin(async move {
-                    repositories::weather_forecasts::remove_forecast_for_location(transaction, location.id).await?;
+                    repositories::weather_forecasts::remove_forecast_for_location(transaction, location_id).await?;
                     repositories::weather_forecasts::insert_forecast(transaction, location_forecast).await?;
                     for daily in forecast.daily_forecast {
                         let mut daily = entities::weather_daily_forecast::ActiveModel::from(daily);
@@ -59,12 +62,14 @@ impl Job for WeatherSyncJob {
                         repositories::weather_forecasts::insert_hourly_forecast(transaction, hourly).await?;
                     }
 
-                    repositories::locations::update_weather_information_timestamp(transaction, location.id).await?;
+                    repositories::locations::update_weather_information_timestamp(transaction, location_id).await?;
                     Ok(())
                 })
             }).await.context("Updating stored weather information for location")?;
 
-            tracing::debug!("Updated weather information for location {}", location.id);
+            events::emit(DataChangeEvent::WeatherUpdated { trip_id, location_id });
+
+            tracing::debug!("Updated weather information for location {}", location_id);
         }
         tracing::info!("Finished weather sync job");
 

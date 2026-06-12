@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/views/trip/points_of_interest/add_point_of_interest.dart';
@@ -18,15 +18,15 @@ class TripPointsOfInterest extends StatefulWidget {
 }
 
 class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
-  late StreamController<List<PointOfInterestModel>> _pointsOfInterest;
-  late Stream<List<PointOfInterestModel>>? _pointsOfInterest$;
+  late final _pointsOfInterest = RefreshableData<List<PointOfInterestModel>>(
+    fetch: () => getTripPointsOfInterest(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onPoisChanged(widget.tripId)],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _pointsOfInterest = StreamController();
-    _pointsOfInterest$ = _pointsOfInterest.stream;
-    _fetch();
+  void dispose() {
+    _pointsOfInterest.dispose();
+    super.dispose();
   }
 
   @override
@@ -38,7 +38,7 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
         elevation: 0,
       ),
       body: StreamBuilder(
-        stream: _pointsOfInterest$,
+        stream: _pointsOfInterest.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -121,18 +121,11 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
   void _addPointOfInterest(BuildContext context) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => AddPointOfInterest(tripId: widget.tripId)));
-    _fetch();
   }
 
   void _editPointOfInterest(BuildContext context, PointOfInterestModel pointOfInterest) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => EditPointOfInterest(pointOfInterest: pointOfInterest)));
-    _fetch();
-  }
-
-
-  _fetch() {
-    _pointsOfInterest.addStream(getTripPointsOfInterest(tripId: widget.tripId).asStream());
   }
 }
 
