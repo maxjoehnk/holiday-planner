@@ -30,6 +30,7 @@ mixin _$DataChangeEvent {
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -48,6 +49,7 @@ mixin _$DataChangeEvent {
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -66,6 +68,7 @@ mixin _$DataChangeEvent {
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -91,6 +94,8 @@ mixin _$DataChangeEvent {
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -112,6 +117,7 @@ mixin _$DataChangeEvent {
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -132,6 +138,7 @@ mixin _$DataChangeEvent {
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -219,6 +226,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -240,6 +248,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -261,6 +270,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -292,6 +302,8 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -316,6 +328,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -339,6 +352,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -442,6 +456,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -463,6 +478,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -484,6 +500,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -515,6 +532,8 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -539,6 +558,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -562,6 +582,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -676,6 +697,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -697,6 +719,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -718,6 +741,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -749,6 +773,8 @@ class _$DataChangeEvent_LocationsChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -773,6 +799,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -796,6 +823,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -922,6 +950,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -943,6 +972,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -964,6 +994,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -995,6 +1026,8 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -1019,6 +1052,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1042,6 +1076,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1169,6 +1204,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -1190,6 +1226,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -1211,6 +1248,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -1242,6 +1280,8 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -1266,6 +1306,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1289,6 +1330,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1406,6 +1448,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -1427,6 +1470,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -1448,6 +1492,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -1479,6 +1524,8 @@ class _$DataChangeEvent_PackingListChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -1503,6 +1550,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1526,6 +1574,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1640,6 +1689,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -1661,6 +1711,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -1682,6 +1733,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -1713,6 +1765,8 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -1737,6 +1791,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1760,6 +1815,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1874,6 +1930,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -1895,6 +1952,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -1916,6 +1974,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -1947,6 +2006,8 @@ class _$DataChangeEvent_BookingsChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -1971,6 +2032,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -1994,6 +2056,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2108,6 +2171,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -2129,6 +2193,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -2150,6 +2215,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -2181,6 +2247,8 @@ class _$DataChangeEvent_TransitsChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -2205,6 +2273,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2228,6 +2297,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2340,6 +2410,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -2361,6 +2432,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -2382,6 +2454,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -2413,6 +2486,8 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -2437,6 +2512,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2460,6 +2536,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2484,6 +2561,247 @@ abstract class DataChangeEvent_PoisChanged extends DataChangeEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DataChangeEvent_PoisChangedImplCopyWith<_$DataChangeEvent_PoisChangedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DataChangeEvent_RoutesChangedImplCopyWith<$Res> {
+  factory _$$DataChangeEvent_RoutesChangedImplCopyWith(
+          _$DataChangeEvent_RoutesChangedImpl value,
+          $Res Function(_$DataChangeEvent_RoutesChangedImpl) then) =
+      __$$DataChangeEvent_RoutesChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UuidValue? tripId});
+}
+
+/// @nodoc
+class __$$DataChangeEvent_RoutesChangedImplCopyWithImpl<$Res>
+    extends _$DataChangeEventCopyWithImpl<$Res,
+        _$DataChangeEvent_RoutesChangedImpl>
+    implements _$$DataChangeEvent_RoutesChangedImplCopyWith<$Res> {
+  __$$DataChangeEvent_RoutesChangedImplCopyWithImpl(
+      _$DataChangeEvent_RoutesChangedImpl _value,
+      $Res Function(_$DataChangeEvent_RoutesChangedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tripId = freezed,
+  }) {
+    return _then(_$DataChangeEvent_RoutesChangedImpl(
+      tripId: freezed == tripId
+          ? _value.tripId
+          : tripId // ignore: cast_nullable_to_non_nullable
+              as UuidValue?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DataChangeEvent_RoutesChangedImpl
+    extends DataChangeEvent_RoutesChanged {
+  const _$DataChangeEvent_RoutesChangedImpl({this.tripId}) : super._();
+
+  @override
+  final UuidValue? tripId;
+
+  @override
+  String toString() {
+    return 'DataChangeEvent.routesChanged(tripId: $tripId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataChangeEvent_RoutesChangedImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataChangeEvent_RoutesChangedImplCopyWith<
+          _$DataChangeEvent_RoutesChangedImpl>
+      get copyWith => __$$DataChangeEvent_RoutesChangedImplCopyWithImpl<
+          _$DataChangeEvent_RoutesChangedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() tripsChanged,
+    required TResult Function(UuidValue tripId) tripChanged,
+    required TResult Function(UuidValue tripId) locationsChanged,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        weatherUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        tidesUpdated,
+    required TResult Function(UuidValue? tripId) packingListChanged,
+    required TResult Function(UuidValue? tripId) accommodationsChanged,
+    required TResult Function(UuidValue? tripId) bookingsChanged,
+    required TResult Function(UuidValue? tripId) transitsChanged,
+    required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
+    required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
+        attachmentsChanged,
+    required TResult Function() tagsChanged,
+    required TResult Function(UuidValue tripId) timelineChanged,
+  }) {
+    return routesChanged(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? tripsChanged,
+    TResult? Function(UuidValue tripId)? tripChanged,
+    TResult? Function(UuidValue tripId)? locationsChanged,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult? Function(UuidValue? tripId)? packingListChanged,
+    TResult? Function(UuidValue? tripId)? accommodationsChanged,
+    TResult? Function(UuidValue? tripId)? bookingsChanged,
+    TResult? Function(UuidValue? tripId)? transitsChanged,
+    TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
+    TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult? Function()? tagsChanged,
+    TResult? Function(UuidValue tripId)? timelineChanged,
+  }) {
+    return routesChanged?.call(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? tripsChanged,
+    TResult Function(UuidValue tripId)? tripChanged,
+    TResult Function(UuidValue tripId)? locationsChanged,
+    TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult Function(UuidValue? tripId)? packingListChanged,
+    TResult Function(UuidValue? tripId)? accommodationsChanged,
+    TResult Function(UuidValue? tripId)? bookingsChanged,
+    TResult Function(UuidValue? tripId)? transitsChanged,
+    TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
+    TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult Function()? tagsChanged,
+    TResult Function(UuidValue tripId)? timelineChanged,
+    required TResult orElse(),
+  }) {
+    if (routesChanged != null) {
+      return routesChanged(tripId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DataChangeEvent_TripsChanged value) tripsChanged,
+    required TResult Function(DataChangeEvent_TripChanged value) tripChanged,
+    required TResult Function(DataChangeEvent_LocationsChanged value)
+        locationsChanged,
+    required TResult Function(DataChangeEvent_WeatherUpdated value)
+        weatherUpdated,
+    required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
+    required TResult Function(DataChangeEvent_PackingListChanged value)
+        packingListChanged,
+    required TResult Function(DataChangeEvent_AccommodationsChanged value)
+        accommodationsChanged,
+    required TResult Function(DataChangeEvent_BookingsChanged value)
+        bookingsChanged,
+    required TResult Function(DataChangeEvent_TransitsChanged value)
+        transitsChanged,
+    required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
+    required TResult Function(DataChangeEvent_AttachmentsChanged value)
+        attachmentsChanged,
+    required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
+    required TResult Function(DataChangeEvent_TimelineChanged value)
+        timelineChanged,
+  }) {
+    return routesChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult? Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult? Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult? Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult? Function(DataChangeEvent_TimelineChanged value)? timelineChanged,
+  }) {
+    return routesChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult Function(DataChangeEvent_TimelineChanged value)? timelineChanged,
+    required TResult orElse(),
+  }) {
+    if (routesChanged != null) {
+      return routesChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DataChangeEvent_RoutesChanged extends DataChangeEvent {
+  const factory DataChangeEvent_RoutesChanged({final UuidValue? tripId}) =
+      _$DataChangeEvent_RoutesChangedImpl;
+  const DataChangeEvent_RoutesChanged._() : super._();
+
+  UuidValue? get tripId;
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DataChangeEvent_RoutesChangedImplCopyWith<
+          _$DataChangeEvent_RoutesChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -2584,6 +2902,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -2605,6 +2924,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -2626,6 +2946,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -2657,6 +2978,8 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -2681,6 +3004,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2704,6 +3028,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2791,6 +3116,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -2812,6 +3138,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -2833,6 +3160,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -2864,6 +3192,8 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -2888,6 +3218,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -2911,6 +3242,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -3017,6 +3349,7 @@ class _$DataChangeEvent_TimelineChangedImpl
     required TResult Function(UuidValue? tripId) bookingsChanged,
     required TResult Function(UuidValue? tripId) transitsChanged,
     required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
     required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
         attachmentsChanged,
     required TResult Function() tagsChanged,
@@ -3038,6 +3371,7 @@ class _$DataChangeEvent_TimelineChangedImpl
     TResult? Function(UuidValue? tripId)? bookingsChanged,
     TResult? Function(UuidValue? tripId)? transitsChanged,
     TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
     TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult? Function()? tagsChanged,
@@ -3059,6 +3393,7 @@ class _$DataChangeEvent_TimelineChangedImpl
     TResult Function(UuidValue? tripId)? bookingsChanged,
     TResult Function(UuidValue? tripId)? transitsChanged,
     TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
     TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
         attachmentsChanged,
     TResult Function()? tagsChanged,
@@ -3090,6 +3425,8 @@ class _$DataChangeEvent_TimelineChangedImpl
     required TResult Function(DataChangeEvent_TransitsChanged value)
         transitsChanged,
     required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
     required TResult Function(DataChangeEvent_AttachmentsChanged value)
         attachmentsChanged,
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
@@ -3114,6 +3451,7 @@ class _$DataChangeEvent_TimelineChangedImpl
     TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult? Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
@@ -3137,6 +3475,7 @@ class _$DataChangeEvent_TimelineChangedImpl
     TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
     TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
     TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
     TResult Function(DataChangeEvent_AttachmentsChanged value)?
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,

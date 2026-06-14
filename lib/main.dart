@@ -12,6 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'dart:async';
+import 'package:holiday_planner/views/share_receiver/komoot_route_import_flow.dart';
+import 'package:holiday_planner/views/share_receiver/paste_komoot_url_dialog.dart';
 import 'package:holiday_planner/views/share_receiver/shared_train_handler.dart';
 import 'package:holiday_planner/settings.dart';
 
@@ -80,9 +82,14 @@ class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
 
   void _handleSharedText(String sharedText) {
     final context = navigatorKey.currentContext;
-    if (context != null) {
-      SharedTrainHandler.handleSharedText(context, sharedText);
+    if (context == null) {
+      return;
     }
+    if (komootTourUrlRegex.hasMatch(sharedText)) {
+      KomootRouteImportFlow.startFromSharedUrl(context, sharedText);
+      return;
+    }
+    SharedTrainHandler.handleSharedText(context, sharedText);
   }
 
   @override

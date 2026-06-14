@@ -9,6 +9,7 @@ pub mod packing_list_entry;
 pub mod packing_list_group;
 pub mod point_of_interest;
 pub mod reservation;
+pub mod route;
 pub mod tag;
 pub mod tidal_information;
 pub mod train;

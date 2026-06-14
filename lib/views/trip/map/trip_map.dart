@@ -6,10 +6,13 @@ import 'package:holiday_planner/views/trip/map/location_details.dart';
 import 'package:holiday_planner/views/trip/map/location_marker.dart';
 import 'package:holiday_planner/views/trip/map/poi_details.dart';
 import 'package:holiday_planner/views/trip/map/poi_marker.dart';
+import 'package:holiday_planner/views/trip/map/route_details.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
+import 'package:holiday_planner/src/rust/api/routes.dart';
 import 'package:holiday_planner/src/rust/models.dart';
+import 'package:holiday_planner/src/rust/models/routes.dart';
 import 'package:uuid/uuid.dart';
 
 class TripMap extends StatefulWidget {
@@ -30,12 +33,17 @@ class _TripMapState extends State<TripMap> {
     fetch: () => getTripPointsOfInterest(tripId: widget.tripId),
     refreshOn: [DataChangeBus.instance.onPoisChanged(widget.tripId)],
   );
+  late final _routes = RefreshableData<List<RouteModel>>(
+    fetch: () => getTripRoutes(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onRoutesChanged(widget.tripId)],
+  );
   final MapController _mapController = MapController();
 
   @override
   void dispose() {
     _locations.dispose();
     _pointsOfInterest.dispose();
+    _routes.dispose();
     super.dispose();
   }
 
@@ -53,6 +61,66 @@ class _TripMapState extends State<TripMap> {
         .where((poi) => poi.coordinates != null)
         .map((poi) => PointOfInterestMarker(poi: poi, onTap: (poi) => _showPoiDetails(poi)))
         .toList();
+  }
+
+  List<Polyline> _buildRoutePolylines(List<RouteModel> routes) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return routes
+        .where((r) => r.polyline.length >= 2)
+        .map((route) => Polyline(
+              points: route.polyline
+                  .map((p) => LatLng(p.coordinate.latitude, p.coordinate.longitude))
+                  .toList(),
+              strokeWidth: 4.0,
+              color: _colorForSport(route.sport, colorScheme),
+            ))
+        .toList();
+  }
+
+  List<Marker> _buildRouteStartMarkers(List<RouteModel> routes) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return routes
+        .map((route) => Marker(
+              point: LatLng(
+                route.startCoordinate.latitude,
+                route.startCoordinate.longitude,
+              ),
+              width: 32,
+              height: 32,
+              child: GestureDetector(
+                onTap: () => _openRouteDetail(route),
+                child: Icon(
+                  Icons.flag,
+                  color: _colorForSport(route.sport, colorScheme),
+                ),
+              ),
+            ))
+        .toList();
+  }
+
+  Color _colorForSport(String? sport, ColorScheme colorScheme) {
+    if (sport == null) {
+      return colorScheme.primary;
+    }
+    final s = sport.toLowerCase();
+    if (s.contains("hike")) return Colors.green.shade700;
+    if (s.contains("mtb") || s.contains("mountain")) return Colors.orange.shade700;
+    if (s.contains("bike") || s.contains("cycle")) return Colors.blue.shade700;
+    return colorScheme.primary;
+  }
+
+  void _openRouteDetail(RouteModel route) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.4,
+        minChildSize: 0.2,
+        maxChildSize: 0.8,
+        builder: (context, scrollController) =>
+            RouteMapDetails(route: route, scrollController: scrollController),
+      ),
+    );
   }
 
   void _showPoiDetails(PointOfInterestModel poi) {
@@ -82,18 +150,32 @@ class _TripMapState extends State<TripMap> {
     );
   }
 
-  LatLng _calculateCenter(List<TripLocationListModel> locations, List<PointOfInterestModel> pois) {
-    List<LatLng> allPoints = [];
-
-    for (var location in locations) {
-      allPoints.add(LatLng(location.coordinates.latitude, location.coordinates.longitude));
+  List<LatLng> _collectPoints(
+    List<TripLocationListModel> locations,
+    List<PointOfInterestModel> pois,
+    List<RouteModel> routes,
+  ) {
+    final all = <LatLng>[];
+    for (final location in locations) {
+      all.add(LatLng(location.coordinates.latitude, location.coordinates.longitude));
     }
-
-    for (var poi in pois) {
+    for (final poi in pois) {
       if (poi.coordinates != null) {
-        allPoints.add(LatLng(poi.coordinates!.latitude, poi.coordinates!.longitude));
+        all.add(LatLng(poi.coordinates!.latitude, poi.coordinates!.longitude));
       }
     }
+    for (final route in routes) {
+      all.add(LatLng(route.startCoordinate.latitude, route.startCoordinate.longitude));
+    }
+    return all;
+  }
+
+  LatLng _calculateCenter(
+    List<TripLocationListModel> locations,
+    List<PointOfInterestModel> pois,
+    List<RouteModel> routes,
+  ) {
+    final allPoints = _collectPoints(locations, pois, routes);
 
     if (allPoints.isEmpty) {
       return const LatLng(0, 0);
@@ -109,18 +191,12 @@ class _TripMapState extends State<TripMap> {
     return LatLng(sumLat / allPoints.length, sumLng / allPoints.length);
   }
 
-  double _calculateZoom(List<TripLocationListModel> locations, List<PointOfInterestModel> pois) {
-    List<LatLng> allPoints = [];
-
-    for (var location in locations) {
-      allPoints.add(LatLng(location.coordinates.latitude, location.coordinates.longitude));
-    }
-
-    for (var poi in pois) {
-      if (poi.coordinates != null) {
-        allPoints.add(LatLng(poi.coordinates!.latitude, poi.coordinates!.longitude));
-      }
-    }
+  double _calculateZoom(
+    List<TripLocationListModel> locations,
+    List<PointOfInterestModel> pois,
+    List<RouteModel> routes,
+  ) {
+    final allPoints = _collectPoints(locations, pois, routes);
 
     if (allPoints.length <= 1) {
       return 10.0;
@@ -157,6 +233,9 @@ class _TripMapState extends State<TripMap> {
           return StreamBuilder<List<PointOfInterestModel>>(
             stream: _pointsOfInterest.stream,
             builder: (context, poisSnapshot) {
+              return StreamBuilder<List<RouteModel>>(
+                stream: _routes.stream,
+                builder: (context, routesSnapshot) {
               if (locationsSnapshot.hasError) {
                 return SliverToBoxAdapter(
                   child: Center(
@@ -202,6 +281,7 @@ class _TripMapState extends State<TripMap> {
 
               final locations = locationsSnapshot.requireData;
               final pois = poisSnapshot.data ?? [];
+              final routes = routesSnapshot.data ?? [];
 
               if (locations.isEmpty) {
                 return SliverToBoxAdapter(
@@ -235,9 +315,14 @@ class _TripMapState extends State<TripMap> {
                 );
               }
 
-              final center = _calculateCenter(locations, pois);
-              final zoom = _calculateZoom(locations, pois);
-              final markers = [..._buildLocationMarkers(locations), ..._buildPoiMarkers(pois)];
+              final center = _calculateCenter(locations, pois, routes);
+              final zoom = _calculateZoom(locations, pois, routes);
+              final markers = [
+                ..._buildLocationMarkers(locations),
+                ..._buildPoiMarkers(pois),
+                ..._buildRouteStartMarkers(routes),
+              ];
+              final polylines = _buildRoutePolylines(routes);
 
               return SliverFillRemaining(
                 child: FlutterMap(
@@ -253,10 +338,13 @@ class _TripMapState extends State<TripMap> {
                       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'me.maxjoehnk.holiday_planner',
                     ),
+                    if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
                     MarkerLayer(markers: markers),
                     const SimpleAttributionWidget(source: Text("OpenStreetMap Contributors")),
                   ],
                 ),
+              );
+                },
               );
             },
           );

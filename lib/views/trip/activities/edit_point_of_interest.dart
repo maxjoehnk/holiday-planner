@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
 import 'package:holiday_planner/src/rust/commands/update_trip_point_of_interest.dart';
 import 'package:holiday_planner/src/rust/models.dart';
-import 'package:holiday_planner/views/trip/points_of_interest/point_of_interest_form.dart';
+import 'package:holiday_planner/views/trip/activities/point_of_interest_form.dart';
 
 class EditPointOfInterest extends StatefulWidget {
   final PointOfInterestModel pointOfInterest;

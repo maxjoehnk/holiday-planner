@@ -3,30 +3,40 @@ import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
+import 'package:holiday_planner/src/rust/api/routes.dart';
 import 'package:holiday_planner/src/rust/models.dart';
-import 'package:holiday_planner/views/trip/points_of_interest/add_point_of_interest.dart';
-import 'package:holiday_planner/views/trip/points_of_interest/edit_point_of_interest.dart';
+import 'package:holiday_planner/src/rust/models/routes.dart';
+import 'package:holiday_planner/views/trip/activities/add_point_of_interest.dart';
+import 'package:holiday_planner/views/trip/activities/edit_point_of_interest.dart';
+import 'package:holiday_planner/views/trip/activities/route_card.dart';
+import 'package:holiday_planner/views/trip/activities/route_detail.dart';
+import 'package:holiday_planner/views/share_receiver/komoot_route_import_flow.dart';
 import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TripPointsOfInterest extends StatefulWidget {
+class TripActivities extends StatefulWidget {
   final UuidValue tripId;
 
-  const TripPointsOfInterest({super.key, required this.tripId});
+  const TripActivities({super.key, required this.tripId});
 
   @override
-  State<TripPointsOfInterest> createState() => _TripPointsOfInterestState();
+  State<TripActivities> createState() => _TripActivitiesState();
 }
 
-class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
+class _TripActivitiesState extends State<TripActivities> {
   late final _pointsOfInterest = RefreshableData<List<PointOfInterestModel>>(
     fetch: () => getTripPointsOfInterest(tripId: widget.tripId),
     refreshOn: [DataChangeBus.instance.onPoisChanged(widget.tripId)],
+  );
+  late final _routes = RefreshableData<List<RouteModel>>(
+    fetch: () => getTripRoutes(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onRoutesChanged(widget.tripId)],
   );
 
   @override
   void dispose() {
     _pointsOfInterest.dispose();
+    _routes.dispose();
     super.dispose();
   }
 
@@ -34,88 +44,139 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Points of Interest"),
+        title: const Text("Activities"),
         centerTitle: true,
         elevation: 0,
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<List<PointOfInterestModel>>(
         stream: _pointsOfInterest.stream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.of(context)!.errorWithMessage(snapshot.error.toString()),
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        builder: (context, poiSnapshot) {
+          return StreamBuilder<List<RouteModel>>(
+            stream: _routes.stream,
+            builder: (context, routesSnapshot) {
+              if (poiSnapshot.hasError) {
+                return _ErrorView(error: poiSnapshot.error);
+              }
+              if (routesSnapshot.hasError) {
+                return _ErrorView(error: routesSnapshot.error);
+              }
+              if (!poiSnapshot.hasData || !routesSnapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          var pointsOfInterest = snapshot.requireData;
-          if (pointsOfInterest.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.explore_outlined,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "No points of interest",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Add attractions, restaurants, and other places to visit",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
-          }
+              final pois = poiSnapshot.requireData;
+              final routes = routesSnapshot.requireData;
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView.separated(
-              itemCount: pointsOfInterest.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                var poi = pointsOfInterest[index];
-                return PointOfInterestCard(
-                  pointOfInterest: poi,
-                  onEdit: () => _editPointOfInterest(context, poi),
-                );
-              },
-            ),
+              if (pois.isEmpty && routes.isEmpty) {
+                return _EmptyState();
+              }
+
+              return ListView(
+                padding: const EdgeInsets.all(16.0),
+                children: [
+                  if (pois.isNotEmpty) ...[
+                    _SectionHeader(label: "Points of Interest"),
+                    const SizedBox(height: 8),
+                    for (final poi in pois) ...[
+                      PointOfInterestCard(
+                        pointOfInterest: poi,
+                        onEdit: () => _editPointOfInterest(context, poi),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                  ],
+                  if (routes.isNotEmpty) ...[
+                    if (pois.isNotEmpty) const SizedBox(height: 12),
+                    _SectionHeader(label: "Routes"),
+                    const SizedBox(height: 8),
+                    for (final route in routes) ...[
+                      RouteCard(
+                        route: route,
+                        onTap: () => _openRouteDetail(context, route),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                  ],
+                  const SizedBox(height: 80),
+                ],
+              );
+            },
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: "points_of_interest_fab",
-        onPressed: () => _addPointOfInterest(context),
-        icon: const Icon(Icons.add),
-        label: const Text("Add Point of Interest"),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "add_activity_fab",
+        onPressed: () => _showAddActivityMenu(context),
+        child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  void _showAddActivityMenu(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final screenContext = context;
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text("Add activity"),
+          contentPadding: const EdgeInsets.only(top: 20.0),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.explore,
+                    color: colorScheme.primary,
+                    size: 24,
+                  ),
+                ),
+                title: const Text("Point of interest"),
+                subtitle: const Text("Add an attraction, restaurant, or other place to visit"),
+                onTap: () {
+                  Navigator.pop(dialogContext);
+                  _addPointOfInterest(screenContext);
+                },
+              ),
+              const SizedBox(height: 8),
+              ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colorScheme.tertiaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.route,
+                    color: colorScheme.tertiary,
+                    size: 24,
+                  ),
+                ),
+                title: const Text("Komoot route"),
+                subtitle: const Text("Paste a Komoot tour URL to import the route"),
+                onTap: () {
+                  Navigator.pop(dialogContext);
+                  _addRoute(screenContext);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text("Cancel"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -127,6 +188,96 @@ class _TripPointsOfInterestState extends State<TripPointsOfInterest> {
   void _editPointOfInterest(BuildContext context, PointOfInterestModel pointOfInterest) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => EditPointOfInterest(pointOfInterest: pointOfInterest)));
+  }
+
+  void _addRoute(BuildContext context) {
+    KomootRouteImportFlow.startFromTripScreen(context, widget.tripId);
+  }
+
+  void _openRouteDetail(BuildContext context, RouteModel route) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => RouteDetail(route: route)),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String label;
+  const _SectionHeader({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.explore_outlined,
+            size: 64,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "No activities yet",
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              "Add a point of interest, or share a Komoot route into the app to plan hikes and rides.",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  final Object? error;
+  const _ErrorView({required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Theme.of(context).colorScheme.error,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.errorWithMessage(error.toString()),
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -356,7 +507,7 @@ class PointOfInterestCard extends StatelessWidget {
     final encodedAddress = Uri.encodeComponent(address);
     final url = 'https://www.google.com/maps/search/?api=1&query=$encodedAddress';
     final uri = Uri.parse(url);
-    
+
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }

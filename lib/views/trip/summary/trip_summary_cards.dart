@@ -6,7 +6,7 @@ import 'package:holiday_planner/views/trip/accommodations/trip_accommodations.da
 import 'package:holiday_planner/views/trip/bookings/trip_bookings.dart';
 import 'package:holiday_planner/views/trip/transits/trip_transits.dart';
 import 'package:holiday_planner/views/trip/locations/trip_locations.dart';
-import 'package:holiday_planner/views/trip/points_of_interest/trip_points_of_interest.dart';
+import 'package:holiday_planner/views/trip/activities/trip_activities.dart';
 
 import '../packing_list/trip_packing_list.dart';
 
@@ -53,13 +53,13 @@ class PointsOfInterestsCard extends StatelessWidget {
 
     return SummaryCard(
         icon: Icons.explore,
-        label: "Points of Interest",
+        label: "Activities",
         subtitle: subtitle,
         color: POINTS_OF_INTERESTS_COLOR,
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TripPointsOfInterest(tripId: trip.id)),
+            MaterialPageRoute(builder: (context) => TripActivities(tripId: trip.id)),
           );
         });
   }

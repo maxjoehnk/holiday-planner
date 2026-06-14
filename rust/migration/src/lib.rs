@@ -12,6 +12,7 @@ mod m20250728_163200_add_poi_phone_note;
 mod m20250728_174800_add_coastal_and_tidal_info;
 mod m20250730_110700_add_weather_timestamp;
 mod m20250822_224756_add_poi_coordinates;
+mod m20260614_120000_routes;
 
 pub struct Migrator;
 
@@ -31,6 +32,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250728_174800_add_coastal_and_tidal_info::Migration),
             Box::new(m20250730_110700_add_weather_timestamp::Migration),
             Box::new(m20250822_224756_add_poi_coordinates::Migration),
+            Box::new(m20260614_120000_routes::Migration),
         ]
     }
 }

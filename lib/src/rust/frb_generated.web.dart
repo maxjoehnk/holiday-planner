@@ -13,6 +13,7 @@ import 'api/bookings.dart';
 import 'api/events.dart';
 import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
+import 'api/routes.dart';
 import 'api/tags.dart';
 import 'api/timeline.dart';
 import 'api/transits.dart';
@@ -30,6 +31,7 @@ import 'commands/add_trip_point_of_interest.dart';
 import 'commands/create_tag.dart';
 import 'commands/create_trip.dart';
 import 'commands/delete_packing_list_entry.dart';
+import 'commands/import_komoot_route.dart';
 import 'commands/parse_shared_train_data.dart';
 import 'commands/parse_train_data.dart';
 import 'commands/remove_tag_from_trip.dart';
@@ -38,6 +40,7 @@ import 'commands/set_trip_tags.dart';
 import 'commands/update_car_rental.dart';
 import 'commands/update_packing_list_entry.dart';
 import 'commands/update_reservation.dart';
+import 'commands/update_route.dart';
 import 'commands/update_tag.dart';
 import 'commands/update_train.dart';
 import 'commands/update_trip.dart';
@@ -49,6 +52,7 @@ import 'frb_generated.dart';
 import 'models.dart';
 import 'models/bookings.dart';
 import 'models/point_of_interests.dart';
+import 'models/routes.dart';
 import 'models/tidal_information.dart';
 import 'models/timeline.dart';
 import 'models/transits.dart';
@@ -186,7 +190,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  double dco_decode_box_autoadd_f_64(dynamic raw);
+
+  @protected
   FlightOverviewModel dco_decode_box_autoadd_flight_overview_model(dynamic raw);
+
+  @protected
+  ImportKomootRoute dco_decode_box_autoadd_import_komoot_route(dynamic raw);
 
   @protected
   ImportParsedTrainJourney dco_decode_box_autoadd_import_parsed_train_journey(
@@ -233,6 +243,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation dco_decode_box_autoadd_update_reservation(dynamic raw);
+
+  @protected
+  UpdateRoute dco_decode_box_autoadd_update_route(dynamic raw);
 
   @protected
   UpdateTag dco_decode_box_autoadd_update_tag(dynamic raw);
@@ -294,6 +307,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
+  ImportKomootRoute dco_decode_import_komoot_route(dynamic raw);
+
+  @protected
   ImportParsedTrainJourney dco_decode_import_parsed_train_journey(dynamic raw);
 
   @protected
@@ -339,6 +355,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<RouteModel> dco_decode_list_route_model(dynamic raw);
+
+  @protected
+  List<RoutePoint> dco_decode_list_route_point(dynamic raw);
 
   @protected
   List<TagModel> dco_decode_list_tag_model(dynamic raw);
@@ -394,6 +416,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Coordinate? dco_decode_opt_box_autoadd_coordinate(dynamic raw);
+
+  @protected
+  double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
 
   @protected
   LocationEntry? dco_decode_opt_box_autoadd_location_entry(dynamic raw);
@@ -455,6 +480,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReservationCategory dco_decode_reservation_category(dynamic raw);
+
+  @protected
+  RouteModel dco_decode_route_model(dynamic raw);
+
+  @protected
+  RoutePoint dco_decode_route_point(dynamic raw);
+
+  @protected
+  RouteProvider dco_decode_route_provider(dynamic raw);
 
   @protected
   SearchWebImages dco_decode_search_web_images(dynamic raw);
@@ -536,6 +570,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation dco_decode_update_reservation(dynamic raw);
+
+  @protected
+  UpdateRoute dco_decode_update_route(dynamic raw);
 
   @protected
   UpdateTag dco_decode_update_tag(dynamic raw);
@@ -702,7 +739,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
   FlightOverviewModel sse_decode_box_autoadd_flight_overview_model(
+      SseDeserializer deserializer);
+
+  @protected
+  ImportKomootRoute sse_decode_box_autoadd_import_komoot_route(
       SseDeserializer deserializer);
 
   @protected
@@ -758,6 +802,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   UpdateReservation sse_decode_box_autoadd_update_reservation(
       SseDeserializer deserializer);
+
+  @protected
+  UpdateRoute sse_decode_box_autoadd_update_route(SseDeserializer deserializer);
 
   @protected
   UpdateTag sse_decode_box_autoadd_update_tag(SseDeserializer deserializer);
@@ -825,6 +872,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
+  ImportKomootRoute sse_decode_import_komoot_route(
+      SseDeserializer deserializer);
+
+  @protected
   ImportParsedTrainJourney sse_decode_import_parsed_train_journey(
       SseDeserializer deserializer);
 
@@ -877,6 +928,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<RouteModel> sse_decode_list_route_model(SseDeserializer deserializer);
+
+  @protected
+  List<RoutePoint> sse_decode_list_route_point(SseDeserializer deserializer);
 
   @protected
   List<TagModel> sse_decode_list_tag_model(SseDeserializer deserializer);
@@ -938,6 +995,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   Coordinate? sse_decode_opt_box_autoadd_coordinate(
       SseDeserializer deserializer);
+
+  @protected
+  double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
 
   @protected
   LocationEntry? sse_decode_opt_box_autoadd_location_entry(
@@ -1007,6 +1067,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ReservationCategory sse_decode_reservation_category(
       SseDeserializer deserializer);
+
+  @protected
+  RouteModel sse_decode_route_model(SseDeserializer deserializer);
+
+  @protected
+  RoutePoint sse_decode_route_point(SseDeserializer deserializer);
+
+  @protected
+  RouteProvider sse_decode_route_provider(SseDeserializer deserializer);
 
   @protected
   SearchWebImages sse_decode_search_web_images(SseDeserializer deserializer);
@@ -1098,6 +1167,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UpdateReservation sse_decode_update_reservation(SseDeserializer deserializer);
+
+  @protected
+  UpdateRoute sse_decode_update_route(SseDeserializer deserializer);
 
   @protected
   UpdateTag sse_decode_update_tag(SseDeserializer deserializer);
@@ -1273,8 +1345,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeletePackingListEntry self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_flight_overview_model(
       FlightOverviewModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_import_komoot_route(
+      ImportKomootRoute self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_import_parsed_train_journey(
@@ -1331,6 +1410,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_update_route(
+      UpdateRoute self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_update_tag(
@@ -1401,6 +1484,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
+  void sse_encode_import_komoot_route(
+      ImportKomootRoute self, SseSerializer serializer);
+
+  @protected
   void sse_encode_import_parsed_train_journey(
       ImportParsedTrainJourney self, SseSerializer serializer);
 
@@ -1453,6 +1540,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_route_model(
+      List<RouteModel> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_route_point(
+      List<RoutePoint> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_tag_model(List<TagModel> self, SseSerializer serializer);
@@ -1515,6 +1610,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_coordinate(
       Coordinate? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_location_entry(
@@ -1588,6 +1686,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_reservation_category(
       ReservationCategory self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_route_model(RouteModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_route_point(RoutePoint self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_route_provider(RouteProvider self, SseSerializer serializer);
 
   @protected
   void sse_encode_search_web_images(
@@ -1684,6 +1791,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_update_reservation(
       UpdateReservation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_route(UpdateRoute self, SseSerializer serializer);
 
   @protected
   void sse_encode_update_tag(UpdateTag self, SseSerializer serializer);

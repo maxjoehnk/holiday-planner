@@ -18,6 +18,7 @@ pub enum DataChangeEvent {
     BookingsChanged { trip_id: Option<Uuid> },
     TransitsChanged { trip_id: Option<Uuid> },
     PoisChanged { trip_id: Option<Uuid> },
+    RoutesChanged { trip_id: Option<Uuid> },
     AttachmentsChanged { trip_id: Option<Uuid>, accommodation_id: Option<Uuid> },
     TagsChanged,
     TimelineChanged { trip_id: Uuid },

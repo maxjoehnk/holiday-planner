@@ -10,6 +10,7 @@ pub mod packing_list;
 pub mod accommodations;
 pub mod attachments;
 pub mod points_of_interest;
+pub mod routes;
 pub mod bookings;
 pub mod timeline;
 pub mod transits;

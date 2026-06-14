@@ -10,6 +10,7 @@ pub use packing_list_handler::*;
 pub use trip_packing_list_handler::*;
 pub use location_handler::*;
 pub use point_of_interest_handler::*;
+pub use route_handler::*;
 pub use tag_handler::*;
 
 pub mod accommodation_handler;
@@ -21,6 +22,7 @@ pub mod packing_list_handler;
 pub mod trip_packing_list_handler;
 pub mod location_handler;
 pub mod point_of_interest_handler;
+pub mod route_handler;
 pub mod tag_handler;
 pub mod timeline_handler;
 

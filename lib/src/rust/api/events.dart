@@ -49,6 +49,9 @@ sealed class DataChangeEvent with _$DataChangeEvent {
   const factory DataChangeEvent.poisChanged({
     UuidValue? tripId,
   }) = DataChangeEvent_PoisChanged;
+  const factory DataChangeEvent.routesChanged({
+    UuidValue? tripId,
+  }) = DataChangeEvent_RoutesChanged;
   const factory DataChangeEvent.attachmentsChanged({
     UuidValue? tripId,
     UuidValue? accommodationId,

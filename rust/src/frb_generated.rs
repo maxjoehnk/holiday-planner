@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1284147690;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1240914493;
 
 // Section: executor
 
@@ -780,6 +780,42 @@ fn wire__crate__api__bookings__delete_reservation_impl(
         },
     )
 }
+fn wire__crate__api__routes__delete_route_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "delete_route",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_route_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::routes::delete_route(api_route_id).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__tags__delete_tag_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1403,6 +1439,42 @@ fn wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
         },
     )
 }
+fn wire__crate__api__routes__get_trip_routes_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_trip_routes",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_trip_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::routes::get_trip_routes(api_trip_id).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__tags__get_trip_tags_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1574,6 +1646,45 @@ fn wire__crate__api__trips__get_upcoming_trips_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok = crate::api::trips::get_upcoming_trips().await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__routes__import_komoot_route_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "import_komoot_route",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command = <crate::commands::import_komoot_route::ImportKomootRoute>::sse_decode(
+                &mut deserializer,
+            );
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::routes::import_komoot_route(api_command).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -2315,6 +2426,43 @@ fn wire__crate__api__bookings__update_reservation_impl(
         },
     )
 }
+fn wire__crate__api__routes__update_route_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "update_route",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_command =
+                <crate::commands::update_route::UpdateRoute>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::routes::update_route(api_command).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__tags__update_tag_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2983,16 +3131,22 @@ impl SseDecode for crate::api::events::DataChangeEvent {
             }
             10 => {
                 let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
+                return crate::api::events::DataChangeEvent::RoutesChanged {
+                    trip_id: var_tripId,
+                };
+            }
+            11 => {
+                let mut var_tripId = <Option<uuid::Uuid>>::sse_decode(deserializer);
                 let mut var_accommodationId = <Option<uuid::Uuid>>::sse_decode(deserializer);
                 return crate::api::events::DataChangeEvent::AttachmentsChanged {
                     trip_id: var_tripId,
                     accommodation_id: var_accommodationId,
                 };
             }
-            11 => {
+            12 => {
                 return crate::api::events::DataChangeEvent::TagsChanged;
             }
-            12 => {
+            13 => {
                 let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
                 return crate::api::events::DataChangeEvent::TimelineChanged {
                     trip_id: var_tripId,
@@ -3069,6 +3223,18 @@ impl SseDecode for i64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_i64::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for crate::commands::import_komoot_route::ImportKomootRoute {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_tourUrl = <String>::sse_decode(deserializer);
+        return crate::commands::import_komoot_route::ImportKomootRoute {
+            trip_id: var_tripId,
+            tour_url: var_tourUrl,
+        };
     }
 }
 
@@ -3254,6 +3420,34 @@ impl SseDecode for Vec<u8> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<u8>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::models::routes::RouteModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::models::routes::RouteModel>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::models::routes::RoutePoint> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::models::routes::RoutePoint>::sse_decode(
+                deserializer,
+            ));
         }
         return ans_;
     }
@@ -3470,6 +3664,17 @@ impl SseDecode for Option<crate::models::Coordinate> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<crate::models::Coordinate>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<f64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<f64>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -3804,6 +4009,65 @@ impl SseDecode for crate::models::bookings::ReservationCategory {
             0 => crate::models::bookings::ReservationCategory::Restaurant,
             1 => crate::models::bookings::ReservationCategory::Activity,
             _ => unreachable!("Invalid variant for ReservationCategory: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::models::routes::RouteModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_provider = <crate::models::routes::RouteProvider>::sse_decode(deserializer);
+        let mut var_providerRouteId = <String>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_sport = <Option<String>>::sse_decode(deserializer);
+        let mut var_distanceMeters = <f64>::sse_decode(deserializer);
+        let mut var_durationSeconds = <i64>::sse_decode(deserializer);
+        let mut var_elevationUpMeters = <Option<f64>>::sse_decode(deserializer);
+        let mut var_elevationDownMeters = <Option<f64>>::sse_decode(deserializer);
+        let mut var_startCoordinate = <crate::models::Coordinate>::sse_decode(deserializer);
+        let mut var_polyline = <Vec<crate::models::routes::RoutePoint>>::sse_decode(deserializer);
+        let mut var_note = <Option<String>>::sse_decode(deserializer);
+        let mut var_externalUrl = <String>::sse_decode(deserializer);
+        return crate::models::routes::RouteModel {
+            id: var_id,
+            trip_id: var_tripId,
+            provider: var_provider,
+            provider_route_id: var_providerRouteId,
+            name: var_name,
+            sport: var_sport,
+            distance_meters: var_distanceMeters,
+            duration_seconds: var_durationSeconds,
+            elevation_up_meters: var_elevationUpMeters,
+            elevation_down_meters: var_elevationDownMeters,
+            start_coordinate: var_startCoordinate,
+            polyline: var_polyline,
+            note: var_note,
+            external_url: var_externalUrl,
+        };
+    }
+}
+
+impl SseDecode for crate::models::routes::RoutePoint {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_coordinate = <crate::models::Coordinate>::sse_decode(deserializer);
+        let mut var_altitude = <Option<f64>>::sse_decode(deserializer);
+        return crate::models::routes::RoutePoint {
+            coordinate: var_coordinate,
+            altitude: var_altitude,
+        };
+    }
+}
+
+impl SseDecode for crate::models::routes::RouteProvider {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::models::routes::RouteProvider::Komoot,
+            _ => unreachable!("Invalid variant for RouteProvider: {}", inner),
         };
     }
 }
@@ -4318,6 +4582,18 @@ impl SseDecode for crate::commands::update_reservation::UpdateReservation {
     }
 }
 
+impl SseDecode for crate::commands::update_route::UpdateRoute {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_note = <Option<String>>::sse_decode(deserializer);
+        return crate::commands::update_route::UpdateRoute {
+            id: var_id,
+            note: var_note,
+        };
+    }
+}
+
 impl SseDecode for crate::commands::update_tag::UpdateTag {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4555,112 +4831,116 @@ fn pde_ffi_dispatcher_primary_impl(
         20 => {
             wire__crate__api__bookings__delete_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        21 => wire__crate__api__tags__delete_tag_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__transits__delete_train_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__trips__delete_trip_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__attachments__get_accommodation_attachments_impl(
+        21 => wire__crate__api__routes__delete_route_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__tags__delete_tag_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__transits__delete_train_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__trips__delete_trip_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__attachments__get_accommodation_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__tags__get_all_tags_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__trips__get_location_details_impl(port, ptr, rust_vec_len, data_len),
-        28 => {
+        27 => wire__crate__api__tags__get_all_tags_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__trips__get_location_details_impl(port, ptr, rust_vec_len, data_len),
+        29 => {
             wire__crate__api__packing_list__get_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        29 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__tags__get_tag_by_id_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__accommodations__get_trip_accommodations_impl(
+        30 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__tags__get_tag_by_id_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__accommodations__get_trip_accommodations_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__attachments__get_trip_attachments_impl(
+        34 => wire__crate__api__attachments__get_trip_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
-        36 => {
+        35 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
+        37 => {
             wire__crate__api__trips__get_trip_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        37 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+        38 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        39 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        43 => wire__crate__api__transits__import_parsed_train_journey_impl(
+        39 => wire__crate__api__routes__get_trip_routes_impl(port, ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        41 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        44 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__api__routes__import_komoot_route_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__transits__import_parsed_train_journey_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
-        48 => {
+        47 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        50 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
+        51 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        49 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
+        52 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        53 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
+        53 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
+        54 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        54 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
+        57 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        56 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        57 => {
+        58 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        60 => {
             wire__crate__api__events__subscribe_data_changes_impl(port, ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        61 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        62 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        61 => {
+        64 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        62 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
-        63 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        64 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        65 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        65 => wire__crate__api__routes__update_route_impl(port, ptr, rust_vec_len, data_len),
+        66 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
+        67 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        68 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        69 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        70 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -5224,18 +5504,21 @@ impl flutter_rust_bridge::IntoDart for crate::api::events::DataChangeEvent {
             crate::api::events::DataChangeEvent::PoisChanged { trip_id } => {
                 [9.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
             }
+            crate::api::events::DataChangeEvent::RoutesChanged { trip_id } => {
+                [10.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+            }
             crate::api::events::DataChangeEvent::AttachmentsChanged {
                 trip_id,
                 accommodation_id,
             } => [
-                10.into_dart(),
+                11.into_dart(),
                 trip_id.into_into_dart().into_dart(),
                 accommodation_id.into_into_dart().into_dart(),
             ]
             .into_dart(),
-            crate::api::events::DataChangeEvent::TagsChanged => [11.into_dart()].into_dart(),
+            crate::api::events::DataChangeEvent::TagsChanged => [12.into_dart()].into_dart(),
             crate::api::events::DataChangeEvent::TimelineChanged { trip_id } => {
-                [12.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+                [13.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -5321,6 +5604,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::HourlyWeatherForecast>
     for crate::models::HourlyWeatherForecast
 {
     fn into_into_dart(self) -> crate::models::HourlyWeatherForecast {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::commands::import_komoot_route::ImportKomootRoute {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.trip_id.into_into_dart().into_dart(),
+            self.tour_url.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::import_komoot_route::ImportKomootRoute
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::commands::import_komoot_route::ImportKomootRoute>
+    for crate::commands::import_komoot_route::ImportKomootRoute
+{
+    fn into_into_dart(self) -> crate::commands::import_komoot_route::ImportKomootRoute {
         self
     }
 }
@@ -5671,6 +5975,80 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::bookings::ReservationCateg
     for crate::models::bookings::ReservationCategory
 {
     fn into_into_dart(self) -> crate::models::bookings::ReservationCategory {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::routes::RouteModel {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.trip_id.into_into_dart().into_dart(),
+            self.provider.into_into_dart().into_dart(),
+            self.provider_route_id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.sport.into_into_dart().into_dart(),
+            self.distance_meters.into_into_dart().into_dart(),
+            self.duration_seconds.into_into_dart().into_dart(),
+            self.elevation_up_meters.into_into_dart().into_dart(),
+            self.elevation_down_meters.into_into_dart().into_dart(),
+            self.start_coordinate.into_into_dart().into_dart(),
+            self.polyline.into_into_dart().into_dart(),
+            self.note.into_into_dart().into_dart(),
+            self.external_url.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::routes::RouteModel
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::routes::RouteModel>
+    for crate::models::routes::RouteModel
+{
+    fn into_into_dart(self) -> crate::models::routes::RouteModel {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::routes::RoutePoint {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.coordinate.into_into_dart().into_dart(),
+            self.altitude.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::routes::RoutePoint
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::routes::RoutePoint>
+    for crate::models::routes::RoutePoint
+{
+    fn into_into_dart(self) -> crate::models::routes::RoutePoint {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::models::routes::RouteProvider {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Komoot => 0.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::models::routes::RouteProvider
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::models::routes::RouteProvider>
+    for crate::models::routes::RouteProvider
+{
+    fn into_into_dart(self) -> crate::models::routes::RouteProvider {
         self
     }
 }
@@ -6292,6 +6670,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::commands::update_reservation::Upda
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::commands::update_route::UpdateRoute {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.note.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::commands::update_route::UpdateRoute
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::commands::update_route::UpdateRoute>
+    for crate::commands::update_route::UpdateRoute
+{
+    fn into_into_dart(self) -> crate::commands::update_route::UpdateRoute {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::commands::update_tag::UpdateTag {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -6840,19 +7239,23 @@ impl SseEncode for crate::api::events::DataChangeEvent {
                 <i32>::sse_encode(9, serializer);
                 <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
             }
+            crate::api::events::DataChangeEvent::RoutesChanged { trip_id } => {
+                <i32>::sse_encode(10, serializer);
+                <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
+            }
             crate::api::events::DataChangeEvent::AttachmentsChanged {
                 trip_id,
                 accommodation_id,
             } => {
-                <i32>::sse_encode(10, serializer);
+                <i32>::sse_encode(11, serializer);
                 <Option<uuid::Uuid>>::sse_encode(trip_id, serializer);
                 <Option<uuid::Uuid>>::sse_encode(accommodation_id, serializer);
             }
             crate::api::events::DataChangeEvent::TagsChanged => {
-                <i32>::sse_encode(11, serializer);
+                <i32>::sse_encode(12, serializer);
             }
             crate::api::events::DataChangeEvent::TimelineChanged { trip_id } => {
-                <i32>::sse_encode(12, serializer);
+                <i32>::sse_encode(13, serializer);
                 <uuid::Uuid>::sse_encode(trip_id, serializer);
             }
             _ => {
@@ -6910,6 +7313,14 @@ impl SseEncode for i64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i64::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for crate::commands::import_komoot_route::ImportKomootRoute {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.trip_id, serializer);
+        <String>::sse_encode(self.tour_url, serializer);
     }
 }
 
@@ -7049,6 +7460,26 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::models::routes::RouteModel> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::routes::RouteModel>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::models::routes::RoutePoint> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::models::routes::RoutePoint>::sse_encode(item, serializer);
         }
     }
 }
@@ -7218,6 +7649,16 @@ impl SseEncode for Option<crate::models::Coordinate> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::models::Coordinate>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<f64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <f64>::sse_encode(value, serializer);
         }
     }
 }
@@ -7451,6 +7892,49 @@ impl SseEncode for crate::models::bookings::ReservationCategory {
             match self {
                 crate::models::bookings::ReservationCategory::Restaurant => 0,
                 crate::models::bookings::ReservationCategory::Activity => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::models::routes::RouteModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.id, serializer);
+        <uuid::Uuid>::sse_encode(self.trip_id, serializer);
+        <crate::models::routes::RouteProvider>::sse_encode(self.provider, serializer);
+        <String>::sse_encode(self.provider_route_id, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <Option<String>>::sse_encode(self.sport, serializer);
+        <f64>::sse_encode(self.distance_meters, serializer);
+        <i64>::sse_encode(self.duration_seconds, serializer);
+        <Option<f64>>::sse_encode(self.elevation_up_meters, serializer);
+        <Option<f64>>::sse_encode(self.elevation_down_meters, serializer);
+        <crate::models::Coordinate>::sse_encode(self.start_coordinate, serializer);
+        <Vec<crate::models::routes::RoutePoint>>::sse_encode(self.polyline, serializer);
+        <Option<String>>::sse_encode(self.note, serializer);
+        <String>::sse_encode(self.external_url, serializer);
+    }
+}
+
+impl SseEncode for crate::models::routes::RoutePoint {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::models::Coordinate>::sse_encode(self.coordinate, serializer);
+        <Option<f64>>::sse_encode(self.altitude, serializer);
+    }
+}
+
+impl SseEncode for crate::models::routes::RouteProvider {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::models::routes::RouteProvider::Komoot => 0,
                 _ => {
                     unimplemented!("");
                 }
@@ -7837,6 +8321,14 @@ impl SseEncode for crate::commands::update_reservation::UpdateReservation {
         <Option<String>>::sse_encode(self.link, serializer);
         <Option<String>>::sse_encode(self.booking_number, serializer);
         <crate::models::bookings::ReservationCategory>::sse_encode(self.category, serializer);
+    }
+}
+
+impl SseEncode for crate::commands::update_route::UpdateRoute {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.id, serializer);
+        <Option<String>>::sse_encode(self.note, serializer);
     }
 }
 
