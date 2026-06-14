@@ -39,6 +39,8 @@ dependencies:
       ref: 2cea396
   flutter_map_tile_caching: ^10.0.0
   path: ^1.9.1
+  supabase_flutter: ^2.8.0
+  app_links: ^6.3.0
 
 dev_dependencies:
   flutter_test:

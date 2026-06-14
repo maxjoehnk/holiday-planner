@@ -19,6 +19,9 @@ pub struct Model {
     pub arrival_scheduled_platform: String,
     pub scheduled_departure_time: DateTimeUtc,
     pub scheduled_arrival_time: DateTimeUtc,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

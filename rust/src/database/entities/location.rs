@@ -17,6 +17,9 @@ pub struct Model {
     pub tidal_information_last_updated: Option<DateTimeUtc>,
     pub weather_information_last_updated: Option<DateTimeUtc>,
     pub pollen_information_last_updated: Option<DateTimeUtc>,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

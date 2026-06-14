@@ -17,6 +17,7 @@ mod m20260614_130000_trip_days;
 mod m20260615_120000_add_accommodation_coordinates;
 mod m20260615_130000_accommodation_weather;
 mod m20260616_120000_pollen_forecast;
+mod m20260612_000000_sync;
 
 pub struct Migrator;
 
@@ -41,6 +42,9 @@ impl MigratorTrait for Migrator {
             Box::new(m20260615_120000_add_accommodation_coordinates::Migration),
             Box::new(m20260615_130000_accommodation_weather::Migration),
             Box::new(m20260616_120000_pollen_forecast::Migration),
+            // Sync needs to run AFTER the new tables (routes, trip_days, ...)
+            // exist so it can ALTER them with sync metadata columns.
+            Box::new(m20260612_000000_sync::Migration),
         ]
     }
 }

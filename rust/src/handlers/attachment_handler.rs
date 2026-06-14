@@ -3,11 +3,14 @@ use std::path::Path;
 use futures::TryFutureExt;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ConnectionTrait, DbErr, TransactionTrait};
+use sha2::{Digest, Sha256};
 use uuid::Uuid;
 use crate::commands::{AddTripAttachment, AddAccommodationAttachment};
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, entities, repositories, DbResult};
 use crate::handlers::Handler;
 use crate::models::AttachmentListModel;
+use crate::sync;
 
 pub struct AttachmentHandler {
     db: Database,
@@ -24,7 +27,9 @@ impl Handler for AttachmentHandler {
 impl AttachmentHandler {
     pub async fn add_trip_attachment(&self, command: AddTripAttachment) -> anyhow::Result<()> {
         let data = std::fs::read(&command.path)?;
-        Self::add_attachment(self.db.deref(), command, data).await?;
+        let trip_id = command.trip_id;
+        let attachment_id = Self::add_attachment(self.db.deref(), command, data).await?;
+        Self::enqueue_attachment(&self.db, trip_id, attachment_id).await?;
 
         Ok(())
     }
@@ -39,6 +44,8 @@ impl AttachmentHandler {
             .to_string();
 
         let attachment_id = Uuid::new_v4();
+        let sha = sha256_hex(&data);
+        let storage_path = sync::wire::attachment_storage_path(command.trip_id, attachment_id);
         let attachment = entities::attachment::ActiveModel {
             id: Set(attachment_id),
             trip_id: Set(command.trip_id),
@@ -46,11 +53,47 @@ impl AttachmentHandler {
             file_name: Set(file_name),
             data: Set(data),
             content_type: Set(content_type),
+            updated_at: Set(chrono::Utc::now()),
+            storage_path: Set(Some(storage_path)),
+            sha256: Set(Some(sha)),
+            uploaded_at: Set(None),
+            ..Default::default()
         };
 
         repositories::attachments::insert(db, attachment).await?;
 
         Ok(attachment_id)
+    }
+
+    /// Queue a sync push for the just-inserted attachment, if a user is signed in.
+    /// Runs outside the local insert transaction so an enqueue failure
+    /// never blocks the offline-first write.
+    async fn enqueue_attachment(
+        db: &Database,
+        trip_id: Uuid,
+        attachment_id: Uuid,
+    ) -> anyhow::Result<()> {
+        let Some(_user_id) = sync::session::current_user().await else {
+            return Ok(());
+        };
+        let Some(model) = repositories::attachments::find_by_id(db, attachment_id).await? else {
+            return Ok(());
+        };
+        let _ = trip_id; // captured so the storage path was correct above.
+        let Some(row) = sync::wire::AttachmentRow::from_model(&model) else {
+            // No storage_path/sha — shouldn't happen since add_attachment sets both.
+            tracing::warn!("attachment {attachment_id} missing storage metadata; skipping enqueue");
+            return Ok(());
+        };
+        sync::push::enqueue(
+            db.deref(),
+            "attachments",
+            attachment_id,
+            MutationOperation::Insert,
+            &row,
+        )
+        .await?;
+        Ok(())
     }
 
     pub async fn get_trip_attachments(&self, trip_id: Uuid) -> anyhow::Result<Vec<AttachmentListModel>> {
@@ -66,8 +109,33 @@ impl AttachmentHandler {
     }
 
     pub async fn delete_attachment(&self, attachment_id: Uuid) -> anyhow::Result<()> {
+        Self::enqueue_attachment_delete(&self.db, attachment_id).await?;
         repositories::attachments::delete_by_id(self.db.deref(), attachment_id).await?;
 
+        Ok(())
+    }
+
+    /// Snapshot the storage_path before the local hard-delete so the push
+    /// worker can clean up the bucket too.
+    async fn enqueue_attachment_delete(db: &Database, attachment_id: Uuid) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(existing) = repositories::attachments::find_by_id(db, attachment_id).await? else {
+            return Ok(());
+        };
+        let payload = serde_json::json!({
+            "id": attachment_id,
+            "storage_path": existing.storage_path,
+        });
+        sync::push::enqueue(
+            db.deref(),
+            "attachments",
+            attachment_id,
+            MutationOperation::Delete,
+            &payload,
+        )
+        .await?;
         Ok(())
     }
 
@@ -89,16 +157,58 @@ impl AttachmentHandler {
             name: command.name,
         };
         let data = std::fs::read(&add_trip_attachment.path)?;
-        self.db.transaction::<_, _, DbErr>(move |transaction| {
-            Box::pin(async move {
-                let attachment_id = Self::add_attachment(transaction, add_trip_attachment, data).await?;
-                repositories::attachments::add_to_accommodation(transaction, command.accommodation_id, attachment_id).await?;
-
-                Ok(())
+        let accommodation_id = command.accommodation_id;
+        let attachment_id = self
+            .db
+            .transaction::<_, Uuid, DbErr>(move |transaction| {
+                Box::pin(async move {
+                    let attachment_id = Self::add_attachment(transaction, add_trip_attachment, data).await?;
+                    repositories::attachments::add_to_accommodation(transaction, accommodation_id, attachment_id).await?;
+                    Ok(attachment_id)
+                })
             })
-        }).await?;
+            .await?;
+        Self::enqueue_attachment(&self.db, trip_id, attachment_id).await?;
+        Self::enqueue_accommodation_attachment(
+            &self.db,
+            accommodation_id,
+            attachment_id,
+            MutationOperation::Insert,
+        )
+        .await?;
 
         Ok(())
+    }
+
+    async fn enqueue_accommodation_attachment(
+        db: &Database,
+        accommodation_id: Uuid,
+        attachment_id: Uuid,
+        op: MutationOperation,
+    ) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let payload = match op {
+            MutationOperation::Delete => serde_json::json!({
+                "accommodation_id": accommodation_id,
+                "attachment_id": attachment_id,
+            }),
+            _ => serde_json::to_value(sync::wire::AccommodationAttachmentRow {
+                accommodation_id,
+                attachment_id,
+                updated_at: chrono::Utc::now(),
+                deleted_at: None,
+            })?,
+        };
+        sync::push::enqueue_if_signed_in(
+            db,
+            "accommodation_attachments",
+            attachment_id,
+            op,
+            &payload,
+        )
+        .await
     }
     
     pub async fn get_accommodation_attachments(&self, accommodation_id: Uuid) -> anyhow::Result<Vec<AttachmentListModel>> {
@@ -114,6 +224,14 @@ impl AttachmentHandler {
     }
     
     pub async fn remove_accommodation_attachment(&self, accommodation_id: Uuid, attachment_id: Uuid) -> anyhow::Result<()> {
+        Self::enqueue_accommodation_attachment(
+            &self.db,
+            accommodation_id,
+            attachment_id,
+            MutationOperation::Delete,
+        )
+        .await?;
+        Self::enqueue_attachment_delete(&self.db, attachment_id).await?;
         self.db.transaction::<_, _, DbErr>(|transaction| {
             Box::pin(async move {
                 repositories::attachments::remove_from_accommodation(transaction, accommodation_id, attachment_id).await?;
@@ -125,4 +243,10 @@ impl AttachmentHandler {
 
         Ok(())
     }
+}
+
+fn sha256_hex(data: &[u8]) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(data);
+    format!("{:x}", hasher.finalize())
 }

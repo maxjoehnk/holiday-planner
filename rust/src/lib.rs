@@ -15,3 +15,5 @@ mod handlers;
 mod jobs;
 /// flutter_rust_bridge:ignore
 mod parsers;
+/// flutter_rust_bridge:ignore
+mod sync;

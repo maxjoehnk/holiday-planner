@@ -8,6 +8,8 @@ pub struct Model {
     pub trip_id: Uuid,
     #[sea_orm(primary_key)]
     pub tag_id: Uuid,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -21,6 +21,9 @@ pub struct Model {
     pub trip_day_id: Option<Uuid>,
     pub day_order: Option<i32>,
     pub scheduled_at: Option<DateTimeUtc>,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

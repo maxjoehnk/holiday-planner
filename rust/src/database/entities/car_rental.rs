@@ -14,6 +14,9 @@ pub struct Model {
     pub return_date: DateTimeUtc,
     pub return_location: Option<String>,
     pub booking_number: Option<String>,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

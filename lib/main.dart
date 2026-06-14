@@ -3,8 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:holiday_planner/services/auth_service.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/map_tile_cache.dart';
+import 'package:holiday_planner/services/sync_status_bus.dart';
+import 'package:holiday_planner/src/rust/api/sync.dart' as rust_sync;
 import 'package:holiday_planner/src/rust/frb_generated.dart';
 import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
@@ -12,11 +15,17 @@ import 'package:intl/intl_standalone.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
 import 'package:holiday_planner/views/share_receiver/komoot_route_import_flow.dart';
 import 'package:holiday_planner/views/share_receiver/paste_komoot_url_dialog.dart';
 import 'package:holiday_planner/views/share_receiver/shared_train_handler.dart';
 import 'package:holiday_planner/settings.dart';
+
+/// Supabase project URL. Provided at build time via `--dart-define=SUPABASE_URL=...`.
+/// Empty string disables cloud sync entirely — the app stays fully local.
+const String _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+const String _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +38,24 @@ Future<void> main() async {
   ]);
 
   DataChangeBus.instance.start();
+  await _initSync();
 
   runApp(HolidayPlannerApp(settings));
+}
+
+Future<void> _initSync() async {
+  if (_supabaseUrl.isEmpty || _supabaseAnonKey.isEmpty) {
+    log('Cloud sync disabled: SUPABASE_URL / SUPABASE_ANON_KEY not provided.');
+    return;
+  }
+  try {
+    await Supabase.initialize(url: _supabaseUrl, publishableKey: _supabaseAnonKey);
+    await rust_sync.configureSync(url: _supabaseUrl, anonKey: _supabaseAnonKey);
+    SyncStatusBus.instance.start();
+    await AuthService.instance.start();
+  } catch (error, stack) {
+    log('Sync init failed: $error', stackTrace: stack);
+  }
 }
 
 Future<void> openDatabase() async {

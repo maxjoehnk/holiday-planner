@@ -152,6 +152,14 @@ mod tests {
             start_date,
             end_date,
             header_image: None,
+            updated_at: Utc::now(),
+            deleted_at: None,
+            last_modified_by: None,
+            owner_id: None,
+            detached_at: None,
+            header_image_path: None,
+            header_image_sha256: None,
+            header_image_uploaded_at: None,
         }
     }
 

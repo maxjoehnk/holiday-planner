@@ -2,9 +2,11 @@ use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
 use crate::commands::{AddTripAccommodation, UpdateTripAccommodation};
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::{AccommodationModel, Coordinate};
+use crate::sync;
 
 pub struct AccommodationHandler {
     db: Database,
@@ -21,9 +23,11 @@ impl Handler for AccommodationHandler {
 impl AccommodationHandler {
     pub async fn add_accommodation(&self, command: AddTripAccommodation) -> anyhow::Result<()> {
         tracing::debug!("Adding accommodation to trip {}", command.trip_id);
-        
+
+        let current_user = sync::session::current_user().await;
+        let id = Uuid::new_v4();
         let accommodation = entities::accommodation::ActiveModel {
-            id: Set(Uuid::new_v4()),
+            id: Set(id),
             trip_id: Set(command.trip_id),
             name: Set(command.name),
             address: Set(command.address),
@@ -33,9 +37,13 @@ impl AccommodationHandler {
             coordinates_longitude: Set(command.coordinate.map(|c| c.longitude)),
             weather_information_last_updated: Set(None),
             pollen_information_last_updated: Set(None),
+            updated_at: Set(chrono::Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
-        
+
         repositories::accommodations::insert(&self.db, accommodation).await?;
+        self.enqueue_after_write(id, MutationOperation::Insert).await?;
 
         Ok(())
     }
@@ -62,6 +70,7 @@ impl AccommodationHandler {
         let Some(accommodation) = repositories::accommodations::find_by_id(&self.db, command.id).await? else {
             anyhow::bail!("Unknown accommodation");
         };
+        let current_user = sync::session::current_user().await;
         let mut accommodation = accommodation.into_active_model();
         accommodation.name.set_if_not_equals(command.name);
         accommodation.address.set_if_not_equals(command.address);
@@ -69,15 +78,37 @@ impl AccommodationHandler {
         accommodation.check_out.set_if_not_equals(Some(command.check_out));
         accommodation.coordinates_latitude.set_if_not_equals(command.coordinate.map(|c| c.latitude));
         accommodation.coordinates_longitude.set_if_not_equals(command.coordinate.map(|c| c.longitude));
+        accommodation.updated_at = Set(chrono::Utc::now());
+        accommodation.last_modified_by = Set(current_user.map(|u| u.to_string()));
 
         repositories::accommodations::update(&self.db, accommodation).await?;
+        self.enqueue_after_write(command.id, MutationOperation::Update).await?;
 
         Ok(())
     }
 
     pub async fn delete_accommodation(&self, accommodation_id: Uuid) -> anyhow::Result<()> {
+        sync::push::enqueue_if_signed_in(
+            &self.db,
+            "accommodations",
+            accommodation_id,
+            MutationOperation::Delete,
+            &serde_json::json!({ "id": accommodation_id }),
+        )
+        .await?;
         repositories::accommodations::delete_by_id(&self.db, accommodation_id).await?;
 
         Ok(())
+    }
+
+    async fn enqueue_after_write(&self, id: Uuid, op: MutationOperation) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::accommodations::find_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = sync::wire::AccommodationRow::from_model(&model);
+        sync::push::enqueue_if_signed_in(&self.db, "accommodations", id, op, &row).await
     }
 }

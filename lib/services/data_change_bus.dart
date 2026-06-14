@@ -179,6 +179,30 @@ class DataChangeBus {
         return false;
       }).map((_) => null);
 
+  Stream<void> onTripMembersChanged(UuidValue tripId) => events.where((e) {
+        if (e is DataChangeEvent_TripMembersChanged) {
+          return e.tripId == tripId;
+        }
+        if (e is DataChangeEvent_TripAccessGranted) {
+          return e.tripId == tripId;
+        }
+        if (e is DataChangeEvent_TripAccessRevoked) {
+          return e.tripId == tripId;
+        }
+        return false;
+      }).map((_) => null);
+
+  Stream<void> onTripAccessGranted() => events
+      .where((e) => e is DataChangeEvent_TripAccessGranted)
+      .map((_) => null);
+
+  Stream<void> onTripActivityChanged(UuidValue tripId) => events.where((e) {
+        if (e is DataChangeEvent_TripActivityChanged) {
+          return e.tripId == tripId;
+        }
+        return false;
+      }).map((_) => null);
+
   Stream<void> onAnyTripDataChanged(UuidValue tripId) => events.where((e) {
         bool matchesOptional(UuidValue? eventTripId) =>
             eventTripId == null || eventTripId == tripId;

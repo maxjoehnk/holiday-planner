@@ -37,6 +37,10 @@ mixin _$DataChangeEvent {
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +61,10 @@ mixin _$DataChangeEvent {
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -77,6 +85,10 @@ mixin _$DataChangeEvent {
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -107,6 +119,14 @@ mixin _$DataChangeEvent {
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -129,6 +149,14 @@ mixin _$DataChangeEvent {
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -151,6 +179,14 @@ mixin _$DataChangeEvent {
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -241,6 +277,10 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return tripsChanged();
   }
@@ -264,6 +304,10 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return tripsChanged?.call();
   }
@@ -287,6 +331,10 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tripsChanged != null) {
@@ -323,6 +371,14 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return tripsChanged(this);
   }
@@ -348,6 +404,14 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return tripsChanged?.call(this);
   }
@@ -373,6 +437,14 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tripsChanged != null) {
@@ -479,6 +551,10 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return tripChanged(tripId);
   }
@@ -502,6 +578,10 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return tripChanged?.call(tripId);
   }
@@ -525,6 +605,10 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tripChanged != null) {
@@ -561,6 +645,14 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return tripChanged(this);
   }
@@ -586,6 +678,14 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return tripChanged?.call(this);
   }
@@ -611,6 +711,14 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tripChanged != null) {
@@ -728,6 +836,10 @@ class _$DataChangeEvent_LocationsChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return locationsChanged(tripId);
   }
@@ -751,6 +863,10 @@ class _$DataChangeEvent_LocationsChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return locationsChanged?.call(tripId);
   }
@@ -774,6 +890,10 @@ class _$DataChangeEvent_LocationsChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (locationsChanged != null) {
@@ -810,6 +930,14 @@ class _$DataChangeEvent_LocationsChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return locationsChanged(this);
   }
@@ -835,6 +963,14 @@ class _$DataChangeEvent_LocationsChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return locationsChanged?.call(this);
   }
@@ -860,6 +996,14 @@ class _$DataChangeEvent_LocationsChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (locationsChanged != null) {
@@ -989,6 +1133,10 @@ class _$DataChangeEvent_WeatherUpdatedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return weatherUpdated(tripId, locationId);
   }
@@ -1012,6 +1160,10 @@ class _$DataChangeEvent_WeatherUpdatedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return weatherUpdated?.call(tripId, locationId);
   }
@@ -1035,6 +1187,10 @@ class _$DataChangeEvent_WeatherUpdatedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (weatherUpdated != null) {
@@ -1071,6 +1227,14 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return weatherUpdated(this);
   }
@@ -1096,6 +1260,14 @@ class _$DataChangeEvent_WeatherUpdatedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return weatherUpdated?.call(this);
   }
@@ -1121,6 +1293,14 @@ class _$DataChangeEvent_WeatherUpdatedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (weatherUpdated != null) {
@@ -1252,6 +1432,10 @@ class _$DataChangeEvent_PollenUpdatedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return pollenUpdated(tripId, locationId);
   }
@@ -1275,6 +1459,10 @@ class _$DataChangeEvent_PollenUpdatedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return pollenUpdated?.call(tripId, locationId);
   }
@@ -1298,6 +1486,10 @@ class _$DataChangeEvent_PollenUpdatedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (pollenUpdated != null) {
@@ -1334,6 +1526,14 @@ class _$DataChangeEvent_PollenUpdatedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return pollenUpdated(this);
   }
@@ -1359,6 +1559,14 @@ class _$DataChangeEvent_PollenUpdatedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return pollenUpdated?.call(this);
   }
@@ -1384,6 +1592,14 @@ class _$DataChangeEvent_PollenUpdatedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (pollenUpdated != null) {
@@ -1514,6 +1730,10 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return tidesUpdated(tripId, locationId);
   }
@@ -1537,6 +1757,10 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return tidesUpdated?.call(tripId, locationId);
   }
@@ -1560,6 +1784,10 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tidesUpdated != null) {
@@ -1596,6 +1824,14 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return tidesUpdated(this);
   }
@@ -1621,6 +1857,14 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return tidesUpdated?.call(this);
   }
@@ -1646,6 +1890,14 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tidesUpdated != null) {
@@ -1766,6 +2018,10 @@ class _$DataChangeEvent_PackingListChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return packingListChanged(tripId);
   }
@@ -1789,6 +2045,10 @@ class _$DataChangeEvent_PackingListChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return packingListChanged?.call(tripId);
   }
@@ -1812,6 +2072,10 @@ class _$DataChangeEvent_PackingListChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (packingListChanged != null) {
@@ -1848,6 +2112,14 @@ class _$DataChangeEvent_PackingListChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return packingListChanged(this);
   }
@@ -1873,6 +2145,14 @@ class _$DataChangeEvent_PackingListChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return packingListChanged?.call(this);
   }
@@ -1898,6 +2178,14 @@ class _$DataChangeEvent_PackingListChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (packingListChanged != null) {
@@ -2015,6 +2303,10 @@ class _$DataChangeEvent_AccommodationsChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return accommodationsChanged(tripId);
   }
@@ -2038,6 +2330,10 @@ class _$DataChangeEvent_AccommodationsChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return accommodationsChanged?.call(tripId);
   }
@@ -2061,6 +2357,10 @@ class _$DataChangeEvent_AccommodationsChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (accommodationsChanged != null) {
@@ -2097,6 +2397,14 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return accommodationsChanged(this);
   }
@@ -2122,6 +2430,14 @@ class _$DataChangeEvent_AccommodationsChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return accommodationsChanged?.call(this);
   }
@@ -2147,6 +2463,14 @@ class _$DataChangeEvent_AccommodationsChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (accommodationsChanged != null) {
@@ -2264,6 +2588,10 @@ class _$DataChangeEvent_BookingsChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return bookingsChanged(tripId);
   }
@@ -2287,6 +2615,10 @@ class _$DataChangeEvent_BookingsChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return bookingsChanged?.call(tripId);
   }
@@ -2310,6 +2642,10 @@ class _$DataChangeEvent_BookingsChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (bookingsChanged != null) {
@@ -2346,6 +2682,14 @@ class _$DataChangeEvent_BookingsChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return bookingsChanged(this);
   }
@@ -2371,6 +2715,14 @@ class _$DataChangeEvent_BookingsChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return bookingsChanged?.call(this);
   }
@@ -2396,6 +2748,14 @@ class _$DataChangeEvent_BookingsChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (bookingsChanged != null) {
@@ -2513,6 +2873,10 @@ class _$DataChangeEvent_TransitsChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return transitsChanged(tripId);
   }
@@ -2536,6 +2900,10 @@ class _$DataChangeEvent_TransitsChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return transitsChanged?.call(tripId);
   }
@@ -2559,6 +2927,10 @@ class _$DataChangeEvent_TransitsChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (transitsChanged != null) {
@@ -2595,6 +2967,14 @@ class _$DataChangeEvent_TransitsChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return transitsChanged(this);
   }
@@ -2620,6 +3000,14 @@ class _$DataChangeEvent_TransitsChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return transitsChanged?.call(this);
   }
@@ -2645,6 +3033,14 @@ class _$DataChangeEvent_TransitsChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (transitsChanged != null) {
@@ -2760,6 +3156,10 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return poisChanged(tripId);
   }
@@ -2783,6 +3183,10 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return poisChanged?.call(tripId);
   }
@@ -2806,6 +3210,10 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (poisChanged != null) {
@@ -2842,6 +3250,14 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return poisChanged(this);
   }
@@ -2867,6 +3283,14 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return poisChanged?.call(this);
   }
@@ -2892,6 +3316,14 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (poisChanged != null) {
@@ -3008,6 +3440,10 @@ class _$DataChangeEvent_RoutesChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return routesChanged(tripId);
   }
@@ -3031,6 +3467,10 @@ class _$DataChangeEvent_RoutesChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return routesChanged?.call(tripId);
   }
@@ -3054,6 +3494,10 @@ class _$DataChangeEvent_RoutesChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (routesChanged != null) {
@@ -3090,6 +3534,14 @@ class _$DataChangeEvent_RoutesChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return routesChanged(this);
   }
@@ -3115,6 +3567,14 @@ class _$DataChangeEvent_RoutesChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return routesChanged?.call(this);
   }
@@ -3140,6 +3600,14 @@ class _$DataChangeEvent_RoutesChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (routesChanged != null) {
@@ -3268,6 +3736,10 @@ class _$DataChangeEvent_AttachmentsChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return attachmentsChanged(tripId, accommodationId);
   }
@@ -3291,6 +3763,10 @@ class _$DataChangeEvent_AttachmentsChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return attachmentsChanged?.call(tripId, accommodationId);
   }
@@ -3314,6 +3790,10 @@ class _$DataChangeEvent_AttachmentsChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (attachmentsChanged != null) {
@@ -3350,6 +3830,14 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return attachmentsChanged(this);
   }
@@ -3375,6 +3863,14 @@ class _$DataChangeEvent_AttachmentsChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return attachmentsChanged?.call(this);
   }
@@ -3400,6 +3896,14 @@ class _$DataChangeEvent_AttachmentsChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (attachmentsChanged != null) {
@@ -3490,6 +3994,10 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return tagsChanged();
   }
@@ -3513,6 +4021,10 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return tagsChanged?.call();
   }
@@ -3536,6 +4048,10 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tagsChanged != null) {
@@ -3572,6 +4088,14 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return tagsChanged(this);
   }
@@ -3597,6 +4121,14 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return tagsChanged?.call(this);
   }
@@ -3622,6 +4154,14 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tagsChanged != null) {
@@ -3731,6 +4271,10 @@ class _$DataChangeEvent_TripDaysChangedImpl
         attachmentsChanged,
     required TResult Function() tagsChanged,
     required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
   }) {
     return tripDaysChanged(tripId);
   }
@@ -3754,6 +4298,10 @@ class _$DataChangeEvent_TripDaysChangedImpl
         attachmentsChanged,
     TResult? Function()? tagsChanged,
     TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
   }) {
     return tripDaysChanged?.call(tripId);
   }
@@ -3777,6 +4325,10 @@ class _$DataChangeEvent_TripDaysChangedImpl
         attachmentsChanged,
     TResult Function()? tagsChanged,
     TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tripDaysChanged != null) {
@@ -3813,6 +4365,14 @@ class _$DataChangeEvent_TripDaysChangedImpl
     required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
     required TResult Function(DataChangeEvent_TripDaysChanged value)
         tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
   }) {
     return tripDaysChanged(this);
   }
@@ -3838,6 +4398,14 @@ class _$DataChangeEvent_TripDaysChangedImpl
         attachmentsChanged,
     TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
   }) {
     return tripDaysChanged?.call(this);
   }
@@ -3863,6 +4431,14 @@ class _$DataChangeEvent_TripDaysChangedImpl
         attachmentsChanged,
     TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
     TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
     required TResult orElse(),
   }) {
     if (tripDaysChanged != null) {
@@ -3885,5 +4461,1153 @@ abstract class DataChangeEvent_TripDaysChanged extends DataChangeEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DataChangeEvent_TripDaysChangedImplCopyWith<
           _$DataChangeEvent_TripDaysChangedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DataChangeEvent_TripMembersChangedImplCopyWith<$Res> {
+  factory _$$DataChangeEvent_TripMembersChangedImplCopyWith(
+          _$DataChangeEvent_TripMembersChangedImpl value,
+          $Res Function(_$DataChangeEvent_TripMembersChangedImpl) then) =
+      __$$DataChangeEvent_TripMembersChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UuidValue tripId});
+}
+
+/// @nodoc
+class __$$DataChangeEvent_TripMembersChangedImplCopyWithImpl<$Res>
+    extends _$DataChangeEventCopyWithImpl<$Res,
+        _$DataChangeEvent_TripMembersChangedImpl>
+    implements _$$DataChangeEvent_TripMembersChangedImplCopyWith<$Res> {
+  __$$DataChangeEvent_TripMembersChangedImplCopyWithImpl(
+      _$DataChangeEvent_TripMembersChangedImpl _value,
+      $Res Function(_$DataChangeEvent_TripMembersChangedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tripId = null,
+  }) {
+    return _then(_$DataChangeEvent_TripMembersChangedImpl(
+      tripId: null == tripId
+          ? _value.tripId
+          : tripId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DataChangeEvent_TripMembersChangedImpl
+    extends DataChangeEvent_TripMembersChanged {
+  const _$DataChangeEvent_TripMembersChangedImpl({required this.tripId})
+      : super._();
+
+  @override
+  final UuidValue tripId;
+
+  @override
+  String toString() {
+    return 'DataChangeEvent.tripMembersChanged(tripId: $tripId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataChangeEvent_TripMembersChangedImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataChangeEvent_TripMembersChangedImplCopyWith<
+          _$DataChangeEvent_TripMembersChangedImpl>
+      get copyWith => __$$DataChangeEvent_TripMembersChangedImplCopyWithImpl<
+          _$DataChangeEvent_TripMembersChangedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() tripsChanged,
+    required TResult Function(UuidValue tripId) tripChanged,
+    required TResult Function(UuidValue tripId) locationsChanged,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        weatherUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        tidesUpdated,
+    required TResult Function(UuidValue? tripId) packingListChanged,
+    required TResult Function(UuidValue? tripId) accommodationsChanged,
+    required TResult Function(UuidValue? tripId) bookingsChanged,
+    required TResult Function(UuidValue? tripId) transitsChanged,
+    required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
+    required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
+        attachmentsChanged,
+    required TResult Function() tagsChanged,
+    required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
+  }) {
+    return tripMembersChanged(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? tripsChanged,
+    TResult? Function(UuidValue tripId)? tripChanged,
+    TResult? Function(UuidValue tripId)? locationsChanged,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult? Function(UuidValue? tripId)? packingListChanged,
+    TResult? Function(UuidValue? tripId)? accommodationsChanged,
+    TResult? Function(UuidValue? tripId)? bookingsChanged,
+    TResult? Function(UuidValue? tripId)? transitsChanged,
+    TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
+    TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult? Function()? tagsChanged,
+    TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
+  }) {
+    return tripMembersChanged?.call(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? tripsChanged,
+    TResult Function(UuidValue tripId)? tripChanged,
+    TResult Function(UuidValue tripId)? locationsChanged,
+    TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult Function(UuidValue? tripId)? packingListChanged,
+    TResult Function(UuidValue? tripId)? accommodationsChanged,
+    TResult Function(UuidValue? tripId)? bookingsChanged,
+    TResult Function(UuidValue? tripId)? transitsChanged,
+    TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
+    TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult Function()? tagsChanged,
+    TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripMembersChanged != null) {
+      return tripMembersChanged(tripId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DataChangeEvent_TripsChanged value) tripsChanged,
+    required TResult Function(DataChangeEvent_TripChanged value) tripChanged,
+    required TResult Function(DataChangeEvent_LocationsChanged value)
+        locationsChanged,
+    required TResult Function(DataChangeEvent_WeatherUpdated value)
+        weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
+    required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
+    required TResult Function(DataChangeEvent_PackingListChanged value)
+        packingListChanged,
+    required TResult Function(DataChangeEvent_AccommodationsChanged value)
+        accommodationsChanged,
+    required TResult Function(DataChangeEvent_BookingsChanged value)
+        bookingsChanged,
+    required TResult Function(DataChangeEvent_TransitsChanged value)
+        transitsChanged,
+    required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
+    required TResult Function(DataChangeEvent_AttachmentsChanged value)
+        attachmentsChanged,
+    required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
+    required TResult Function(DataChangeEvent_TripDaysChanged value)
+        tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
+  }) {
+    return tripMembersChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult? Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult? Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult? Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+  }) {
+    return tripMembersChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripMembersChanged != null) {
+      return tripMembersChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DataChangeEvent_TripMembersChanged extends DataChangeEvent {
+  const factory DataChangeEvent_TripMembersChanged(
+          {required final UuidValue tripId}) =
+      _$DataChangeEvent_TripMembersChangedImpl;
+  const DataChangeEvent_TripMembersChanged._() : super._();
+
+  UuidValue get tripId;
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DataChangeEvent_TripMembersChangedImplCopyWith<
+          _$DataChangeEvent_TripMembersChangedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DataChangeEvent_TripAccessGrantedImplCopyWith<$Res> {
+  factory _$$DataChangeEvent_TripAccessGrantedImplCopyWith(
+          _$DataChangeEvent_TripAccessGrantedImpl value,
+          $Res Function(_$DataChangeEvent_TripAccessGrantedImpl) then) =
+      __$$DataChangeEvent_TripAccessGrantedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UuidValue tripId});
+}
+
+/// @nodoc
+class __$$DataChangeEvent_TripAccessGrantedImplCopyWithImpl<$Res>
+    extends _$DataChangeEventCopyWithImpl<$Res,
+        _$DataChangeEvent_TripAccessGrantedImpl>
+    implements _$$DataChangeEvent_TripAccessGrantedImplCopyWith<$Res> {
+  __$$DataChangeEvent_TripAccessGrantedImplCopyWithImpl(
+      _$DataChangeEvent_TripAccessGrantedImpl _value,
+      $Res Function(_$DataChangeEvent_TripAccessGrantedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tripId = null,
+  }) {
+    return _then(_$DataChangeEvent_TripAccessGrantedImpl(
+      tripId: null == tripId
+          ? _value.tripId
+          : tripId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DataChangeEvent_TripAccessGrantedImpl
+    extends DataChangeEvent_TripAccessGranted {
+  const _$DataChangeEvent_TripAccessGrantedImpl({required this.tripId})
+      : super._();
+
+  @override
+  final UuidValue tripId;
+
+  @override
+  String toString() {
+    return 'DataChangeEvent.tripAccessGranted(tripId: $tripId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataChangeEvent_TripAccessGrantedImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataChangeEvent_TripAccessGrantedImplCopyWith<
+          _$DataChangeEvent_TripAccessGrantedImpl>
+      get copyWith => __$$DataChangeEvent_TripAccessGrantedImplCopyWithImpl<
+          _$DataChangeEvent_TripAccessGrantedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() tripsChanged,
+    required TResult Function(UuidValue tripId) tripChanged,
+    required TResult Function(UuidValue tripId) locationsChanged,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        weatherUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        tidesUpdated,
+    required TResult Function(UuidValue? tripId) packingListChanged,
+    required TResult Function(UuidValue? tripId) accommodationsChanged,
+    required TResult Function(UuidValue? tripId) bookingsChanged,
+    required TResult Function(UuidValue? tripId) transitsChanged,
+    required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
+    required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
+        attachmentsChanged,
+    required TResult Function() tagsChanged,
+    required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
+  }) {
+    return tripAccessGranted(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? tripsChanged,
+    TResult? Function(UuidValue tripId)? tripChanged,
+    TResult? Function(UuidValue tripId)? locationsChanged,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult? Function(UuidValue? tripId)? packingListChanged,
+    TResult? Function(UuidValue? tripId)? accommodationsChanged,
+    TResult? Function(UuidValue? tripId)? bookingsChanged,
+    TResult? Function(UuidValue? tripId)? transitsChanged,
+    TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
+    TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult? Function()? tagsChanged,
+    TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
+  }) {
+    return tripAccessGranted?.call(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? tripsChanged,
+    TResult Function(UuidValue tripId)? tripChanged,
+    TResult Function(UuidValue tripId)? locationsChanged,
+    TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult Function(UuidValue? tripId)? packingListChanged,
+    TResult Function(UuidValue? tripId)? accommodationsChanged,
+    TResult Function(UuidValue? tripId)? bookingsChanged,
+    TResult Function(UuidValue? tripId)? transitsChanged,
+    TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
+    TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult Function()? tagsChanged,
+    TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripAccessGranted != null) {
+      return tripAccessGranted(tripId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DataChangeEvent_TripsChanged value) tripsChanged,
+    required TResult Function(DataChangeEvent_TripChanged value) tripChanged,
+    required TResult Function(DataChangeEvent_LocationsChanged value)
+        locationsChanged,
+    required TResult Function(DataChangeEvent_WeatherUpdated value)
+        weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
+    required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
+    required TResult Function(DataChangeEvent_PackingListChanged value)
+        packingListChanged,
+    required TResult Function(DataChangeEvent_AccommodationsChanged value)
+        accommodationsChanged,
+    required TResult Function(DataChangeEvent_BookingsChanged value)
+        bookingsChanged,
+    required TResult Function(DataChangeEvent_TransitsChanged value)
+        transitsChanged,
+    required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
+    required TResult Function(DataChangeEvent_AttachmentsChanged value)
+        attachmentsChanged,
+    required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
+    required TResult Function(DataChangeEvent_TripDaysChanged value)
+        tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
+  }) {
+    return tripAccessGranted(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult? Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult? Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult? Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+  }) {
+    return tripAccessGranted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripAccessGranted != null) {
+      return tripAccessGranted(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DataChangeEvent_TripAccessGranted extends DataChangeEvent {
+  const factory DataChangeEvent_TripAccessGranted(
+          {required final UuidValue tripId}) =
+      _$DataChangeEvent_TripAccessGrantedImpl;
+  const DataChangeEvent_TripAccessGranted._() : super._();
+
+  UuidValue get tripId;
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DataChangeEvent_TripAccessGrantedImplCopyWith<
+          _$DataChangeEvent_TripAccessGrantedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DataChangeEvent_TripAccessRevokedImplCopyWith<$Res> {
+  factory _$$DataChangeEvent_TripAccessRevokedImplCopyWith(
+          _$DataChangeEvent_TripAccessRevokedImpl value,
+          $Res Function(_$DataChangeEvent_TripAccessRevokedImpl) then) =
+      __$$DataChangeEvent_TripAccessRevokedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UuidValue tripId});
+}
+
+/// @nodoc
+class __$$DataChangeEvent_TripAccessRevokedImplCopyWithImpl<$Res>
+    extends _$DataChangeEventCopyWithImpl<$Res,
+        _$DataChangeEvent_TripAccessRevokedImpl>
+    implements _$$DataChangeEvent_TripAccessRevokedImplCopyWith<$Res> {
+  __$$DataChangeEvent_TripAccessRevokedImplCopyWithImpl(
+      _$DataChangeEvent_TripAccessRevokedImpl _value,
+      $Res Function(_$DataChangeEvent_TripAccessRevokedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tripId = null,
+  }) {
+    return _then(_$DataChangeEvent_TripAccessRevokedImpl(
+      tripId: null == tripId
+          ? _value.tripId
+          : tripId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DataChangeEvent_TripAccessRevokedImpl
+    extends DataChangeEvent_TripAccessRevoked {
+  const _$DataChangeEvent_TripAccessRevokedImpl({required this.tripId})
+      : super._();
+
+  @override
+  final UuidValue tripId;
+
+  @override
+  String toString() {
+    return 'DataChangeEvent.tripAccessRevoked(tripId: $tripId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataChangeEvent_TripAccessRevokedImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataChangeEvent_TripAccessRevokedImplCopyWith<
+          _$DataChangeEvent_TripAccessRevokedImpl>
+      get copyWith => __$$DataChangeEvent_TripAccessRevokedImplCopyWithImpl<
+          _$DataChangeEvent_TripAccessRevokedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() tripsChanged,
+    required TResult Function(UuidValue tripId) tripChanged,
+    required TResult Function(UuidValue tripId) locationsChanged,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        weatherUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        tidesUpdated,
+    required TResult Function(UuidValue? tripId) packingListChanged,
+    required TResult Function(UuidValue? tripId) accommodationsChanged,
+    required TResult Function(UuidValue? tripId) bookingsChanged,
+    required TResult Function(UuidValue? tripId) transitsChanged,
+    required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
+    required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
+        attachmentsChanged,
+    required TResult Function() tagsChanged,
+    required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
+  }) {
+    return tripAccessRevoked(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? tripsChanged,
+    TResult? Function(UuidValue tripId)? tripChanged,
+    TResult? Function(UuidValue tripId)? locationsChanged,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult? Function(UuidValue? tripId)? packingListChanged,
+    TResult? Function(UuidValue? tripId)? accommodationsChanged,
+    TResult? Function(UuidValue? tripId)? bookingsChanged,
+    TResult? Function(UuidValue? tripId)? transitsChanged,
+    TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
+    TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult? Function()? tagsChanged,
+    TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
+  }) {
+    return tripAccessRevoked?.call(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? tripsChanged,
+    TResult Function(UuidValue tripId)? tripChanged,
+    TResult Function(UuidValue tripId)? locationsChanged,
+    TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult Function(UuidValue? tripId)? packingListChanged,
+    TResult Function(UuidValue? tripId)? accommodationsChanged,
+    TResult Function(UuidValue? tripId)? bookingsChanged,
+    TResult Function(UuidValue? tripId)? transitsChanged,
+    TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
+    TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult Function()? tagsChanged,
+    TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripAccessRevoked != null) {
+      return tripAccessRevoked(tripId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DataChangeEvent_TripsChanged value) tripsChanged,
+    required TResult Function(DataChangeEvent_TripChanged value) tripChanged,
+    required TResult Function(DataChangeEvent_LocationsChanged value)
+        locationsChanged,
+    required TResult Function(DataChangeEvent_WeatherUpdated value)
+        weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
+    required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
+    required TResult Function(DataChangeEvent_PackingListChanged value)
+        packingListChanged,
+    required TResult Function(DataChangeEvent_AccommodationsChanged value)
+        accommodationsChanged,
+    required TResult Function(DataChangeEvent_BookingsChanged value)
+        bookingsChanged,
+    required TResult Function(DataChangeEvent_TransitsChanged value)
+        transitsChanged,
+    required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
+    required TResult Function(DataChangeEvent_AttachmentsChanged value)
+        attachmentsChanged,
+    required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
+    required TResult Function(DataChangeEvent_TripDaysChanged value)
+        tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
+  }) {
+    return tripAccessRevoked(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult? Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult? Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult? Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+  }) {
+    return tripAccessRevoked?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripAccessRevoked != null) {
+      return tripAccessRevoked(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DataChangeEvent_TripAccessRevoked extends DataChangeEvent {
+  const factory DataChangeEvent_TripAccessRevoked(
+          {required final UuidValue tripId}) =
+      _$DataChangeEvent_TripAccessRevokedImpl;
+  const DataChangeEvent_TripAccessRevoked._() : super._();
+
+  UuidValue get tripId;
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DataChangeEvent_TripAccessRevokedImplCopyWith<
+          _$DataChangeEvent_TripAccessRevokedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DataChangeEvent_TripActivityChangedImplCopyWith<$Res> {
+  factory _$$DataChangeEvent_TripActivityChangedImplCopyWith(
+          _$DataChangeEvent_TripActivityChangedImpl value,
+          $Res Function(_$DataChangeEvent_TripActivityChangedImpl) then) =
+      __$$DataChangeEvent_TripActivityChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UuidValue tripId});
+}
+
+/// @nodoc
+class __$$DataChangeEvent_TripActivityChangedImplCopyWithImpl<$Res>
+    extends _$DataChangeEventCopyWithImpl<$Res,
+        _$DataChangeEvent_TripActivityChangedImpl>
+    implements _$$DataChangeEvent_TripActivityChangedImplCopyWith<$Res> {
+  __$$DataChangeEvent_TripActivityChangedImplCopyWithImpl(
+      _$DataChangeEvent_TripActivityChangedImpl _value,
+      $Res Function(_$DataChangeEvent_TripActivityChangedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tripId = null,
+  }) {
+    return _then(_$DataChangeEvent_TripActivityChangedImpl(
+      tripId: null == tripId
+          ? _value.tripId
+          : tripId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DataChangeEvent_TripActivityChangedImpl
+    extends DataChangeEvent_TripActivityChanged {
+  const _$DataChangeEvent_TripActivityChangedImpl({required this.tripId})
+      : super._();
+
+  @override
+  final UuidValue tripId;
+
+  @override
+  String toString() {
+    return 'DataChangeEvent.tripActivityChanged(tripId: $tripId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataChangeEvent_TripActivityChangedImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataChangeEvent_TripActivityChangedImplCopyWith<
+          _$DataChangeEvent_TripActivityChangedImpl>
+      get copyWith => __$$DataChangeEvent_TripActivityChangedImplCopyWithImpl<
+          _$DataChangeEvent_TripActivityChangedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() tripsChanged,
+    required TResult Function(UuidValue tripId) tripChanged,
+    required TResult Function(UuidValue tripId) locationsChanged,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        weatherUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        tidesUpdated,
+    required TResult Function(UuidValue? tripId) packingListChanged,
+    required TResult Function(UuidValue? tripId) accommodationsChanged,
+    required TResult Function(UuidValue? tripId) bookingsChanged,
+    required TResult Function(UuidValue? tripId) transitsChanged,
+    required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
+    required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
+        attachmentsChanged,
+    required TResult Function() tagsChanged,
+    required TResult Function(UuidValue tripId) tripDaysChanged,
+    required TResult Function(UuidValue tripId) tripMembersChanged,
+    required TResult Function(UuidValue tripId) tripAccessGranted,
+    required TResult Function(UuidValue tripId) tripAccessRevoked,
+    required TResult Function(UuidValue tripId) tripActivityChanged,
+  }) {
+    return tripActivityChanged(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? tripsChanged,
+    TResult? Function(UuidValue tripId)? tripChanged,
+    TResult? Function(UuidValue tripId)? locationsChanged,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult? Function(UuidValue? tripId)? packingListChanged,
+    TResult? Function(UuidValue? tripId)? accommodationsChanged,
+    TResult? Function(UuidValue? tripId)? bookingsChanged,
+    TResult? Function(UuidValue? tripId)? transitsChanged,
+    TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
+    TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult? Function()? tagsChanged,
+    TResult? Function(UuidValue tripId)? tripDaysChanged,
+    TResult? Function(UuidValue tripId)? tripMembersChanged,
+    TResult? Function(UuidValue tripId)? tripAccessGranted,
+    TResult? Function(UuidValue tripId)? tripAccessRevoked,
+    TResult? Function(UuidValue tripId)? tripActivityChanged,
+  }) {
+    return tripActivityChanged?.call(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? tripsChanged,
+    TResult Function(UuidValue tripId)? tripChanged,
+    TResult Function(UuidValue tripId)? locationsChanged,
+    TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult Function(UuidValue? tripId)? packingListChanged,
+    TResult Function(UuidValue? tripId)? accommodationsChanged,
+    TResult Function(UuidValue? tripId)? bookingsChanged,
+    TResult Function(UuidValue? tripId)? transitsChanged,
+    TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
+    TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult Function()? tagsChanged,
+    TResult Function(UuidValue tripId)? tripDaysChanged,
+    TResult Function(UuidValue tripId)? tripMembersChanged,
+    TResult Function(UuidValue tripId)? tripAccessGranted,
+    TResult Function(UuidValue tripId)? tripAccessRevoked,
+    TResult Function(UuidValue tripId)? tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripActivityChanged != null) {
+      return tripActivityChanged(tripId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DataChangeEvent_TripsChanged value) tripsChanged,
+    required TResult Function(DataChangeEvent_TripChanged value) tripChanged,
+    required TResult Function(DataChangeEvent_LocationsChanged value)
+        locationsChanged,
+    required TResult Function(DataChangeEvent_WeatherUpdated value)
+        weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
+    required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
+    required TResult Function(DataChangeEvent_PackingListChanged value)
+        packingListChanged,
+    required TResult Function(DataChangeEvent_AccommodationsChanged value)
+        accommodationsChanged,
+    required TResult Function(DataChangeEvent_BookingsChanged value)
+        bookingsChanged,
+    required TResult Function(DataChangeEvent_TransitsChanged value)
+        transitsChanged,
+    required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
+    required TResult Function(DataChangeEvent_AttachmentsChanged value)
+        attachmentsChanged,
+    required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
+    required TResult Function(DataChangeEvent_TripDaysChanged value)
+        tripDaysChanged,
+    required TResult Function(DataChangeEvent_TripMembersChanged value)
+        tripMembersChanged,
+    required TResult Function(DataChangeEvent_TripAccessGranted value)
+        tripAccessGranted,
+    required TResult Function(DataChangeEvent_TripAccessRevoked value)
+        tripAccessRevoked,
+    required TResult Function(DataChangeEvent_TripActivityChanged value)
+        tripActivityChanged,
+  }) {
+    return tripActivityChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult? Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult? Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult? Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult? Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult? Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult? Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult? Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+  }) {
+    return tripActivityChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    TResult Function(DataChangeEvent_TripMembersChanged value)?
+        tripMembersChanged,
+    TResult Function(DataChangeEvent_TripAccessGranted value)?
+        tripAccessGranted,
+    TResult Function(DataChangeEvent_TripAccessRevoked value)?
+        tripAccessRevoked,
+    TResult Function(DataChangeEvent_TripActivityChanged value)?
+        tripActivityChanged,
+    required TResult orElse(),
+  }) {
+    if (tripActivityChanged != null) {
+      return tripActivityChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DataChangeEvent_TripActivityChanged extends DataChangeEvent {
+  const factory DataChangeEvent_TripActivityChanged(
+          {required final UuidValue tripId}) =
+      _$DataChangeEvent_TripActivityChangedImpl;
+  const DataChangeEvent_TripActivityChanged._() : super._();
+
+  UuidValue get tripId;
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DataChangeEvent_TripActivityChangedImplCopyWith<
+          _$DataChangeEvent_TripActivityChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

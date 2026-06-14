@@ -2,9 +2,11 @@ use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
 use crate::commands::{AddReservation, AddCarRental, UpdateReservation, UpdateCarRental};
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::*;
+use crate::sync;
 
 pub struct BookingHandler {
     db: Database,
@@ -21,9 +23,11 @@ impl Handler for BookingHandler {
 impl BookingHandler {
     pub async fn add_reservation(&self, command: AddReservation) -> anyhow::Result<()> {
         tracing::debug!("Adding reservation to trip {}", command.trip_id);
-        
+
+        let current_user = sync::session::current_user().await;
+        let id = Uuid::new_v4();
         let reservation = entities::reservation::ActiveModel {
-            id: Set(Uuid::new_v4()),
+            id: Set(id),
             trip_id: Set(command.trip_id),
             title: Set(command.title),
             address: Set(command.address),
@@ -32,9 +36,13 @@ impl BookingHandler {
             link: Set(command.link),
             booking_number: Set(command.booking_number),
             category: Set(command.category.into()),
+            updated_at: Set(chrono::Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
-        
+
         repositories::bookings::insert_reservation(&self.db, reservation).await?;
+        self.enqueue_reservation(id, MutationOperation::Insert).await?;
 
         Ok(())
     }
@@ -60,6 +68,7 @@ impl BookingHandler {
         let Some(reservation) = repositories::bookings::find_reservation_by_id(&self.db, command.id).await? else {
             anyhow::bail!("Unknown reservation");
         };
+        let current_user = sync::session::current_user().await;
         let mut reservation = reservation.into_active_model();
         reservation.title.set_if_not_equals(command.title);
         reservation.address.set_if_not_equals(command.address);
@@ -68,23 +77,47 @@ impl BookingHandler {
         reservation.link.set_if_not_equals(command.link);
         reservation.booking_number.set_if_not_equals(command.booking_number);
         reservation.category.set_if_not_equals(command.category.into());
+        reservation.updated_at = Set(chrono::Utc::now());
+        reservation.last_modified_by = Set(current_user.map(|u| u.to_string()));
 
         repositories::bookings::update_reservation(&self.db, reservation).await?;
+        self.enqueue_reservation(command.id, MutationOperation::Update).await?;
 
         Ok(())
     }
 
     pub async fn delete_reservation(&self, reservation_id: Uuid) -> anyhow::Result<()> {
+        sync::push::enqueue_if_signed_in(
+            &self.db,
+            "reservations",
+            reservation_id,
+            MutationOperation::Delete,
+            &serde_json::json!({ "id": reservation_id }),
+        )
+        .await?;
         repositories::bookings::delete_reservation_by_id(&self.db, reservation_id).await?;
 
         Ok(())
     }
 
+    async fn enqueue_reservation(&self, id: Uuid, op: MutationOperation) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::bookings::find_reservation_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = sync::wire::ReservationRow::from_model(&model);
+        sync::push::enqueue_if_signed_in(&self.db, "reservations", id, op, &row).await
+    }
+
     pub async fn add_car_rental(&self, command: AddCarRental) -> anyhow::Result<()> {
         tracing::debug!("Adding car rental to trip {}", command.trip_id);
-        
+
+        let current_user = sync::session::current_user().await;
+        let id = Uuid::new_v4();
         let car_rental = entities::car_rental::ActiveModel {
-            id: Set(Uuid::new_v4()),
+            id: Set(id),
             trip_id: Set(command.trip_id),
             provider: Set(command.provider),
             pick_up_date: Set(command.pick_up_date),
@@ -92,9 +125,13 @@ impl BookingHandler {
             return_date: Set(command.return_date),
             return_location: Set(command.return_location),
             booking_number: Set(command.booking_number),
+            updated_at: Set(chrono::Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
-        
+
         repositories::bookings::insert_car_rental(&self.db, car_rental).await?;
+        self.enqueue_car_rental(id, MutationOperation::Insert).await?;
 
         Ok(())
     }
@@ -119,6 +156,7 @@ impl BookingHandler {
         let Some(car_rental) = repositories::bookings::find_car_rental_by_id(&self.db, command.id).await? else {
             anyhow::bail!("Unknown car rental");
         };
+        let current_user = sync::session::current_user().await;
         let mut car_rental = car_rental.into_active_model();
         car_rental.provider.set_if_not_equals(command.provider);
         car_rental.pick_up_date.set_if_not_equals(command.pick_up_date);
@@ -126,16 +164,38 @@ impl BookingHandler {
         car_rental.return_date.set_if_not_equals(command.return_date);
         car_rental.return_location.set_if_not_equals(command.return_location);
         car_rental.booking_number.set_if_not_equals(command.booking_number);
+        car_rental.updated_at = Set(chrono::Utc::now());
+        car_rental.last_modified_by = Set(current_user.map(|u| u.to_string()));
 
         repositories::bookings::update_car_rental(&self.db, car_rental).await?;
+        self.enqueue_car_rental(command.id, MutationOperation::Update).await?;
 
         Ok(())
     }
 
     pub async fn delete_car_rental(&self, car_rental_id: Uuid) -> anyhow::Result<()> {
+        sync::push::enqueue_if_signed_in(
+            &self.db,
+            "car_rentals",
+            car_rental_id,
+            MutationOperation::Delete,
+            &serde_json::json!({ "id": car_rental_id }),
+        )
+        .await?;
         repositories::bookings::delete_car_rental_by_id(&self.db, car_rental_id).await?;
 
         Ok(())
+    }
+
+    async fn enqueue_car_rental(&self, id: Uuid, op: MutationOperation) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::bookings::find_car_rental_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = sync::wire::CarRentalRow::from_model(&model);
+        sync::push::enqueue_if_signed_in(&self.db, "car_rentals", id, op, &row).await
     }
 
     pub async fn get_trip_bookings(&self, trip_id: Uuid) -> anyhow::Result<Vec<Booking>> {

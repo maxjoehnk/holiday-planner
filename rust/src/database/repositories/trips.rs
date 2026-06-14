@@ -35,8 +35,18 @@ pub async fn find_by_id(db: &Database, id: Uuid) -> anyhow::Result<Option<trip::
 }
 
 pub async fn create(db: &Database, mut model: trip::ActiveModel) -> anyhow::Result<trip::Model> {
-    let id = Uuid::new_v4();
-    model.id = Set(id);
+    use sea_orm::ActiveValue;
+    // Honour a caller-supplied id (handlers that need to know the trip
+    // id ahead of time — e.g. to mint a Storage path before insert —
+    // set it). Otherwise mint a fresh one.
+    let id = match &model.id {
+        ActiveValue::Set(v) => *v,
+        _ => {
+            let new_id = Uuid::new_v4();
+            model.id = Set(new_id);
+            new_id
+        }
+    };
     Trip::insert(model)
         .exec_without_returning(db.deref())
         .await?;

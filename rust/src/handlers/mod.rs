@@ -12,6 +12,8 @@ pub use point_of_interest_handler::*;
 pub use route_handler::*;
 pub use tag_handler::*;
 pub use trip_day_handler::*;
+pub use sharing_handler::*;
+pub use activity_handler::*;
 
 pub mod accommodation_handler;
 pub mod attachment_handler;
@@ -25,6 +27,8 @@ pub mod location_handler;
 pub mod point_of_interest_handler;
 pub mod route_handler;
 pub mod tag_handler;
+pub mod sharing_handler;
+pub mod activity_handler;
 
 pub(crate) trait HandlerCreator: Send {
     type Guard<'a, T: Handler>: Deref<Target = T> + Send where Self: 'a;
