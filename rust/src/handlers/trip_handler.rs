@@ -107,7 +107,9 @@ impl TripHandler {
         let total_packing_list_items = repositories::trip_packing_list_entries::count_by_trip(&self.db, id).await?;
         let pending_packing_list_items = repositories::trip_packing_list_entries::count_pending_by_trip(&self.db, id).await?;
 
-        let points_of_interest_count = repositories::points_of_interest::count_by_trip(self.db.deref(), id).await? as usize;
+        let points_of_interest_count = repositories::points_of_interest::count_by_trip(self.db.deref(), id).await?;
+        let routes_count = repositories::routes::count_by_trip(self.db.deref(), id).await?;
+        let activities_count = (points_of_interest_count + routes_count) as usize;
         let bookings_count = repositories::bookings::count_all_bookings_by_trip(self.db.deref(), id).await? as usize;
 
         let accommodations = repositories::accommodations::find_all_by_trip(&self.db, id).await?;
@@ -166,7 +168,7 @@ impl TripHandler {
             next_transit,
             pending_packing_list_items,
             total_packing_list_items,
-            points_of_interest_count,
+            activities_count,
             bookings_count,
             accommodation_status,
             locations_list,

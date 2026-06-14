@@ -48,7 +48,7 @@ class PointsOfInterestsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final count = trip.pointsOfInterestCount.toInt();
+    final count = trip.activitiesCount.toInt();
     final subtitle = "$count saved";
 
     return SummaryCard(

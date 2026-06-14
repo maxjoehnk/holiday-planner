@@ -1,10 +1,19 @@
 use std::ops::Deref;
 
-use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder};
+use sea_orm::{ColumnTrait, ConnectionTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder};
 use uuid::Uuid;
 
 use crate::database::entities::route::{self, Entity as Route, RouteProvider};
-use crate::database::Database;
+use crate::database::{Database, DbResult};
+
+pub async fn count_by_trip(db: &impl ConnectionTrait, trip_id: Uuid) -> DbResult<u64> {
+    let count = Route::find()
+        .filter(route::Column::TripId.eq(trip_id))
+        .count(db)
+        .await?;
+
+    Ok(count)
+}
 
 pub async fn find_all_by_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<Vec<route::Model>> {
     let routes = Route::find()

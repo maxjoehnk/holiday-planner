@@ -4419,7 +4419,7 @@ impl SseDecode for crate::models::TripOverviewModel {
         let mut var_headerImage = <Option<Vec<u8>>>::sse_decode(deserializer);
         let mut var_pendingPackingListItems = <usize>::sse_decode(deserializer);
         let mut var_totalPackingListItems = <usize>::sse_decode(deserializer);
-        let mut var_pointsOfInterestCount = <usize>::sse_decode(deserializer);
+        let mut var_activitiesCount = <usize>::sse_decode(deserializer);
         let mut var_bookingsCount = <usize>::sse_decode(deserializer);
         let mut var_nextTransit =
             <Option<crate::models::TransitOverviewModel>>::sse_decode(deserializer);
@@ -4438,7 +4438,7 @@ impl SseDecode for crate::models::TripOverviewModel {
             header_image: var_headerImage,
             pending_packing_list_items: var_pendingPackingListItems,
             total_packing_list_items: var_totalPackingListItems,
-            points_of_interest_count: var_pointsOfInterestCount,
+            activities_count: var_activitiesCount,
             bookings_count: var_bookingsCount,
             next_transit: var_nextTransit,
             accommodation_status: var_accommodationStatus,
@@ -6499,7 +6499,7 @@ impl flutter_rust_bridge::IntoDart for crate::models::TripOverviewModel {
             self.header_image.into_into_dart().into_dart(),
             self.pending_packing_list_items.into_into_dart().into_dart(),
             self.total_packing_list_items.into_into_dart().into_dart(),
-            self.points_of_interest_count.into_into_dart().into_dart(),
+            self.activities_count.into_into_dart().into_dart(),
             self.bookings_count.into_into_dart().into_dart(),
             self.next_transit.into_into_dart().into_dart(),
             self.accommodation_status.into_into_dart().into_dart(),
@@ -8218,7 +8218,7 @@ impl SseEncode for crate::models::TripOverviewModel {
         <Option<Vec<u8>>>::sse_encode(self.header_image, serializer);
         <usize>::sse_encode(self.pending_packing_list_items, serializer);
         <usize>::sse_encode(self.total_packing_list_items, serializer);
-        <usize>::sse_encode(self.points_of_interest_count, serializer);
+        <usize>::sse_encode(self.activities_count, serializer);
         <usize>::sse_encode(self.bookings_count, serializer);
         <Option<crate::models::TransitOverviewModel>>::sse_encode(self.next_transit, serializer);
         <Option<crate::models::AccommodationStatus>>::sse_encode(

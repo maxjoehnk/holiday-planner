@@ -3670,7 +3670,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       headerImage: dco_decode_opt_list_prim_u_8_strict(arr[5]),
       pendingPackingListItems: dco_decode_usize(arr[6]),
       totalPackingListItems: dco_decode_usize(arr[7]),
-      pointsOfInterestCount: dco_decode_usize(arr[8]),
+      activitiesCount: dco_decode_usize(arr[8]),
       bookingsCount: dco_decode_usize(arr[9]),
       nextTransit: dco_decode_opt_box_autoadd_transit_overview_model(arr[10]),
       accommodationStatus:
@@ -5737,7 +5737,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_headerImage = sse_decode_opt_list_prim_u_8_strict(deserializer);
     var var_pendingPackingListItems = sse_decode_usize(deserializer);
     var var_totalPackingListItems = sse_decode_usize(deserializer);
-    var var_pointsOfInterestCount = sse_decode_usize(deserializer);
+    var var_activitiesCount = sse_decode_usize(deserializer);
     var var_bookingsCount = sse_decode_usize(deserializer);
     var var_nextTransit =
         sse_decode_opt_box_autoadd_transit_overview_model(deserializer);
@@ -5755,7 +5755,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         headerImage: var_headerImage,
         pendingPackingListItems: var_pendingPackingListItems,
         totalPackingListItems: var_totalPackingListItems,
-        pointsOfInterestCount: var_pointsOfInterestCount,
+        activitiesCount: var_activitiesCount,
         bookingsCount: var_bookingsCount,
         nextTransit: var_nextTransit,
         accommodationStatus: var_accommodationStatus,
@@ -7527,7 +7527,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_list_prim_u_8_strict(self.headerImage, serializer);
     sse_encode_usize(self.pendingPackingListItems, serializer);
     sse_encode_usize(self.totalPackingListItems, serializer);
-    sse_encode_usize(self.pointsOfInterestCount, serializer);
+    sse_encode_usize(self.activitiesCount, serializer);
     sse_encode_usize(self.bookingsCount, serializer);
     sse_encode_opt_box_autoadd_transit_overview_model(
         self.nextTransit, serializer);
