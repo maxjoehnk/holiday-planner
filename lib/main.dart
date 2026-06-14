@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/map_tile_cache.dart';
 import 'package:holiday_planner/src/rust/frb_generated.dart';
 import 'package:holiday_planner/src/rust/api.dart';
 import 'package:holiday_planner/views/home.dart';
@@ -24,6 +25,7 @@ Future<void> main() async {
     openDatabase(),
     findSystemLocale(),
     settings.loadThemeMode(),
+    initMapTileCache(),
   ]);
 
   DataChangeBus.instance.start();

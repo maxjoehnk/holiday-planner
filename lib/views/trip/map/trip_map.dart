@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
+import 'package:holiday_planner/services/map_tile_cache.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/views/trip/map/location_details.dart';
 import 'package:holiday_planner/views/trip/map/location_marker.dart';
@@ -337,6 +339,9 @@ class _TripMapState extends State<TripMap> {
                     TileLayer(
                       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'me.maxjoehnk.holiday_planner',
+                      tileProvider: FMTCTileProvider(
+                        stores: {mapTileStore.storeName: BrowseStoreStrategy.readUpdateCreate},
+                      ),
                     ),
                     if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
                     MarkerLayer(markers: markers),

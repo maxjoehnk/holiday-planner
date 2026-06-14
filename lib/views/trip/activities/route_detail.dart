@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
+import 'package:holiday_planner/services/map_tile_cache.dart';
 import 'package:holiday_planner/src/rust/api/routes.dart';
 import 'package:holiday_planner/src/rust/commands/update_route.dart';
 import 'package:holiday_planner/src/rust/models/routes.dart';
@@ -62,6 +64,9 @@ class _RouteDetailState extends State<RouteDetail> {
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'me.maxjoehnk.holiday_planner',
+                  tileProvider: FMTCTileProvider(
+                    stores: {mapTileStore.storeName: BrowseStoreStrategy.readUpdateCreate},
+                  ),
                 ),
                 if (points.length >= 2)
                   PolylineLayer(
