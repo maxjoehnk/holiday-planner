@@ -13,8 +13,9 @@ class LocationMapDetails extends StatelessWidget {
     var colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-    decoration: const BoxDecoration(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    decoration: BoxDecoration(
+      color: colorScheme.surface,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
     ),
     child: SingleChildScrollView(
       controller: scrollController,

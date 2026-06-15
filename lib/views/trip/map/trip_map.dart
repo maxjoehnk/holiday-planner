@@ -115,6 +115,7 @@ class _TripMapState extends State<TripMap> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.4,
         minChildSize: 0.2,
@@ -129,6 +130,7 @@ class _TripMapState extends State<TripMap> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.4,
         minChildSize: 0.2,
@@ -142,6 +144,7 @@ class _TripMapState extends State<TripMap> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.4,
         minChildSize: 0.2,
