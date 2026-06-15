@@ -299,6 +299,43 @@ class AppLocalizationsDe extends AppLocalizations {
       'Einbeziehen, wenn die Reise ein bestimmtes Schlagwort hat';
 
   @override
+  String get conditionPollenTitle => 'Pollen';
+
+  @override
+  String get conditionPollenSubtitle =>
+      'Einbeziehen, wenn der Pollenflug einen Schwellenwert überschreitet';
+
+  @override
+  String get pollenSelectorTitle => 'Pollenvorhersage';
+
+  @override
+  String get pollenSelectorDescription =>
+      'Dieses Element wird gepackt, wenn die Pollenvorhersage im Reisezeitraum den gewählten Wert erreicht.';
+
+  @override
+  String get pollenTypeLabel => 'Pollenart';
+
+  @override
+  String get pollenTypeGrass => 'Gräser';
+
+  @override
+  String get pollenTypeTree => 'Bäume';
+
+  @override
+  String get pollenTypeWeed => 'Kräuter';
+
+  @override
+  String pollenIndexLabel(int value) {
+    return 'Mindest-Pollenindex: $value';
+  }
+
+  @override
+  String get pollenDailyTitle => 'Pollen pro Tag';
+
+  @override
+  String get pollenNoData => 'Keine Pollendaten verfügbar';
+
+  @override
   String get temperatureSelectorMinTitle => 'Min. Temperatur';
 
   @override

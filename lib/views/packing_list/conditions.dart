@@ -4,6 +4,7 @@ import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/api/tags.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'pollen_selector.dart' show iconForPollenType, labelForPollenType;
 
 Map<WeatherCondition, IconData> _weatherIcons = {
   WeatherCondition.sunny: Icons.wb_sunny,
@@ -63,6 +64,13 @@ class ConditionTag extends StatelessWidget {
           onEdit: onEdit,
           onRemove: onRemove,
       ),
+      pollen: (pollen) => ConditionChip(
+          tooltip: AppLocalizations.of(context)!.conditionPollenTitle,
+          label: "${labelForPollenType(pollen.pollenType, context)} ≥ ${pollen.minIndex}",
+          iconData: iconForPollenType(pollen.pollenType),
+          color: CONDITION_POLLEN_COLOR,
+          onEdit: onEdit,
+          onRemove: onRemove),
     );
   }
 }

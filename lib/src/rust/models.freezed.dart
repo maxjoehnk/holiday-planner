@@ -25,6 +25,7 @@ mixin _$PackingListEntryCondition {
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -36,6 +37,7 @@ mixin _$PackingListEntryCondition {
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -47,6 +49,7 @@ mixin _$PackingListEntryCondition {
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -62,6 +65,7 @@ mixin _$PackingListEntryCondition {
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -76,6 +80,7 @@ mixin _$PackingListEntryCondition {
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -90,6 +95,7 @@ mixin _$PackingListEntryCondition {
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -201,6 +207,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) {
     return minTripDuration(length);
   }
@@ -215,6 +222,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) {
     return minTripDuration?.call(length);
   }
@@ -229,6 +237,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) {
     if (minTripDuration != null) {
@@ -250,6 +259,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) {
     return minTripDuration(this);
   }
@@ -267,6 +277,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) {
     return minTripDuration?.call(this);
   }
@@ -284,6 +295,7 @@ class _$PackingListEntryCondition_MinTripDurationImpl
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) {
     if (minTripDuration != null) {
@@ -394,6 +406,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) {
     return maxTripDuration(length);
   }
@@ -408,6 +421,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) {
     return maxTripDuration?.call(length);
   }
@@ -422,6 +436,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) {
     if (maxTripDuration != null) {
@@ -443,6 +458,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) {
     return maxTripDuration(this);
   }
@@ -460,6 +476,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) {
     return maxTripDuration?.call(this);
   }
@@ -477,6 +494,7 @@ class _$PackingListEntryCondition_MaxTripDurationImpl
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) {
     if (maxTripDuration != null) {
@@ -588,6 +606,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) {
     return minTemperature(temperature);
   }
@@ -602,6 +621,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) {
     return minTemperature?.call(temperature);
   }
@@ -616,6 +636,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) {
     if (minTemperature != null) {
@@ -637,6 +658,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) {
     return minTemperature(this);
   }
@@ -654,6 +676,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) {
     return minTemperature?.call(this);
   }
@@ -671,6 +694,7 @@ class _$PackingListEntryCondition_MinTemperatureImpl
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) {
     if (minTemperature != null) {
@@ -782,6 +806,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) {
     return maxTemperature(temperature);
   }
@@ -796,6 +821,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) {
     return maxTemperature?.call(temperature);
   }
@@ -810,6 +836,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) {
     if (maxTemperature != null) {
@@ -831,6 +858,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) {
     return maxTemperature(this);
   }
@@ -848,6 +876,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) {
     return maxTemperature?.call(this);
   }
@@ -865,6 +894,7 @@ class _$PackingListEntryCondition_MaxTemperatureImpl
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) {
     if (maxTemperature != null) {
@@ -984,6 +1014,7 @@ class _$PackingListEntryCondition_WeatherImpl
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) {
     return weather(condition, minProbability);
   }
@@ -998,6 +1029,7 @@ class _$PackingListEntryCondition_WeatherImpl
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) {
     return weather?.call(condition, minProbability);
   }
@@ -1012,6 +1044,7 @@ class _$PackingListEntryCondition_WeatherImpl
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) {
     if (weather != null) {
@@ -1033,6 +1066,7 @@ class _$PackingListEntryCondition_WeatherImpl
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) {
     return weather(this);
   }
@@ -1050,6 +1084,7 @@ class _$PackingListEntryCondition_WeatherImpl
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) {
     return weather?.call(this);
   }
@@ -1067,6 +1102,7 @@ class _$PackingListEntryCondition_WeatherImpl
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) {
     if (weather != null) {
@@ -1176,6 +1212,7 @@ class _$PackingListEntryCondition_TagImpl
     required TResult Function(WeatherCondition condition, double minProbability)
         weather,
     required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
   }) {
     return tag(tagId);
   }
@@ -1190,6 +1227,7 @@ class _$PackingListEntryCondition_TagImpl
     TResult? Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
   }) {
     return tag?.call(tagId);
   }
@@ -1204,6 +1242,7 @@ class _$PackingListEntryCondition_TagImpl
     TResult Function(WeatherCondition condition, double minProbability)?
         weather,
     TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
     required TResult orElse(),
   }) {
     if (tag != null) {
@@ -1225,6 +1264,7 @@ class _$PackingListEntryCondition_TagImpl
         maxTemperature,
     required TResult Function(PackingListEntryCondition_Weather value) weather,
     required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
   }) {
     return tag(this);
   }
@@ -1242,6 +1282,7 @@ class _$PackingListEntryCondition_TagImpl
         maxTemperature,
     TResult? Function(PackingListEntryCondition_Weather value)? weather,
     TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
   }) {
     return tag?.call(this);
   }
@@ -1259,6 +1300,7 @@ class _$PackingListEntryCondition_TagImpl
         maxTemperature,
     TResult Function(PackingListEntryCondition_Weather value)? weather,
     TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
     required TResult orElse(),
   }) {
     if (tag != null) {
@@ -1280,6 +1322,215 @@ abstract class PackingListEntryCondition_Tag extends PackingListEntryCondition {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PackingListEntryCondition_TagImplCopyWith<
           _$PackingListEntryCondition_TagImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$PackingListEntryCondition_PollenImplCopyWith<$Res> {
+  factory _$$PackingListEntryCondition_PollenImplCopyWith(
+          _$PackingListEntryCondition_PollenImpl value,
+          $Res Function(_$PackingListEntryCondition_PollenImpl) then) =
+      __$$PackingListEntryCondition_PollenImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({PollenType pollenType, int minIndex});
+}
+
+/// @nodoc
+class __$$PackingListEntryCondition_PollenImplCopyWithImpl<$Res>
+    extends _$PackingListEntryConditionCopyWithImpl<$Res,
+        _$PackingListEntryCondition_PollenImpl>
+    implements _$$PackingListEntryCondition_PollenImplCopyWith<$Res> {
+  __$$PackingListEntryCondition_PollenImplCopyWithImpl(
+      _$PackingListEntryCondition_PollenImpl _value,
+      $Res Function(_$PackingListEntryCondition_PollenImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PackingListEntryCondition
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? pollenType = null,
+    Object? minIndex = null,
+  }) {
+    return _then(_$PackingListEntryCondition_PollenImpl(
+      pollenType: null == pollenType
+          ? _value.pollenType
+          : pollenType // ignore: cast_nullable_to_non_nullable
+              as PollenType,
+      minIndex: null == minIndex
+          ? _value.minIndex
+          : minIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$PackingListEntryCondition_PollenImpl
+    extends PackingListEntryCondition_Pollen {
+  const _$PackingListEntryCondition_PollenImpl(
+      {required this.pollenType, required this.minIndex})
+      : super._();
+
+  @override
+  final PollenType pollenType;
+  @override
+  final int minIndex;
+
+  @override
+  String toString() {
+    return 'PackingListEntryCondition.pollen(pollenType: $pollenType, minIndex: $minIndex)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PackingListEntryCondition_PollenImpl &&
+            (identical(other.pollenType, pollenType) ||
+                other.pollenType == pollenType) &&
+            (identical(other.minIndex, minIndex) ||
+                other.minIndex == minIndex));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, pollenType, minIndex);
+
+  /// Create a copy of PackingListEntryCondition
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PackingListEntryCondition_PollenImplCopyWith<
+          _$PackingListEntryCondition_PollenImpl>
+      get copyWith => __$$PackingListEntryCondition_PollenImplCopyWithImpl<
+          _$PackingListEntryCondition_PollenImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int length) minTripDuration,
+    required TResult Function(int length) maxTripDuration,
+    required TResult Function(double temperature) minTemperature,
+    required TResult Function(double temperature) maxTemperature,
+    required TResult Function(WeatherCondition condition, double minProbability)
+        weather,
+    required TResult Function(UuidValue tagId) tag,
+    required TResult Function(PollenType pollenType, int minIndex) pollen,
+  }) {
+    return pollen(pollenType, minIndex);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int length)? minTripDuration,
+    TResult? Function(int length)? maxTripDuration,
+    TResult? Function(double temperature)? minTemperature,
+    TResult? Function(double temperature)? maxTemperature,
+    TResult? Function(WeatherCondition condition, double minProbability)?
+        weather,
+    TResult? Function(UuidValue tagId)? tag,
+    TResult? Function(PollenType pollenType, int minIndex)? pollen,
+  }) {
+    return pollen?.call(pollenType, minIndex);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int length)? minTripDuration,
+    TResult Function(int length)? maxTripDuration,
+    TResult Function(double temperature)? minTemperature,
+    TResult Function(double temperature)? maxTemperature,
+    TResult Function(WeatherCondition condition, double minProbability)?
+        weather,
+    TResult Function(UuidValue tagId)? tag,
+    TResult Function(PollenType pollenType, int minIndex)? pollen,
+    required TResult orElse(),
+  }) {
+    if (pollen != null) {
+      return pollen(pollenType, minIndex);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(PackingListEntryCondition_MinTripDuration value)
+        minTripDuration,
+    required TResult Function(PackingListEntryCondition_MaxTripDuration value)
+        maxTripDuration,
+    required TResult Function(PackingListEntryCondition_MinTemperature value)
+        minTemperature,
+    required TResult Function(PackingListEntryCondition_MaxTemperature value)
+        maxTemperature,
+    required TResult Function(PackingListEntryCondition_Weather value) weather,
+    required TResult Function(PackingListEntryCondition_Tag value) tag,
+    required TResult Function(PackingListEntryCondition_Pollen value) pollen,
+  }) {
+    return pollen(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(PackingListEntryCondition_MinTripDuration value)?
+        minTripDuration,
+    TResult? Function(PackingListEntryCondition_MaxTripDuration value)?
+        maxTripDuration,
+    TResult? Function(PackingListEntryCondition_MinTemperature value)?
+        minTemperature,
+    TResult? Function(PackingListEntryCondition_MaxTemperature value)?
+        maxTemperature,
+    TResult? Function(PackingListEntryCondition_Weather value)? weather,
+    TResult? Function(PackingListEntryCondition_Tag value)? tag,
+    TResult? Function(PackingListEntryCondition_Pollen value)? pollen,
+  }) {
+    return pollen?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(PackingListEntryCondition_MinTripDuration value)?
+        minTripDuration,
+    TResult Function(PackingListEntryCondition_MaxTripDuration value)?
+        maxTripDuration,
+    TResult Function(PackingListEntryCondition_MinTemperature value)?
+        minTemperature,
+    TResult Function(PackingListEntryCondition_MaxTemperature value)?
+        maxTemperature,
+    TResult Function(PackingListEntryCondition_Weather value)? weather,
+    TResult Function(PackingListEntryCondition_Tag value)? tag,
+    TResult Function(PackingListEntryCondition_Pollen value)? pollen,
+    required TResult orElse(),
+  }) {
+    if (pollen != null) {
+      return pollen(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PackingListEntryCondition_Pollen
+    extends PackingListEntryCondition {
+  const factory PackingListEntryCondition_Pollen(
+      {required final PollenType pollenType,
+      required final int minIndex}) = _$PackingListEntryCondition_PollenImpl;
+  const PackingListEntryCondition_Pollen._() : super._();
+
+  PollenType get pollenType;
+  int get minIndex;
+
+  /// Create a copy of PackingListEntryCondition
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PackingListEntryCondition_PollenImplCopyWith<
+          _$PackingListEntryCondition_PollenImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 

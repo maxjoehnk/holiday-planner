@@ -13,3 +13,4 @@ const CONDITION_DURATION_COLOR = Colors.lightBlue;
 const CONDITION_TEMPERATURE_COLOR = Colors.deepOrange;
 const CONDITION_WEATHER_COLOR = Colors.yellow;
 const CONDITION_TAG_COLOR = Colors.lime;
+const CONDITION_POLLEN_COLOR = Colors.pink;

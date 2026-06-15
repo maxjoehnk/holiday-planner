@@ -7,6 +7,7 @@ import 'trip_duration_selector.dart';
 import 'temperature_selector.dart';
 import 'weather_selector.dart';
 import 'tag_selector.dart';
+import 'pollen_selector.dart';
 
 class ConditionSelector extends StatelessWidget {
   final Function(PackingListEntryCondition) onSelect;
@@ -125,6 +126,18 @@ class ConditionSelector extends StatelessWidget {
                   context,
                   PackingListEntryCondition.tag(tagId: UuidValue.fromString("00000000-0000-0000-0000-000000000000"))),
             ),
+            const SizedBox(height: 12),
+            _ConditionOption(
+              icon: Icons.local_florist,
+              title: AppLocalizations.of(context)!.conditionPollenTitle,
+              subtitle: AppLocalizations.of(context)!.conditionPollenSubtitle,
+              color: colorScheme.tertiaryContainer,
+              onColor: colorScheme.onTertiaryContainer,
+              onTap: () => _onSelect(
+                  context,
+                  const PackingListEntryCondition.pollen(
+                      pollenType: PollenType.grass, minIndex: 3)),
+            ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -149,6 +162,7 @@ class ConditionSelector extends StatelessWidget {
       maxTemperature: (_) => TemperatureSelector(onSelect: onSelect, threshold: Temperature.max),
       weather: (weather) => WeatherSelector(onSelect: onSelect, condition: weather.condition, minProbability: weather.minProbability),
       tag: (_) => TagSelector(onSelect: onSelect),
+      pollen: (pollen) => PollenSelector(onSelect: onSelect, pollenType: pollen.pollenType, minIndex: pollen.minIndex),
     );
     Navigator.pop(context);
     showDialog(context: context, builder: (context) => nextDialog);

@@ -296,6 +296,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get conditionTripTagSubtitle => 'Include when trip has a specific tag';
 
   @override
+  String get conditionPollenTitle => 'Pollen';
+
+  @override
+  String get conditionPollenSubtitle =>
+      'Include when pollen forecast exceeds a threshold';
+
+  @override
+  String get pollenSelectorTitle => 'Pollen Forecast';
+
+  @override
+  String get pollenSelectorDescription =>
+      'Pack this item when the forecast for the trip period reaches the chosen pollen index.';
+
+  @override
+  String get pollenTypeLabel => 'Pollen type';
+
+  @override
+  String get pollenTypeGrass => 'Grass';
+
+  @override
+  String get pollenTypeTree => 'Tree';
+
+  @override
+  String get pollenTypeWeed => 'Weed';
+
+  @override
+  String pollenIndexLabel(int value) {
+    return 'Minimum pollen index: $value';
+  }
+
+  @override
+  String get pollenDailyTitle => 'Daily Pollen';
+
+  @override
+  String get pollenNoData => 'No pollen data available';
+
+  @override
   String get temperatureSelectorMinTitle => 'Min Temperature';
 
   @override

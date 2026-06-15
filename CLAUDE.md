@@ -63,6 +63,7 @@ These secrets are read at build time and embedded into the Rust binary — set t
 - `OPENWEATHERMAP_API_KEY`
 - `AVIATIONSTACK_API_KEY`
 - `WORLD_TIDES_API_KEY`
+- `GOOGLE_POLLEN_API_KEY`
 
 ## Conventions
 

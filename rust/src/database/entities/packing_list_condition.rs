@@ -1,7 +1,7 @@
 use sea_orm::ActiveValue::Set;
 use sea_orm::entity::prelude::*;
 use uuid::Uuid;
-use crate::database::enums::WeatherCondition;
+use crate::database::enums::{PollenType, WeatherCondition};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "packing_list_conditions")]
@@ -16,7 +16,8 @@ pub struct Model {
     pub weather_min_probability: Option<f64>,
     pub weather_condition: Option<WeatherCondition>,
     pub tag: Option<Uuid>,
-
+    pub pollen_type: Option<PollenType>,
+    pub min_pollen_index: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

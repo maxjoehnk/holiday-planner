@@ -233,6 +233,18 @@
   "conditionTripTagTitle": "Reise-Schlagwort",
   "conditionTripTagSubtitle": "Einbeziehen, wenn die Reise ein bestimmtes Schlagwort hat",
 
+  "conditionPollenTitle": "Pollen",
+  "conditionPollenSubtitle": "Einbeziehen, wenn der Pollenflug einen Schwellenwert überschreitet",
+  "pollenSelectorTitle": "Pollenvorhersage",
+  "pollenSelectorDescription": "Dieses Element wird gepackt, wenn die Pollenvorhersage im Reisezeitraum den gewählten Wert erreicht.",
+  "pollenTypeLabel": "Pollenart",
+  "pollenTypeGrass": "Gräser",
+  "pollenTypeTree": "Bäume",
+  "pollenTypeWeed": "Kräuter",
+  "pollenIndexLabel": "Mindest-Pollenindex: {value}",
+  "pollenDailyTitle": "Pollen pro Tag",
+  "pollenNoData": "Keine Pollendaten verfügbar",
+
   "temperatureSelectorMinTitle": "Min. Temperatur",
   "temperatureSelectorMaxTitle": "Max. Temperatur",
   "temperatureSelectorMinDescription": "Lege die minimale Temperatur fest, damit dieses Element in deine Packliste aufgenommen wird.",

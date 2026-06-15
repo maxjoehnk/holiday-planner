@@ -86,3 +86,45 @@ pub async fn update_weather_information_timestamp(
 
     Ok(())
 }
+
+pub async fn find_for_upcoming_trips_needing_pollen_update(
+    db: &Database,
+    hours_threshold: i64,
+    horizon_days: i64,
+) -> anyhow::Result<Vec<accommodation::Model>> {
+    let threshold_time = Utc::now() - chrono::Duration::hours(hours_threshold);
+    let now = Utc::now();
+    let horizon = now + chrono::Duration::days(horizon_days);
+
+    let accommodations = Accommodation::find()
+        .join(JoinType::InnerJoin, accommodation::Relation::Trip.def())
+        .filter(trip::Column::EndDate.gt(now))
+        .filter(trip::Column::StartDate.lt(horizon))
+        .filter(accommodation::Column::CoordinatesLatitude.is_not_null())
+        .filter(accommodation::Column::CoordinatesLongitude.is_not_null())
+        .filter(
+            accommodation::Column::PollenInformationLastUpdated
+                .is_null()
+                .or(accommodation::Column::PollenInformationLastUpdated
+                    .lt(threshold_time.naive_utc())),
+        )
+        .all(db.deref())
+        .await?;
+
+    Ok(accommodations)
+}
+
+pub async fn update_pollen_information_timestamp(
+    db: &impl ConnectionTrait,
+    id: Uuid,
+) -> DbResult<()> {
+    let accommodation = Accommodation::find_by_id(id).one(db).await?;
+
+    if let Some(accommodation) = accommodation {
+        let mut active_model: accommodation::ActiveModel = accommodation.into();
+        active_model.pollen_information_last_updated = Set(Some(Utc::now()));
+        active_model.update(db).await?;
+    }
+
+    Ok(())
+}

@@ -30,6 +30,10 @@ sealed class DataChangeEvent with _$DataChangeEvent {
     required UuidValue tripId,
     required UuidValue locationId,
   }) = DataChangeEvent_WeatherUpdated;
+  const factory DataChangeEvent.pollenUpdated({
+    required UuidValue tripId,
+    required UuidValue locationId,
+  }) = DataChangeEvent_PollenUpdated;
   const factory DataChangeEvent.tidesUpdated({
     required UuidValue tripId,
     required UuidValue locationId,

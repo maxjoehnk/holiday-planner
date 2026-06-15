@@ -133,6 +133,37 @@ class Coordinate {
           longitude == other.longitude;
 }
 
+class DailyPollenForecast {
+  final DateTime day;
+  final PollenType pollenType;
+  final int indexValue;
+  final String? category;
+
+  const DailyPollenForecast({
+    required this.day,
+    required this.pollenType,
+    required this.indexValue,
+    this.category,
+  });
+
+  @override
+  int get hashCode =>
+      day.hashCode ^
+      pollenType.hashCode ^
+      indexValue.hashCode ^
+      category.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DailyPollenForecast &&
+          runtimeType == other.runtimeType &&
+          day == other.day &&
+          pollenType == other.pollenType &&
+          indexValue == other.indexValue &&
+          category == other.category;
+}
+
 class DailyWeatherForecast {
   final DateTime day;
   final double minTemperature;
@@ -356,6 +387,10 @@ sealed class PackingListEntryCondition with _$PackingListEntryCondition {
   const factory PackingListEntryCondition.tag({
     required UuidValue tagId,
   }) = PackingListEntryCondition_Tag;
+  const factory PackingListEntryCondition.pollen({
+    required PollenType pollenType,
+    required int minIndex,
+  }) = PackingListEntryCondition_Pollen;
 }
 
 class PointOfInterestModel {
@@ -411,6 +446,31 @@ class PointOfInterestModel {
           price == other.price &&
           phoneNumber == other.phoneNumber &&
           note == other.note;
+}
+
+class PollenForecast {
+  final List<DailyPollenForecast> daily;
+
+  const PollenForecast({
+    required this.daily,
+  });
+
+  @override
+  int get hashCode => daily.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PollenForecast &&
+          runtimeType == other.runtimeType &&
+          daily == other.daily;
+}
+
+enum PollenType {
+  grass,
+  tree,
+  weed,
+  ;
 }
 
 class Quantity {
@@ -579,6 +639,7 @@ class TripLocationListModel {
   final String city;
   final String country;
   final WeatherForecast? forecast;
+  final PollenForecast? pollenForecast;
   final bool isCoastal;
   final DateTime? tidalInformationLastUpdated;
   final List<TidalInformation> tidalInformation;
@@ -589,6 +650,7 @@ class TripLocationListModel {
     required this.city,
     required this.country,
     this.forecast,
+    this.pollenForecast,
     required this.isCoastal,
     this.tidalInformationLastUpdated,
     required this.tidalInformation,
@@ -601,6 +663,7 @@ class TripLocationListModel {
       city.hashCode ^
       country.hashCode ^
       forecast.hashCode ^
+      pollenForecast.hashCode ^
       isCoastal.hashCode ^
       tidalInformationLastUpdated.hashCode ^
       tidalInformation.hashCode;
@@ -615,6 +678,7 @@ class TripLocationListModel {
           city == other.city &&
           country == other.country &&
           forecast == other.forecast &&
+          pollenForecast == other.pollenForecast &&
           isCoastal == other.isCoastal &&
           tidalInformationLastUpdated == other.tidalInformationLastUpdated &&
           tidalInformation == other.tidalInformation;

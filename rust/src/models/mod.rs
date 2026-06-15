@@ -104,6 +104,7 @@ pub struct TripLocationListModel {
     pub city: String,
     pub country: String,
     pub forecast: Option<WeatherForecast>,
+    pub pollen_forecast: Option<PollenForecast>,
     pub is_coastal: bool,
     pub tidal_information_last_updated: Option<DateTime<Utc>>,
     pub tidal_information: Vec<TidalInformation>,
@@ -294,6 +295,10 @@ pub enum PackingListEntryCondition {
     Tag {
         tag_id: Uuid,
     },
+    Pollen {
+        pollen_type: PollenType,
+        min_index: i32,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -303,6 +308,26 @@ pub enum WeatherCondition {
     Rain,
     Clouds,
     Snow,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PollenType {
+    Grass,
+    Tree,
+    Weed,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PollenForecast {
+    pub daily: Vec<DailyPollenForecast>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DailyPollenForecast {
+    pub day: DateTime<Utc>,
+    pub pollen_type: PollenType,
+    pub index_value: i32,
+    pub category: Option<String>,
 }
 
 #[derive(Debug, Clone)]

@@ -620,6 +620,72 @@ abstract class AppLocalizations {
   /// **'Include when trip has a specific tag'**
   String get conditionTripTagSubtitle;
 
+  /// Option title: pollen condition
+  ///
+  /// In en, this message translates to:
+  /// **'Pollen'**
+  String get conditionPollenTitle;
+
+  /// Option subtitle for pollen condition
+  ///
+  /// In en, this message translates to:
+  /// **'Include when pollen forecast exceeds a threshold'**
+  String get conditionPollenSubtitle;
+
+  /// Title for the pollen selector dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Pollen Forecast'**
+  String get pollenSelectorTitle;
+
+  /// Helper text in the pollen selector dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Pack this item when the forecast for the trip period reaches the chosen pollen index.'**
+  String get pollenSelectorDescription;
+
+  /// Label above the pollen type chip group
+  ///
+  /// In en, this message translates to:
+  /// **'Pollen type'**
+  String get pollenTypeLabel;
+
+  /// Pollen type: grass
+  ///
+  /// In en, this message translates to:
+  /// **'Grass'**
+  String get pollenTypeGrass;
+
+  /// Pollen type: tree
+  ///
+  /// In en, this message translates to:
+  /// **'Tree'**
+  String get pollenTypeTree;
+
+  /// Pollen type: weed
+  ///
+  /// In en, this message translates to:
+  /// **'Weed'**
+  String get pollenTypeWeed;
+
+  /// Label showing the chosen pollen index threshold
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum pollen index: {value}'**
+  String pollenIndexLabel(int value);
+
+  /// Section title in the pollen detail view
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Pollen'**
+  String get pollenDailyTitle;
+
+  /// Empty state for the pollen detail view
+  ///
+  /// In en, this message translates to:
+  /// **'No pollen data available'**
+  String get pollenNoData;
+
   /// Temperature selector title for min
   ///
   /// In en, this message translates to:

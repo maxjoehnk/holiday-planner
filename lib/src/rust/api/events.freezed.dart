@@ -24,6 +24,8 @@ mixin _$DataChangeEvent {
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -43,6 +45,7 @@ mixin _$DataChangeEvent {
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -62,6 +65,7 @@ mixin _$DataChangeEvent {
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -84,6 +88,8 @@ mixin _$DataChangeEvent {
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -109,6 +115,7 @@ mixin _$DataChangeEvent {
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -130,6 +137,7 @@ mixin _$DataChangeEvent {
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -220,6 +228,8 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -242,6 +252,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -264,6 +275,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -292,6 +304,8 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -320,6 +334,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -344,6 +359,7 @@ class _$DataChangeEvent_TripsChangedImpl extends DataChangeEvent_TripsChanged {
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -450,6 +466,8 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -472,6 +490,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -494,6 +513,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -522,6 +542,8 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -550,6 +572,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -574,6 +597,7 @@ class _$DataChangeEvent_TripChangedImpl extends DataChangeEvent_TripChanged {
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -691,6 +715,8 @@ class _$DataChangeEvent_LocationsChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -713,6 +739,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -735,6 +762,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -763,6 +791,8 @@ class _$DataChangeEvent_LocationsChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -791,6 +821,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -815,6 +846,7 @@ class _$DataChangeEvent_LocationsChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -944,6 +976,8 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -966,6 +1000,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -988,6 +1023,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -1016,6 +1052,8 @@ class _$DataChangeEvent_WeatherUpdatedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -1044,6 +1082,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1068,6 +1107,7 @@ class _$DataChangeEvent_WeatherUpdatedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1105,6 +1145,269 @@ abstract class DataChangeEvent_WeatherUpdated extends DataChangeEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DataChangeEvent_WeatherUpdatedImplCopyWith<
           _$DataChangeEvent_WeatherUpdatedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DataChangeEvent_PollenUpdatedImplCopyWith<$Res> {
+  factory _$$DataChangeEvent_PollenUpdatedImplCopyWith(
+          _$DataChangeEvent_PollenUpdatedImpl value,
+          $Res Function(_$DataChangeEvent_PollenUpdatedImpl) then) =
+      __$$DataChangeEvent_PollenUpdatedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UuidValue tripId, UuidValue locationId});
+}
+
+/// @nodoc
+class __$$DataChangeEvent_PollenUpdatedImplCopyWithImpl<$Res>
+    extends _$DataChangeEventCopyWithImpl<$Res,
+        _$DataChangeEvent_PollenUpdatedImpl>
+    implements _$$DataChangeEvent_PollenUpdatedImplCopyWith<$Res> {
+  __$$DataChangeEvent_PollenUpdatedImplCopyWithImpl(
+      _$DataChangeEvent_PollenUpdatedImpl _value,
+      $Res Function(_$DataChangeEvent_PollenUpdatedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tripId = null,
+    Object? locationId = null,
+  }) {
+    return _then(_$DataChangeEvent_PollenUpdatedImpl(
+      tripId: null == tripId
+          ? _value.tripId
+          : tripId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
+      locationId: null == locationId
+          ? _value.locationId
+          : locationId // ignore: cast_nullable_to_non_nullable
+              as UuidValue,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DataChangeEvent_PollenUpdatedImpl
+    extends DataChangeEvent_PollenUpdated {
+  const _$DataChangeEvent_PollenUpdatedImpl(
+      {required this.tripId, required this.locationId})
+      : super._();
+
+  @override
+  final UuidValue tripId;
+  @override
+  final UuidValue locationId;
+
+  @override
+  String toString() {
+    return 'DataChangeEvent.pollenUpdated(tripId: $tripId, locationId: $locationId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataChangeEvent_PollenUpdatedImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId) &&
+            (identical(other.locationId, locationId) ||
+                other.locationId == locationId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId, locationId);
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataChangeEvent_PollenUpdatedImplCopyWith<
+          _$DataChangeEvent_PollenUpdatedImpl>
+      get copyWith => __$$DataChangeEvent_PollenUpdatedImplCopyWithImpl<
+          _$DataChangeEvent_PollenUpdatedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() tripsChanged,
+    required TResult Function(UuidValue tripId) tripChanged,
+    required TResult Function(UuidValue tripId) locationsChanged,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        weatherUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
+        tidesUpdated,
+    required TResult Function(UuidValue? tripId) packingListChanged,
+    required TResult Function(UuidValue? tripId) accommodationsChanged,
+    required TResult Function(UuidValue? tripId) bookingsChanged,
+    required TResult Function(UuidValue? tripId) transitsChanged,
+    required TResult Function(UuidValue? tripId) poisChanged,
+    required TResult Function(UuidValue? tripId) routesChanged,
+    required TResult Function(UuidValue? tripId, UuidValue? accommodationId)
+        attachmentsChanged,
+    required TResult Function() tagsChanged,
+    required TResult Function(UuidValue tripId) tripDaysChanged,
+  }) {
+    return pollenUpdated(tripId, locationId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? tripsChanged,
+    TResult? Function(UuidValue tripId)? tripChanged,
+    TResult? Function(UuidValue tripId)? locationsChanged,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult? Function(UuidValue? tripId)? packingListChanged,
+    TResult? Function(UuidValue? tripId)? accommodationsChanged,
+    TResult? Function(UuidValue? tripId)? bookingsChanged,
+    TResult? Function(UuidValue? tripId)? transitsChanged,
+    TResult? Function(UuidValue? tripId)? poisChanged,
+    TResult? Function(UuidValue? tripId)? routesChanged,
+    TResult? Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult? Function()? tagsChanged,
+    TResult? Function(UuidValue tripId)? tripDaysChanged,
+  }) {
+    return pollenUpdated?.call(tripId, locationId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? tripsChanged,
+    TResult Function(UuidValue tripId)? tripChanged,
+    TResult Function(UuidValue tripId)? locationsChanged,
+    TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
+    TResult Function(UuidValue? tripId)? packingListChanged,
+    TResult Function(UuidValue? tripId)? accommodationsChanged,
+    TResult Function(UuidValue? tripId)? bookingsChanged,
+    TResult Function(UuidValue? tripId)? transitsChanged,
+    TResult Function(UuidValue? tripId)? poisChanged,
+    TResult Function(UuidValue? tripId)? routesChanged,
+    TResult Function(UuidValue? tripId, UuidValue? accommodationId)?
+        attachmentsChanged,
+    TResult Function()? tagsChanged,
+    TResult Function(UuidValue tripId)? tripDaysChanged,
+    required TResult orElse(),
+  }) {
+    if (pollenUpdated != null) {
+      return pollenUpdated(tripId, locationId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DataChangeEvent_TripsChanged value) tripsChanged,
+    required TResult Function(DataChangeEvent_TripChanged value) tripChanged,
+    required TResult Function(DataChangeEvent_LocationsChanged value)
+        locationsChanged,
+    required TResult Function(DataChangeEvent_WeatherUpdated value)
+        weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
+    required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
+    required TResult Function(DataChangeEvent_PackingListChanged value)
+        packingListChanged,
+    required TResult Function(DataChangeEvent_AccommodationsChanged value)
+        accommodationsChanged,
+    required TResult Function(DataChangeEvent_BookingsChanged value)
+        bookingsChanged,
+    required TResult Function(DataChangeEvent_TransitsChanged value)
+        transitsChanged,
+    required TResult Function(DataChangeEvent_PoisChanged value) poisChanged,
+    required TResult Function(DataChangeEvent_RoutesChanged value)
+        routesChanged,
+    required TResult Function(DataChangeEvent_AttachmentsChanged value)
+        attachmentsChanged,
+    required TResult Function(DataChangeEvent_TagsChanged value) tagsChanged,
+    required TResult Function(DataChangeEvent_TripDaysChanged value)
+        tripDaysChanged,
+  }) {
+    return pollenUpdated(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult? Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult? Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult? Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult? Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult? Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult? Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult? Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult? Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult? Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+  }) {
+    return pollenUpdated?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DataChangeEvent_TripsChanged value)? tripsChanged,
+    TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
+    TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
+    TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
+    TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
+    TResult Function(DataChangeEvent_PackingListChanged value)?
+        packingListChanged,
+    TResult Function(DataChangeEvent_AccommodationsChanged value)?
+        accommodationsChanged,
+    TResult Function(DataChangeEvent_BookingsChanged value)? bookingsChanged,
+    TResult Function(DataChangeEvent_TransitsChanged value)? transitsChanged,
+    TResult Function(DataChangeEvent_PoisChanged value)? poisChanged,
+    TResult Function(DataChangeEvent_RoutesChanged value)? routesChanged,
+    TResult Function(DataChangeEvent_AttachmentsChanged value)?
+        attachmentsChanged,
+    TResult Function(DataChangeEvent_TagsChanged value)? tagsChanged,
+    TResult Function(DataChangeEvent_TripDaysChanged value)? tripDaysChanged,
+    required TResult orElse(),
+  }) {
+    if (pollenUpdated != null) {
+      return pollenUpdated(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DataChangeEvent_PollenUpdated extends DataChangeEvent {
+  const factory DataChangeEvent_PollenUpdated(
+          {required final UuidValue tripId,
+          required final UuidValue locationId}) =
+      _$DataChangeEvent_PollenUpdatedImpl;
+  const DataChangeEvent_PollenUpdated._() : super._();
+
+  UuidValue get tripId;
+  UuidValue get locationId;
+
+  /// Create a copy of DataChangeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DataChangeEvent_PollenUpdatedImplCopyWith<
+          _$DataChangeEvent_PollenUpdatedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1198,6 +1501,8 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -1220,6 +1525,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -1242,6 +1548,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -1270,6 +1577,8 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -1298,6 +1607,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1322,6 +1632,7 @@ class _$DataChangeEvent_TidesUpdatedImpl extends DataChangeEvent_TidesUpdated {
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1442,6 +1753,8 @@ class _$DataChangeEvent_PackingListChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -1464,6 +1777,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -1486,6 +1800,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -1514,6 +1829,8 @@ class _$DataChangeEvent_PackingListChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -1542,6 +1859,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1566,6 +1884,7 @@ class _$DataChangeEvent_PackingListChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1683,6 +2002,8 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -1705,6 +2026,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -1727,6 +2049,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -1755,6 +2078,8 @@ class _$DataChangeEvent_AccommodationsChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -1783,6 +2108,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1807,6 +2133,7 @@ class _$DataChangeEvent_AccommodationsChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -1924,6 +2251,8 @@ class _$DataChangeEvent_BookingsChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -1946,6 +2275,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -1968,6 +2298,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -1996,6 +2327,8 @@ class _$DataChangeEvent_BookingsChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -2024,6 +2357,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2048,6 +2382,7 @@ class _$DataChangeEvent_BookingsChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2165,6 +2500,8 @@ class _$DataChangeEvent_TransitsChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -2187,6 +2524,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -2209,6 +2547,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -2237,6 +2576,8 @@ class _$DataChangeEvent_TransitsChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -2265,6 +2606,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2289,6 +2631,7 @@ class _$DataChangeEvent_TransitsChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2404,6 +2747,8 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -2426,6 +2771,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -2448,6 +2794,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -2476,6 +2823,8 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -2504,6 +2853,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2528,6 +2878,7 @@ class _$DataChangeEvent_PoisChangedImpl extends DataChangeEvent_PoisChanged {
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2644,6 +2995,8 @@ class _$DataChangeEvent_RoutesChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -2666,6 +3019,7 @@ class _$DataChangeEvent_RoutesChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -2688,6 +3042,7 @@ class _$DataChangeEvent_RoutesChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -2716,6 +3071,8 @@ class _$DataChangeEvent_RoutesChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -2744,6 +3101,7 @@ class _$DataChangeEvent_RoutesChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2768,6 +3126,7 @@ class _$DataChangeEvent_RoutesChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -2896,6 +3255,8 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -2918,6 +3279,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -2940,6 +3302,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -2968,6 +3331,8 @@ class _$DataChangeEvent_AttachmentsChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -2996,6 +3361,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -3020,6 +3386,7 @@ class _$DataChangeEvent_AttachmentsChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -3110,6 +3477,8 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -3132,6 +3501,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -3154,6 +3524,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -3182,6 +3553,8 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -3210,6 +3583,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -3234,6 +3608,7 @@ class _$DataChangeEvent_TagsChangedImpl extends DataChangeEvent_TagsChanged {
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -3343,6 +3718,8 @@ class _$DataChangeEvent_TripDaysChangedImpl
     required TResult Function(UuidValue tripId, UuidValue locationId)
         weatherUpdated,
     required TResult Function(UuidValue tripId, UuidValue locationId)
+        pollenUpdated,
+    required TResult Function(UuidValue tripId, UuidValue locationId)
         tidesUpdated,
     required TResult Function(UuidValue? tripId) packingListChanged,
     required TResult Function(UuidValue? tripId) accommodationsChanged,
@@ -3365,6 +3742,7 @@ class _$DataChangeEvent_TripDaysChangedImpl
     TResult? Function(UuidValue tripId)? tripChanged,
     TResult? Function(UuidValue tripId)? locationsChanged,
     TResult? Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult? Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult? Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult? Function(UuidValue? tripId)? packingListChanged,
     TResult? Function(UuidValue? tripId)? accommodationsChanged,
@@ -3387,6 +3765,7 @@ class _$DataChangeEvent_TripDaysChangedImpl
     TResult Function(UuidValue tripId)? tripChanged,
     TResult Function(UuidValue tripId)? locationsChanged,
     TResult Function(UuidValue tripId, UuidValue locationId)? weatherUpdated,
+    TResult Function(UuidValue tripId, UuidValue locationId)? pollenUpdated,
     TResult Function(UuidValue tripId, UuidValue locationId)? tidesUpdated,
     TResult Function(UuidValue? tripId)? packingListChanged,
     TResult Function(UuidValue? tripId)? accommodationsChanged,
@@ -3415,6 +3794,8 @@ class _$DataChangeEvent_TripDaysChangedImpl
         locationsChanged,
     required TResult Function(DataChangeEvent_WeatherUpdated value)
         weatherUpdated,
+    required TResult Function(DataChangeEvent_PollenUpdated value)
+        pollenUpdated,
     required TResult Function(DataChangeEvent_TidesUpdated value) tidesUpdated,
     required TResult Function(DataChangeEvent_PackingListChanged value)
         packingListChanged,
@@ -3443,6 +3824,7 @@ class _$DataChangeEvent_TripDaysChangedImpl
     TResult? Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult? Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult? Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult? Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult? Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult? Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,
@@ -3467,6 +3849,7 @@ class _$DataChangeEvent_TripDaysChangedImpl
     TResult Function(DataChangeEvent_TripChanged value)? tripChanged,
     TResult Function(DataChangeEvent_LocationsChanged value)? locationsChanged,
     TResult Function(DataChangeEvent_WeatherUpdated value)? weatherUpdated,
+    TResult Function(DataChangeEvent_PollenUpdated value)? pollenUpdated,
     TResult Function(DataChangeEvent_TidesUpdated value)? tidesUpdated,
     TResult Function(DataChangeEvent_PackingListChanged value)?
         packingListChanged,

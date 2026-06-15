@@ -223,6 +223,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ParseTrainData dco_decode_box_autoadd_parse_train_data(dynamic raw);
 
   @protected
+  PollenForecast dco_decode_box_autoadd_pollen_forecast(dynamic raw);
+
+  @protected
   RemoveTagFromTrip dco_decode_box_autoadd_remove_tag_from_trip(dynamic raw);
 
   @protected
@@ -314,6 +317,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CreateTrip dco_decode_create_trip(dynamic raw);
 
   @protected
+  DailyPollenForecast dco_decode_daily_pollen_forecast(dynamic raw);
+
+  @protected
   DailyWeatherForecast dco_decode_daily_weather_forecast(dynamic raw);
 
   @protected
@@ -366,6 +372,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<Booking> dco_decode_list_booking(dynamic raw);
+
+  @protected
+  List<DailyPollenForecast> dco_decode_list_daily_pollen_forecast(dynamic raw);
 
   @protected
   List<DailyWeatherForecast> dco_decode_list_daily_weather_forecast(
@@ -485,6 +494,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LocationEntry? dco_decode_opt_box_autoadd_location_entry(dynamic raw);
 
   @protected
+  PollenForecast? dco_decode_opt_box_autoadd_pollen_forecast(dynamic raw);
+
+  @protected
   TagModel? dco_decode_opt_box_autoadd_tag_model(dynamic raw);
 
   @protected
@@ -532,6 +544,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PointOfInterestSearchModel dco_decode_point_of_interest_search_model(
       dynamic raw);
+
+  @protected
+  PollenForecast dco_decode_pollen_forecast(dynamic raw);
+
+  @protected
+  PollenType dco_decode_pollen_type(dynamic raw);
 
   @protected
   Quantity dco_decode_quantity(dynamic raw);
@@ -866,6 +884,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PollenForecast sse_decode_box_autoadd_pollen_forecast(
+      SseDeserializer deserializer);
+
+  @protected
   RemoveTagFromTrip sse_decode_box_autoadd_remove_tag_from_trip(
       SseDeserializer deserializer);
 
@@ -968,6 +990,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CreateTrip sse_decode_create_trip(SseDeserializer deserializer);
 
   @protected
+  DailyPollenForecast sse_decode_daily_pollen_forecast(
+      SseDeserializer deserializer);
+
+  @protected
   DailyWeatherForecast sse_decode_daily_weather_forecast(
       SseDeserializer deserializer);
 
@@ -1028,6 +1054,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<Booking> sse_decode_list_booking(SseDeserializer deserializer);
+
+  @protected
+  List<DailyPollenForecast> sse_decode_list_daily_pollen_forecast(
+      SseDeserializer deserializer);
 
   @protected
   List<DailyWeatherForecast> sse_decode_list_daily_weather_forecast(
@@ -1160,6 +1190,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PollenForecast? sse_decode_opt_box_autoadd_pollen_forecast(
+      SseDeserializer deserializer);
+
+  @protected
   TagModel? sse_decode_opt_box_autoadd_tag_model(SseDeserializer deserializer);
 
   @protected
@@ -1212,6 +1246,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PointOfInterestSearchModel sse_decode_point_of_interest_search_model(
       SseDeserializer deserializer);
+
+  @protected
+  PollenForecast sse_decode_pollen_forecast(SseDeserializer deserializer);
+
+  @protected
+  PollenType sse_decode_pollen_type(SseDeserializer deserializer);
 
   @protected
   Quantity sse_decode_quantity(SseDeserializer deserializer);
@@ -1570,6 +1610,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ParseTrainData self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_pollen_forecast(
+      PollenForecast self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_remove_tag_from_trip(
       RemoveTagFromTrip self, SseSerializer serializer);
 
@@ -1677,6 +1721,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_create_trip(CreateTrip self, SseSerializer serializer);
 
   @protected
+  void sse_encode_daily_pollen_forecast(
+      DailyPollenForecast self, SseSerializer serializer);
+
+  @protected
   void sse_encode_daily_weather_forecast(
       DailyWeatherForecast self, SseSerializer serializer);
 
@@ -1739,6 +1787,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_list_booking(List<Booking> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_daily_pollen_forecast(
+      List<DailyPollenForecast> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_daily_weather_forecast(
@@ -1877,6 +1929,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       LocationEntry? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_pollen_forecast(
+      PollenForecast? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_tag_model(
       TagModel? self, SseSerializer serializer);
 
@@ -1933,6 +1989,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_point_of_interest_search_model(
       PointOfInterestSearchModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pollen_forecast(
+      PollenForecast self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pollen_type(PollenType self, SseSerializer serializer);
 
   @protected
   void sse_encode_quantity(Quantity self, SseSerializer serializer);

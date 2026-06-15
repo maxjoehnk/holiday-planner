@@ -2800,6 +2800,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PollenForecast dco_decode_box_autoadd_pollen_forecast(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pollen_forecast(raw);
+  }
+
+  @protected
   RemoveTagFromTrip dco_decode_box_autoadd_remove_tag_from_trip(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_remove_tag_from_trip(raw);
@@ -3008,6 +3014,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DailyPollenForecast dco_decode_daily_pollen_forecast(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return DailyPollenForecast(
+      day: dco_decode_Chrono_Utc(arr[0]),
+      pollenType: dco_decode_pollen_type(arr[1]),
+      indexValue: dco_decode_i_32(arr[2]),
+      category: dco_decode_opt_String(arr[3]),
+    );
+  }
+
+  @protected
   DailyWeatherForecast dco_decode_daily_weather_forecast(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -3048,42 +3068,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           locationId: dco_decode_Uuid(raw[2]),
         );
       case 4:
-        return DataChangeEvent_TidesUpdated(
+        return DataChangeEvent_PollenUpdated(
           tripId: dco_decode_Uuid(raw[1]),
           locationId: dco_decode_Uuid(raw[2]),
         );
       case 5:
+        return DataChangeEvent_TidesUpdated(
+          tripId: dco_decode_Uuid(raw[1]),
+          locationId: dco_decode_Uuid(raw[2]),
+        );
+      case 6:
         return DataChangeEvent_PackingListChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
         );
-      case 6:
+      case 7:
         return DataChangeEvent_AccommodationsChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
         );
-      case 7:
+      case 8:
         return DataChangeEvent_BookingsChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
         );
-      case 8:
+      case 9:
         return DataChangeEvent_TransitsChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
         );
-      case 9:
+      case 10:
         return DataChangeEvent_PoisChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
         );
-      case 10:
+      case 11:
         return DataChangeEvent_RoutesChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
         );
-      case 11:
+      case 12:
         return DataChangeEvent_AttachmentsChanged(
           tripId: dco_decode_opt_Uuid(raw[1]),
           accommodationId: dco_decode_opt_Uuid(raw[2]),
         );
-      case 12:
-        return const DataChangeEvent_TagsChanged();
       case 13:
+        return const DataChangeEvent_TagsChanged();
+      case 14:
         return DataChangeEvent_TripDaysChanged(
           tripId: dco_decode_Uuid(raw[1]),
         );
@@ -3332,6 +3357,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<Booking> dco_decode_list_booking(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_booking).toList();
+  }
+
+  @protected
+  List<DailyPollenForecast> dco_decode_list_daily_pollen_forecast(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_daily_pollen_forecast)
+        .toList();
   }
 
   @protected
@@ -3587,6 +3620,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PollenForecast? dco_decode_opt_box_autoadd_pollen_forecast(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_pollen_forecast(raw);
+  }
+
+  @protected
   TagModel? dco_decode_opt_box_autoadd_tag_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_tag_model(raw);
@@ -3686,6 +3725,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return PackingListEntryCondition_Tag(
           tagId: dco_decode_Uuid(raw[1]),
         );
+      case 6:
+        return PackingListEntryCondition_Pollen(
+          pollenType: dco_decode_pollen_type(raw[1]),
+          minIndex: dco_decode_i_32(raw[2]),
+        );
       default:
         throw Exception("unreachable");
     }
@@ -3783,6 +3827,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       country: dco_decode_String(arr[3]),
       coordinate: dco_decode_opt_box_autoadd_coordinate(arr[4]),
     );
+  }
+
+  @protected
+  PollenForecast dco_decode_pollen_forecast(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PollenForecast(
+      daily: dco_decode_list_daily_pollen_forecast(arr[0]),
+    );
+  }
+
+  @protected
+  PollenType dco_decode_pollen_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PollenType.values[raw as int];
   }
 
   @protected
@@ -4114,18 +4175,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TripLocationListModel dco_decode_trip_location_list_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return TripLocationListModel(
       id: dco_decode_Uuid(arr[0]),
       coordinates: dco_decode_coordinate(arr[1]),
       city: dco_decode_String(arr[2]),
       country: dco_decode_String(arr[3]),
       forecast: dco_decode_opt_box_autoadd_weather_forecast(arr[4]),
-      isCoastal: dco_decode_bool(arr[5]),
+      pollenForecast: dco_decode_opt_box_autoadd_pollen_forecast(arr[5]),
+      isCoastal: dco_decode_bool(arr[6]),
       tidalInformationLastUpdated:
-          dco_decode_opt_box_autoadd_Chrono_Utc(arr[6]),
-      tidalInformation: dco_decode_list_tidal_information(arr[7]),
+          dco_decode_opt_box_autoadd_Chrono_Utc(arr[7]),
+      tidalInformation: dco_decode_list_tidal_information(arr[8]),
     );
   }
 
@@ -4959,6 +5021,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PollenForecast sse_decode_box_autoadd_pollen_forecast(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pollen_forecast(deserializer));
+  }
+
+  @protected
   RemoveTagFromTrip sse_decode_box_autoadd_remove_tag_from_trip(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5178,6 +5247,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DailyPollenForecast sse_decode_daily_pollen_forecast(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_day = sse_decode_Chrono_Utc(deserializer);
+    var var_pollenType = sse_decode_pollen_type(deserializer);
+    var var_indexValue = sse_decode_i_32(deserializer);
+    var var_category = sse_decode_opt_String(deserializer);
+    return DailyPollenForecast(
+        day: var_day,
+        pollenType: var_pollenType,
+        indexValue: var_indexValue,
+        category: var_category);
+  }
+
+  @protected
   DailyWeatherForecast sse_decode_daily_weather_forecast(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5228,34 +5312,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 4:
         var var_tripId = sse_decode_Uuid(deserializer);
         var var_locationId = sse_decode_Uuid(deserializer);
-        return DataChangeEvent_TidesUpdated(
+        return DataChangeEvent_PollenUpdated(
             tripId: var_tripId, locationId: var_locationId);
       case 5:
-        var var_tripId = sse_decode_opt_Uuid(deserializer);
-        return DataChangeEvent_PackingListChanged(tripId: var_tripId);
+        var var_tripId = sse_decode_Uuid(deserializer);
+        var var_locationId = sse_decode_Uuid(deserializer);
+        return DataChangeEvent_TidesUpdated(
+            tripId: var_tripId, locationId: var_locationId);
       case 6:
         var var_tripId = sse_decode_opt_Uuid(deserializer);
-        return DataChangeEvent_AccommodationsChanged(tripId: var_tripId);
+        return DataChangeEvent_PackingListChanged(tripId: var_tripId);
       case 7:
         var var_tripId = sse_decode_opt_Uuid(deserializer);
-        return DataChangeEvent_BookingsChanged(tripId: var_tripId);
+        return DataChangeEvent_AccommodationsChanged(tripId: var_tripId);
       case 8:
         var var_tripId = sse_decode_opt_Uuid(deserializer);
-        return DataChangeEvent_TransitsChanged(tripId: var_tripId);
+        return DataChangeEvent_BookingsChanged(tripId: var_tripId);
       case 9:
         var var_tripId = sse_decode_opt_Uuid(deserializer);
-        return DataChangeEvent_PoisChanged(tripId: var_tripId);
+        return DataChangeEvent_TransitsChanged(tripId: var_tripId);
       case 10:
         var var_tripId = sse_decode_opt_Uuid(deserializer);
-        return DataChangeEvent_RoutesChanged(tripId: var_tripId);
+        return DataChangeEvent_PoisChanged(tripId: var_tripId);
       case 11:
+        var var_tripId = sse_decode_opt_Uuid(deserializer);
+        return DataChangeEvent_RoutesChanged(tripId: var_tripId);
+      case 12:
         var var_tripId = sse_decode_opt_Uuid(deserializer);
         var var_accommodationId = sse_decode_opt_Uuid(deserializer);
         return DataChangeEvent_AttachmentsChanged(
             tripId: var_tripId, accommodationId: var_accommodationId);
-      case 12:
-        return const DataChangeEvent_TagsChanged();
       case 13:
+        return const DataChangeEvent_TagsChanged();
+      case 14:
         var var_tripId = sse_decode_Uuid(deserializer);
         return DataChangeEvent_TripDaysChanged(tripId: var_tripId);
       default:
@@ -5547,6 +5636,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var ans_ = <Booking>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_booking(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<DailyPollenForecast> sse_decode_list_daily_pollen_forecast(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <DailyPollenForecast>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_daily_pollen_forecast(deserializer));
     }
     return ans_;
   }
@@ -5993,6 +6095,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PollenForecast? sse_decode_opt_box_autoadd_pollen_forecast(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_pollen_forecast(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   TagModel? sse_decode_opt_box_autoadd_tag_model(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -6117,6 +6231,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 5:
         var var_tagId = sse_decode_Uuid(deserializer);
         return PackingListEntryCondition_Tag(tagId: var_tagId);
+      case 6:
+        var var_pollenType = sse_decode_pollen_type(deserializer);
+        var var_minIndex = sse_decode_i_32(deserializer);
+        return PackingListEntryCondition_Pollen(
+            pollenType: var_pollenType, minIndex: var_minIndex);
       default:
         throw UnimplementedError('');
     }
@@ -6225,6 +6344,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         address: var_address,
         country: var_country,
         coordinate: var_coordinate);
+  }
+
+  @protected
+  PollenForecast sse_decode_pollen_forecast(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_daily = sse_decode_list_daily_pollen_forecast(deserializer);
+    return PollenForecast(daily: var_daily);
+  }
+
+  @protected
+  PollenType sse_decode_pollen_type(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PollenType.values[inner];
   }
 
   @protected
@@ -6560,6 +6693,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_country = sse_decode_String(deserializer);
     var var_forecast =
         sse_decode_opt_box_autoadd_weather_forecast(deserializer);
+    var var_pollenForecast =
+        sse_decode_opt_box_autoadd_pollen_forecast(deserializer);
     var var_isCoastal = sse_decode_bool(deserializer);
     var var_tidalInformationLastUpdated =
         sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
@@ -6570,6 +6705,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         city: var_city,
         country: var_country,
         forecast: var_forecast,
+        pollenForecast: var_pollenForecast,
         isCoastal: var_isCoastal,
         tidalInformationLastUpdated: var_tidalInformationLastUpdated,
         tidalInformation: var_tidalInformation);
@@ -7344,6 +7480,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_pollen_forecast(
+      PollenForecast self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pollen_forecast(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_remove_tag_from_trip(
       RemoveTagFromTrip self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -7548,6 +7691,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_daily_pollen_forecast(
+      DailyPollenForecast self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Chrono_Utc(self.day, serializer);
+    sse_encode_pollen_type(self.pollenType, serializer);
+    sse_encode_i_32(self.indexValue, serializer);
+    sse_encode_opt_String(self.category, serializer);
+  }
+
+  @protected
   void sse_encode_daily_weather_forecast(
       DailyWeatherForecast self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -7584,42 +7737,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(3, serializer);
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(locationId, serializer);
-      case DataChangeEvent_TidesUpdated(
+      case DataChangeEvent_PollenUpdated(
           tripId: final tripId,
           locationId: final locationId
         ):
         sse_encode_i_32(4, serializer);
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(locationId, serializer);
-      case DataChangeEvent_PackingListChanged(tripId: final tripId):
+      case DataChangeEvent_TidesUpdated(
+          tripId: final tripId,
+          locationId: final locationId
+        ):
         sse_encode_i_32(5, serializer);
-        sse_encode_opt_Uuid(tripId, serializer);
-      case DataChangeEvent_AccommodationsChanged(tripId: final tripId):
+        sse_encode_Uuid(tripId, serializer);
+        sse_encode_Uuid(locationId, serializer);
+      case DataChangeEvent_PackingListChanged(tripId: final tripId):
         sse_encode_i_32(6, serializer);
         sse_encode_opt_Uuid(tripId, serializer);
-      case DataChangeEvent_BookingsChanged(tripId: final tripId):
+      case DataChangeEvent_AccommodationsChanged(tripId: final tripId):
         sse_encode_i_32(7, serializer);
         sse_encode_opt_Uuid(tripId, serializer);
-      case DataChangeEvent_TransitsChanged(tripId: final tripId):
+      case DataChangeEvent_BookingsChanged(tripId: final tripId):
         sse_encode_i_32(8, serializer);
         sse_encode_opt_Uuid(tripId, serializer);
-      case DataChangeEvent_PoisChanged(tripId: final tripId):
+      case DataChangeEvent_TransitsChanged(tripId: final tripId):
         sse_encode_i_32(9, serializer);
         sse_encode_opt_Uuid(tripId, serializer);
-      case DataChangeEvent_RoutesChanged(tripId: final tripId):
+      case DataChangeEvent_PoisChanged(tripId: final tripId):
         sse_encode_i_32(10, serializer);
+        sse_encode_opt_Uuid(tripId, serializer);
+      case DataChangeEvent_RoutesChanged(tripId: final tripId):
+        sse_encode_i_32(11, serializer);
         sse_encode_opt_Uuid(tripId, serializer);
       case DataChangeEvent_AttachmentsChanged(
           tripId: final tripId,
           accommodationId: final accommodationId
         ):
-        sse_encode_i_32(11, serializer);
+        sse_encode_i_32(12, serializer);
         sse_encode_opt_Uuid(tripId, serializer);
         sse_encode_opt_Uuid(accommodationId, serializer);
       case DataChangeEvent_TagsChanged():
-        sse_encode_i_32(12, serializer);
-      case DataChangeEvent_TripDaysChanged(tripId: final tripId):
         sse_encode_i_32(13, serializer);
+      case DataChangeEvent_TripDaysChanged(tripId: final tripId):
+        sse_encode_i_32(14, serializer);
         sse_encode_Uuid(tripId, serializer);
     }
   }
@@ -7875,6 +8035,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_booking(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_daily_pollen_forecast(
+      List<DailyPollenForecast> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_daily_pollen_forecast(item, serializer);
     }
   }
 
@@ -8238,6 +8408,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_pollen_forecast(
+      PollenForecast? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_pollen_forecast(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_tag_model(
       TagModel? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -8353,6 +8534,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case PackingListEntryCondition_Tag(tagId: final tagId):
         sse_encode_i_32(5, serializer);
         sse_encode_Uuid(tagId, serializer);
+      case PackingListEntryCondition_Pollen(
+          pollenType: final pollenType,
+          minIndex: final minIndex
+        ):
+        sse_encode_i_32(6, serializer);
+        sse_encode_pollen_type(pollenType, serializer);
+        sse_encode_i_32(minIndex, serializer);
     }
   }
 
@@ -8423,6 +8611,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.address, serializer);
     sse_encode_String(self.country, serializer);
     sse_encode_opt_box_autoadd_coordinate(self.coordinate, serializer);
+  }
+
+  @protected
+  void sse_encode_pollen_forecast(
+      PollenForecast self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_daily_pollen_forecast(self.daily, serializer);
+  }
+
+  @protected
+  void sse_encode_pollen_type(PollenType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -8670,6 +8871,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.city, serializer);
     sse_encode_String(self.country, serializer);
     sse_encode_opt_box_autoadd_weather_forecast(self.forecast, serializer);
+    sse_encode_opt_box_autoadd_pollen_forecast(self.pollenForecast, serializer);
     sse_encode_bool(self.isCoastal, serializer);
     sse_encode_opt_box_autoadd_Chrono_Utc(
         self.tidalInformationLastUpdated, serializer);

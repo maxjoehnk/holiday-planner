@@ -56,9 +56,10 @@ impl LocationHandler {
     pub async fn get_trip_locations(&self, trip_id: Uuid) -> anyhow::Result<Vec<TripLocationListModel>> {
         let locations = repositories::locations::find_all_by_trip(&self.db, trip_id).await?;
         let forecasts = repositories::weather_forecasts::load_forecasts_for_locations(&self.db, &locations).await?;
-        
+        let pollen_forecasts = repositories::pollen_forecasts::load_forecasts_for_locations(&self.db, &locations).await?;
+
         let mut result = Vec::new();
-        for (location, (daily_forecasts, hourly_forecasts)) in locations.into_iter().zip(forecasts) {
+        for ((location, (daily_forecasts, hourly_forecasts)), pollen_daily) in locations.into_iter().zip(forecasts).zip(pollen_forecasts) {
             let tide_records = repositories::tidal_information::find_all_by_location_id(&self.db, location.id).await?;
             let tidal_information = tide_records.into_iter()
                 .map(|tide_record| TidalInformation {
@@ -83,6 +84,7 @@ impl LocationHandler {
                     daily_forecast: daily_forecasts.into_iter().map(DailyWeatherForecast::from).collect(),
                     hourly_forecast: hourly_forecasts.into_iter().map(HourlyWeatherForecast::from).collect(),
                 }),
+                pollen_forecast: build_pollen_forecast(pollen_daily),
             });
         }
 
@@ -115,6 +117,7 @@ impl LocationHandler {
             is_coastal: Set(is_coastal),
             tidal_information_last_updated: Set(None),
             weather_information_last_updated: Set(None),
+            pollen_information_last_updated: Set(None),
         };
         
         repositories::locations::insert(&self.db, location).await?;
@@ -137,10 +140,12 @@ impl LocationHandler {
     pub async fn get_location_details(&self, location_id: Uuid) -> anyhow::Result<TripLocationListModel> {
         let location = repositories::locations::find_by_id(&self.db, location_id).await?
             .ok_or_else(|| anyhow::anyhow!("Location not found"))?;
-        
+
         let forecasts = repositories::weather_forecasts::load_forecasts_for_locations(&self.db, &vec![location.clone()]).await?;
         let (daily_forecasts, hourly_forecasts) = forecasts.into_iter().next().unwrap_or_default();
-        
+        let pollen_forecasts = repositories::pollen_forecasts::load_forecasts_for_locations(&self.db, &vec![location.clone()]).await?;
+        let pollen_daily = pollen_forecasts.into_iter().next().unwrap_or_default();
+
         let tide_records = repositories::tidal_information::find_all_by_location_id(&self.db, location.id).await?;
         let tidal_information = tide_records.into_iter()
             .map(|tide_record| TidalInformation {
@@ -165,6 +170,7 @@ impl LocationHandler {
                 daily_forecast: daily_forecasts.into_iter().map(DailyWeatherForecast::from).collect(),
                 hourly_forecast: hourly_forecasts.into_iter().map(HourlyWeatherForecast::from).collect(),
             }),
+            pollen_forecast: build_pollen_forecast(pollen_daily),
         })
     }
 
@@ -187,6 +193,16 @@ fn queue_background_sync_jobs(db: &Database) {
             tracing::error!("Failed to run background sync jobs: {err:?}");
         }
     });
+}
+
+fn build_pollen_forecast(daily: Vec<entities::pollen_daily_forecast::Model>) -> Option<PollenForecast> {
+    if daily.is_empty() {
+        None
+    } else {
+        Some(PollenForecast {
+            daily: daily.into_iter().map(DailyPollenForecast::from).collect(),
+        })
+    }
 }
 
 #[cfg(test)]

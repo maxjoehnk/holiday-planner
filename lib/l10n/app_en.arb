@@ -227,6 +227,34 @@
   "conditionTripTagSubtitle": "Include when trip has a specific tag",
   "@conditionTripTagSubtitle": {"description": "Option subtitle for trip tag condition"},
 
+  "conditionPollenTitle": "Pollen",
+  "@conditionPollenTitle": {"description": "Option title: pollen condition"},
+  "conditionPollenSubtitle": "Include when pollen forecast exceeds a threshold",
+  "@conditionPollenSubtitle": {"description": "Option subtitle for pollen condition"},
+  "pollenSelectorTitle": "Pollen Forecast",
+  "@pollenSelectorTitle": {"description": "Title for the pollen selector dialog"},
+  "pollenSelectorDescription": "Pack this item when the forecast for the trip period reaches the chosen pollen index.",
+  "@pollenSelectorDescription": {"description": "Helper text in the pollen selector dialog"},
+  "pollenTypeLabel": "Pollen type",
+  "@pollenTypeLabel": {"description": "Label above the pollen type chip group"},
+  "pollenTypeGrass": "Grass",
+  "@pollenTypeGrass": {"description": "Pollen type: grass"},
+  "pollenTypeTree": "Tree",
+  "@pollenTypeTree": {"description": "Pollen type: tree"},
+  "pollenTypeWeed": "Weed",
+  "@pollenTypeWeed": {"description": "Pollen type: weed"},
+  "pollenIndexLabel": "Minimum pollen index: {value}",
+  "@pollenIndexLabel": {
+    "description": "Label showing the chosen pollen index threshold",
+    "placeholders": {
+      "value": {"type": "int", "example": "3"}
+    }
+  },
+  "pollenDailyTitle": "Daily Pollen",
+  "@pollenDailyTitle": {"description": "Section title in the pollen detail view"},
+  "pollenNoData": "No pollen data available",
+  "@pollenNoData": {"description": "Empty state for the pollen detail view"},
+
   "temperatureSelectorMinTitle": "Min Temperature",
   "@temperatureSelectorMinTitle": {"description": "Temperature selector title for min"},
   "temperatureSelectorMaxTitle": "Max Temperature",

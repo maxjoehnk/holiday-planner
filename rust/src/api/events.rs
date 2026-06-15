@@ -12,6 +12,7 @@ pub enum DataChangeEvent {
     TripChanged { trip_id: Uuid },
     LocationsChanged { trip_id: Uuid },
     WeatherUpdated { trip_id: Uuid, location_id: Uuid },
+    PollenUpdated { trip_id: Uuid, location_id: Uuid },
     TidesUpdated { trip_id: Uuid, location_id: Uuid },
     PackingListChanged { trip_id: Option<Uuid> },
     AccommodationsChanged { trip_id: Option<Uuid> },

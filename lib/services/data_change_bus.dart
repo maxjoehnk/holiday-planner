@@ -74,9 +74,19 @@ class DataChangeBus {
         return false;
       }).map((_) => null);
 
-  /// Convenience: emits on either weather or tide updates for the given trip.
+  Stream<void> onPollenChanged(UuidValue tripId) => events.where((e) {
+        if (e is DataChangeEvent_PollenUpdated) {
+          return e.tripId == tripId;
+        }
+        return false;
+      }).map((_) => null);
+
+  /// Convenience: emits on weather, pollen, or tide updates for the given trip.
   Stream<void> onWeatherOrTidesChanged(UuidValue tripId) => events.where((e) {
         if (e is DataChangeEvent_WeatherUpdated) {
+          return e.tripId == tripId;
+        }
+        if (e is DataChangeEvent_PollenUpdated) {
           return e.tripId == tripId;
         }
         if (e is DataChangeEvent_TidesUpdated) {
@@ -87,6 +97,9 @@ class DataChangeBus {
 
   Stream<void> onLocationDataChanged(UuidValue locationId) => events.where((e) {
         if (e is DataChangeEvent_WeatherUpdated) {
+          return e.locationId == locationId;
+        }
+        if (e is DataChangeEvent_PollenUpdated) {
           return e.locationId == locationId;
         }
         if (e is DataChangeEvent_TidesUpdated) {
@@ -173,6 +186,7 @@ class DataChangeBus {
         if (e is DataChangeEvent_TripsChanged) return true;
         if (e is DataChangeEvent_LocationsChanged) return e.tripId == tripId;
         if (e is DataChangeEvent_WeatherUpdated) return e.tripId == tripId;
+        if (e is DataChangeEvent_PollenUpdated) return e.tripId == tripId;
         if (e is DataChangeEvent_TidesUpdated) return e.tripId == tripId;
         if (e is DataChangeEvent_PackingListChanged) {
           return matchesOptional(e.tripId);

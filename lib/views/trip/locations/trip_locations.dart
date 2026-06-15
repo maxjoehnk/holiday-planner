@@ -11,6 +11,8 @@ import 'package:holiday_planner/widgets/location_search.dart';
 import 'package:holiday_planner/views/trip/locations/forecast_detail_view.dart';
 import 'package:holiday_planner/views/trip/locations/tidal_detail_view.dart';
 import 'package:holiday_planner/views/trip/locations/location_detail_view.dart';
+import 'package:holiday_planner/views/trip/locations/pollen_detail_view.dart';
+import 'package:holiday_planner/views/packing_list/pollen_selector.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:uuid/uuid.dart';
@@ -431,6 +433,14 @@ class _LocationCardState extends State<LocationCard> {
                   location: widget.location,
                 ),
               ],
+              if (widget.location.pollenForecast != null &&
+                  widget.location.pollenForecast!.daily.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                LocationDailyPollen(
+                  pollen: widget.location.pollenForecast!,
+                  location: widget.location,
+                ),
+              ],
             ],
           ),
         ),
@@ -696,6 +706,156 @@ class LocationDailyForecast extends StatelessWidget {
                         ),
                         Text(
                           "${dayForecast.minTemperature.toStringAsFixed(0)}°",
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class LocationDailyPollen extends StatelessWidget {
+  final PollenForecast pollen;
+  final TripLocationListModel location;
+
+  const LocationDailyPollen({
+    super.key,
+    required this.pollen,
+    required this.location,
+  });
+
+  Color _color(int value) {
+    if (value <= 0) return Colors.grey;
+    if (value <= 2) return Colors.green.shade600;
+    if (value <= 3) return Colors.amber.shade700;
+    if (value <= 4) return Colors.orange.shade700;
+    return Colors.red.shade700;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    // Group by calendar day, keep the worst entry per day for the summary.
+    final grouped = <DateTime, List<DailyPollenForecast>>{};
+    for (final entry in pollen.daily) {
+      final key = DateTime.utc(entry.day.year, entry.day.month, entry.day.day);
+      grouped.putIfAbsent(key, () => []).add(entry);
+    }
+    final days = grouped.keys.toList()..sort();
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.local_florist,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppLocalizations.of(context)!.pollenSelectorTitle,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          PollenDetailView(location: location),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Details",
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(Icons.arrow_forward,
+                        size: 14, color: colorScheme.primary),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: days.map((day) {
+                final entries = grouped[day]!;
+                final worst = entries
+                    .reduce((a, b) => a.indexValue >= b.indexValue ? a : b);
+                final color = _color(worst.indexValue);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: colorScheme.outlineVariant, width: 1),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          formatDate(day, format: DateFormat.Md()),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Icon(
+                          iconForPollenType(worst.pollenType),
+                          size: 28,
+                          color: color,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${worst.indexValue}/5',
+                          style: textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: color,
+                          ),
+                        ),
+                        Text(
+                          labelForPollenType(worst.pollenType, context),
                           style: textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),

@@ -15,6 +15,7 @@ pub struct Model {
     pub coordinates_latitude: Option<f64>,
     pub coordinates_longitude: Option<f64>,
     pub weather_information_last_updated: Option<DateTimeUtc>,
+    pub pollen_information_last_updated: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -36,6 +37,12 @@ impl Related<super::trip::Entity> for Entity {
 impl Related<super::weather_forecast::Entity> for Entity {
     fn to() -> RelationDef {
         super::weather_forecast::Relation::Accommodation.def().rev()
+    }
+}
+
+impl Related<super::pollen_forecast::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::pollen_forecast::Relation::Accommodation.def().rev()
     }
 }
 

@@ -142,6 +142,18 @@ impl PackingListHandler {
                     };
                     repositories::packing_list_conditions::insert(&self.db, entry_id, condition).await?;
                 }
+                PackingListEntryCondition::Pollen {
+                    pollen_type,
+                    min_index,
+                } => {
+                    let condition = entities::packing_list_condition::ActiveModel {
+                        packing_list_entry_id: Set(entry_id),
+                        pollen_type: Set(Some(pollen_type.into())),
+                        min_pollen_index: Set(Some(min_index)),
+                        ..Default::default()
+                    };
+                    repositories::packing_list_conditions::insert(&self.db, entry_id, condition).await?;
+                }
             }
         }
 
@@ -234,6 +246,11 @@ impl From<entities::packing_list_condition::Model> for PackingListEntryCondition
         } else if let Some(tag_id) = condition.tag {
             PackingListEntryCondition::Tag {
                 tag_id
+            }
+        } else if let Some((pollen_type, min_index)) = condition.pollen_type.zip(condition.min_pollen_index) {
+            PackingListEntryCondition::Pollen {
+                pollen_type: pollen_type.into(),
+                min_index,
             }
         } else {
             unreachable!()

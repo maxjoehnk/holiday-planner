@@ -106,7 +106,7 @@ pub async fn find_coastal_locations_for_upcoming_trips_needing_tidal_update(db: 
 pub async fn find_locations_for_upcoming_trips_needing_weather_update(db: &Database, hours_threshold: i64) -> anyhow::Result<Vec<location::Model>> {
     let threshold_time = Utc::now() - chrono::Duration::hours(hours_threshold);
     let now = Utc::now();
-    
+
     let locations = Location::find()
         .join(JoinType::InnerJoin, location::Relation::Trip.def())
         .filter(trip::Column::EndDate.gt(now))
@@ -118,6 +118,43 @@ pub async fn find_locations_for_upcoming_trips_needing_weather_update(db: &Datab
         .await?;
 
     Ok(locations)
+}
+
+pub async fn find_locations_for_upcoming_trips_needing_pollen_update(
+    db: &Database,
+    hours_threshold: i64,
+    horizon_days: i64,
+) -> anyhow::Result<Vec<location::Model>> {
+    let threshold_time = Utc::now() - chrono::Duration::hours(hours_threshold);
+    let now = Utc::now();
+    let horizon = now + chrono::Duration::days(horizon_days);
+
+    let locations = Location::find()
+        .join(JoinType::InnerJoin, location::Relation::Trip.def())
+        .filter(trip::Column::EndDate.gt(now))
+        .filter(trip::Column::StartDate.lt(horizon))
+        .filter(
+            location::Column::PollenInformationLastUpdated.is_null()
+                .or(location::Column::PollenInformationLastUpdated.lt(threshold_time.naive_utc()))
+        )
+        .all(db.deref())
+        .await?;
+
+    Ok(locations)
+}
+
+pub async fn update_pollen_information_timestamp(db: &impl ConnectionTrait, id: Uuid) -> DbResult<()> {
+    let location = Location::find_by_id(id)
+        .one(db)
+        .await?;
+
+    if let Some(location) = location {
+        let mut active_model: location::ActiveModel = location.into();
+        active_model.pollen_information_last_updated = Set(Some(Utc::now()));
+        active_model.update(db).await?;
+    }
+
+    Ok(())
 }
 
 pub async fn delete_by_id(db: &Database, id: Uuid) -> DbResult<()> {

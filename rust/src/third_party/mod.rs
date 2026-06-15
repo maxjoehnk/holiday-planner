@@ -1,4 +1,5 @@
 pub mod openweathermap;
+pub mod google_pollen;
 pub mod overpass;
 pub mod photon;
 pub mod aviationstack;

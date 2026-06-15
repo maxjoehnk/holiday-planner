@@ -15,3 +15,4 @@ pub mod trip_days;
 pub mod trips;
 pub mod trip_packing_list_entries;
 pub mod weather_forecasts;
+pub mod pollen_forecasts;

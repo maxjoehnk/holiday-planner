@@ -21,3 +21,5 @@ pub mod trip_tag;
 pub mod weather_forecast;
 pub mod weather_daily_forecast;
 pub mod weather_hourly_forecast;
+pub mod pollen_forecast;
+pub mod pollen_daily_forecast;
