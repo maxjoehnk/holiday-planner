@@ -71,34 +71,31 @@ class _TripActivitiesState extends State<TripActivities> {
                 return _EmptyState();
               }
 
-              return ListView(
-                padding: const EdgeInsets.all(16.0),
-                children: [
-                  if (pois.isNotEmpty) ...[
-                    _SectionHeader(label: "Points of Interest"),
-                    const SizedBox(height: 8),
-                    for (final poi in pois) ...[
-                      PointOfInterestCard(
-                        pointOfInterest: poi,
-                        onEdit: () => _editPointOfInterest(context, poi),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ],
-                  if (routes.isNotEmpty) ...[
-                    if (pois.isNotEmpty) const SizedBox(height: 12),
-                    _SectionHeader(label: "Routes"),
-                    const SizedBox(height: 8),
-                    for (final route in routes) ...[
-                      RouteCard(
-                        route: route,
-                        onTap: () => _openRouteDetail(context, route),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ],
-                  const SizedBox(height: 80),
-                ],
+              final activities = <_Activity>[
+                ...pois.map((p) => _Activity.poi(p)),
+                ...routes.map((r) => _Activity.route(r)),
+              ]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+              return ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0),
+                itemCount: activities.length,
+                itemBuilder: (context, index) {
+                  final activity = activities[index];
+                  final card = activity.when(
+                    poi: (poi) => PointOfInterestCard(
+                      pointOfInterest: poi,
+                      onEdit: () => _editPointOfInterest(context, poi),
+                    ),
+                    route: (route) => RouteCard(
+                      route: route,
+                      onTap: () => _openRouteDetail(context, route),
+                    ),
+                  );
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: index == activities.length - 1 ? 0 : 12),
+                    child: card,
+                  );
+                },
               );
             },
           );
@@ -201,22 +198,28 @@ class _TripActivitiesState extends State<TripActivities> {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String label;
-  const _SectionHeader({required this.label});
+class _Activity {
+  final PointOfInterestModel? _poi;
+  final RouteModel? _route;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-      ),
-    );
+  const _Activity.poi(PointOfInterestModel poi)
+      : _poi = poi,
+        _route = null;
+
+  const _Activity.route(RouteModel route)
+      : _poi = null,
+        _route = route;
+
+  String get name => _poi?.name ?? _route!.name;
+
+  T when<T>({
+    required T Function(PointOfInterestModel poi) poi,
+    required T Function(RouteModel route) route,
+  }) {
+    if (_poi != null) {
+      return poi(_poi);
+    }
+    return route(_route!);
   }
 }
 
