@@ -2412,15 +2412,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AccommodationModel dco_decode_accommodation_model(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return AccommodationModel(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
       address: dco_decode_opt_String(arr[2]),
-      checkIn: dco_decode_Chrono_Utc(arr[3]),
-      checkOut: dco_decode_Chrono_Utc(arr[4]),
-      attachments: dco_decode_list_trip_attachment(arr[5]),
+      coordinates: dco_decode_opt_box_autoadd_coordinate(arr[3]),
+      checkIn: dco_decode_Chrono_Utc(arr[4]),
+      checkOut: dco_decode_Chrono_Utc(arr[5]),
+      attachments: dco_decode_list_trip_attachment(arr[6]),
     );
   }
 
@@ -2545,14 +2546,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AddTripAccommodation dco_decode_add_trip_accommodation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return AddTripAccommodation(
       tripId: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
       checkIn: dco_decode_opt_box_autoadd_Chrono_Utc(arr[2]),
       checkOut: dco_decode_opt_box_autoadd_Chrono_Utc(arr[3]),
       address: dco_decode_opt_String(arr[4]),
+      coordinate: dco_decode_opt_box_autoadd_coordinate(arr[5]),
     );
   }
 
@@ -4516,14 +4518,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   UpdateTripAccommodation dco_decode_update_trip_accommodation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return UpdateTripAccommodation(
       id: dco_decode_Uuid(arr[0]),
       name: dco_decode_String(arr[1]),
       address: dco_decode_opt_String(arr[2]),
-      checkIn: dco_decode_Chrono_Utc(arr[3]),
-      checkOut: dco_decode_Chrono_Utc(arr[4]),
+      coordinate: dco_decode_opt_box_autoadd_coordinate(arr[3]),
+      checkIn: dco_decode_Chrono_Utc(arr[4]),
+      checkOut: dco_decode_Chrono_Utc(arr[5]),
     );
   }
 
@@ -4628,6 +4631,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_id = sse_decode_Uuid(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_address = sse_decode_opt_String(deserializer);
+    var var_coordinates = sse_decode_opt_box_autoadd_coordinate(deserializer);
     var var_checkIn = sse_decode_Chrono_Utc(deserializer);
     var var_checkOut = sse_decode_Chrono_Utc(deserializer);
     var var_attachments = sse_decode_list_trip_attachment(deserializer);
@@ -4635,6 +4639,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         id: var_id,
         name: var_name,
         address: var_address,
+        coordinates: var_coordinates,
         checkIn: var_checkIn,
         checkOut: var_checkOut,
         attachments: var_attachments);
@@ -4779,12 +4784,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_checkIn = sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
     var var_checkOut = sse_decode_opt_box_autoadd_Chrono_Utc(deserializer);
     var var_address = sse_decode_opt_String(deserializer);
+    var var_coordinate = sse_decode_opt_box_autoadd_coordinate(deserializer);
     return AddTripAccommodation(
         tripId: var_tripId,
         name: var_name,
         checkIn: var_checkIn,
         checkOut: var_checkOut,
-        address: var_address);
+        address: var_address,
+        coordinate: var_coordinate);
   }
 
   @protected
@@ -7057,12 +7064,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_id = sse_decode_Uuid(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_address = sse_decode_opt_String(deserializer);
+    var var_coordinate = sse_decode_opt_box_autoadd_coordinate(deserializer);
     var var_checkIn = sse_decode_Chrono_Utc(deserializer);
     var var_checkOut = sse_decode_Chrono_Utc(deserializer);
     return UpdateTripAccommodation(
         id: var_id,
         name: var_name,
         address: var_address,
+        coordinate: var_coordinate,
         checkIn: var_checkIn,
         checkOut: var_checkOut);
   }
@@ -7178,6 +7187,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_Uuid(self.id, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_opt_String(self.address, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinates, serializer);
     sse_encode_Chrono_Utc(self.checkIn, serializer);
     sse_encode_Chrono_Utc(self.checkOut, serializer);
     sse_encode_list_trip_attachment(self.attachments, serializer);
@@ -7278,6 +7288,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_Chrono_Utc(self.checkIn, serializer);
     sse_encode_opt_box_autoadd_Chrono_Utc(self.checkOut, serializer);
     sse_encode_opt_String(self.address, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinate, serializer);
   }
 
   @protected
@@ -9173,6 +9184,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_Uuid(self.id, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_opt_String(self.address, serializer);
+    sse_encode_opt_box_autoadd_coordinate(self.coordinate, serializer);
     sse_encode_Chrono_Utc(self.checkIn, serializer);
     sse_encode_Chrono_Utc(self.checkOut, serializer);
   }

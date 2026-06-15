@@ -4,7 +4,7 @@ use uuid::Uuid;
 use crate::commands::{AddTripAccommodation, UpdateTripAccommodation};
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
-use crate::models::{AccommodationModel};
+use crate::models::{AccommodationModel, Coordinate};
 
 pub struct AccommodationHandler {
     db: Database,
@@ -29,6 +29,8 @@ impl AccommodationHandler {
             address: Set(command.address),
             check_in: Set(command.check_in),
             check_out: Set(command.check_out),
+            coordinates_latitude: Set(command.coordinate.map(|c| c.latitude)),
+            coordinates_longitude: Set(command.coordinate.map(|c| c.longitude)),
         };
         
         repositories::accommodations::insert(&self.db, accommodation).await?;
@@ -44,6 +46,10 @@ impl AccommodationHandler {
             check_in: accommodation.check_in.unwrap(), // TODO: update database schema
             check_out: accommodation.check_out.unwrap(),
             address: accommodation.address,
+            coordinates: accommodation.coordinates_longitude.zip(accommodation.coordinates_latitude).map(|(longitude, latitude)| Coordinate {
+                longitude,
+                latitude,
+            }),
             attachments: vec![],
         }).collect();
         
@@ -59,6 +65,8 @@ impl AccommodationHandler {
         accommodation.address.set_if_not_equals(command.address);
         accommodation.check_in.set_if_not_equals(Some(command.check_in));
         accommodation.check_out.set_if_not_equals(Some(command.check_out));
+        accommodation.coordinates_latitude.set_if_not_equals(command.coordinate.map(|c| c.latitude));
+        accommodation.coordinates_longitude.set_if_not_equals(command.coordinate.map(|c| c.longitude));
 
         repositories::accommodations::update(&self.db, accommodation).await?;
 

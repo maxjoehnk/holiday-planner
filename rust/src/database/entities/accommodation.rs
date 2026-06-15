@@ -12,6 +12,8 @@ pub struct Model {
     pub check_in: Option<chrono::DateTime<chrono::Utc>>,
     pub check_out: Option<chrono::DateTime<chrono::Utc>>,
     pub address: Option<String>,
+    pub coordinates_latitude: Option<f64>,
+    pub coordinates_longitude: Option<f64>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -4,12 +4,15 @@ import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/map_tile_cache.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
+import 'package:holiday_planner/views/trip/map/accommodation_details.dart';
+import 'package:holiday_planner/views/trip/map/accommodation_marker.dart';
 import 'package:holiday_planner/views/trip/map/location_details.dart';
 import 'package:holiday_planner/views/trip/map/location_marker.dart';
 import 'package:holiday_planner/views/trip/map/poi_details.dart';
 import 'package:holiday_planner/views/trip/map/poi_marker.dart';
 import 'package:holiday_planner/views/trip/map/route_details.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/api/points_of_interest.dart';
 import 'package:holiday_planner/src/rust/api/routes.dart';
@@ -39,6 +42,10 @@ class _TripMapState extends State<TripMap> {
     fetch: () => getTripRoutes(tripId: widget.tripId),
     refreshOn: [DataChangeBus.instance.onRoutesChanged(widget.tripId)],
   );
+  late final _accommodations = RefreshableData<List<AccommodationModel>>(
+    fetch: () => getTripAccommodations(tripId: widget.tripId),
+    refreshOn: [DataChangeBus.instance.onAccommodationsChanged(widget.tripId)],
+  );
   final MapController _mapController = MapController();
 
   @override
@@ -46,6 +53,7 @@ class _TripMapState extends State<TripMap> {
     _locations.dispose();
     _pointsOfInterest.dispose();
     _routes.dispose();
+    _accommodations.dispose();
     super.dispose();
   }
 
@@ -62,6 +70,16 @@ class _TripMapState extends State<TripMap> {
     return pois
         .where((poi) => poi.coordinates != null)
         .map((poi) => PointOfInterestMarker(poi: poi, onTap: (poi) => _showPoiDetails(poi)))
+        .toList();
+  }
+
+  List<Marker> _buildAccommodationMarkers(List<AccommodationModel> accommodations) {
+    return accommodations
+        .where((a) => a.coordinates != null)
+        .map((a) => AccommodationMarker(
+              accommodation: a,
+              onTap: (a) => _showAccommodationDetails(a),
+            ))
         .toList();
   }
 
@@ -140,6 +158,21 @@ class _TripMapState extends State<TripMap> {
     );
   }
 
+  void _showAccommodationDetails(AccommodationModel accommodation) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.4,
+        minChildSize: 0.2,
+        maxChildSize: 0.8,
+        builder: (context, scrollController) => AccommodationMapDetails(
+            accommodation: accommodation, scrollController: scrollController),
+      ),
+    );
+  }
+
   void _showLocationDetails(TripLocationListModel location) {
     showModalBottomSheet(
       context: context,
@@ -159,6 +192,7 @@ class _TripMapState extends State<TripMap> {
     List<TripLocationListModel> locations,
     List<PointOfInterestModel> pois,
     List<RouteModel> routes,
+    List<AccommodationModel> accommodations,
   ) {
     final all = <LatLng>[];
     for (final location in locations) {
@@ -172,6 +206,11 @@ class _TripMapState extends State<TripMap> {
     for (final route in routes) {
       all.add(LatLng(route.startCoordinate.latitude, route.startCoordinate.longitude));
     }
+    for (final accommodation in accommodations) {
+      if (accommodation.coordinates != null) {
+        all.add(LatLng(accommodation.coordinates!.latitude, accommodation.coordinates!.longitude));
+      }
+    }
     return all;
   }
 
@@ -179,8 +218,9 @@ class _TripMapState extends State<TripMap> {
     List<TripLocationListModel> locations,
     List<PointOfInterestModel> pois,
     List<RouteModel> routes,
+    List<AccommodationModel> accommodations,
   ) {
-    final allPoints = _collectPoints(locations, pois, routes);
+    final allPoints = _collectPoints(locations, pois, routes, accommodations);
 
     if (allPoints.isEmpty) {
       return const LatLng(0, 0);
@@ -200,8 +240,9 @@ class _TripMapState extends State<TripMap> {
     List<TripLocationListModel> locations,
     List<PointOfInterestModel> pois,
     List<RouteModel> routes,
+    List<AccommodationModel> accommodations,
   ) {
-    final allPoints = _collectPoints(locations, pois, routes);
+    final allPoints = _collectPoints(locations, pois, routes, accommodations);
 
     if (allPoints.length <= 1) {
       return 10.0;
@@ -241,6 +282,9 @@ class _TripMapState extends State<TripMap> {
               return StreamBuilder<List<RouteModel>>(
                 stream: _routes.stream,
                 builder: (context, routesSnapshot) {
+                  return StreamBuilder<List<AccommodationModel>>(
+                    stream: _accommodations.stream,
+                    builder: (context, accommodationsSnapshot) {
               if (locationsSnapshot.hasError) {
                 return SliverToBoxAdapter(
                   child: Center(
@@ -287,6 +331,7 @@ class _TripMapState extends State<TripMap> {
               final locations = locationsSnapshot.requireData;
               final pois = poisSnapshot.data ?? [];
               final routes = routesSnapshot.data ?? [];
+              final accommodations = accommodationsSnapshot.data ?? [];
 
               if (locations.isEmpty) {
                 return SliverToBoxAdapter(
@@ -320,12 +365,13 @@ class _TripMapState extends State<TripMap> {
                 );
               }
 
-              final center = _calculateCenter(locations, pois, routes);
-              final zoom = _calculateZoom(locations, pois, routes);
+              final center = _calculateCenter(locations, pois, routes, accommodations);
+              final zoom = _calculateZoom(locations, pois, routes, accommodations);
               final markers = [
                 ..._buildLocationMarkers(locations),
                 ..._buildPoiMarkers(pois),
                 ..._buildRouteStartMarkers(routes),
+                ..._buildAccommodationMarkers(accommodations),
               ];
               final polylines = _buildRoutePolylines(routes);
 
@@ -352,6 +398,8 @@ class _TripMapState extends State<TripMap> {
                   ],
                 ),
               );
+                    },
+                  );
                 },
               );
             },

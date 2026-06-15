@@ -8,15 +8,18 @@ import 'package:holiday_planner/src/rust/commands/add_accommodation_attachment.d
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
+import 'package:holiday_planner/widgets/address_search_field.dart';
 import 'package:holiday_planner/widgets/attachment_card.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:uuid/uuid.dart';
 
 class EditAccommodation extends StatefulWidget {
+  final UuidValue tripId;
   final AccommodationModel accommodation;
 
-  const EditAccommodation({super.key, required this.accommodation});
+  const EditAccommodation({super.key, required this.tripId, required this.accommodation});
 
   @override
   State<EditAccommodation> createState() => _EditAccommodationState();
@@ -25,7 +28,8 @@ class EditAccommodation extends StatefulWidget {
 class _EditAccommodationState extends State<EditAccommodation> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
+  late String _address;
+  Coordinate? _coordinate;
   late DateTime checkInDate;
   late DateTime checkOutDate;
   bool _isLoading = false;
@@ -41,7 +45,8 @@ class _EditAccommodationState extends State<EditAccommodation> {
   void initState() {
     super.initState();
     _nameController.text = widget.accommodation.name;
-    _addressController.text = widget.accommodation.address ?? '';
+    _address = widget.accommodation.address ?? '';
+    _coordinate = widget.accommodation.coordinates;
     checkInDate = widget.accommodation.checkIn.toLocal();
     checkOutDate = widget.accommodation.checkOut.toLocal();
 
@@ -53,7 +58,6 @@ class _EditAccommodationState extends State<EditAccommodation> {
   @override
   void dispose() {
     _nameController.dispose();
-    _addressController.dispose();
     _attachmentNameController.dispose();
     _attachments.close();
     super.dispose();
@@ -251,15 +255,16 @@ class _EditAccommodationState extends State<EditAccommodation> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _addressController,
-                textInputAction: TextInputAction.next,
-                maxLines: 2,
-                decoration: AppInputDecoration(
-                  labelText: "Address (Optional)",
-                  hintText: "Street address or location",
-                  icon: Icons.location_on_outlined,
-                ),
+              AddressSearchField(
+                tripId: widget.tripId,
+                initialAddress: _address,
+                initialCoordinate: _coordinate,
+                labelText: "Address (Optional)",
+                hintText: "Search address or place",
+                onChanged: (address, coordinate) {
+                  _address = address;
+                  _coordinate = coordinate;
+                },
               ),
               const SizedBox(height: 24),
               Text(
@@ -614,7 +619,8 @@ class _EditAccommodationState extends State<EditAccommodation> {
       final command = UpdateTripAccommodation(
         id: widget.accommodation.id,
         name: _nameController.text.trim(),
-        address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
+        address: _address.trim().isEmpty ? null : _address.trim(),
+        coordinate: _coordinate,
         checkIn: checkInDate,
         checkOut: checkOutDate,
       );

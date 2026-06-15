@@ -14,6 +14,7 @@ class AccommodationModel {
   final UuidValue id;
   final String name;
   final String? address;
+  final Coordinate? coordinates;
   final DateTime checkIn;
   final DateTime checkOut;
   final List<TripAttachment> attachments;
@@ -22,6 +23,7 @@ class AccommodationModel {
     required this.id,
     required this.name,
     this.address,
+    this.coordinates,
     required this.checkIn,
     required this.checkOut,
     required this.attachments,
@@ -32,6 +34,7 @@ class AccommodationModel {
       id.hashCode ^
       name.hashCode ^
       address.hashCode ^
+      coordinates.hashCode ^
       checkIn.hashCode ^
       checkOut.hashCode ^
       attachments.hashCode;
@@ -44,6 +47,7 @@ class AccommodationModel {
           id == other.id &&
           name == other.name &&
           address == other.address &&
+          coordinates == other.coordinates &&
           checkIn == other.checkIn &&
           checkOut == other.checkOut &&
           attachments == other.attachments;

@@ -148,6 +148,7 @@ pub struct AccommodationModel {
     pub id: Uuid,
     pub name: String,
     pub address: Option<String>,
+    pub coordinates: Option<Coordinate>,
     pub check_in: DateTime<Utc>,
     pub check_out: DateTime<Utc>,
     pub attachments: Vec<TripAttachment>,

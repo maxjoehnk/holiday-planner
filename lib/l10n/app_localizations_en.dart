@@ -537,6 +537,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pointOfInterestLabel => 'Point of Interest';
 
   @override
+  String get accommodationLabel => 'Accommodation';
+
+  @override
+  String get checkInLabel => 'Check-in';
+
+  @override
+  String get checkOutLabel => 'Check-out';
+
+  @override
   String get notesLabel => 'Notes';
 
   @override

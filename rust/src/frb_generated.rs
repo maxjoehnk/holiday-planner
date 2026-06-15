@@ -3041,6 +3041,7 @@ impl SseDecode for crate::models::AccommodationModel {
         let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_address = <Option<String>>::sse_decode(deserializer);
+        let mut var_coordinates = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
         let mut var_checkIn = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
         let mut var_checkOut = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
         let mut var_attachments = <Vec<crate::models::TripAttachment>>::sse_decode(deserializer);
@@ -3048,6 +3049,7 @@ impl SseDecode for crate::models::AccommodationModel {
             id: var_id,
             name: var_name,
             address: var_address,
+            coordinates: var_coordinates,
             check_in: var_checkIn,
             check_out: var_checkOut,
             attachments: var_attachments,
@@ -3215,12 +3217,14 @@ impl SseDecode for crate::commands::add_trip_accommodation::AddTripAccommodation
         let mut var_checkIn = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_checkOut = <Option<chrono::DateTime<chrono::Utc>>>::sse_decode(deserializer);
         let mut var_address = <Option<String>>::sse_decode(deserializer);
+        let mut var_coordinate = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
         return crate::commands::add_trip_accommodation::AddTripAccommodation {
             trip_id: var_tripId,
             name: var_name,
             check_in: var_checkIn,
             check_out: var_checkOut,
             address: var_address,
+            coordinate: var_coordinate,
         };
     }
 }
@@ -5502,12 +5506,14 @@ impl SseDecode for crate::commands::update_trip_accommodation::UpdateTripAccommo
         let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_address = <Option<String>>::sse_decode(deserializer);
+        let mut var_coordinate = <Option<crate::models::Coordinate>>::sse_decode(deserializer);
         let mut var_checkIn = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
         let mut var_checkOut = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
         return crate::commands::update_trip_accommodation::UpdateTripAccommodation {
             id: var_id,
             name: var_name,
             address: var_address,
+            coordinate: var_coordinate,
             check_in: var_checkIn,
             check_out: var_checkOut,
         };
@@ -5842,6 +5848,7 @@ impl flutter_rust_bridge::IntoDart for crate::models::AccommodationModel {
             self.id.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
             self.address.into_into_dart().into_dart(),
+            self.coordinates.into_into_dart().into_dart(),
             self.check_in.into_into_dart().into_dart(),
             self.check_out.into_into_dart().into_dart(),
             self.attachments.into_into_dart().into_dart(),
@@ -6075,6 +6082,7 @@ impl flutter_rust_bridge::IntoDart
             self.check_in.into_into_dart().into_dart(),
             self.check_out.into_into_dart().into_dart(),
             self.address.into_into_dart().into_dart(),
+            self.coordinate.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -8167,6 +8175,7 @@ impl flutter_rust_bridge::IntoDart
             self.id.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
             self.address.into_into_dart().into_dart(),
+            self.coordinate.into_into_dart().into_dart(),
             self.check_in.into_into_dart().into_dart(),
             self.check_out.into_into_dart().into_dart(),
         ]
@@ -8336,6 +8345,7 @@ impl SseEncode for crate::models::AccommodationModel {
         <uuid::Uuid>::sse_encode(self.id, serializer);
         <String>::sse_encode(self.name, serializer);
         <Option<String>>::sse_encode(self.address, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinates, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_in, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_out, serializer);
         <Vec<crate::models::TripAttachment>>::sse_encode(self.attachments, serializer);
@@ -8448,6 +8458,7 @@ impl SseEncode for crate::commands::add_trip_accommodation::AddTripAccommodation
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.check_in, serializer);
         <Option<chrono::DateTime<chrono::Utc>>>::sse_encode(self.check_out, serializer);
         <Option<String>>::sse_encode(self.address, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinate, serializer);
     }
 }
 
@@ -10137,6 +10148,7 @@ impl SseEncode for crate::commands::update_trip_accommodation::UpdateTripAccommo
         <uuid::Uuid>::sse_encode(self.id, serializer);
         <String>::sse_encode(self.name, serializer);
         <Option<String>>::sse_encode(self.address, serializer);
+        <Option<crate::models::Coordinate>>::sse_encode(self.coordinate, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_in, serializer);
         <chrono::DateTime<chrono::Utc>>::sse_encode(self.check_out, serializer);
     }

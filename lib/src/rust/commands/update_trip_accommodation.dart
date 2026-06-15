@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,6 +12,7 @@ class UpdateTripAccommodation {
   final UuidValue id;
   final String name;
   final String? address;
+  final Coordinate? coordinate;
   final DateTime checkIn;
   final DateTime checkOut;
 
@@ -18,6 +20,7 @@ class UpdateTripAccommodation {
     required this.id,
     required this.name,
     this.address,
+    this.coordinate,
     required this.checkIn,
     required this.checkOut,
   });
@@ -27,6 +30,7 @@ class UpdateTripAccommodation {
       id.hashCode ^
       name.hashCode ^
       address.hashCode ^
+      coordinate.hashCode ^
       checkIn.hashCode ^
       checkOut.hashCode;
 
@@ -38,6 +42,7 @@ class UpdateTripAccommodation {
           id == other.id &&
           name == other.name &&
           address == other.address &&
+          coordinate == other.coordinate &&
           checkIn == other.checkIn &&
           checkOut == other.checkOut;
 }

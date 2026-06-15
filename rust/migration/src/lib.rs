@@ -14,6 +14,7 @@ mod m20250730_110700_add_weather_timestamp;
 mod m20250822_224756_add_poi_coordinates;
 mod m20260614_120000_routes;
 mod m20260614_130000_trip_days;
+mod m20260615_120000_add_accommodation_coordinates;
 
 pub struct Migrator;
 
@@ -35,6 +36,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250822_224756_add_poi_coordinates::Migration),
             Box::new(m20260614_120000_routes::Migration),
             Box::new(m20260614_130000_trip_days::Migration),
+            Box::new(m20260615_120000_add_accommodation_coordinates::Migration),
         ]
     }
 }

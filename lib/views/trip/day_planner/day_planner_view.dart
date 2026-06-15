@@ -221,7 +221,7 @@ class _DayPlannerViewState extends State<DayPlannerView> {
     if (match == null) {
       return null;
     }
-    return MaterialPageRoute(builder: (_) => EditAccommodation(accommodation: match));
+    return MaterialPageRoute(builder: (_) => EditAccommodation(tripId: tripId, accommodation: match));
   }
 
   Future<MaterialPageRoute?> _trainRoute(

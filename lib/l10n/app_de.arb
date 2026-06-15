@@ -135,6 +135,9 @@
   "errorDeletingPointOfInterest": "Fehler beim Löschen der Sehenswürdigkeit: {message}",
 
   "pointOfInterestLabel": "Sehenswürdigkeit",
+  "accommodationLabel": "Unterkunft",
+  "checkInLabel": "Check-in",
+  "checkOutLabel": "Check-out",
   "notesLabel": "Notizen",
 
   "noWeatherData": "Keine Wetterdaten",

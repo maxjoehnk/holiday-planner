@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,6 +14,7 @@ class AddTripAccommodation {
   final DateTime? checkIn;
   final DateTime? checkOut;
   final String? address;
+  final Coordinate? coordinate;
 
   const AddTripAccommodation({
     required this.tripId,
@@ -20,6 +22,7 @@ class AddTripAccommodation {
     this.checkIn,
     this.checkOut,
     this.address,
+    this.coordinate,
   });
 
   @override
@@ -28,7 +31,8 @@ class AddTripAccommodation {
       name.hashCode ^
       checkIn.hashCode ^
       checkOut.hashCode ^
-      address.hashCode;
+      address.hashCode ^
+      coordinate.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -39,5 +43,6 @@ class AddTripAccommodation {
           name == other.name &&
           checkIn == other.checkIn &&
           checkOut == other.checkOut &&
-          address == other.address;
+          address == other.address &&
+          coordinate == other.coordinate;
 }

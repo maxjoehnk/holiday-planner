@@ -127,7 +127,7 @@ class _TripAccommodationsState extends State<TripAccommodations> {
 
   void _editAccommodation(BuildContext context, AccommodationModel accommodation) async {
     await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => EditAccommodation(accommodation: accommodation)));
+        MaterialPageRoute(builder: (context) => EditAccommodation(tripId: widget.tripId, accommodation: accommodation)));
   }
 }
 

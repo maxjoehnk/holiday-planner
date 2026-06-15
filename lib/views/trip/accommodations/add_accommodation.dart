@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/commands/add_trip_accommodation.dart';
+import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/widgets/accommodation_summary_card.dart';
+import 'package:holiday_planner/widgets/address_search_field.dart';
 import 'package:holiday_planner/widgets/date_time_picker.dart';
 import 'package:holiday_planner/widgets/form_field.dart';
 import 'package:uuid/uuid.dart';
@@ -19,7 +21,8 @@ class AddAccommodation extends StatefulWidget {
 class _AddAccommodationState extends State<AddAccommodation> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
+  String _address = '';
+  Coordinate? _coordinate;
   DateTime checkInDate = DateTime.now();
   DateTime checkOutDate = DateTime.now().add(const Duration(days: 1));
   bool _isLoading = false;
@@ -129,19 +132,14 @@ class _AddAccommodationState extends State<AddAccommodation> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _addressController,
-                textInputAction: TextInputAction.next,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  labelText: "Address (Optional)",
-                  hintText: "Street address or location",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.location_on_outlined),
-                  alignLabelWithHint: true,
-                ),
+              AddressSearchField(
+                tripId: widget.tripId,
+                labelText: "Address (Optional)",
+                hintText: "Search address or place",
+                onChanged: (address, coordinate) {
+                  _address = address;
+                  _coordinate = coordinate;
+                },
               ),
               const SizedBox(height: 24),
               Text(
@@ -312,8 +310,8 @@ class _AddAccommodationState extends State<AddAccommodation> {
       await addTripAccommodation(
         command: AddTripAccommodation(
           name: _nameController.text,
-          address:
-              _addressController.text.isEmpty ? null : _addressController.text,
+          address: _address.isEmpty ? null : _address,
+          coordinate: _coordinate,
           tripId: widget.tripId,
           checkIn: checkInDate,
           checkOut: checkOutDate,

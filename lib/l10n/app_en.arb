@@ -350,6 +350,12 @@
 
   "pointOfInterestLabel": "Point of Interest",
   "@pointOfInterestLabel": {"description": "Singular label for a point of interest chip/header"},
+  "accommodationLabel": "Accommodation",
+  "@accommodationLabel": {"description": "Singular label for an accommodation chip/header"},
+  "checkInLabel": "Check-in",
+  "@checkInLabel": {"description": "Label for accommodation check-in datetime"},
+  "checkOutLabel": "Check-out",
+  "@checkOutLabel": {"description": "Label for accommodation check-out datetime"},
   "notesLabel": "Notes",
   "@notesLabel": {"description": "Label for notes section"},
 

@@ -3,18 +3,22 @@ import 'package:flutter_map/flutter_map.dart';
 
 class MapMarker extends Marker {
   MapMarker(
-      {required super.point, required Color color, final Function()? onTap})
+      {required super.point,
+      required Color color,
+      IconData icon = Icons.location_on,
+      final Function()? onTap})
       : super(
             width: 40,
             height: 40,
-            child: _MapMarker(color: color, onTap: onTap));
+            child: _MapMarker(color: color, icon: icon, onTap: onTap));
 }
 
 class _MapMarker extends StatelessWidget {
   final Color color;
+  final IconData icon;
   final Function()? onTap;
 
-  const _MapMarker({required this.color, this.onTap});
+  const _MapMarker({required this.color, required this.icon, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,7 @@ class _MapMarker extends StatelessWidget {
           ],
         ),
         child: Icon(
-          Icons.location_on,
+          icon,
           color: colorScheme.onPrimary,
           size: 24,
         ),

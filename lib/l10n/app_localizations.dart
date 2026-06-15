@@ -1028,6 +1028,24 @@ abstract class AppLocalizations {
   /// **'Point of Interest'**
   String get pointOfInterestLabel;
 
+  /// Singular label for an accommodation chip/header
+  ///
+  /// In en, this message translates to:
+  /// **'Accommodation'**
+  String get accommodationLabel;
+
+  /// Label for accommodation check-in datetime
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get checkInLabel;
+
+  /// Label for accommodation check-out datetime
+  ///
+  /// In en, this message translates to:
+  /// **'Check-out'**
+  String get checkOutLabel;
+
   /// Label for notes section
   ///
   /// In en, this message translates to:
