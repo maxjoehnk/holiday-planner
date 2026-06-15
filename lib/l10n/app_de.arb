@@ -131,6 +131,9 @@
   "editTripTitle": "Reise bearbeiten",
   "deleteTripTitle": "Reise löschen",
 
+  "editLabel": "Bearbeiten",
+  "@editLabel": {"description": "Generic edit action label, e.g. on icon buttons"},
+
   "pointsOfInterestTitle": "Sehenswürdigkeiten",
   "addPointOfInterest": "Sehenswürdigkeit hinzufügen",
   "editPointOfInterestTitle": "Sehenswürdigkeit bearbeiten",

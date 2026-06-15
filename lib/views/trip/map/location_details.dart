@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:holiday_planner/views/trip/map/sheet_top_bar.dart';
 
 class LocationMapDetails extends StatelessWidget {
   final TripLocationListModel location;
   final ScrollController scrollController;
+  final VoidCallback? onEdit;
 
-  const LocationMapDetails({required this.location, required this.scrollController, super.key});
+  const LocationMapDetails({required this.location, required this.scrollController, this.onEdit, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +25,8 @@ class LocationMapDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colorScheme.secondaryFixedDim,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          SheetTopBar(onEdit: onEdit),
+          const SizedBox(height: 8),
           Text(
             location.city,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(

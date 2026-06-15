@@ -347,6 +347,9 @@
   "editTripTitle": "Edit Trip",
   "deleteTripTitle": "Delete Trip",
 
+  "editLabel": "Edit",
+  "@editLabel": {"description": "Generic edit action label, e.g. on icon buttons"},
+
   "pointsOfInterestTitle": "Points of Interest",
   "addPointOfInterest": "Add Point of Interest",
   "editPointOfInterestTitle": "Edit Point of Interest",

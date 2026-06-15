@@ -527,6 +527,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteTripTitle => 'Reise löschen';
 
   @override
+  String get editLabel => 'Bearbeiten';
+
+  @override
   String get pointsOfInterestTitle => 'Sehenswürdigkeiten';
 
   @override

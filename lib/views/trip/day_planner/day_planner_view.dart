@@ -18,13 +18,15 @@ import 'package:holiday_planner/views/trip/activities/edit_point_of_interest.dar
 import 'package:holiday_planner/views/trip/activities/route_detail.dart';
 import 'package:holiday_planner/views/trip/bookings/edit_car_rental.dart';
 import 'package:holiday_planner/views/trip/bookings/edit_reservation.dart';
+import 'package:holiday_planner/views/trip/map/accommodation_details.dart';
+import 'package:holiday_planner/views/trip/map/poi_details.dart';
+import 'package:holiday_planner/views/trip/map/route_details.dart';
 import 'package:holiday_planner/views/trip/transits/edit_train.dart';
 import 'package:uuid/uuid.dart';
 
 import 'add_to_day_sheet.dart';
 import 'day_card.dart';
 import 'day_picker_sheet.dart';
-import 'day_planner_types.dart';
 import 'unassigned_panel.dart';
 
 class _PlannerData {
@@ -175,53 +177,125 @@ class _DayPlannerViewState extends State<DayPlannerView> {
   }
 
   Future<void> _openItemDetail(DayItemDetails details) async {
-    final navigator = Navigator.of(context);
     final tripId = widget.tripId;
-    final route = await details.map(
+    await details.map(
       pointOfInterest: (d) async {
         final list = await getTripPointsOfInterest(tripId: tripId);
         final match = list.where((poi) => poi.id == d.id).firstOrNull;
-        if (match == null) {
-          return null;
+        if (match == null || !mounted) {
+          return;
         }
-        return MaterialPageRoute(
-          builder: (_) => EditPointOfInterest(pointOfInterest: match),
+        await _showDetailsSheet(
+          (sheetContext, controller) => PointOfInterestMapDetails(
+            poi: match,
+            scrollController: controller,
+            onEdit: () => _editFromSheet(
+              sheetContext,
+              MaterialPageRoute(
+                builder: (_) => EditPointOfInterest(pointOfInterest: match),
+              ),
+            ),
+          ),
         );
       },
       route: (d) async {
         final list = await getTripRoutes(tripId: tripId);
         final match = list.where((r) => r.id == d.id).firstOrNull;
-        if (match == null) {
-          return null;
+        if (match == null || !mounted) {
+          return;
         }
-        return MaterialPageRoute(builder: (_) => RouteDetail(route: match));
+        await _showDetailsSheet(
+          (sheetContext, controller) => RouteMapDetails(
+            route: match,
+            scrollController: controller,
+            onEdit: () => _editFromSheet(
+              sheetContext,
+              MaterialPageRoute(builder: (_) => RouteDetail(route: match)),
+            ),
+          ),
+        );
       },
       accommodationCheckIn: (d) =>
-          _accommodationRoute(tripId, d.accommodationId),
+          _showAccommodationSheet(tripId, d.accommodationId),
       accommodationCheckOut: (d) =>
-          _accommodationRoute(tripId, d.accommodationId),
+          _showAccommodationSheet(tripId, d.accommodationId),
       accommodationStay: (d) =>
-          _accommodationRoute(tripId, d.accommodationId),
-      trainDeparture: (d) => _trainRoute(tripId, d.trainId),
-      trainArrival: (d) => _trainRoute(tripId, d.trainId),
-      reservation: (d) => _reservationRoute(tripId, d.reservationId),
-      carRentalPickUp: (d) => _carRentalRoute(tripId, d.carRentalId),
-      carRentalDropOff: (d) => _carRentalRoute(tripId, d.carRentalId),
+          _showAccommodationSheet(tripId, d.accommodationId),
+      trainDeparture: (d) => _pushTrain(tripId, d.trainId),
+      trainArrival: (d) => _pushTrain(tripId, d.trainId),
+      reservation: (d) => _pushReservation(tripId, d.reservationId),
+      carRentalPickUp: (d) => _pushCarRental(tripId, d.carRentalId),
+      carRentalDropOff: (d) => _pushCarRental(tripId, d.carRentalId),
     );
+  }
+
+  Future<void> _showDetailsSheet(
+      Widget Function(BuildContext sheetContext, ScrollController controller)
+          builder) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => DraggableScrollableSheet(
+        initialChildSize: 0.4,
+        minChildSize: 0.2,
+        maxChildSize: 0.8,
+        builder: (context, scrollController) =>
+            builder(sheetContext, scrollController),
+      ),
+    );
+  }
+
+  void _editFromSheet(BuildContext sheetContext, MaterialPageRoute route) {
+    final navigator = Navigator.of(context);
+    Navigator.of(sheetContext).pop();
+    navigator.push(route);
+  }
+
+  Future<void> _showAccommodationSheet(
+      UuidValue tripId, UuidValue accommodationId) async {
+    final list = await getTripAccommodations(tripId: tripId);
+    final match = list.where((a) => a.id == accommodationId).firstOrNull;
+    if (match == null || !mounted) {
+      return;
+    }
+    await _showDetailsSheet(
+      (sheetContext, controller) => AccommodationMapDetails(
+        accommodation: match,
+        scrollController: controller,
+        onEdit: () => _editFromSheet(
+          sheetContext,
+          MaterialPageRoute(
+            builder: (_) =>
+                EditAccommodation(tripId: tripId, accommodation: match),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pushTrain(UuidValue tripId, UuidValue id) async {
+    final route = await _trainRoute(tripId, id);
     if (!mounted || route == null) {
       return;
     }
-    await navigator.push(route);
+    await Navigator.of(context).push(route);
   }
 
-  Future<MaterialPageRoute?> _accommodationRoute(
-      UuidValue tripId, UuidValue id) async {
-    final list = await getTripAccommodations(tripId: tripId);
-    final match = list.where((a) => a.id == id).firstOrNull;
-    if (match == null) {
-      return null;
+  Future<void> _pushReservation(UuidValue tripId, UuidValue id) async {
+    final route = await _reservationRoute(tripId, id);
+    if (!mounted || route == null) {
+      return;
     }
-    return MaterialPageRoute(builder: (_) => EditAccommodation(tripId: tripId, accommodation: match));
+    await Navigator.of(context).push(route);
+  }
+
+  Future<void> _pushCarRental(UuidValue tripId, UuidValue id) async {
+    final route = await _carRentalRoute(tripId, id);
+    if (!mounted || route == null) {
+      return;
+    }
+    await Navigator.of(context).push(route);
   }
 
   Future<MaterialPageRoute?> _trainRoute(

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/models/routes.dart';
+import 'package:holiday_planner/views/trip/map/sheet_top_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RouteMapDetails extends StatelessWidget {
   final RouteModel route;
   final ScrollController scrollController;
+  final VoidCallback? onEdit;
 
   const RouteMapDetails({
     super.key,
     required this.route,
     required this.scrollController,
+    this.onEdit,
   });
 
   @override
@@ -28,30 +31,23 @@ class RouteMapDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: colorScheme.secondaryFixedDim,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(_sportIcon(route.sport),
-                    color: colorScheme.primary, size: 24),
-                const SizedBox(width: 8),
-                Text(
-                  _providerLabel(route.provider),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.secondary,
-                    fontWeight: FontWeight.w500,
+            SheetTopBar(
+              onEdit: onEdit,
+              leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(_sportIcon(route.sport),
+                      color: colorScheme.primary, size: 20),
+                  const SizedBox(width: 6),
+                  Text(
+                    _providerLabel(route.provider),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.secondary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             Text(

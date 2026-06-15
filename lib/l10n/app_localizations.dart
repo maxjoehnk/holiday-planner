@@ -1010,6 +1010,12 @@ abstract class AppLocalizations {
   /// **'Delete Trip'**
   String get deleteTripTitle;
 
+  /// Generic edit action label, e.g. on icon buttons
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editLabel;
+
   /// No description provided for @pointsOfInterestTitle.
   ///
   /// In en, this message translates to:

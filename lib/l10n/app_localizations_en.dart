@@ -524,6 +524,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteTripTitle => 'Delete Trip';
 
   @override
+  String get editLabel => 'Edit';
+
+  @override
   String get pointsOfInterestTitle => 'Points of Interest';
 
   @override

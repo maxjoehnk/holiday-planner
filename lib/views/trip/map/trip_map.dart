@@ -4,6 +4,10 @@ import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:holiday_planner/services/data_change_bus.dart';
 import 'package:holiday_planner/services/map_tile_cache.dart';
 import 'package:holiday_planner/services/refreshable_data.dart';
+import 'package:holiday_planner/views/trip/accommodations/edit_accommodation.dart';
+import 'package:holiday_planner/views/trip/activities/edit_point_of_interest.dart';
+import 'package:holiday_planner/views/trip/activities/route_detail.dart';
+import 'package:holiday_planner/views/trip/locations/location_detail_view.dart';
 import 'package:holiday_planner/views/trip/map/accommodation_details.dart';
 import 'package:holiday_planner/views/trip/map/accommodation_marker.dart';
 import 'package:holiday_planner/views/trip/map/location_details.dart';
@@ -129,61 +133,82 @@ class _TripMapState extends State<TripMap> {
     return colorScheme.primary;
   }
 
-  void _openRouteDetail(RouteModel route) {
+  void _showDetailsSheet(
+      Widget Function(BuildContext sheetContext, ScrollController controller)
+          builder) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
+      builder: (sheetContext) => DraggableScrollableSheet(
         initialChildSize: 0.4,
         minChildSize: 0.2,
         maxChildSize: 0.8,
         builder: (context, scrollController) =>
-            RouteMapDetails(route: route, scrollController: scrollController),
+            builder(sheetContext, scrollController),
+      ),
+    );
+  }
+
+  void _editFromSheet(BuildContext sheetContext, MaterialPageRoute route) {
+    final navigator = Navigator.of(context);
+    Navigator.of(sheetContext).pop();
+    navigator.push(route);
+  }
+
+  void _openRouteDetail(RouteModel route) {
+    _showDetailsSheet(
+      (sheetContext, scrollController) => RouteMapDetails(
+        route: route,
+        scrollController: scrollController,
+        onEdit: () => _editFromSheet(
+          sheetContext,
+          MaterialPageRoute(builder: (_) => RouteDetail(route: route)),
+        ),
       ),
     );
   }
 
   void _showPoiDetails(PointOfInterestModel poi) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.4,
-        minChildSize: 0.2,
-        maxChildSize: 0.8,
-        builder: (context, scrollController) => PointOfInterestMapDetails(poi: poi, scrollController: scrollController),
+    _showDetailsSheet(
+      (sheetContext, scrollController) => PointOfInterestMapDetails(
+        poi: poi,
+        scrollController: scrollController,
+        onEdit: () => _editFromSheet(
+          sheetContext,
+          MaterialPageRoute(
+              builder: (_) => EditPointOfInterest(pointOfInterest: poi)),
+        ),
       ),
     );
   }
 
   void _showAccommodationDetails(AccommodationModel accommodation) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.4,
-        minChildSize: 0.2,
-        maxChildSize: 0.8,
-        builder: (context, scrollController) => AccommodationMapDetails(
-            accommodation: accommodation, scrollController: scrollController),
+    _showDetailsSheet(
+      (sheetContext, scrollController) => AccommodationMapDetails(
+        accommodation: accommodation,
+        scrollController: scrollController,
+        onEdit: () => _editFromSheet(
+          sheetContext,
+          MaterialPageRoute(
+            builder: (_) => EditAccommodation(
+                tripId: widget.tripId, accommodation: accommodation),
+          ),
+        ),
       ),
     );
   }
 
   void _showLocationDetails(TripLocationListModel location) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.4,
-        minChildSize: 0.2,
-        maxChildSize: 0.8,
-        builder: (context, scrollController) =>
-            LocationMapDetails(location: location, scrollController: scrollController),
+    _showDetailsSheet(
+      (sheetContext, scrollController) => LocationMapDetails(
+        location: location,
+        scrollController: scrollController,
+        onEdit: () => _editFromSheet(
+          sheetContext,
+          MaterialPageRoute(
+              builder: (_) => LocationDetailView(locationId: location.id)),
+        ),
       ),
     );
   }

@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:holiday_planner/views/trip/map/sheet_top_bar.dart';
 
 class PointOfInterestMapDetails extends StatelessWidget {
   final PointOfInterestModel poi;
   final ScrollController scrollController;
+  final VoidCallback? onEdit;
 
   const PointOfInterestMapDetails(
-      {required this.poi, required this.scrollController, super.key});
+      {required this.poi, required this.scrollController, this.onEdit, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,30 +27,23 @@ class PointOfInterestMapDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: colorScheme.secondaryFixedDim,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+            SheetTopBar(
+              onEdit: onEdit,
+              leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.place,
+                      color: POINTS_OF_INTERESTS_COLOR, size: 20),
+                  const SizedBox(width: 6),
+                  Text(
+                    AppLocalizations.of(context)!.pointOfInterestLabel,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.secondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Icon(Icons.place,
-                    color: POINTS_OF_INTERESTS_COLOR, size: 24),
-                const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.pointOfInterestLabel,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.secondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
-              ],
             ),
             const SizedBox(height: 8),
             Text(

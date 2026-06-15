@@ -3,13 +3,15 @@ import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:holiday_planner/views/trip/map/sheet_top_bar.dart';
 
 class AccommodationMapDetails extends StatelessWidget {
   final AccommodationModel accommodation;
   final ScrollController scrollController;
+  final VoidCallback? onEdit;
 
   const AccommodationMapDetails(
-      {required this.accommodation, required this.scrollController, super.key});
+      {required this.accommodation, required this.scrollController, this.onEdit, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,30 +30,23 @@ class AccommodationMapDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: colorScheme.secondaryFixedDim,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+            SheetTopBar(
+              onEdit: onEdit,
+              leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.hotel,
+                      color: ACCOMMODATIONS_COLOR, size: 20),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.accommodationLabel,
+                    style: textTheme.bodySmall?.copyWith(
+                          color: colorScheme.secondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Icon(Icons.hotel,
-                    color: ACCOMMODATIONS_COLOR, size: 24),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.accommodationLabel,
-                  style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.secondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
-              ],
             ),
             const SizedBox(height: 8),
             Text(
