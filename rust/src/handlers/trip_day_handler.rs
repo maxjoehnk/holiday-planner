@@ -237,9 +237,11 @@ impl TripDayHandler {
         }
 
         let weather_by_location = self.load_weather_by_location(trip_id).await?;
+        let weather_by_accommodation = self.load_weather_by_accommodation(trip_id).await?;
         tracing::debug!(
             trip_id = %trip_id,
-            entries = weather_by_location.len(),
+            location_entries = weather_by_location.len(),
+            accommodation_entries = weather_by_accommodation.len(),
             "trip_day_handler: loaded weather map"
         );
 
@@ -261,17 +263,26 @@ impl TripDayHandler {
                 .iter()
                 .find(|l| l.is_primary)
                 .or_else(|| locations.first());
-            let weather = primary_location
+            let location_weather = primary_location
                 .and_then(|loc| weather_by_location.get(&(loc.location_id, current)))
                 .cloned();
-            if primary_location.is_some() && weather.is_none() {
-                tracing::debug!(
-                    date = %current,
-                    location_id = ?primary_location.map(|l| l.location_id),
-                    available_keys = ?weather_by_location.keys().collect::<Vec<_>>(),
-                    "trip_day_handler: no weather match for day"
-                );
-            }
+            let weather = location_weather.or_else(|| {
+                if primary_location.is_some() {
+                    return None;
+                }
+                accommodations
+                    .iter()
+                    .find(|a| match (a.check_in, a.check_out) {
+                        (Some(check_in), Some(check_out)) => {
+                            let in_date = to_local_date(check_in);
+                            let out_date = to_local_date(check_out);
+                            current >= in_date && current <= out_date
+                        }
+                        _ => false,
+                    })
+                    .and_then(|a| weather_by_accommodation.get(&(a.id, current)))
+                    .cloned()
+            });
 
             let mut items = items_by_date.remove(&current).unwrap_or_default();
             if let Some(day) = trip_day {
@@ -620,18 +631,42 @@ impl TripDayHandler {
 
         let mut map = HashMap::new();
         for (location, (daily, _hourly)) in locations.iter().zip(forecasts.into_iter()) {
-            tracing::debug!(
-                location_id = %location.id,
-                city = %location.city,
-                daily_count = daily.len(),
-                last_updated = ?location.weather_information_last_updated,
-                "trip_day_handler: loaded forecast for location"
-            );
             for day in daily {
                 map.insert(
                     (location.id, to_local_date(day.day)),
                     DayWeather {
                         location_id: location.id,
+                        min_temperature: day.min_temperature,
+                        max_temperature: day.max_temperature,
+                        condition: day.condition.into(),
+                        precipitation_amount: day.precipitation_amount,
+                        precipitation_probability: day.precipitation_probability,
+                    },
+                );
+            }
+        }
+        Ok(map)
+    }
+
+    async fn load_weather_by_accommodation(
+        &self,
+        trip_id: Uuid,
+    ) -> anyhow::Result<HashMap<(Uuid, NaiveDate), DayWeather>> {
+        let accommodations =
+            repositories::accommodations::find_all_by_trip(&self.db, trip_id).await?;
+        let forecasts = repositories::weather_forecasts::load_forecasts_for_accommodations(
+            &self.db,
+            &accommodations,
+        )
+        .await?;
+
+        let mut map = HashMap::new();
+        for (accommodation, (daily, _hourly)) in accommodations.iter().zip(forecasts.into_iter()) {
+            for day in daily {
+                map.insert(
+                    (accommodation.id, to_local_date(day.day)),
+                    DayWeather {
+                        location_id: accommodation.id,
                         min_temperature: day.min_temperature,
                         max_temperature: day.max_temperature,
                         condition: day.condition.into(),

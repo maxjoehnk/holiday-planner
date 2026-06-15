@@ -1,6 +1,7 @@
 use anyhow::Context;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{DbErr, TransactionTrait};
+use uuid::Uuid;
 use crate::api::events::{self, DataChangeEvent};
 use crate::database::{Database, repositories, entities};
 use crate::jobs::Job;
@@ -19,38 +20,110 @@ impl WeatherSyncJob {
     }
 }
 
+#[derive(Copy, Clone, Debug)]
+enum ForecastOwner {
+    Location { id: Uuid },
+    Accommodation { id: Uuid },
+}
+
+impl ForecastOwner {
+    fn id(&self) -> Uuid {
+        match self {
+            ForecastOwner::Location { id } | ForecastOwner::Accommodation { id } => *id,
+        }
+    }
+}
+
 impl Job for WeatherSyncJob {
     async fn run(&self) -> anyhow::Result<()> {
         tracing::info!("Running weather sync job");
-        
+
         let locations_to_update = repositories::locations::find_locations_for_upcoming_trips_needing_weather_update(&self.db, 1).await.context("Fetching locations needing weather data updates")?;
-        
         tracing::info!("Found {} locations needing weather data updates (outdated or missing)", locations_to_update.len());
-        
-        if locations_to_update.is_empty() {
-            tracing::info!("All locations have up-to-date weather information");
-            return Ok(());
-        }
-        
+
         for location in locations_to_update {
             tracing::debug!("Fetching forecast for location {} - {}", location.city, location.country);
             let coordinates = Coordinate {
                 latitude: location.coordinates_latitude,
                 longitude: location.coordinates_longitude,
             };
-            let weather = openweathermap::get_forecast(&coordinates).await.context("Fetching forecast")?;
-            let forecast = WeatherForecast::from(weather);
-            let forecast_id = uuid::Uuid::new_v4();
-            let location_id = location.id;
-            let trip_id = location.trip_id;
-            let location_forecast = entities::weather_forecast::ActiveModel {
-                location_id: Set(location_id),
-                id: Set(forecast_id),
+            if let Err(error) = self
+                .sync_forecast(
+                    location.trip_id,
+                    ForecastOwner::Location { id: location.id },
+                    coordinates,
+                )
+                .await
+            {
+                tracing::warn!("Weather sync failed for location {}: {:#}", location.id, error);
+            }
+        }
+
+        let accommodations_to_update = repositories::accommodations::find_for_upcoming_trips_needing_weather_update(&self.db, 1).await.context("Fetching accommodations needing weather data updates")?;
+        tracing::info!("Found {} accommodations needing weather data updates", accommodations_to_update.len());
+
+        for accommodation in accommodations_to_update {
+            let (Some(latitude), Some(longitude)) = (
+                accommodation.coordinates_latitude,
+                accommodation.coordinates_longitude,
+            ) else {
+                continue;
             };
-            self.db.transaction::<_, _, DbErr>(|transaction| {
+            tracing::debug!("Fetching forecast for accommodation {}", accommodation.name);
+            let coordinates = Coordinate { latitude, longitude };
+            if let Err(error) = self
+                .sync_forecast(
+                    accommodation.trip_id,
+                    ForecastOwner::Accommodation { id: accommodation.id },
+                    coordinates,
+                )
+                .await
+            {
+                tracing::warn!(
+                    "Weather sync failed for accommodation {}: {:#}",
+                    accommodation.id,
+                    error
+                );
+            }
+        }
+
+        tracing::info!("Finished weather sync job");
+        Ok(())
+    }
+}
+
+impl WeatherSyncJob {
+    async fn sync_forecast(
+        &self,
+        trip_id: Uuid,
+        owner: ForecastOwner,
+        coordinates: Coordinate,
+    ) -> anyhow::Result<()> {
+        let weather = openweathermap::get_forecast(&coordinates).await.context("Fetching forecast")?;
+        let forecast = WeatherForecast::from(weather);
+        let forecast_id = Uuid::new_v4();
+        let (location_id, accommodation_id) = match owner {
+            ForecastOwner::Location { id } => (Some(id), None),
+            ForecastOwner::Accommodation { id } => (None, Some(id)),
+        };
+        let active = entities::weather_forecast::ActiveModel {
+            id: Set(forecast_id),
+            location_id: Set(location_id),
+            accommodation_id: Set(accommodation_id),
+        };
+
+        self.db
+            .transaction::<_, _, DbErr>(|transaction| {
                 Box::pin(async move {
-                    repositories::weather_forecasts::remove_forecast_for_location(transaction, location_id).await?;
-                    repositories::weather_forecasts::insert_forecast(transaction, location_forecast).await?;
+                    match owner {
+                        ForecastOwner::Location { id } => {
+                            repositories::weather_forecasts::remove_forecast_for_location(transaction, id).await?;
+                        }
+                        ForecastOwner::Accommodation { id } => {
+                            repositories::weather_forecasts::remove_forecast_for_accommodation(transaction, id).await?;
+                        }
+                    }
+                    repositories::weather_forecasts::insert_forecast(transaction, active).await?;
                     for daily in forecast.daily_forecast {
                         let mut daily = entities::weather_daily_forecast::ActiveModel::from(daily);
                         daily.forecast_id = Set(forecast_id);
@@ -61,18 +134,26 @@ impl Job for WeatherSyncJob {
                         hourly.forecast_id = Set(forecast_id);
                         repositories::weather_forecasts::insert_hourly_forecast(transaction, hourly).await?;
                     }
-
-                    repositories::locations::update_weather_information_timestamp(transaction, location_id).await?;
+                    match owner {
+                        ForecastOwner::Location { id } => {
+                            repositories::locations::update_weather_information_timestamp(transaction, id).await?;
+                        }
+                        ForecastOwner::Accommodation { id } => {
+                            repositories::accommodations::update_weather_information_timestamp(transaction, id).await?;
+                        }
+                    }
                     Ok(())
                 })
-            }).await.context("Updating stored weather information for location")?;
+            })
+            .await
+            .context("Updating stored weather information")?;
 
-            events::emit(DataChangeEvent::WeatherUpdated { trip_id, location_id });
+        events::emit(DataChangeEvent::WeatherUpdated {
+            trip_id,
+            location_id: owner.id(),
+        });
 
-            tracing::debug!("Updated weather information for location {}", location_id);
-        }
-        tracing::info!("Finished weather sync job");
-
+        tracing::debug!("Updated weather information for {:?}", owner);
         Ok(())
     }
 }

@@ -1,6 +1,6 @@
 use std::ops::Deref;
 use sea_orm::{EntityTrait, ColumnTrait, QueryFilter, LoaderTrait, ModelTrait, ConnectionTrait};
-use crate::database::entities::location;
+use crate::database::entities::{accommodation, location};
 use crate::database::entities::weather_forecast::{self, Entity as WeatherForecast};
 use crate::database::entities::weather_daily_forecast::{self, Entity as WeatherDailyForecast};
 use crate::database::entities::weather_hourly_forecast::{self, Entity as WeatherHourlyForecast};
@@ -18,13 +18,40 @@ pub async fn load_forecasts_for_locations(db: &Database, locations: &Vec<locatio
             result.push((Vec::new(), Vec::new()));
         }
     }
-    
+
+    Ok(result)
+}
+
+pub async fn load_forecasts_for_accommodations(
+    db: &Database,
+    accommodations: &Vec<accommodation::Model>,
+) -> DbResult<Vec<(Vec<weather_daily_forecast::Model>, Vec<weather_hourly_forecast::Model>)>> {
+    let forecasts = accommodations.load_one(WeatherForecast, db.deref()).await?;
+    let mut result = Vec::with_capacity(accommodations.len());
+    for forecast in forecasts {
+        if let Some(forecast) = forecast {
+            let daily_forecasts = forecast.find_related(WeatherDailyForecast).all(db.deref()).await?;
+            let hourly_forecasts = forecast.find_related(WeatherHourlyForecast).all(db.deref()).await?;
+            result.push((daily_forecasts, hourly_forecasts));
+        } else {
+            result.push((Vec::new(), Vec::new()));
+        }
+    }
     Ok(result)
 }
 
 pub async fn remove_forecast_for_location(db: &impl ConnectionTrait, location_id: uuid::Uuid) -> DbResult<()> {
     WeatherForecast::delete_many()
         .filter(weather_forecast::Column::LocationId.eq(location_id))
+        .exec(db)
+        .await?;
+
+    Ok(())
+}
+
+pub async fn remove_forecast_for_accommodation(db: &impl ConnectionTrait, accommodation_id: uuid::Uuid) -> DbResult<()> {
+    WeatherForecast::delete_many()
+        .filter(weather_forecast::Column::AccommodationId.eq(accommodation_id))
         .exec(db)
         .await?;
 

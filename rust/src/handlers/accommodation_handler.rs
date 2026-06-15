@@ -31,6 +31,7 @@ impl AccommodationHandler {
             check_out: Set(command.check_out),
             coordinates_latitude: Set(command.coordinate.map(|c| c.latitude)),
             coordinates_longitude: Set(command.coordinate.map(|c| c.longitude)),
+            weather_information_last_updated: Set(None),
         };
         
         repositories::accommodations::insert(&self.db, accommodation).await?;

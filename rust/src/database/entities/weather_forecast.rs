@@ -7,7 +7,8 @@ use uuid::Uuid;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: Uuid,
-    pub location_id: Uuid,
+    pub location_id: Option<Uuid>,
+    pub accommodation_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -18,6 +19,12 @@ pub enum Relation {
         to = "super::location::Column::Id"
     )]
     Location,
+    #[sea_orm(
+        belongs_to = "super::accommodation::Entity",
+        from = "Column::AccommodationId",
+        to = "super::accommodation::Column::Id"
+    )]
+    Accommodation,
     #[sea_orm(
         has_many = "super::weather_daily_forecast::Entity",
     )]
@@ -31,6 +38,12 @@ pub enum Relation {
 impl Related<super::location::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Location.def()
+    }
+}
+
+impl Related<super::accommodation::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Accommodation.def()
     }
 }
 
