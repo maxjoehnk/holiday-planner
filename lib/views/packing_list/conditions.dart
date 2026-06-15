@@ -117,18 +117,20 @@ class ConditionChip extends StatelessWidget {
       avatar: iconData != null ? Icon(
         iconData,
         size: 16,
-        color: color.shade700,
+        color: colorScheme.onPrimaryContainer,
       ) : null,
       onPressed: onEdit,
-      backgroundColor: color.shade100,
-      selectedColor: color.shade200,
+      backgroundColor: colorScheme.primaryContainer,
+      selectedColor: colorScheme.primaryContainer,
       label: Text(
         label,
         style: textTheme.labelMedium?.copyWith(
           fontWeight: FontWeight.w500,
+          color: colorScheme.onPrimaryContainer,
         ),
       ),
       onDeleted: onRemove,
+      deleteIconColor: colorScheme.onPrimaryContainer,
       tooltip: tooltip,
       side: BorderSide.none,
       shape: RoundedRectangleBorder(

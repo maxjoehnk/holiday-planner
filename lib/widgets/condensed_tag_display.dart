@@ -96,6 +96,7 @@ class _TagChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final foreground = colorScheme.onPrimaryFixedVariant;
     final defaultTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
       fontSize: 10,
       fontWeight: FontWeight.w500,
@@ -108,7 +109,7 @@ class _TagChip extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(height / 2),
         border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.3),
+          color: foreground.withValues(alpha: 0.3),
           width: 0.5,
         ),
       ),
@@ -118,13 +119,13 @@ class _TagChip extends StatelessWidget {
           Icon(
             Icons.label,
             size: height * 0.6,
-            color: colorScheme.primary,
+            color: foreground,
           ),
           const SizedBox(width: 2),
           Text(
             tag.name,
             style: textStyle ?? defaultTextStyle?.copyWith(
-              color: colorScheme.primary,
+              color: foreground,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -149,6 +150,7 @@ class _MoreTagsChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final foreground = colorScheme.onPrimaryFixedVariant;
     final defaultTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
       fontSize: 10,
       fontWeight: FontWeight.w500,
@@ -161,14 +163,14 @@ class _MoreTagsChip extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(height / 2),
         border: Border.all(
-          color: colorScheme.onSurface.withValues(alpha: 0.3),
+          color: foreground.withValues(alpha: 0.3),
           width: 0.5,
         ),
       ),
       child: Text(
         '+$count',
         style: textStyle ?? defaultTextStyle?.copyWith(
-          color: colorScheme.onSurface.withValues(alpha: 0.8),
+          color: foreground,
         ),
       ),
     );
