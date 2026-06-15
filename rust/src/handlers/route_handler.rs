@@ -115,6 +115,9 @@ impl RouteHandler {
                 polyline: Set(polyline_json),
                 note: Set(None),
                 external_url: Set(external_url),
+                trip_day_id: Set(None),
+                day_order: Set(None),
+                scheduled_at: Set(None),
             };
             repositories::routes::insert(&self.db, active).await?;
             id

@@ -569,6 +569,60 @@ class AppLocalizationsDe extends AppLocalizations {
   String get attachmentsTab => 'Anhänge';
 
   @override
+  String get plannerTab => 'Planer';
+
+  @override
+  String dayPlannerDayLabel(int n) {
+    return 'Tag $n';
+  }
+
+  @override
+  String get dayPlannerTitleHint => 'Tag ohne Titel';
+
+  @override
+  String get dayPlannerUnassigned => 'Nicht zugeordnet';
+
+  @override
+  String get dayPlannerAddLocation => 'Ort hinzufügen';
+
+  @override
+  String get dayPlannerLocationsSheetTitle => 'Orte des Tages';
+
+  @override
+  String get dayPlannerPrimaryBadge => 'Primär';
+
+  @override
+  String get dayPlannerRemoveFromDay => 'Aus Tag entfernen';
+
+  @override
+  String get dayPlannerEmptyDayHint => 'Noch nichts für diesen Tag geplant.';
+
+  @override
+  String get dayPlannerAddToDay => 'Zum Tag hinzufügen';
+
+  @override
+  String dayPlannerAddSheetTitle(String label) {
+    return 'Zu $label hinzufügen';
+  }
+
+  @override
+  String get dayPlannerAddSheetEmpty => 'Keine Einträge zum Planen verfügbar.';
+
+  @override
+  String get dayPlannerFromUnassigned => 'Nicht zugeordnet';
+
+  @override
+  String get dayPlannerFromOtherDays => 'Von anderen Tagen';
+
+  @override
+  String get dayPlannerMoveToDay => 'An einen anderen Tag verschieben';
+
+  @override
+  String dayPlannerUnassignedSectionTitle(int count) {
+    return 'Nicht zugeordnet ($count)';
+  }
+
+  @override
   String get noTripsFoundTitle => 'Keine Reisen gefunden';
 
   @override

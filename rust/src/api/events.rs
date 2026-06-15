@@ -22,6 +22,7 @@ pub enum DataChangeEvent {
     AttachmentsChanged { trip_id: Option<Uuid>, accommodation_id: Option<Uuid> },
     TagsChanged,
     TimelineChanged { trip_id: Uuid },
+    TripDaysChanged { trip_id: Uuid },
 }
 
 #[frb(ignore)]

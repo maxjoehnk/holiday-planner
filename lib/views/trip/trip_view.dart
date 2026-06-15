@@ -10,6 +10,7 @@ import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/models/tidal_information.dart';
 import 'package:holiday_planner/views/trip/attachments/add_attachment.dart';
 import 'package:holiday_planner/views/trip/attachments/trip_attachments.dart';
+import 'package:holiday_planner/views/trip/day_planner/day_planner_view.dart';
 import 'package:holiday_planner/views/trip/edit_trip.dart';
 import 'package:holiday_planner/views/trip/summary/trip_summary.dart';
 import 'package:uuid/uuid.dart';
@@ -18,9 +19,10 @@ import 'timeline/trip_timeline.dart';
 import 'map/trip_map.dart';
 
 const overviewTabIndex = 0;
-const timelineTabIndex = 1;
-const mapTabIndex = 2;
-const attachmentsTabIndex = 3;
+const plannerTabIndex = 1;
+const timelineTabIndex = 2;
+const mapTabIndex = 3;
+const attachmentsTabIndex = 4;
 
 class TripView extends StatefulWidget {
   final UuidValue tripId;
@@ -267,6 +269,7 @@ class _TripViewState extends State<TripView> {
                 ),
                 if (_selectedTab != mapTabIndex) const SliverPadding(padding: EdgeInsets.all(4)),
                 if (_selectedTab == overviewTabIndex) TripSummary(trip),
+                if (_selectedTab == plannerTabIndex) DayPlannerView(tripId: widget.tripId),
                 if (_selectedTab == timelineTabIndex) TripTimeline(tripId: widget.tripId),
                 if (_selectedTab == mapTabIndex) TripMap(tripId: widget.tripId),
                 if (_selectedTab == attachmentsTabIndex) TripAttachments(tripId: widget.tripId),
@@ -280,6 +283,7 @@ class _TripViewState extends State<TripView> {
               }),
           destinations: [
             NavigationDestination(icon: const Icon(Icons.dashboard), label: AppLocalizations.of(context)!.summaryTab),
+            NavigationDestination(icon: const Icon(Icons.calendar_today_outlined), label: AppLocalizations.of(context)!.plannerTab),
             NavigationDestination(icon: const Icon(Icons.timeline), label: AppLocalizations.of(context)!.timelineTab),
             NavigationDestination(icon: const Icon(Icons.map), label: AppLocalizations.of(context)!.mapTab),
             NavigationDestination(icon: const Icon(Icons.attachment), label: AppLocalizations.of(context)!.attachmentsTab),

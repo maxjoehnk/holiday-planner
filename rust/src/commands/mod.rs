@@ -28,6 +28,7 @@ pub use update_tag::*;
 pub use add_tag_to_trip::*;
 pub use remove_tag_from_trip::*;
 pub use set_trip_tags::*;
+pub use trip_day::*;
 
 pub mod create_trip;
 pub mod update_trip;
@@ -59,3 +60,4 @@ pub mod update_tag;
 pub mod add_tag_to_trip;
 pub mod remove_tag_from_trip;
 pub mod set_trip_tags;
+pub mod trip_day;

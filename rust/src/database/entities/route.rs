@@ -28,6 +28,9 @@ pub struct Model {
     pub polyline: String,
     pub note: Option<String>,
     pub external_url: String,
+    pub trip_day_id: Option<Uuid>,
+    pub day_order: Option<i32>,
+    pub scheduled_at: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -38,11 +41,23 @@ pub enum Relation {
         to = "super::trip::Column::Id"
     )]
     Trip,
+    #[sea_orm(
+        belongs_to = "super::trip_day::Entity",
+        from = "Column::TripDayId",
+        to = "super::trip_day::Column::Id"
+    )]
+    TripDay,
 }
 
 impl Related<super::trip::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Trip.def()
+    }
+}
+
+impl Related<super::trip_day::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::TripDay.def()
     }
 }
 

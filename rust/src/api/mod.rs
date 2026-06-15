@@ -16,6 +16,7 @@ pub mod timeline;
 pub mod transits;
 pub mod tags;
 pub mod events;
+pub mod trip_days;
 
 static DB: RwLock<Option<Database>> = RwLock::const_new(None);
 

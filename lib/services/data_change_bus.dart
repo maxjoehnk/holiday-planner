@@ -166,6 +166,13 @@ class DataChangeBus {
         return false;
       }).map((_) => null);
 
+  Stream<void> onTripDaysChanged(UuidValue tripId) => events.where((e) {
+        if (e is DataChangeEvent_TripDaysChanged) {
+          return e.tripId == tripId;
+        }
+        return false;
+      }).map((_) => null);
+
   Stream<void> onAnyTripDataChanged(UuidValue tripId) => events.where((e) {
         bool matchesOptional(UuidValue? eventTripId) =>
             eventTripId == null || eventTripId == tripId;
@@ -191,6 +198,9 @@ class DataChangeBus {
         }
         if (e is DataChangeEvent_RoutesChanged) {
           return matchesOptional(e.tripId);
+        }
+        if (e is DataChangeEvent_TripDaysChanged) {
+          return e.tripId == tripId;
         }
         return false;
       }).map((_) => null);

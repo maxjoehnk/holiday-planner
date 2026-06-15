@@ -5,7 +5,7 @@ use chrono::{DateTime, Local, NaiveDate, NaiveTime, TimeZone, Utc};
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
-use crate::handlers::{Handler, LocationHandler};
+use crate::handlers::{Handler, LocationHandler, TripDayHandler};
 use crate::third_party::unsplash;
 
 pub struct TripHandler {
@@ -205,9 +205,12 @@ impl TripHandler {
 
     pub async fn update_trip(&self, command: UpdateTrip) -> anyhow::Result<TripOverviewModel> {
         let trip = repositories::trips::find_by_id(&self.db, command.id).await?;
-        if trip.is_none() {
+        let Some(existing) = trip else {
             return Err(anyhow::anyhow!("Trip not found"));
-        }
+        };
+
+        let dates_changed =
+            existing.start_date != command.start_date || existing.end_date != command.end_date;
 
         let model = entities::trip::ActiveModel {
             id: Set(command.id),
@@ -217,15 +220,20 @@ impl TripHandler {
             header_image: Set(command.header_image),
         };
         repositories::trips::update(&self.db, model).await?;
-        
+
         // Update trip tags
         repositories::tags::clear_trip_tags(&self.db, command.id).await?;
         for tag_id in command.tag_ids {
             repositories::tags::add_tag_to_trip(&self.db, command.id, tag_id).await?;
         }
 
+        if dates_changed {
+            let day_handler = TripDayHandler::create(self.db.clone());
+            day_handler.reconcile_after_trip_date_change(command.id).await?;
+        }
+
         let trip = self.get_trip_overview(command.id).await?;
-        
+
         Ok(trip)
     }
     

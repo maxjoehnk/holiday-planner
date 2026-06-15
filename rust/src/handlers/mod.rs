@@ -12,12 +12,14 @@ pub use location_handler::*;
 pub use point_of_interest_handler::*;
 pub use route_handler::*;
 pub use tag_handler::*;
+pub use trip_day_handler::*;
 
 pub mod accommodation_handler;
 pub mod attachment_handler;
 pub mod booking_handler;
 pub mod train_handler;
 pub mod trip_handler;
+pub mod trip_day_handler;
 pub mod packing_list_handler;
 pub mod trip_packing_list_handler;
 pub mod location_handler;

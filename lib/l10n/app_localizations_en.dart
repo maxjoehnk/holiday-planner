@@ -566,6 +566,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attachmentsTab => 'Attachments';
 
   @override
+  String get plannerTab => 'Planner';
+
+  @override
+  String dayPlannerDayLabel(int n) {
+    return 'Day $n';
+  }
+
+  @override
+  String get dayPlannerTitleHint => 'Untitled day';
+
+  @override
+  String get dayPlannerUnassigned => 'Unassigned';
+
+  @override
+  String get dayPlannerAddLocation => 'Add a location';
+
+  @override
+  String get dayPlannerLocationsSheetTitle => 'Day locations';
+
+  @override
+  String get dayPlannerPrimaryBadge => 'Primary';
+
+  @override
+  String get dayPlannerRemoveFromDay => 'Move to unassigned';
+
+  @override
+  String get dayPlannerEmptyDayHint => 'Nothing scheduled for this day yet.';
+
+  @override
+  String get dayPlannerAddToDay => 'Add to day';
+
+  @override
+  String dayPlannerAddSheetTitle(String label) {
+    return 'Add to $label';
+  }
+
+  @override
+  String get dayPlannerAddSheetEmpty => 'No items available to schedule.';
+
+  @override
+  String get dayPlannerFromUnassigned => 'Unassigned';
+
+  @override
+  String get dayPlannerFromOtherDays => 'From other days';
+
+  @override
+  String get dayPlannerMoveToDay => 'Move to a different day';
+
+  @override
+  String dayPlannerUnassignedSectionTitle(int count) {
+    return 'Unassigned ($count)';
+  }
+
+  @override
   String get noTripsFoundTitle => 'No trips found';
 
   @override

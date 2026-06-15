@@ -3,24 +3,13 @@ use sea_orm::entity::prelude::*;
 use uuid::Uuid;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
-#[sea_orm(table_name = "points_of_interest")]
+#[sea_orm(table_name = "trip_days")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: Uuid,
     pub trip_id: Uuid,
-    pub name: String,
-    pub address: String,
-    pub website: Option<String>,
-    pub opening_hours: Option<String>,
-    pub price: Option<String>,
-    pub phone_number: Option<String>,
-    pub note: Option<String>,
-    // TODO: see how this can be moved into a struct with sea_orm
-    pub coordinates_latitude: Option<f64>,
-    pub coordinates_longitude: Option<f64>,
-    pub trip_day_id: Option<Uuid>,
-    pub day_order: Option<i32>,
-    pub scheduled_at: Option<DateTimeUtc>,
+    pub date: chrono::NaiveDate,
+    pub title: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -31,12 +20,10 @@ pub enum Relation {
         to = "super::trip::Column::Id"
     )]
     Trip,
-    #[sea_orm(
-        belongs_to = "super::trip_day::Entity",
-        from = "Column::TripDayId",
-        to = "super::trip_day::Column::Id"
-    )]
-    TripDay,
+    #[sea_orm(has_many = "super::point_of_interest::Entity")]
+    PointOfInterest,
+    #[sea_orm(has_many = "super::route::Entity")]
+    Route,
 }
 
 impl Related<super::trip::Entity> for Entity {
@@ -45,9 +32,25 @@ impl Related<super::trip::Entity> for Entity {
     }
 }
 
-impl Related<super::trip_day::Entity> for Entity {
+impl Related<super::point_of_interest::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::TripDay.def()
+        Relation::PointOfInterest.def()
+    }
+}
+
+impl Related<super::route::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Route.def()
+    }
+}
+
+impl Related<super::location::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::trip_day_location::Relation::Location.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::trip_day_location::Relation::TripDay.def().rev())
     }
 }
 

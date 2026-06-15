@@ -60,4 +60,7 @@ sealed class DataChangeEvent with _$DataChangeEvent {
   const factory DataChangeEvent.timelineChanged({
     required UuidValue tripId,
   }) = DataChangeEvent_TimelineChanged;
+  const factory DataChangeEvent.tripDaysChanged({
+    required UuidValue tripId,
+  }) = DataChangeEvent_TripDaysChanged;
 }

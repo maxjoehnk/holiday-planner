@@ -8,6 +8,7 @@ pub use web_images::*;
 pub use bookings::*;
 pub use tidal_information::*;
 pub use routes::*;
+pub use trip_day::*;
 
 pub mod web_images;
 pub mod transits;
@@ -16,6 +17,7 @@ pub mod timeline;
 pub mod tidal_information;
 pub mod point_of_interests;
 pub mod routes;
+pub mod trip_day;
 
 #[derive(Clone)]
 pub struct TripListModel {

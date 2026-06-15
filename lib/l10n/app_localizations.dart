@@ -1082,6 +1082,102 @@ abstract class AppLocalizations {
   /// **'Attachments'**
   String get attachmentsTab;
 
+  /// Bottom navigation tab label: Planner
+  ///
+  /// In en, this message translates to:
+  /// **'Planner'**
+  String get plannerTab;
+
+  /// Header label for a trip day with index
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n}'**
+  String dayPlannerDayLabel(int n);
+
+  /// Placeholder for an untitled day
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled day'**
+  String get dayPlannerTitleHint;
+
+  /// Label for the unassigned items rail
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get dayPlannerUnassigned;
+
+  /// Affordance to attach a location to a day
+  ///
+  /// In en, this message translates to:
+  /// **'Add a location'**
+  String get dayPlannerAddLocation;
+
+  /// Title of the sheet that edits a day's locations
+  ///
+  /// In en, this message translates to:
+  /// **'Day locations'**
+  String get dayPlannerLocationsSheetTitle;
+
+  /// Badge shown on the primary location of a day
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get dayPlannerPrimaryBadge;
+
+  /// Action that removes a schedulable item from its day
+  ///
+  /// In en, this message translates to:
+  /// **'Move to unassigned'**
+  String get dayPlannerRemoveFromDay;
+
+  /// Hint shown on a day card with no scheduled items
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing scheduled for this day yet.'**
+  String get dayPlannerEmptyDayHint;
+
+  /// Affordance to add an item to a day
+  ///
+  /// In en, this message translates to:
+  /// **'Add to day'**
+  String get dayPlannerAddToDay;
+
+  /// Title shown in the picker sheet when assigning items to a day
+  ///
+  /// In en, this message translates to:
+  /// **'Add to {label}'**
+  String dayPlannerAddSheetTitle(String label);
+
+  /// Empty state inside the add-to-day picker
+  ///
+  /// In en, this message translates to:
+  /// **'No items available to schedule.'**
+  String get dayPlannerAddSheetEmpty;
+
+  /// Section header inside the add picker
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get dayPlannerFromUnassigned;
+
+  /// Section header inside the add picker
+  ///
+  /// In en, this message translates to:
+  /// **'From other days'**
+  String get dayPlannerFromOtherDays;
+
+  /// Menu item to relocate an item to another day
+  ///
+  /// In en, this message translates to:
+  /// **'Move to a different day'**
+  String get dayPlannerMoveToDay;
+
+  /// Header of the top-of-planner unassigned items panel
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned ({count})'**
+  String dayPlannerUnassignedSectionTitle(int count);
+
   /// Title shown when there are no trips in the list
   ///
   /// In en, this message translates to:

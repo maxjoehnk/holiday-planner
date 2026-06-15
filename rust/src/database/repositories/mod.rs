@@ -10,6 +10,8 @@ pub mod routes;
 pub mod tags;
 pub mod tidal_information;
 pub mod transits;
+pub mod trip_day_locations;
+pub mod trip_days;
 pub mod trips;
 pub mod trip_packing_list_entries;
 pub mod weather_forecasts;

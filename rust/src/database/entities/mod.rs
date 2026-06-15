@@ -14,6 +14,8 @@ pub mod tag;
 pub mod tidal_information;
 pub mod train;
 pub mod trip;
+pub mod trip_day;
+pub mod trip_day_location;
 pub mod trip_packing_list_entry;
 pub mod trip_tag;
 pub mod weather_forecast;

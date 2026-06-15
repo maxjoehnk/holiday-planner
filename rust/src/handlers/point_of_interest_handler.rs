@@ -93,6 +93,9 @@ impl PointOfInterestHandler {
             note: Set(command.note),
             coordinates_latitude: Set(command.coordinate.map(|c| c.latitude)),
             coordinates_longitude: Set(command.coordinate.map(|c| c.longitude)),
+            trip_day_id: Set(None),
+            day_order: Set(None),
+            scheduled_at: Set(None),
         };
         
         repositories::points_of_interest::insert(&self.db, point_of_interest).await?;
