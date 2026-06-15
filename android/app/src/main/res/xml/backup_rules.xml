@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Auto Backup rules for Android 6.0 (API 23) through Android 11 (API 30). -->
 <full-backup-content>
-    <include domain="file" path="database/"/>
+    <include domain="file" path="db.sqlite"/>
     <include domain="sharedpref" path="."/>
-
-    <!-- FMTC map tile cache lives at files/fmtc/ and is regenerable; excluding
-         keeps backups under Android's 25 MB Auto Backup limit. -->
-    <exclude domain="file" path="fmtc/"/>
 </full-backup-content>
