@@ -5,7 +5,6 @@ pub use attachment_handler::*;
 pub use booking_handler::*;
 pub use train_handler::*;
 pub use trip_handler::*;
-pub use timeline_handler::*;
 pub use packing_list_handler::*;
 pub use trip_packing_list_handler::*;
 pub use location_handler::*;
@@ -26,7 +25,6 @@ pub mod location_handler;
 pub mod point_of_interest_handler;
 pub mod route_handler;
 pub mod tag_handler;
-pub mod timeline_handler;
 
 pub(crate) trait HandlerCreator: Send {
     type Guard<'a, T: Handler>: Deref<Target = T> + Send where Self: 'a;

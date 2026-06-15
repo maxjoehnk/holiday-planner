@@ -11,7 +11,6 @@ pub async fn add_reservation(command: AddReservation) -> anyhow::Result<()> {
     let trip_id = command.trip_id;
     handler.add_reservation(command).await?;
     events::emit(DataChangeEvent::BookingsChanged { trip_id: Some(trip_id) });
-    events::emit(DataChangeEvent::TimelineChanged { trip_id });
     Ok(())
 }
 
@@ -37,7 +36,6 @@ pub async fn add_car_rental(command: AddCarRental) -> anyhow::Result<()> {
     let trip_id = command.trip_id;
     handler.add_car_rental(command).await?;
     events::emit(DataChangeEvent::BookingsChanged { trip_id: Some(trip_id) });
-    events::emit(DataChangeEvent::TimelineChanged { trip_id });
     Ok(())
 }
 

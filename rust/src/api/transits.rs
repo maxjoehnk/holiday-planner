@@ -11,7 +11,6 @@ pub async fn add_train(command: AddTrain) -> anyhow::Result<()> {
     let trip_id = command.trip_id;
     handler.add_train(command).await?;
     events::emit(DataChangeEvent::TransitsChanged { trip_id: Some(trip_id) });
-    events::emit(DataChangeEvent::TimelineChanged { trip_id });
     Ok(())
 }
 

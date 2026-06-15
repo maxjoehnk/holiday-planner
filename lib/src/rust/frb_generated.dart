@@ -12,7 +12,6 @@ import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
 import 'api/routes.dart';
 import 'api/tags.dart';
-import 'api/timeline.dart';
 import 'api/transits.dart';
 import 'api/trip_days.dart';
 import 'api/trips.dart';
@@ -55,7 +54,6 @@ import 'models/bookings.dart';
 import 'models/point_of_interests.dart';
 import 'models/routes.dart';
 import 'models/tidal_information.dart';
-import 'models/timeline.dart';
 import 'models/transits.dart';
 import 'models/trip_day.dart';
 import 'models/web_images.dart';
@@ -121,7 +119,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1780360887;
+  int get rustContentHash => 819621298;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -244,9 +242,6 @@ abstract class RustLibApi extends BaseApi {
       {required UuidValue tripId});
 
   Future<List<TagModel>> crateApiTagsGetTripTags({required UuidValue tripId});
-
-  Future<TimelineModel> crateApiTimelineGetTripTimeline(
-      {required UuidValue tripId});
 
   Future<List<Train>> crateApiTransitsGetTripTrains(
       {required UuidValue tripId});
@@ -1444,32 +1439,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<TimelineModel> crateApiTimelineGetTripTimeline(
-      {required UuidValue tripId}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Uuid(tripId, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 44, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_timeline_model,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiTimelineGetTripTimelineConstMeta,
-      argValues: [tripId],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiTimelineGetTripTimelineConstMeta =>
-      const TaskConstMeta(
-        debugName: "get_trip_timeline",
-        argNames: ["tripId"],
-      );
-
-  @override
   Future<List<Train>> crateApiTransitsGetTripTrains(
       {required UuidValue tripId}) {
     return handler.executeNormal(NormalTask(
@@ -1477,7 +1446,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 45, port: port_);
+            funcId: 44, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_train,
@@ -1501,7 +1470,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 46, port: port_);
+            funcId: 45, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trip_list_model,
@@ -1526,7 +1495,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 47, port: port_);
+            funcId: 46, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unassigned_items,
@@ -1550,7 +1519,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 48, port: port_);
+            funcId: 47, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trip_list_model,
@@ -1576,7 +1545,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_import_komoot_route(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 49, port: port_);
+            funcId: 48, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_route_model,
@@ -1602,7 +1571,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_import_parsed_train_journey(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 50, port: port_);
+            funcId: 49, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1626,7 +1595,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 51, port: port_);
+            funcId: 50, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1652,7 +1621,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(entryId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 52, port: port_);
+            funcId: 51, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1678,7 +1647,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_Uuid(entryId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 53, port: port_);
+            funcId: 52, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1704,7 +1673,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_parse_train_data(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 54, port: port_);
+            funcId: 53, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_parsed_train_journey,
@@ -1731,7 +1700,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(attachmentId, serializer);
         sse_encode_String(targetPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 55, port: port_);
+            funcId: 54, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1758,7 +1727,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(accommodationId, serializer);
         sse_encode_Uuid(attachmentId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 56, port: port_);
+            funcId: 55, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1785,7 +1754,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_remove_tag_from_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 57, port: port_);
+            funcId: 56, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1812,7 +1781,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_box_autoadd_remove_trip_day_location(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 58, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1839,7 +1808,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_box_autoadd_reorder_day(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 59, port: port_);
+            funcId: 58, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1863,7 +1832,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 60, port: port_);
+            funcId: 59, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1888,7 +1857,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(query, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 61, port: port_);
+            funcId: 60, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_location_entry,
@@ -1915,7 +1884,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_u_64(id, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 62, port: port_);
+            funcId: 61, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_point_of_interest_osm_model,
@@ -1944,7 +1913,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(query, serializer);
         sse_encode_Uuid(tripId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 63, port: port_);
+            funcId: 62, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_point_of_interest_search_model,
@@ -1970,7 +1939,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_search_web_images(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 64, port: port_);
+            funcId: 63, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_web_image,
@@ -1998,7 +1967,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_set_primary_trip_day_location(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 65, port: port_);
+            funcId: 64, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2024,7 +1993,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_set_trip_day_title(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 66, port: port_);
+            funcId: 65, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2049,7 +2018,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_set_trip_tags(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 67, port: port_);
+            funcId: 66, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2074,7 +2043,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_data_change_event_Sse(sink, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 68, port: port_);
+            funcId: 67, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2102,7 +2071,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(tripId, serializer);
         sse_encode_box_autoadd_unassign_item(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 69, port: port_);
+            funcId: 68, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2128,7 +2097,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_car_rental(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 70, port: port_);
+            funcId: 69, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2155,7 +2124,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Uuid(locationId, serializer);
         sse_encode_bool(isCoastal, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 71, port: port_);
+            funcId: 70, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2181,7 +2150,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_packing_list_entry(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 72, port: port_);
+            funcId: 71, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2207,7 +2176,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_reservation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 73, port: port_);
+            funcId: 72, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2232,7 +2201,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_route(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 74, port: port_);
+            funcId: 73, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2256,7 +2225,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_tag(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 75, port: port_);
+            funcId: 74, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_tag_model,
@@ -2280,7 +2249,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_train(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 76, port: port_);
+            funcId: 75, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2306,7 +2275,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 77, port: port_);
+            funcId: 76, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_trip_overview_model,
@@ -2331,7 +2300,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_update_trip_accommodation(command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 78, port: port_);
+            funcId: 77, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2358,7 +2327,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_update_trip_point_of_interest(
             command, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 79, port: port_);
+            funcId: 78, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -3115,10 +3084,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 12:
         return const DataChangeEvent_TagsChanged();
       case 13:
-        return DataChangeEvent_TimelineChanged(
-          tripId: dco_decode_Uuid(raw[1]),
-        );
-      case 14:
         return DataChangeEvent_TripDaysChanged(
           tripId: dco_decode_Uuid(raw[1]),
         );
@@ -3478,12 +3443,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<TidalInformation> dco_decode_list_tidal_information(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_tidal_information).toList();
-  }
-
-  @protected
-  List<TimelineItem> dco_decode_list_timeline_item(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_timeline_item).toList();
   }
 
   @protected
@@ -4026,85 +3985,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TideType dco_decode_tide_type(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return TideType.values[raw as int];
-  }
-
-  @protected
-  TimelineItem dco_decode_timeline_item(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return TimelineItem(
-      date: dco_decode_Chrono_Utc(arr[0]),
-      details: dco_decode_timeline_item_details(arr[1]),
-    );
-  }
-
-  @protected
-  TimelineItemDetails dco_decode_timeline_item_details(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return TimelineItemDetails_CarRentalPickUp(
-          provider: dco_decode_String(raw[1]),
-          address: dco_decode_String(raw[2]),
-        );
-      case 1:
-        return TimelineItemDetails_CarRentalDropOff(
-          provider: dco_decode_String(raw[1]),
-          address: dco_decode_String(raw[2]),
-        );
-      case 2:
-        return TimelineItemDetails_Reservation(
-          title: dco_decode_String(raw[1]),
-          address: dco_decode_opt_String(raw[2]),
-          category: dco_decode_reservation_category(raw[3]),
-        );
-      case 3:
-        return TimelineItemDetails_CheckIn(
-          address: dco_decode_opt_String(raw[1]),
-        );
-      case 4:
-        return TimelineItemDetails_CheckOut(
-          address: dco_decode_opt_String(raw[1]),
-        );
-      case 5:
-        return TimelineItemDetails_FlightTakeOff(
-          airport: dco_decode_String(raw[1]),
-          flightNumber: dco_decode_String(raw[2]),
-          seat: dco_decode_opt_String(raw[3]),
-        );
-      case 6:
-        return TimelineItemDetails_FlightLanding(
-          airport: dco_decode_String(raw[1]),
-          flightNumber: dco_decode_String(raw[2]),
-        );
-      case 7:
-        return TimelineItemDetails_TrainOrigin(
-          station: dco_decode_String(raw[1]),
-          trainNumber: dco_decode_String(raw[2]),
-          seat: dco_decode_opt_String(raw[3]),
-        );
-      case 8:
-        return TimelineItemDetails_TrainDestination(
-          station: dco_decode_String(raw[1]),
-          trainNumber: dco_decode_String(raw[2]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
-  }
-
-  @protected
-  TimelineModel dco_decode_timeline_model(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return TimelineModel(
-      past: dco_decode_list_timeline_item(arr[0]),
-      future: dco_decode_list_timeline_item(arr[1]),
-    );
   }
 
   @protected
@@ -5377,9 +5257,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return const DataChangeEvent_TagsChanged();
       case 13:
         var var_tripId = sse_decode_Uuid(deserializer);
-        return DataChangeEvent_TimelineChanged(tripId: var_tripId);
-      case 14:
-        var var_tripId = sse_decode_Uuid(deserializer);
         return DataChangeEvent_TripDaysChanged(tripId: var_tripId);
       default:
         throw UnimplementedError('');
@@ -5867,19 +5744,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var ans_ = <TidalInformation>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_tidal_information(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<TimelineItem> sse_decode_list_timeline_item(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <TimelineItem>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_timeline_item(deserializer));
     }
     return ans_;
   }
@@ -6546,80 +6410,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return TideType.values[inner];
-  }
-
-  @protected
-  TimelineItem sse_decode_timeline_item(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_date = sse_decode_Chrono_Utc(deserializer);
-    var var_details = sse_decode_timeline_item_details(deserializer);
-    return TimelineItem(date: var_date, details: var_details);
-  }
-
-  @protected
-  TimelineItemDetails sse_decode_timeline_item_details(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        var var_provider = sse_decode_String(deserializer);
-        var var_address = sse_decode_String(deserializer);
-        return TimelineItemDetails_CarRentalPickUp(
-            provider: var_provider, address: var_address);
-      case 1:
-        var var_provider = sse_decode_String(deserializer);
-        var var_address = sse_decode_String(deserializer);
-        return TimelineItemDetails_CarRentalDropOff(
-            provider: var_provider, address: var_address);
-      case 2:
-        var var_title = sse_decode_String(deserializer);
-        var var_address = sse_decode_opt_String(deserializer);
-        var var_category = sse_decode_reservation_category(deserializer);
-        return TimelineItemDetails_Reservation(
-            title: var_title, address: var_address, category: var_category);
-      case 3:
-        var var_address = sse_decode_opt_String(deserializer);
-        return TimelineItemDetails_CheckIn(address: var_address);
-      case 4:
-        var var_address = sse_decode_opt_String(deserializer);
-        return TimelineItemDetails_CheckOut(address: var_address);
-      case 5:
-        var var_airport = sse_decode_String(deserializer);
-        var var_flightNumber = sse_decode_String(deserializer);
-        var var_seat = sse_decode_opt_String(deserializer);
-        return TimelineItemDetails_FlightTakeOff(
-            airport: var_airport,
-            flightNumber: var_flightNumber,
-            seat: var_seat);
-      case 6:
-        var var_airport = sse_decode_String(deserializer);
-        var var_flightNumber = sse_decode_String(deserializer);
-        return TimelineItemDetails_FlightLanding(
-            airport: var_airport, flightNumber: var_flightNumber);
-      case 7:
-        var var_station = sse_decode_String(deserializer);
-        var var_trainNumber = sse_decode_String(deserializer);
-        var var_seat = sse_decode_opt_String(deserializer);
-        return TimelineItemDetails_TrainOrigin(
-            station: var_station, trainNumber: var_trainNumber, seat: var_seat);
-      case 8:
-        var var_station = sse_decode_String(deserializer);
-        var var_trainNumber = sse_decode_String(deserializer);
-        return TimelineItemDetails_TrainDestination(
-            station: var_station, trainNumber: var_trainNumber);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
-  TimelineModel sse_decode_timeline_model(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_past = sse_decode_list_timeline_item(deserializer);
-    var var_future = sse_decode_list_timeline_item(deserializer);
-    return TimelineModel(past: var_past, future: var_future);
   }
 
   @protected
@@ -7828,11 +7618,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_Uuid(accommodationId, serializer);
       case DataChangeEvent_TagsChanged():
         sse_encode_i_32(12, serializer);
-      case DataChangeEvent_TimelineChanged(tripId: final tripId):
-        sse_encode_i_32(13, serializer);
-        sse_encode_Uuid(tripId, serializer);
       case DataChangeEvent_TripDaysChanged(tripId: final tripId):
-        sse_encode_i_32(14, serializer);
+        sse_encode_i_32(13, serializer);
         sse_encode_Uuid(tripId, serializer);
     }
   }
@@ -8245,16 +8032,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_tidal_information(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_timeline_item(
-      List<TimelineItem> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_timeline_item(item, serializer);
     }
   }
 
@@ -8790,89 +8567,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_tide_type(TideType self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
-  }
-
-  @protected
-  void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_Chrono_Utc(self.date, serializer);
-    sse_encode_timeline_item_details(self.details, serializer);
-  }
-
-  @protected
-  void sse_encode_timeline_item_details(
-      TimelineItemDetails self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case TimelineItemDetails_CarRentalPickUp(
-          provider: final provider,
-          address: final address
-        ):
-        sse_encode_i_32(0, serializer);
-        sse_encode_String(provider, serializer);
-        sse_encode_String(address, serializer);
-      case TimelineItemDetails_CarRentalDropOff(
-          provider: final provider,
-          address: final address
-        ):
-        sse_encode_i_32(1, serializer);
-        sse_encode_String(provider, serializer);
-        sse_encode_String(address, serializer);
-      case TimelineItemDetails_Reservation(
-          title: final title,
-          address: final address,
-          category: final category
-        ):
-        sse_encode_i_32(2, serializer);
-        sse_encode_String(title, serializer);
-        sse_encode_opt_String(address, serializer);
-        sse_encode_reservation_category(category, serializer);
-      case TimelineItemDetails_CheckIn(address: final address):
-        sse_encode_i_32(3, serializer);
-        sse_encode_opt_String(address, serializer);
-      case TimelineItemDetails_CheckOut(address: final address):
-        sse_encode_i_32(4, serializer);
-        sse_encode_opt_String(address, serializer);
-      case TimelineItemDetails_FlightTakeOff(
-          airport: final airport,
-          flightNumber: final flightNumber,
-          seat: final seat
-        ):
-        sse_encode_i_32(5, serializer);
-        sse_encode_String(airport, serializer);
-        sse_encode_String(flightNumber, serializer);
-        sse_encode_opt_String(seat, serializer);
-      case TimelineItemDetails_FlightLanding(
-          airport: final airport,
-          flightNumber: final flightNumber
-        ):
-        sse_encode_i_32(6, serializer);
-        sse_encode_String(airport, serializer);
-        sse_encode_String(flightNumber, serializer);
-      case TimelineItemDetails_TrainOrigin(
-          station: final station,
-          trainNumber: final trainNumber,
-          seat: final seat
-        ):
-        sse_encode_i_32(7, serializer);
-        sse_encode_String(station, serializer);
-        sse_encode_String(trainNumber, serializer);
-        sse_encode_opt_String(seat, serializer);
-      case TimelineItemDetails_TrainDestination(
-          station: final station,
-          trainNumber: final trainNumber
-        ):
-        sse_encode_i_32(8, serializer);
-        sse_encode_String(station, serializer);
-        sse_encode_String(trainNumber, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_timeline_model(TimelineModel self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_timeline_item(self.past, serializer);
-    sse_encode_list_timeline_item(self.future, serializer);
   }
 
   @protected

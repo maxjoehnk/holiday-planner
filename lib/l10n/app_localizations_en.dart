@@ -581,9 +581,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get summaryTab => 'Summary';
 
   @override
-  String get timelineTab => 'Timeline';
-
-  @override
   String get mapTab => 'Map';
 
   @override

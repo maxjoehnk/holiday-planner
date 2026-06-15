@@ -21,7 +21,6 @@ pub enum DataChangeEvent {
     RoutesChanged { trip_id: Option<Uuid> },
     AttachmentsChanged { trip_id: Option<Uuid>, accommodation_id: Option<Uuid> },
     TagsChanged,
-    TimelineChanged { trip_id: Uuid },
     TripDaysChanged { trip_id: Uuid },
 }
 

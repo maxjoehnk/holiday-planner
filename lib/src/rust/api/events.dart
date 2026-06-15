@@ -57,9 +57,6 @@ sealed class DataChangeEvent with _$DataChangeEvent {
     UuidValue? accommodationId,
   }) = DataChangeEvent_AttachmentsChanged;
   const factory DataChangeEvent.tagsChanged() = DataChangeEvent_TagsChanged;
-  const factory DataChangeEvent.timelineChanged({
-    required UuidValue tripId,
-  }) = DataChangeEvent_TimelineChanged;
   const factory DataChangeEvent.tripDaysChanged({
     required UuidValue tripId,
   }) = DataChangeEvent_TripDaysChanged;

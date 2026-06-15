@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1780360887;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 819621298;
 
 // Section: executor
 
@@ -1615,43 +1615,6 @@ fn wire__crate__api__tags__get_trip_tags_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok = crate::api::tags::get_trip_tags(api_trip_id).await?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
-fn wire__crate__api__timeline__get_trip_timeline_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "get_trip_timeline",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_trip_id = <uuid::Uuid>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || async move {
-                        let output_ok =
-                            crate::api::timeline::get_trip_timeline(api_trip_id).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -3537,12 +3500,6 @@ impl SseDecode for crate::api::events::DataChangeEvent {
             }
             13 => {
                 let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
-                return crate::api::events::DataChangeEvent::TimelineChanged {
-                    trip_id: var_tripId,
-                };
-            }
-            14 => {
-                let mut var_tripId = <uuid::Uuid>::sse_decode(deserializer);
                 return crate::api::events::DataChangeEvent::TripDaysChanged {
                     trip_id: var_tripId,
                 };
@@ -4098,20 +4055,6 @@ impl SseDecode for Vec<crate::models::tidal_information::TidalInformation> {
             ans_.push(
                 <crate::models::tidal_information::TidalInformation>::sse_decode(deserializer),
             );
-        }
-        return ans_;
-    }
-}
-
-impl SseDecode for Vec<crate::models::timeline::TimelineItem> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<crate::models::timeline::TimelineItem>::sse_decode(
-                deserializer,
-            ));
         }
         return ans_;
     }
@@ -4885,118 +4828,6 @@ impl SseDecode for crate::models::tidal_information::TideType {
     }
 }
 
-impl SseDecode for crate::models::timeline::TimelineItem {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_date = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
-        let mut var_details =
-            <crate::models::timeline::TimelineItemDetails>::sse_decode(deserializer);
-        return crate::models::timeline::TimelineItem {
-            date: var_date,
-            details: var_details,
-        };
-    }
-}
-
-impl SseDecode for crate::models::timeline::TimelineItemDetails {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut tag_ = <i32>::sse_decode(deserializer);
-        match tag_ {
-            0 => {
-                let mut var_provider = <String>::sse_decode(deserializer);
-                let mut var_address = <String>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::CarRentalPickUp {
-                    provider: var_provider,
-                    address: var_address,
-                };
-            }
-            1 => {
-                let mut var_provider = <String>::sse_decode(deserializer);
-                let mut var_address = <String>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::CarRentalDropOff {
-                    provider: var_provider,
-                    address: var_address,
-                };
-            }
-            2 => {
-                let mut var_title = <String>::sse_decode(deserializer);
-                let mut var_address = <Option<String>>::sse_decode(deserializer);
-                let mut var_category =
-                    <crate::models::bookings::ReservationCategory>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::Reservation {
-                    title: var_title,
-                    address: var_address,
-                    category: var_category,
-                };
-            }
-            3 => {
-                let mut var_address = <Option<String>>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::CheckIn {
-                    address: var_address,
-                };
-            }
-            4 => {
-                let mut var_address = <Option<String>>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::CheckOut {
-                    address: var_address,
-                };
-            }
-            5 => {
-                let mut var_airport = <String>::sse_decode(deserializer);
-                let mut var_flightNumber = <String>::sse_decode(deserializer);
-                let mut var_seat = <Option<String>>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::FlightTakeOff {
-                    airport: var_airport,
-                    flight_number: var_flightNumber,
-                    seat: var_seat,
-                };
-            }
-            6 => {
-                let mut var_airport = <String>::sse_decode(deserializer);
-                let mut var_flightNumber = <String>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::FlightLanding {
-                    airport: var_airport,
-                    flight_number: var_flightNumber,
-                };
-            }
-            7 => {
-                let mut var_station = <String>::sse_decode(deserializer);
-                let mut var_trainNumber = <String>::sse_decode(deserializer);
-                let mut var_seat = <Option<String>>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::TrainOrigin {
-                    station: var_station,
-                    train_number: var_trainNumber,
-                    seat: var_seat,
-                };
-            }
-            8 => {
-                let mut var_station = <String>::sse_decode(deserializer);
-                let mut var_trainNumber = <String>::sse_decode(deserializer);
-                return crate::models::timeline::TimelineItemDetails::TrainDestination {
-                    station: var_station,
-                    train_number: var_trainNumber,
-                };
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
-    }
-}
-
-impl SseDecode for crate::models::timeline::TimelineModel {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_past = <Vec<crate::models::timeline::TimelineItem>>::sse_decode(deserializer);
-        let mut var_future = <Vec<crate::models::timeline::TimelineItem>>::sse_decode(deserializer);
-        return crate::models::timeline::TimelineModel {
-            past: var_past,
-            future: var_future,
-        };
-    }
-}
-
 impl SseDecode for crate::models::transits::Train {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -5727,97 +5558,96 @@ fn pde_ffi_dispatcher_primary_impl(
         ),
         42 => wire__crate__api__routes__get_trip_routes_impl(port, ptr, rust_vec_len, data_len),
         43 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        44 => wire__crate__api__timeline__get_trip_timeline_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__trip_days__get_unassigned_day_items_impl(
+        44 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__trip_days__get_unassigned_day_items_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__api__routes__import_komoot_route_impl(port, ptr, rust_vec_len, data_len),
-        50 => wire__crate__api__transits__import_parsed_train_journey_impl(
+        47 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__routes__import_komoot_route_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__transits__import_parsed_train_journey_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        51 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        53 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
-        55 => {
+        50 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        51 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        53 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
+        54 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        56 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
+        55 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
-        58 => wire__crate__api__trip_days__remove_trip_day_location_impl(
+        56 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
+        57 => wire__crate__api__trip_days__remove_trip_day_location_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => wire__crate__api__trip_days__reorder_trip_day_impl(port, ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
+        58 => wire__crate__api__trip_days__reorder_trip_day_impl(port, ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        60 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        63 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
+        62 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        64 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        65 => wire__crate__api__trip_days__set_primary_trip_day_location_impl(
+        63 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__trip_days__set_primary_trip_day_location_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => {
+        65 => {
             wire__crate__api__trip_days__set_trip_day_title_impl(port, ptr, rust_vec_len, data_len)
         }
-        67 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        68 => {
+        66 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        67 => {
             wire__crate__api__events__subscribe_data_changes_impl(port, ptr, rust_vec_len, data_len)
         }
-        69 => {
+        68 => {
             wire__crate__api__trip_days__unassign_day_item_impl(port, ptr, rust_vec_len, data_len)
         }
-        70 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        71 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
-        72 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        69 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        70 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        71 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        73 => {
+        72 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        74 => wire__crate__api__routes__update_route_impl(port, ptr, rust_vec_len, data_len),
-        75 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
-        76 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        77 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        78 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        73 => wire__crate__api__routes__update_route_impl(port, ptr, rust_vec_len, data_len),
+        74 => wire__crate__api__tags__update_tag_impl(port, ptr, rust_vec_len, data_len),
+        75 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        76 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        77 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        79 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        78 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
@@ -6442,11 +6272,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::events::DataChangeEvent {
             ]
             .into_dart(),
             crate::api::events::DataChangeEvent::TagsChanged => [12.into_dart()].into_dart(),
-            crate::api::events::DataChangeEvent::TimelineChanged { trip_id } => {
-                [13.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
-            }
             crate::api::events::DataChangeEvent::TripDaysChanged { trip_id } => {
-                [14.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
+                [13.into_dart(), trip_id.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -7428,143 +7255,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::tidal_information::TideTyp
     for crate::models::tidal_information::TideType
 {
     fn into_into_dart(self) -> crate::models::tidal_information::TideType {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::models::timeline::TimelineItem {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.date.into_into_dart().into_dart(),
-            self.details.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::models::timeline::TimelineItem
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::models::timeline::TimelineItem>
-    for crate::models::timeline::TimelineItem
-{
-    fn into_into_dart(self) -> crate::models::timeline::TimelineItem {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::models::timeline::TimelineItemDetails {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        match self {
-            crate::models::timeline::TimelineItemDetails::CarRentalPickUp { provider, address } => {
-                [
-                    0.into_dart(),
-                    provider.into_into_dart().into_dart(),
-                    address.into_into_dart().into_dart(),
-                ]
-                .into_dart()
-            }
-            crate::models::timeline::TimelineItemDetails::CarRentalDropOff {
-                provider,
-                address,
-            } => [
-                1.into_dart(),
-                provider.into_into_dart().into_dart(),
-                address.into_into_dart().into_dart(),
-            ]
-            .into_dart(),
-            crate::models::timeline::TimelineItemDetails::Reservation {
-                title,
-                address,
-                category,
-            } => [
-                2.into_dart(),
-                title.into_into_dart().into_dart(),
-                address.into_into_dart().into_dart(),
-                category.into_into_dart().into_dart(),
-            ]
-            .into_dart(),
-            crate::models::timeline::TimelineItemDetails::CheckIn { address } => {
-                [3.into_dart(), address.into_into_dart().into_dart()].into_dart()
-            }
-            crate::models::timeline::TimelineItemDetails::CheckOut { address } => {
-                [4.into_dart(), address.into_into_dart().into_dart()].into_dart()
-            }
-            crate::models::timeline::TimelineItemDetails::FlightTakeOff {
-                airport,
-                flight_number,
-                seat,
-            } => [
-                5.into_dart(),
-                airport.into_into_dart().into_dart(),
-                flight_number.into_into_dart().into_dart(),
-                seat.into_into_dart().into_dart(),
-            ]
-            .into_dart(),
-            crate::models::timeline::TimelineItemDetails::FlightLanding {
-                airport,
-                flight_number,
-            } => [
-                6.into_dart(),
-                airport.into_into_dart().into_dart(),
-                flight_number.into_into_dart().into_dart(),
-            ]
-            .into_dart(),
-            crate::models::timeline::TimelineItemDetails::TrainOrigin {
-                station,
-                train_number,
-                seat,
-            } => [
-                7.into_dart(),
-                station.into_into_dart().into_dart(),
-                train_number.into_into_dart().into_dart(),
-                seat.into_into_dart().into_dart(),
-            ]
-            .into_dart(),
-            crate::models::timeline::TimelineItemDetails::TrainDestination {
-                station,
-                train_number,
-            } => [
-                8.into_dart(),
-                station.into_into_dart().into_dart(),
-                train_number.into_into_dart().into_dart(),
-            ]
-            .into_dart(),
-            _ => {
-                unimplemented!("");
-            }
-        }
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::models::timeline::TimelineItemDetails
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::models::timeline::TimelineItemDetails>
-    for crate::models::timeline::TimelineItemDetails
-{
-    fn into_into_dart(self) -> crate::models::timeline::TimelineItemDetails {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::models::timeline::TimelineModel {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.past.into_into_dart().into_dart(),
-            self.future.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::models::timeline::TimelineModel
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::models::timeline::TimelineModel>
-    for crate::models::timeline::TimelineModel
-{
-    fn into_into_dart(self) -> crate::models::timeline::TimelineModel {
         self
     }
 }
@@ -8674,12 +8364,8 @@ impl SseEncode for crate::api::events::DataChangeEvent {
             crate::api::events::DataChangeEvent::TagsChanged => {
                 <i32>::sse_encode(12, serializer);
             }
-            crate::api::events::DataChangeEvent::TimelineChanged { trip_id } => {
-                <i32>::sse_encode(13, serializer);
-                <uuid::Uuid>::sse_encode(trip_id, serializer);
-            }
             crate::api::events::DataChangeEvent::TripDaysChanged { trip_id } => {
-                <i32>::sse_encode(14, serializer);
+                <i32>::sse_encode(13, serializer);
                 <uuid::Uuid>::sse_encode(trip_id, serializer);
             }
             _ => {
@@ -9122,16 +8808,6 @@ impl SseEncode for Vec<crate::models::tidal_information::TidalInformation> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::models::tidal_information::TidalInformation>::sse_encode(item, serializer);
-        }
-    }
-}
-
-impl SseEncode for Vec<crate::models::timeline::TimelineItem> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <crate::models::timeline::TimelineItem>::sse_encode(item, serializer);
         }
     }
 }
@@ -9708,100 +9384,6 @@ impl SseEncode for crate::models::tidal_information::TideType {
             },
             serializer,
         );
-    }
-}
-
-impl SseEncode for crate::models::timeline::TimelineItem {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <chrono::DateTime<chrono::Utc>>::sse_encode(self.date, serializer);
-        <crate::models::timeline::TimelineItemDetails>::sse_encode(self.details, serializer);
-    }
-}
-
-impl SseEncode for crate::models::timeline::TimelineItemDetails {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        match self {
-            crate::models::timeline::TimelineItemDetails::CarRentalPickUp { provider, address } => {
-                <i32>::sse_encode(0, serializer);
-                <String>::sse_encode(provider, serializer);
-                <String>::sse_encode(address, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::CarRentalDropOff {
-                provider,
-                address,
-            } => {
-                <i32>::sse_encode(1, serializer);
-                <String>::sse_encode(provider, serializer);
-                <String>::sse_encode(address, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::Reservation {
-                title,
-                address,
-                category,
-            } => {
-                <i32>::sse_encode(2, serializer);
-                <String>::sse_encode(title, serializer);
-                <Option<String>>::sse_encode(address, serializer);
-                <crate::models::bookings::ReservationCategory>::sse_encode(category, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::CheckIn { address } => {
-                <i32>::sse_encode(3, serializer);
-                <Option<String>>::sse_encode(address, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::CheckOut { address } => {
-                <i32>::sse_encode(4, serializer);
-                <Option<String>>::sse_encode(address, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::FlightTakeOff {
-                airport,
-                flight_number,
-                seat,
-            } => {
-                <i32>::sse_encode(5, serializer);
-                <String>::sse_encode(airport, serializer);
-                <String>::sse_encode(flight_number, serializer);
-                <Option<String>>::sse_encode(seat, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::FlightLanding {
-                airport,
-                flight_number,
-            } => {
-                <i32>::sse_encode(6, serializer);
-                <String>::sse_encode(airport, serializer);
-                <String>::sse_encode(flight_number, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::TrainOrigin {
-                station,
-                train_number,
-                seat,
-            } => {
-                <i32>::sse_encode(7, serializer);
-                <String>::sse_encode(station, serializer);
-                <String>::sse_encode(train_number, serializer);
-                <Option<String>>::sse_encode(seat, serializer);
-            }
-            crate::models::timeline::TimelineItemDetails::TrainDestination {
-                station,
-                train_number,
-            } => {
-                <i32>::sse_encode(8, serializer);
-                <String>::sse_encode(station, serializer);
-                <String>::sse_encode(train_number, serializer);
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
-    }
-}
-
-impl SseEncode for crate::models::timeline::TimelineModel {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<crate::models::timeline::TimelineItem>>::sse_encode(self.past, serializer);
-        <Vec<crate::models::timeline::TimelineItem>>::sse_encode(self.future, serializer);
     }
 }
 

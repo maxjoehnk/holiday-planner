@@ -15,7 +15,6 @@ import 'api/packing_list.dart';
 import 'api/points_of_interest.dart';
 import 'api/routes.dart';
 import 'api/tags.dart';
-import 'api/timeline.dart';
 import 'api/transits.dart';
 import 'api/trip_days.dart';
 import 'api/trips.dart';
@@ -56,7 +55,6 @@ import 'models/bookings.dart';
 import 'models/point_of_interests.dart';
 import 'models/routes.dart';
 import 'models/tidal_information.dart';
-import 'models/timeline.dart';
 import 'models/transits.dart';
 import 'models/trip_day.dart';
 import 'models/web_images.dart';
@@ -425,9 +423,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<TidalInformation> dco_decode_list_tidal_information(dynamic raw);
 
   @protected
-  List<TimelineItem> dco_decode_list_timeline_item(dynamic raw);
-
-  @protected
   List<Train> dco_decode_list_train(dynamic raw);
 
   @protected
@@ -591,15 +586,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TideType dco_decode_tide_type(dynamic raw);
-
-  @protected
-  TimelineItem dco_decode_timeline_item(dynamic raw);
-
-  @protected
-  TimelineItemDetails dco_decode_timeline_item_details(dynamic raw);
-
-  @protected
-  TimelineModel dco_decode_timeline_model(dynamic raw);
 
   @protected
   Train dco_decode_train(dynamic raw);
@@ -1104,10 +1090,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<TimelineItem> sse_decode_list_timeline_item(
-      SseDeserializer deserializer);
-
-  @protected
   List<Train> sse_decode_list_train(SseDeserializer deserializer);
 
   @protected
@@ -1288,16 +1270,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TideType sse_decode_tide_type(SseDeserializer deserializer);
-
-  @protected
-  TimelineItem sse_decode_timeline_item(SseDeserializer deserializer);
-
-  @protected
-  TimelineItemDetails sse_decode_timeline_item_details(
-      SseDeserializer deserializer);
-
-  @protected
-  TimelineModel sse_decode_timeline_model(SseDeserializer deserializer);
 
   @protected
   Train sse_decode_train(SseDeserializer deserializer);
@@ -1833,10 +1805,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<TidalInformation> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_timeline_item(
-      List<TimelineItem> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_train(List<Train> self, SseSerializer serializer);
 
   @protected
@@ -2026,16 +1994,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_tide_type(TideType self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_timeline_item(TimelineItem self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_timeline_item_details(
-      TimelineItemDetails self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_timeline_model(TimelineModel self, SseSerializer serializer);
 
   @protected
   void sse_encode_train(Train self, SseSerializer serializer);

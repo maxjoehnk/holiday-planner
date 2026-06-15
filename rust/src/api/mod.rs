@@ -12,7 +12,6 @@ pub mod attachments;
 pub mod points_of_interest;
 pub mod routes;
 pub mod bookings;
-pub mod timeline;
 pub mod transits;
 pub mod tags;
 pub mod events;

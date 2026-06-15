@@ -584,9 +584,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get summaryTab => 'Übersicht';
 
   @override
-  String get timelineTab => 'Zeitstrahl';
-
-  @override
   String get mapTab => 'Karte';
 
   @override

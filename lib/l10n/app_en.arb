@@ -381,8 +381,6 @@
 
   "summaryTab": "Summary",
   "@summaryTab": {"description": "Bottom navigation tab label: Summary"},
-  "timelineTab": "Timeline",
-  "@timelineTab": {"description": "Bottom navigation tab label: Timeline"},
   "mapTab": "Map",
   "@mapTab": {"description": "Bottom navigation tab label: Map"},
   "attachmentsTab": "Attachments",

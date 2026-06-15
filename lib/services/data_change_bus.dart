@@ -159,13 +159,6 @@ class DataChangeBus {
   Stream<void> onTagsChanged() =>
       events.where((e) => e is DataChangeEvent_TagsChanged).map((_) => null);
 
-  Stream<void> onTimelineChanged(UuidValue tripId) => events.where((e) {
-        if (e is DataChangeEvent_TimelineChanged) {
-          return e.tripId == tripId;
-        }
-        return false;
-      }).map((_) => null);
-
   Stream<void> onTripDaysChanged(UuidValue tripId) => events.where((e) {
         if (e is DataChangeEvent_TripDaysChanged) {
           return e.tripId == tripId;

@@ -1112,12 +1112,6 @@ abstract class AppLocalizations {
   /// **'Summary'**
   String get summaryTab;
 
-  /// Bottom navigation tab label: Timeline
-  ///
-  /// In en, this message translates to:
-  /// **'Timeline'**
-  String get timelineTab;
-
   /// Bottom navigation tab label: Map
   ///
   /// In en, this message translates to:

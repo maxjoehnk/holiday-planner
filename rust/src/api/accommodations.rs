@@ -17,7 +17,6 @@ pub async fn add_trip_accommodation(command: AddTripAccommodation) -> anyhow::Re
     let trip_id = command.trip_id;
     handler.add_accommodation(command).await?;
     events::emit(DataChangeEvent::AccommodationsChanged { trip_id: Some(trip_id) });
-    events::emit(DataChangeEvent::TimelineChanged { trip_id });
     Ok(())
 }
 
