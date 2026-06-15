@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:holiday_planner/colors.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:latlong2/latlong.dart';
@@ -11,6 +12,7 @@ class PointOfInterestMarker extends MapMarker {
               ? LatLng(poi.coordinates!.latitude, poi.coordinates!.longitude)
               : throw ArgumentError('PointOfInterestModel must have coordinates'),
           color: POINTS_OF_INTERESTS_COLOR,
+          icon: Icons.explore,
           onTap: onTap == null ? null : () => onTap(poi),
         );
 }
