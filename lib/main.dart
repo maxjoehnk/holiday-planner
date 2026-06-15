@@ -24,7 +24,7 @@ Future<void> main() async {
   await Future.wait([
     openDatabase(),
     findSystemLocale(),
-    settings.loadThemeMode(),
+    settings.load(),
     initMapTileCache(),
   ]);
 
@@ -120,6 +120,7 @@ class _HolidayPlannerAppState extends State<HolidayPlannerApp> {
               Locale('en'),
               Locale('de')
             ],
+            locale: settings.locale,
             themeMode: settings.themeMode,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(

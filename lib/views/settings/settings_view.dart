@@ -68,6 +68,31 @@ class _SettingsViewState extends State<SettingsView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                 child: Text(
+                  AppLocalizations.of(context)!.languageSection,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              RadioListTile<Locale?>(
+                title: Text(AppLocalizations.of(context)!.useSystemLanguage),
+                value: null,
+                groupValue: settings.locale,
+                onChanged: (val) => settings.updateLocale(val),
+              ),
+              RadioListTile<Locale?>(
+                title: Text(AppLocalizations.of(context)!.languageEnglish),
+                value: const Locale('en'),
+                groupValue: settings.locale,
+                onChanged: (val) => settings.updateLocale(val),
+              ),
+              RadioListTile<Locale?>(
+                title: Text(AppLocalizations.of(context)!.languageGerman),
+                value: const Locale('de'),
+                groupValue: settings.locale,
+                onChanged: (val) => settings.updateLocale(val),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                child: Text(
                   AppLocalizations.of(context)!.aboutSection,
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),

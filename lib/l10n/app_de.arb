@@ -5,6 +5,10 @@
   "useSystemTheme": "Systemdesign verwenden",
   "themeLight": "Hell",
   "themeDark": "Dunkel",
+  "languageSection": "Sprache",
+  "useSystemLanguage": "Systemsprache verwenden",
+  "languageEnglish": "English",
+  "languageGerman": "Deutsch",
   "aboutSection": "Über",
   "aboutAppWithVersion": "Urlaubsplaner App {version}",
 

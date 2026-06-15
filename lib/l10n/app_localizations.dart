@@ -134,6 +134,30 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get themeDark;
 
+  /// Settings section header for language selection
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSection;
+
+  /// Radio option to follow the system language
+  ///
+  /// In en, this message translates to:
+  /// **'Use system language'**
+  String get useSystemLanguage;
+
+  /// Radio option label for English
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Radio option label for German (shown in German)
+  ///
+  /// In en, this message translates to:
+  /// **'Deutsch'**
+  String get languageGerman;
+
   /// No description provided for @aboutSection.
   ///
   /// In en, this message translates to:
