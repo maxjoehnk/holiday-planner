@@ -33,7 +33,7 @@ class PointOfInterestMapDetails extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.place,
-                      color: POINTS_OF_INTERESTS_COLOR, size: 20),
+                      color: ACTIVITIES_COLOR, size: 20),
                   const SizedBox(width: 6),
                   Text(
                     AppLocalizations.of(context)!.pointOfInterestLabel,

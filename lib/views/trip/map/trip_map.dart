@@ -15,6 +15,7 @@ import 'package:holiday_planner/views/trip/map/location_marker.dart';
 import 'package:holiday_planner/views/trip/map/poi_details.dart';
 import 'package:holiday_planner/views/trip/map/poi_marker.dart';
 import 'package:holiday_planner/views/trip/map/route_details.dart';
+import 'package:holiday_planner/views/trip/map/route_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:holiday_planner/src/rust/api/accommodations.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
@@ -102,22 +103,10 @@ class _TripMapState extends State<TripMap> {
   }
 
   List<Marker> _buildRouteStartMarkers(List<RouteModel> routes) {
-    final colorScheme = Theme.of(context).colorScheme;
     return routes
-        .map((route) => Marker(
-              point: LatLng(
-                route.startCoordinate.latitude,
-                route.startCoordinate.longitude,
-              ),
-              width: 32,
-              height: 32,
-              child: GestureDetector(
-                onTap: () => _openRouteDetail(route),
-                child: Icon(
-                  Icons.flag,
-                  color: _colorForSport(route.sport, colorScheme),
-                ),
-              ),
+        .map((route) => RouteMarker(
+              route: route,
+              onTap: (r) => _openRouteDetail(r),
             ))
         .toList();
   }

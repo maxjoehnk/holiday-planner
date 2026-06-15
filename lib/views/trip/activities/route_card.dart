@@ -37,13 +37,13 @@ class RouteCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: colorScheme.tertiaryContainer,
+                      color: colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       _sportIcon(route.sport),
                       size: 24,
-                      color: colorScheme.onTertiaryContainer,
+                      color: colorScheme.onPrimaryContainer,
                     ),
                   ),
                   const SizedBox(width: 16),

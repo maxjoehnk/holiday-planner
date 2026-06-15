@@ -11,7 +11,7 @@ class PointOfInterestMarker extends MapMarker {
           point: poi.coordinates != null
               ? LatLng(poi.coordinates!.latitude, poi.coordinates!.longitude)
               : throw ArgumentError('PointOfInterestModel must have coordinates'),
-          color: POINTS_OF_INTERESTS_COLOR,
+          color: ACTIVITIES_COLOR,
           icon: Icons.explore,
           onTap: onTap == null ? null : () => onTap(poi),
         );

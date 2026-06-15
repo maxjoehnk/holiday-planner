@@ -55,7 +55,7 @@ class PointsOfInterestsCard extends StatelessWidget {
         icon: Icons.explore,
         label: "Activities",
         subtitle: subtitle,
-        color: POINTS_OF_INTERESTS_COLOR,
+        color: ACTIVITIES_COLOR,
         onTap: () {
           Navigator.push(
             context,
