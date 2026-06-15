@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/src/rust/api/attachments.dart';
 import 'package:holiday_planner/src/rust/models.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -94,19 +94,19 @@ class AttachmentCard extends StatelessWidget {
 
   IconData _getFileTypeIcon(AttachmentListModel attachment) {
     if (attachment.contentType == "application/pdf") {
-      return Bootstrap.filetype_pdf;
+      return BootstrapIcons.filetype_pdf;
     }
     if (attachment.contentType.startsWith("image")) {
-      return Bootstrap.image;
+      return BootstrapIcons.image;
     }
     if (attachment.contentType.startsWith("text")) {
       return Icons.description_outlined;
     }
     if (attachment.contentType.contains("word") || attachment.contentType.contains("document")) {
-      return Bootstrap.filetype_doc;
+      return BootstrapIcons.filetype_doc;
     }
     if (attachment.contentType.contains("excel") || attachment.contentType.contains("spreadsheet")) {
-      return Bootstrap.filetype_xls;
+      return BootstrapIcons.filetype_xls;
     }
     return Icons.insert_drive_file_outlined;
   }

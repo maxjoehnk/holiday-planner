@@ -12,7 +12,7 @@ import 'package:holiday_planner/views/trip/locations/forecast_detail_view.dart';
 import 'package:holiday_planner/views/trip/locations/tidal_detail_view.dart';
 import 'package:holiday_planner/views/trip/locations/location_detail_view.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:uuid/uuid.dart';
 
 const Duration debounceDuration = Duration(milliseconds: 500);
