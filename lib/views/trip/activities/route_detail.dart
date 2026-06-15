@@ -35,7 +35,13 @@ class _RouteDetailState extends State<RouteDetail> {
     final points = route.polyline
         .map((p) => LatLng(p.coordinate.latitude, p.coordinate.longitude))
         .toList();
-    final center = LatLng(route.startCoordinate.latitude, route.startCoordinate.longitude);
+    final start = LatLng(route.startCoordinate.latitude, route.startCoordinate.longitude);
+    final cameraFit = points.length >= 2
+        ? CameraFit.bounds(
+            bounds: LatLngBounds.fromPoints(points),
+            padding: const EdgeInsets.all(24),
+          )
+        : null;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,8 +61,9 @@ class _RouteDetailState extends State<RouteDetail> {
             height: 280,
             child: FlutterMap(
               options: MapOptions(
-                initialCenter: center,
+                initialCenter: start,
                 initialZoom: 12,
+                initialCameraFit: cameraFit,
                 minZoom: 1.0,
                 maxZoom: 18.0,
               ),
@@ -74,19 +81,19 @@ class _RouteDetailState extends State<RouteDetail> {
                       Polyline(
                         points: points,
                         strokeWidth: 4.0,
-                        color: colorScheme.primary,
+                        color: colorScheme.inversePrimary,
                       ),
                     ],
                   ),
                 MarkerLayer(
                   markers: [
                     Marker(
-                      point: center,
+                      point: start,
                       width: 32,
                       height: 32,
                       child: Icon(
                         Icons.flag,
-                        color: colorScheme.primary,
+                        color: colorScheme.inversePrimary,
                       ),
                     ),
                   ],
