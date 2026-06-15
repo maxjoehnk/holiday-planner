@@ -604,8 +604,17 @@ class LocationDailyForecast extends StatelessWidget {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
-    
-    return Container(
+
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ForecastDetailView(location: location),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colorScheme.surfaceVariant.withOpacity(0.3),
@@ -634,32 +643,23 @@ class LocationDailyForecast extends StatelessWidget {
                   ),
                 ],
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ForecastDetailView(location: location),
-                    ),
-                  );
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Details",
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 14,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Details",
+                    style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 14,
+                    color: colorScheme.primary,
+                  ),
+                ],
               ),
             ],
           ),
@@ -719,7 +719,7 @@ class LocationDailyForecast extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
@@ -755,7 +755,16 @@ class LocationDailyPollen extends StatelessWidget {
     }
     final days = grouped.keys.toList()..sort();
 
-    return Container(
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PollenDetailView(location: location),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
@@ -784,30 +793,20 @@ class LocationDailyPollen extends StatelessWidget {
                   ),
                 ],
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          PollenDetailView(location: location),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Details",
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
                     ),
-                  );
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Details",
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.arrow_forward,
-                        size: 14, color: colorScheme.primary),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.arrow_forward,
+                      size: 14, color: colorScheme.primary),
+                ],
               ),
             ],
           ),
@@ -869,7 +868,7 @@ class LocationDailyPollen extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
