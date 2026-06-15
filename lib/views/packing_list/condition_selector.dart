@@ -30,6 +30,12 @@ class ConditionSelector extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
             Row(
               children: [
                 Container(
@@ -137,6 +143,10 @@ class ConditionSelector extends StatelessWidget {
                   context,
                   const PackingListEntryCondition.pollen(
                       pollenType: PollenType.grass, minIndex: 3)),
+            ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 24),
             Row(

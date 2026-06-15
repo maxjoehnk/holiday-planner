@@ -79,6 +79,12 @@ class _EditItemDialogState extends State<EditItemDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
             Row(
               children: [
                 Container(
@@ -225,32 +231,47 @@ class _EditItemDialogState extends State<EditItemDialog> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final fields = [
+                        TextFormField(
                           controller: _fixedQuantityController,
                           decoration: AppInputDecoration(labelText: "Fixed", hintText: "0"),
                           keyboardType: TextInputType.number,
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextFormField(
+                        TextFormField(
                           controller: _perDayController,
                           decoration: AppInputDecoration(labelText: "Per Day", hintText: "0"),
                           keyboardType: TextInputType.number,
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextFormField(
+                        TextFormField(
                           controller: _perNightController,
                           decoration: AppInputDecoration(labelText: "Per Night", hintText: "0"),
                           keyboardType: TextInputType.number,
                         ),
-                      ),
-                    ],
+                      ];
+                      final textScale = MediaQuery.textScalerOf(context).scale(1);
+                      final minFieldWidth = 110.0 * textScale;
+                      final fitsInRow = constraints.maxWidth >= minFieldWidth * fields.length + 24;
+                      if (fitsInRow) {
+                        return Row(
+                          children: [
+                            for (var (i, field) in fields.indexed) ...[
+                              if (i > 0) const SizedBox(width: 12),
+                              Expanded(child: field),
+                            ],
+                          ],
+                        );
+                      }
+                      return Column(
+                        children: [
+                          for (var (i, field) in fields.indexed) ...[
+                            if (i > 0) const SizedBox(height: 12),
+                            field,
+                          ],
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -325,6 +346,10 @@ class _EditItemDialogState extends State<EditItemDialog> {
                       ),
                     ),
                 ],
+              ),
+            ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
