@@ -486,6 +486,19 @@ pub fn tag_id_for_name(name: &str) -> Uuid {
     Uuid::new_v5(&TAG_NAMESPACE, normalized.as_bytes())
 }
 
+/// Namespace for content-addressed trip_day ids. Two devices creating
+/// the day-planner row for the same (trip, date) pair derive the same
+/// id, so the unique `(trip_id, date)` constraint on the server can't
+/// fire on cross-device collisions. The local PK insert is idempotent
+/// for the same reason. Arbitrary constant, must never change.
+const TRIP_DAY_NAMESPACE: Uuid = Uuid::from_u128(0x9c4b_8a17_3f5d_4a82_b6e1_7d2f8c4a5b9e);
+
+/// Derive the canonical trip_day id for `(trip_id, date)`.
+pub fn trip_day_id_for(trip_id: Uuid, date: chrono::NaiveDate) -> Uuid {
+    let payload = format!("{trip_id}|{date}");
+    Uuid::new_v5(&TRIP_DAY_NAMESPACE, payload.as_bytes())
+}
+
 // =====================================================================
 // Join tables — composite-key rows, no last_modified_by.
 // =====================================================================

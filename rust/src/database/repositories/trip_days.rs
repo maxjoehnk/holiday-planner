@@ -40,11 +40,24 @@ pub async fn upsert(
     trip_id: Uuid,
     date: NaiveDate,
 ) -> anyhow::Result<trip_day::Model> {
+    // Content-addressed id so two devices (or two members) materialising
+    // the same (trip, date) trip_day arrive at the same row, both
+    // locally and on the server. Without this, each device generates a
+    // fresh uuid_v4 and the second push fails the server-side
+    // `(trip_id, date)` unique constraint, leaving the loser with a
+    // local-only id that orphans its trip_day_locations / attached
+    // POIs and routes.
+    let id = crate::sync::wire::trip_day_id_for(trip_id, date);
+    if let Some(existing) = TripDay::find_by_id(id).one(db.deref()).await? {
+        return Ok(existing);
+    }
+    // Fall back to the (trip_id, date) lookup in case a legacy row
+    // exists with a random uuid_v4 (created before the deterministic
+    // scheme was rolled out). New deployments hit this branch never.
     if let Some(existing) = find_by_trip_and_date(db, trip_id, date).await? {
         return Ok(existing);
     }
 
-    let id = Uuid::new_v4();
     let now = chrono::Utc::now();
     let model = trip_day::ActiveModel {
         id: Set(id),
