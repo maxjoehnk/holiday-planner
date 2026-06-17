@@ -46,6 +46,8 @@ pub async fn insert(
         location_id: Set(location_id),
         is_primary: Set(is_primary),
         display_order: Set(display_order),
+        updated_at: Set(chrono::Utc::now()),
+        deleted_at: Set(None),
     };
     TripDayLocation::insert(model)
         .exec_without_returning(db.deref())
@@ -89,6 +91,7 @@ pub async fn set_primary(
         trip_day_id: Set(trip_day_id),
         location_id: Set(location_id),
         is_primary: Set(true),
+        updated_at: Set(chrono::Utc::now()),
         ..Default::default()
     })
     .exec(db.deref())
@@ -106,6 +109,7 @@ pub async fn set_display_order(
         trip_day_id: Set(trip_day_id),
         location_id: Set(location_id),
         display_order: Set(display_order),
+        updated_at: Set(chrono::Utc::now()),
         ..Default::default()
     })
     .exec(db.deref())

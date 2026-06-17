@@ -9,8 +9,10 @@ use crate::commands::{
     AddTripDayLocation, AssignItemToDay, RemoveTripDayLocation, ReorderDay,
     SchedulableItemType, SetPrimaryTripDayLocation, SetTripDayTitle, UnassignItem,
 };
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, repositories};
 use crate::handlers::Handler;
+use crate::sync;
 use crate::models::{
     Coordinate, DayItem, DayItemDetails, DayLocation, DayWeather, TripDayView, UnassignedItems,
     UnassignedPoi, UnassignedRoute,
@@ -351,6 +353,7 @@ impl TripDayHandler {
     pub async fn assign_item_to_day(&self, command: AssignItemToDay) -> anyhow::Result<()> {
         let date = to_local_date(command.date);
         let day = repositories::trip_days::upsert(&self.db, command.trip_id, date).await?;
+        enqueue_trip_day(&self.db, day.id).await?;
         let next_order = self.next_day_order(day.id).await?;
         match command.item_type {
             SchedulableItemType::PointOfInterest => {
@@ -362,6 +365,7 @@ impl TripDayHandler {
                     command.scheduled_at,
                 )
                 .await?;
+                enqueue_poi(&self.db, command.item_id).await?;
                 emit(DataChangeEvent::PoisChanged {
                     trip_id: Some(command.trip_id),
                 });
@@ -375,6 +379,7 @@ impl TripDayHandler {
                     command.scheduled_at,
                 )
                 .await?;
+                enqueue_route(&self.db, command.item_id).await?;
                 emit(DataChangeEvent::RoutesChanged {
                     trip_id: Some(command.trip_id),
                 });
@@ -390,12 +395,14 @@ impl TripDayHandler {
         match command.item_type {
             SchedulableItemType::PointOfInterest => {
                 repositories::points_of_interest::unassign(&self.db, command.item_id).await?;
+                enqueue_poi(&self.db, command.item_id).await?;
                 emit(DataChangeEvent::PoisChanged {
                     trip_id: Some(trip_id),
                 });
             }
             SchedulableItemType::Route => {
                 repositories::routes::unassign(&self.db, command.item_id).await?;
+                enqueue_route(&self.db, command.item_id).await?;
                 emit(DataChangeEvent::RoutesChanged {
                     trip_id: Some(trip_id),
                 });
@@ -416,9 +423,11 @@ impl TripDayHandler {
                         order,
                     )
                     .await?;
+                    enqueue_poi(&self.db, item.item_id).await?;
                 }
                 SchedulableItemType::Route => {
                     repositories::routes::set_day_order(&self.db, item.item_id, order).await?;
+                    enqueue_route(&self.db, item.item_id).await?;
                 }
             }
         }
@@ -440,14 +449,17 @@ impl TripDayHandler {
         match (existing, title) {
             (Some(day), Some(new_title)) => {
                 repositories::trip_days::update_title(&self.db, day.id, Some(new_title)).await?;
+                enqueue_trip_day(&self.db, day.id).await?;
             }
             (Some(day), None) => {
                 let locations =
                     repositories::trip_day_locations::find_by_day(&self.db, day.id).await?;
                 if locations.is_empty() && !self.day_has_items(day.id).await? {
                     repositories::trip_days::delete_by_id(&self.db, day.id).await?;
+                    enqueue_trip_day_delete(&self.db, day.id).await?;
                 } else {
                     repositories::trip_days::update_title(&self.db, day.id, None).await?;
+                    enqueue_trip_day(&self.db, day.id).await?;
                 }
             }
             (None, Some(new_title)) => {
@@ -455,6 +467,7 @@ impl TripDayHandler {
                     repositories::trip_days::upsert(&self.db, command.trip_id, date)
                         .await?;
                 repositories::trip_days::update_title(&self.db, day.id, Some(new_title)).await?;
+                enqueue_trip_day(&self.db, day.id).await?;
             }
             (None, None) => {}
         }
@@ -467,6 +480,7 @@ impl TripDayHandler {
     pub async fn add_location(&self, command: AddTripDayLocation) -> anyhow::Result<()> {
         let date = to_local_date(command.date);
         let day = repositories::trip_days::upsert(&self.db, command.trip_id, date).await?;
+        enqueue_trip_day(&self.db, day.id).await?;
         let existing =
             repositories::trip_day_locations::find_by_day(&self.db, day.id).await?;
         let is_first = existing.is_empty();
@@ -485,6 +499,7 @@ impl TripDayHandler {
             next_order,
         )
         .await?;
+        enqueue_trip_day_location(&self.db, day.id, command.location_id).await?;
 
         emit(DataChangeEvent::TripDaysChanged {
             trip_id: command.trip_id,
@@ -513,6 +528,7 @@ impl TripDayHandler {
             command.location_id,
         )
         .await?;
+        enqueue_trip_day_location_delete(&self.db, command.trip_day_id, command.location_id).await?;
 
         if removed_was_primary {
             let remaining =
@@ -525,6 +541,7 @@ impl TripDayHandler {
                     first.location_id,
                 )
                 .await?;
+                enqueue_trip_day_location(&self.db, command.trip_day_id, first.location_id).await?;
             }
         }
         emit(DataChangeEvent::TripDaysChanged { trip_id });
@@ -536,6 +553,17 @@ impl TripDayHandler {
         trip_id: Uuid,
         command: SetPrimaryTripDayLocation,
     ) -> anyhow::Result<()> {
+        // Snapshot the previous primary so we know which row to enqueue
+        // alongside the new one.
+        let prior_primary = repositories::trip_day_locations::find_by_day(
+            &self.db,
+            command.trip_day_id,
+        )
+        .await?
+        .into_iter()
+        .find(|e| e.is_primary)
+        .map(|e| e.location_id);
+
         repositories::trip_day_locations::clear_primary(&self.db, command.trip_day_id).await?;
         repositories::trip_day_locations::set_primary(
             &self.db,
@@ -543,6 +571,12 @@ impl TripDayHandler {
             command.location_id,
         )
         .await?;
+        if let Some(prev) = prior_primary {
+            if prev != command.location_id {
+                enqueue_trip_day_location(&self.db, command.trip_day_id, prev).await?;
+            }
+        }
+        enqueue_trip_day_location(&self.db, command.trip_day_id, command.location_id).await?;
         emit(DataChangeEvent::TripDaysChanged { trip_id });
         Ok(())
     }
@@ -561,12 +595,49 @@ impl TripDayHandler {
         }
         let day_ids: Vec<Uuid> = orphan_days.iter().map(|d| d.id).collect();
 
+        // Snapshot the items + locations on each orphan day so we can
+        // enqueue per-row deletions after the bulk wipe.
+        use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+        use std::ops::Deref;
+        let pois_to_unassign: Vec<Uuid> = crate::database::entities::point_of_interest::Entity::find()
+            .filter(crate::database::entities::point_of_interest::Column::TripDayId.is_in(day_ids.clone()))
+            .all(self.db.deref())
+            .await?
+            .into_iter()
+            .map(|p| p.id)
+            .collect();
+        let routes_to_unassign: Vec<Uuid> = crate::database::entities::route::Entity::find()
+            .filter(crate::database::entities::route::Column::TripDayId.is_in(day_ids.clone()))
+            .all(self.db.deref())
+            .await?
+            .into_iter()
+            .map(|r| r.id)
+            .collect();
+        let mut location_pairs: Vec<(Uuid, Uuid)> = Vec::new();
+        for day in &orphan_days {
+            let locs = repositories::trip_day_locations::find_by_day(&self.db, day.id).await?;
+            for l in locs {
+                location_pairs.push((day.id, l.location_id));
+            }
+        }
+
         repositories::points_of_interest::unassign_all_for_days(&self.db, &day_ids).await?;
         repositories::routes::unassign_all_for_days(&self.db, &day_ids).await?;
 
         for day in orphan_days {
             repositories::trip_day_locations::delete_all_for_day(&self.db, day.id).await?;
             repositories::trip_days::delete_by_id(&self.db, day.id).await?;
+            enqueue_trip_day_delete(&self.db, day.id).await?;
+        }
+
+        for poi_id in pois_to_unassign {
+            enqueue_poi(&self.db, poi_id).await?;
+        }
+        for route_id in routes_to_unassign {
+            enqueue_route(&self.db, route_id).await?;
+        }
+        for (day_id, location_id) in location_pairs {
+            enqueue_trip_day_location_delete(&self.db, day_id, location_id).await?;
         }
 
         emit(DataChangeEvent::PoisChanged {
@@ -698,3 +769,109 @@ fn to_local_date(dt: DateTime<Utc>) -> NaiveDate {
     Local.from_utc_datetime(&dt.naive_utc()).date_naive()
 }
 
+
+async fn enqueue_trip_day(db: &Database, day_id: Uuid) -> anyhow::Result<()> {
+    if sync::session::current_user().await.is_none() {
+        return Ok(());
+    }
+    let Some(model) = repositories::trip_days::find_by_id(db, day_id).await? else {
+        return Ok(());
+    };
+    let row = sync::wire::TripDayRow::from_model(&model);
+    sync::push::enqueue_if_signed_in(db, "trip_days", day_id, MutationOperation::Insert, &row).await
+}
+
+async fn enqueue_trip_day_delete(db: &Database, day_id: Uuid) -> anyhow::Result<()> {
+    if sync::session::current_user().await.is_none() {
+        return Ok(());
+    }
+    sync::push::enqueue_if_signed_in(
+        db,
+        "trip_days",
+        day_id,
+        MutationOperation::Delete,
+        &serde_json::json!({ "id": day_id }),
+    )
+    .await
+}
+
+async fn enqueue_trip_day_location(
+    db: &Database,
+    day_id: Uuid,
+    location_id: Uuid,
+) -> anyhow::Result<()> {
+    if sync::session::current_user().await.is_none() {
+        return Ok(());
+    }
+    use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+    use std::ops::Deref;
+    let Some(model) = crate::database::entities::trip_day_location::Entity::find()
+        .filter(crate::database::entities::trip_day_location::Column::TripDayId.eq(day_id))
+        .filter(crate::database::entities::trip_day_location::Column::LocationId.eq(location_id))
+        .one(db.deref())
+        .await?
+    else {
+        return Ok(());
+    };
+    let row = sync::wire::TripDayLocationRow::from_model(&model);
+    // Composite-PK row — use location_id as the entity_id slot for
+    // queue uniqueness; the payload carries both ids.
+    sync::push::enqueue_if_signed_in(
+        db,
+        "trip_day_locations",
+        location_id,
+        MutationOperation::Insert,
+        &row,
+    )
+    .await
+}
+
+async fn enqueue_trip_day_location_delete(
+    db: &Database,
+    day_id: Uuid,
+    location_id: Uuid,
+) -> anyhow::Result<()> {
+    if sync::session::current_user().await.is_none() {
+        return Ok(());
+    }
+    sync::push::enqueue_if_signed_in(
+        db,
+        "trip_day_locations",
+        location_id,
+        MutationOperation::Delete,
+        &serde_json::json!({
+            "trip_day_id": day_id,
+            "location_id": location_id,
+        }),
+    )
+    .await
+}
+
+async fn enqueue_poi(db: &Database, id: Uuid) -> anyhow::Result<()> {
+    if sync::session::current_user().await.is_none() {
+        return Ok(());
+    }
+    let Some(model) = repositories::points_of_interest::find_by_id(db, id).await? else {
+        return Ok(());
+    };
+    let row = sync::wire::PointOfInterestRow::from_model(&model);
+    sync::push::enqueue_if_signed_in(
+        db,
+        "points_of_interest",
+        id,
+        MutationOperation::Update,
+        &row,
+    )
+    .await
+}
+
+async fn enqueue_route(db: &Database, id: Uuid) -> anyhow::Result<()> {
+    if sync::session::current_user().await.is_none() {
+        return Ok(());
+    }
+    let Some(model) = repositories::routes::find_by_id(db, id).await? else {
+        return Ok(());
+    };
+    let row = sync::wire::RouteRow::from_model(&model);
+    sync::push::enqueue_if_signed_in(db, "routes", id, MutationOperation::Update, &row).await
+}

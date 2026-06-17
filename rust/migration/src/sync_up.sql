@@ -74,6 +74,22 @@ ALTER TABLE location_attachments ADD COLUMN deleted_at TEXT;
 ALTER TABLE trip_tags ADD COLUMN updated_at TEXT NOT NULL DEFAULT '1970-01-01T00:00:00Z';
 ALTER TABLE trip_tags ADD COLUMN deleted_at TEXT;
 
+-- trip_days, routes, and trip_day_locations were introduced after the
+-- sync feature was first sketched out. Same sync metadata pattern:
+-- updated_at + deleted_at for soft-delete LWW, last_modified_by for
+-- attribution. trip_day_locations is a composite-PK join table so it
+-- only carries the join-table subset.
+ALTER TABLE trip_days ADD COLUMN updated_at       TEXT NOT NULL DEFAULT '1970-01-01T00:00:00Z';
+ALTER TABLE trip_days ADD COLUMN deleted_at       TEXT;
+ALTER TABLE trip_days ADD COLUMN last_modified_by TEXT;
+
+ALTER TABLE routes ADD COLUMN updated_at       TEXT NOT NULL DEFAULT '1970-01-01T00:00:00Z';
+ALTER TABLE routes ADD COLUMN deleted_at       TEXT;
+ALTER TABLE routes ADD COLUMN last_modified_by TEXT;
+
+ALTER TABLE trip_day_locations ADD COLUMN updated_at TEXT NOT NULL DEFAULT '1970-01-01T00:00:00Z';
+ALTER TABLE trip_day_locations ADD COLUMN deleted_at TEXT;
+
 -- ------------------------------------------------------------
 -- Outbox for the push worker. One row per pending mutation.
 -- ------------------------------------------------------------

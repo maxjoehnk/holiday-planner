@@ -219,6 +219,55 @@ async fn enqueue_trip_subtree(
         .await?;
     }
 
+    // Routes
+    let routes = crate::database::entities::route::Entity::find()
+        .filter(crate::database::entities::route::Column::TripId.eq(trip_id))
+        .all(db.deref())
+        .await?;
+    for m in &routes {
+        push::enqueue_if_signed_in(
+            db,
+            "routes",
+            m.id,
+            MutationOperation::Insert,
+            &wire::RouteRow::from_model(m),
+        )
+        .await?;
+    }
+
+    // Trip days + their location assignments
+    let trip_days = crate::database::entities::trip_day::Entity::find()
+        .filter(crate::database::entities::trip_day::Column::TripId.eq(trip_id))
+        .all(db.deref())
+        .await?;
+    for m in &trip_days {
+        push::enqueue_if_signed_in(
+            db,
+            "trip_days",
+            m.id,
+            MutationOperation::Insert,
+            &wire::TripDayRow::from_model(m),
+        )
+        .await?;
+    }
+    if !trip_days.is_empty() {
+        let day_ids: Vec<Uuid> = trip_days.iter().map(|d| d.id).collect();
+        let day_locations = crate::database::entities::trip_day_location::Entity::find()
+            .filter(crate::database::entities::trip_day_location::Column::TripDayId.is_in(day_ids))
+            .all(db.deref())
+            .await?;
+        for m in &day_locations {
+            push::enqueue_if_signed_in(
+                db,
+                "trip_day_locations",
+                m.location_id,
+                MutationOperation::Insert,
+                &wire::TripDayLocationRow::from_model(m),
+            )
+            .await?;
+        }
+    }
+
     // Trains
     let trains = Train::find()
         .filter(train::Column::TripId.eq(trip_id))

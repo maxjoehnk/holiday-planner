@@ -45,11 +45,17 @@ pub async fn upsert(
     }
 
     let id = Uuid::new_v4();
+    let now = chrono::Utc::now();
     let model = trip_day::ActiveModel {
         id: Set(id),
         trip_id: Set(trip_id),
         date: Set(date),
         title: Set(None),
+        updated_at: Set(now),
+        deleted_at: Set(None),
+        last_modified_by: Set(
+            crate::sync::session::current_user().await.map(|u| u.to_string()),
+        ),
     };
     TripDay::insert(model)
         .exec_without_returning(db.deref())
@@ -63,9 +69,14 @@ pub async fn upsert(
 }
 
 pub async fn update_title(db: &Database, id: Uuid, title: Option<String>) -> anyhow::Result<()> {
+    let now = chrono::Utc::now();
     TripDay::update(trip_day::ActiveModel {
         id: Set(id),
         title: Set(title),
+        updated_at: Set(now),
+        last_modified_by: Set(
+            crate::sync::session::current_user().await.map(|u| u.to_string()),
+        ),
         ..Default::default()
     })
     .exec(db.deref())

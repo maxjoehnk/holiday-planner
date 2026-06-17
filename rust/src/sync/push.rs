@@ -356,7 +356,8 @@ async fn refresh_payload(
         accommodation::Entity as Accommodation, attachment::Entity as Attachment,
         car_rental::Entity as CarRental, location::Entity as Location,
         point_of_interest::Entity as PointOfInterest, reservation::Entity as Reservation,
-        tag::Entity as Tag, train::Entity as Train, trip::Entity as Trip,
+        route::Entity as Route, tag::Entity as Tag, train::Entity as Train,
+        trip::Entity as Trip, trip_day::Entity as TripDay,
     };
     use crate::sync::wire;
     use sea_orm::EntityTrait;
@@ -407,6 +408,14 @@ async fn refresh_payload(
                 None => return Ok(None),
             }
         }
+        "trip_days" => {
+            let Some(m) = TripDay::find_by_id(id).one(conn).await? else { return Ok(None) };
+            serde_json::to_value(wire::TripDayRow::from_model(&m))?
+        }
+        "routes" => {
+            let Some(m) = Route::find_by_id(id).one(conn).await? else { return Ok(None) };
+            serde_json::to_value(wire::RouteRow::from_model(&m))?
+        }
         // Join tables key on (parent, child) and don't carry mutable state
         // beyond timestamps — the stored payload is still authoritative.
         _ => return Ok(None),
@@ -439,6 +448,7 @@ fn is_join_table(table: &str) -> bool {
             | "trip_tags"
             | "trip_members"
             | "user_tags"
+            | "trip_day_locations"
     )
 }
 
@@ -446,6 +456,7 @@ fn is_join_table(table: &str) -> bool {
 /// from the JSON payload's composite-key columns.
 fn build_join_filter(table: &str, payload: &JsonValue) -> anyhow::Result<String> {
     let cols: &[&str] = match table {
+        "trip_day_locations" => &["trip_day_id", "location_id"],
         "accommodation_attachments" => &["accommodation_id", "attachment_id"],
         "location_attachments" => &["location_id", "attachment_id"],
         "trip_tags" => &["trip_id", "tag_id"],

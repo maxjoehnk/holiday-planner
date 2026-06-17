@@ -105,7 +105,7 @@ previous user's pending writes.
 | Sync API surface | `rust/src/api/{sync,sharing,activity,events}.rs` |
 | Sync engine | `rust/src/sync/{coordinator,pull,push,realtime,apply,backfill,session,http,wire,status}.rs` |
 | Handlers | `rust/src/handlers/{tag,trip,sharing,activity,attachment,…}_handler.rs` — they enqueue mutations |
-| Local persistence | SQLite via SeaORM, extended with `pending_mutations`, `sync_cursors`, `profiles`, `trip_members`, `trip_activity`, `user_tags` and the sync metadata columns on every existing table |
+| Local persistence | SQLite via SeaORM, extended with `pending_mutations`, `sync_cursors`, `profiles`, `trip_members`, `trip_activity`, `user_tags` and the sync metadata columns on every existing table (incl. `trip_days`, `trip_day_locations`, `routes`) |
 | Server schema | `supabase/migrations/20260612000000_sync.sql` (single squashed file) |
 | Local migration | `rust/migration/src/sync_up.sql` + `sync_down.sql` |
 
@@ -162,6 +162,28 @@ Per-trip header image bytes live in `attachments` Storage at
 Trips carry `header_image_path`, `header_image_sha256`,
 `header_image_uploaded_at`. Push uploads bytes before patching the row.
 Apply downloads when remote sha differs from local.
+
+### Day planner
+
+`trip_days` (one row per calendar day inside a trip's range) and the
+`trip_day_locations` composite-PK join sync the same way trip_tags does:
+trip_day_locations soft-deletes via patch_by_query, trip_days uses the
+standard conditional-PATCH-with-INSERT-fallback path.
+
+`points_of_interest` and `routes` carry `trip_day_id` + `day_order` +
+`scheduled_at` for planner assignment. The assignment columns ride
+along with the regular sub-table sync — when the user re-orders items
+or assigns them to a day, the host row's `updated_at` bumps and the
+push worker patches the new values.
+
+`routes` is a fully synced trip-scoped entity (Komoot tour metadata +
+polyline). The first push of a tour creates the global row; subsequent
+edits go through the same LWW path as other trip-scoped tables.
+
+`accommodation.coordinates_latitude/longitude` is also synced so the
+map view sees the same accommodation pin on every device. The weather
++ pollen `*_last_updated` columns stay per-device (background-job
+caches).
 
 ### Tags
 

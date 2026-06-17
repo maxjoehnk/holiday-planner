@@ -106,6 +106,7 @@ pub async fn assign_to_day(
         trip_day_id: Set(Some(day_id)),
         day_order: Set(Some(day_order)),
         scheduled_at: Set(scheduled_at),
+        updated_at: Set(chrono::Utc::now()),
         ..Default::default()
     })
     .exec(db.deref())
@@ -119,6 +120,7 @@ pub async fn unassign(db: &Database, id: Uuid) -> anyhow::Result<()> {
         trip_day_id: Set(None),
         day_order: Set(None),
         scheduled_at: Set(None),
+        updated_at: Set(chrono::Utc::now()),
         ..Default::default()
     })
     .exec(db.deref())
@@ -135,6 +137,7 @@ pub async fn unassign_all_for_days(db: &Database, day_ids: &[Uuid]) -> anyhow::R
         .col_expr(route::Column::TripDayId, Expr::value(None::<Uuid>))
         .col_expr(route::Column::DayOrder, Expr::value(None::<i32>))
         .col_expr(route::Column::ScheduledAt, Expr::value(None::<chrono::DateTime<chrono::Utc>>))
+        .col_expr(route::Column::UpdatedAt, Expr::value(chrono::Utc::now()))
         .filter(route::Column::TripDayId.is_in(day_ids.to_vec()))
         .exec(db.deref())
         .await?;
@@ -145,6 +148,7 @@ pub async fn set_day_order(db: &Database, id: Uuid, day_order: i32) -> anyhow::R
     Route::update(route::ActiveModel {
         id: Set(id),
         day_order: Set(Some(day_order)),
+        updated_at: Set(chrono::Utc::now()),
         ..Default::default()
     })
     .exec(db.deref())

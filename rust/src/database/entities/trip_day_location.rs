@@ -10,6 +10,8 @@ pub struct Model {
     pub location_id: Uuid,
     pub is_primary: bool,
     pub display_order: i32,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

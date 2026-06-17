@@ -29,7 +29,10 @@ use crate::database::entities::profile::{self, Entity as Profile};
 use crate::database::entities::reservation::{
     self, Entity as Reservation, ReservationCategory,
 };
+use crate::database::entities::route::{self, Entity as Route};
 use crate::database::entities::tag::{self, Entity as Tag};
+use crate::database::entities::trip_day::{self, Entity as TripDay};
+use crate::database::entities::trip_day_location::{self, Entity as TripDayLocation};
 use crate::database::entities::train::{self, Entity as Train};
 use crate::database::entities::trip::{self, Entity as Trip};
 use crate::database::entities::trip_activity::{self, Entity as TripActivity};
@@ -38,9 +41,10 @@ use crate::database::entities::trip_tag::{self, Entity as TripTag};
 use crate::database::entities::user_tag::{self, Entity as UserTag};
 use crate::database::Database;
 use crate::sync::wire::{
-    AccommodationAttachmentRow, AccommodationRow, AttachmentRow, CarRentalRow, LocationAttachmentRow,
-    LocationRow, PointOfInterestRow, ProfileRow, ReservationRow, TagRow, TrainRow, TripActivityRow,
-    TripMemberRow, TripRow, TripTagRow, UserTagRow, ATTACHMENTS_BUCKET,
+    parse_route_provider, AccommodationAttachmentRow, AccommodationRow, AttachmentRow, CarRentalRow,
+    LocationAttachmentRow, LocationRow, PointOfInterestRow, ProfileRow, ReservationRow, RouteRow,
+    TagRow, TrainRow, TripActivityRow, TripDayLocationRow, TripDayRow, TripMemberRow, TripRow,
+    TripTagRow, UserTagRow, ATTACHMENTS_BUCKET,
 };
 use crate::sync::{coordinator, http, session};
 
@@ -68,6 +72,9 @@ pub async fn apply_remote_row(db: &Database, table: &str, row: Value) -> anyhow:
         "accommodation_attachments" => apply_accommodation_attachment(db, row).await,
         "location_attachments" => apply_location_attachment(db, row).await,
         "trip_tags" => apply_trip_tag(db, row).await,
+        "trip_days" => apply_trip_day(db, row).await,
+        "trip_day_locations" => apply_trip_day_location(db, row).await,
+        "routes" => apply_route(db, row).await,
         "trip_activity" => apply_trip_activity(db, row).await,
         _ => {
             tracing::debug!("apply: ignoring unsupported table {table}");
@@ -415,18 +422,14 @@ async fn apply_accommodation(db: &Database, row: Value) -> anyhow::Result<()> {
         }
         return Ok(());
     }
-    // Coordinate + weather/pollen cache columns aren't part of the
-    // sync wire format yet — keep the local ones if we have them,
-    // leave them None otherwise. Same per-device cache pattern as
-    // location.tidal_information_last_updated.
-    let (coord_lat, coord_lon, weather_ts, pollen_ts) = match existing.as_ref() {
+    // weather / pollen *_last_updated columns are per-device caches
+    // populated by background jobs — keep whatever the local row has.
+    let (weather_ts, pollen_ts) = match existing.as_ref() {
         Some(m) => (
-            m.coordinates_latitude,
-            m.coordinates_longitude,
             m.weather_information_last_updated,
             m.pollen_information_last_updated,
         ),
-        None => (None, None, None, None),
+        None => (None, None),
     };
     let active = accommodation::ActiveModel {
         id: Set(incoming.id),
@@ -435,8 +438,8 @@ async fn apply_accommodation(db: &Database, row: Value) -> anyhow::Result<()> {
         check_in: Set(incoming.check_in),
         check_out: Set(incoming.check_out),
         address: Set(incoming.address),
-        coordinates_latitude: Set(coord_lat),
-        coordinates_longitude: Set(coord_lon),
+        coordinates_latitude: Set(incoming.coordinates_latitude),
+        coordinates_longitude: Set(incoming.coordinates_longitude),
         weather_information_last_updated: Set(weather_ts),
         pollen_information_last_updated: Set(pollen_ts),
         updated_at: Set(incoming.updated_at),
@@ -611,13 +614,6 @@ async fn apply_point_of_interest(db: &Database, row: Value) -> anyhow::Result<()
         }
         return Ok(());
     }
-    // trip_day_id / day_order / scheduled_at aren't carried on the wire
-    // yet (planner feature shipped post-sync). Preserve any local
-    // values; new rows default to None.
-    let (trip_day_id, day_order, scheduled_at) = match existing.as_ref() {
-        Some(m) => (m.trip_day_id, m.day_order, m.scheduled_at),
-        None => (None, None, None),
-    };
     let active = point_of_interest::ActiveModel {
         id: Set(incoming.id),
         trip_id: Set(incoming.trip_id),
@@ -630,9 +626,9 @@ async fn apply_point_of_interest(db: &Database, row: Value) -> anyhow::Result<()
         note: Set(incoming.note),
         coordinates_latitude: Set(incoming.coordinates_latitude),
         coordinates_longitude: Set(incoming.coordinates_longitude),
-        trip_day_id: Set(trip_day_id),
-        day_order: Set(day_order),
-        scheduled_at: Set(scheduled_at),
+        trip_day_id: Set(incoming.trip_day_id),
+        day_order: Set(incoming.day_order),
+        scheduled_at: Set(incoming.scheduled_at),
         updated_at: Set(incoming.updated_at),
         deleted_at: Set(incoming.deleted_at),
         last_modified_by: Set(incoming.last_modified_by.map(|u| u.to_string())),
@@ -940,5 +936,142 @@ async fn apply_profile(db: &Database, row: Value) -> anyhow::Result<()> {
     } else {
         Profile::insert(active).exec_without_returning(db.deref()).await?;
     }
+    Ok(())
+}
+
+async fn apply_trip_day(db: &Database, row: Value) -> anyhow::Result<()> {
+    let incoming: TripDayRow = serde_json::from_value(row)
+        .map_err(|e| anyhow::anyhow!("decode trip_day: {e}"))?;
+    let existing = TripDay::find_by_id(incoming.id).one(db.deref()).await?;
+    if let Some(local) = &existing {
+        if !incoming_wins(local.updated_at, incoming.updated_at, incoming.deleted_at.is_some()) {
+            return Ok(());
+        }
+    }
+    if incoming.deleted_at.is_some() {
+        if trip_owned_by_other(db, incoming.trip_id).await? {
+            return Ok(());
+        }
+        if existing.is_some() {
+            TripDay::delete_by_id(incoming.id).exec(db.deref()).await?;
+            events::emit(DataChangeEvent::TripDaysChanged { trip_id: incoming.trip_id });
+        }
+        return Ok(());
+    }
+    let active = trip_day::ActiveModel {
+        id: Set(incoming.id),
+        trip_id: Set(incoming.trip_id),
+        date: Set(incoming.date),
+        title: Set(incoming.title),
+        updated_at: Set(incoming.updated_at),
+        deleted_at: Set(incoming.deleted_at),
+        last_modified_by: Set(incoming.last_modified_by.map(|u| u.to_string())),
+    };
+    if existing.is_some() {
+        TripDay::update(active).exec(db.deref()).await?;
+    } else {
+        TripDay::insert(active).exec_without_returning(db.deref()).await?;
+    }
+    events::emit(DataChangeEvent::TripDaysChanged { trip_id: incoming.trip_id });
+    Ok(())
+}
+
+async fn apply_trip_day_location(db: &Database, row: Value) -> anyhow::Result<()> {
+    let incoming: TripDayLocationRow = serde_json::from_value(row)
+        .map_err(|e| anyhow::anyhow!("decode trip_day_location: {e}"))?;
+    let key = (incoming.trip_day_id, incoming.location_id);
+    let existing = TripDayLocation::find_by_id(key).one(db.deref()).await?;
+    if let Some(local) = &existing {
+        if !incoming_wins(local.updated_at, incoming.updated_at, incoming.deleted_at.is_some()) {
+            return Ok(());
+        }
+    }
+    // Resolve trip_id via the trip_day so we can defer to the
+    // detached-trip rule and emit a targeted event.
+    let trip_id = match TripDay::find_by_id(incoming.trip_day_id).one(db.deref()).await? {
+        Some(day) => Some(day.trip_id),
+        None => None,
+    };
+    if incoming.deleted_at.is_some() {
+        if let Some(tid) = trip_id {
+            if trip_owned_by_other(db, tid).await? {
+                return Ok(());
+            }
+        }
+        if existing.is_some() {
+            TripDayLocation::delete_by_id(key).exec(db.deref()).await?;
+            if let Some(tid) = trip_id {
+                events::emit(DataChangeEvent::TripDaysChanged { trip_id: tid });
+            }
+        }
+        return Ok(());
+    }
+    let active = trip_day_location::ActiveModel {
+        trip_day_id: Set(incoming.trip_day_id),
+        location_id: Set(incoming.location_id),
+        is_primary: Set(incoming.is_primary),
+        display_order: Set(incoming.display_order),
+        updated_at: Set(incoming.updated_at),
+        deleted_at: Set(incoming.deleted_at),
+    };
+    if existing.is_some() {
+        TripDayLocation::update(active).exec(db.deref()).await?;
+    } else {
+        TripDayLocation::insert(active).exec_without_returning(db.deref()).await?;
+    }
+    if let Some(tid) = trip_id {
+        events::emit(DataChangeEvent::TripDaysChanged { trip_id: tid });
+    }
+    Ok(())
+}
+
+async fn apply_route(db: &Database, row: Value) -> anyhow::Result<()> {
+    let incoming: RouteRow = serde_json::from_value(row)
+        .map_err(|e| anyhow::anyhow!("decode route: {e}"))?;
+    let existing = Route::find_by_id(incoming.id).one(db.deref()).await?;
+    if let Some(local) = &existing {
+        if !incoming_wins(local.updated_at, incoming.updated_at, incoming.deleted_at.is_some()) {
+            return Ok(());
+        }
+    }
+    if incoming.deleted_at.is_some() {
+        if trip_owned_by_other(db, incoming.trip_id).await? {
+            return Ok(());
+        }
+        if existing.is_some() {
+            Route::delete_by_id(incoming.id).exec(db.deref()).await?;
+            events::emit(DataChangeEvent::RoutesChanged { trip_id: Some(incoming.trip_id) });
+        }
+        return Ok(());
+    }
+    let active = route::ActiveModel {
+        id: Set(incoming.id),
+        trip_id: Set(incoming.trip_id),
+        provider: Set(parse_route_provider(&incoming.provider)),
+        provider_route_id: Set(incoming.provider_route_id),
+        name: Set(incoming.name),
+        sport: Set(incoming.sport),
+        distance_meters: Set(incoming.distance_meters),
+        duration_seconds: Set(incoming.duration_seconds),
+        elevation_up_meters: Set(incoming.elevation_up_meters),
+        elevation_down_meters: Set(incoming.elevation_down_meters),
+        start_latitude: Set(incoming.start_latitude),
+        start_longitude: Set(incoming.start_longitude),
+        polyline: Set(incoming.polyline),
+        note: Set(incoming.note),
+        external_url: Set(incoming.external_url),
+        trip_day_id: Set(incoming.trip_day_id),
+        day_order: Set(incoming.day_order),
+        scheduled_at: Set(incoming.scheduled_at),
+        updated_at: Set(incoming.updated_at),
+        deleted_at: Set(incoming.deleted_at),
+        last_modified_by: Set(incoming.last_modified_by.map(|u| u.to_string())),
+    };
+    if existing.is_some() {
+        Route::update(active).exec(db.deref()).await?;
+    } else {
+        Route::insert(active).exec_without_returning(db.deref()).await?;
+    }
+    events::emit(DataChangeEvent::RoutesChanged { trip_id: Some(incoming.trip_id) });
     Ok(())
 }

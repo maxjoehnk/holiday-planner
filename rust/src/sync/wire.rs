@@ -13,9 +13,10 @@ use uuid::Uuid;
 
 use crate::database::entities::{
     accommodation, accommodation_attachment, attachment, car_rental, location, location_attachment,
-    point_of_interest, profile, reservation, tag, train, trip, trip_activity, trip_member, trip_tag,
-    user_tag,
+    point_of_interest, profile, reservation, route, tag, train, trip, trip_activity, trip_day,
+    trip_day_location, trip_member, trip_tag, user_tag,
 };
+use crate::database::entities::route::RouteProvider;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TripRow {
@@ -176,6 +177,10 @@ pub struct AccommodationRow {
     pub check_out: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub coordinates_latitude: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub coordinates_longitude: Option<f64>,
     pub updated_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deleted_at: Option<DateTime<Utc>>,
@@ -192,6 +197,8 @@ impl AccommodationRow {
             check_in: m.check_in,
             check_out: m.check_out,
             address: m.address.clone(),
+            coordinates_latitude: m.coordinates_latitude,
+            coordinates_longitude: m.coordinates_longitude,
             updated_at: m.updated_at,
             deleted_at: m.deleted_at,
             last_modified_by: parse_uuid_opt(m.last_modified_by.as_deref()),
@@ -337,6 +344,12 @@ pub struct PointOfInterestRow {
     pub coordinates_latitude: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coordinates_longitude: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trip_day_id: Option<Uuid>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub day_order: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheduled_at: Option<DateTime<Utc>>,
     pub updated_at: DateTime<Utc>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deleted_at: Option<DateTime<Utc>>,
@@ -358,6 +371,9 @@ impl PointOfInterestRow {
             note: m.note.clone(),
             coordinates_latitude: m.coordinates_latitude,
             coordinates_longitude: m.coordinates_longitude,
+            trip_day_id: m.trip_day_id,
+            day_order: m.day_order,
+            scheduled_at: m.scheduled_at,
             updated_at: m.updated_at,
             deleted_at: m.deleted_at,
             last_modified_by: parse_uuid_opt(m.last_modified_by.as_deref()),
@@ -574,5 +590,133 @@ impl TripActivityRow {
             actor_user_id: self.actor_user_id,
             occurred_at: self.occurred_at,
         }
+    }
+}
+
+// =====================================================================
+// Day planner: trip_days + trip_day_locations + routes.
+// =====================================================================
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TripDayRow {
+    pub id: Uuid,
+    pub trip_id: Uuid,
+    pub date: chrono::NaiveDate,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    pub updated_at: DateTime<Utc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deleted_at: Option<DateTime<Utc>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_modified_by: Option<Uuid>,
+}
+
+impl TripDayRow {
+    pub fn from_model(m: &trip_day::Model) -> Self {
+        Self {
+            id: m.id,
+            trip_id: m.trip_id,
+            date: m.date,
+            title: m.title.clone(),
+            updated_at: m.updated_at,
+            deleted_at: m.deleted_at,
+            last_modified_by: parse_uuid_opt(m.last_modified_by.as_deref()),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TripDayLocationRow {
+    pub trip_day_id: Uuid,
+    pub location_id: Uuid,
+    pub is_primary: bool,
+    pub display_order: i32,
+    pub updated_at: DateTime<Utc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deleted_at: Option<DateTime<Utc>>,
+}
+
+impl TripDayLocationRow {
+    pub fn from_model(m: &trip_day_location::Model) -> Self {
+        Self {
+            trip_day_id: m.trip_day_id,
+            location_id: m.location_id,
+            is_primary: m.is_primary,
+            display_order: m.display_order,
+            updated_at: m.updated_at,
+            deleted_at: m.deleted_at,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RouteRow {
+    pub id: Uuid,
+    pub trip_id: Uuid,
+    pub provider: String,
+    pub provider_route_id: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sport: Option<String>,
+    pub distance_meters: f64,
+    pub duration_seconds: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub elevation_up_meters: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub elevation_down_meters: Option<f64>,
+    pub start_latitude: f64,
+    pub start_longitude: f64,
+    pub polyline: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
+    pub external_url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trip_day_id: Option<Uuid>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub day_order: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheduled_at: Option<DateTime<Utc>>,
+    pub updated_at: DateTime<Utc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deleted_at: Option<DateTime<Utc>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_modified_by: Option<Uuid>,
+}
+
+impl RouteRow {
+    pub fn from_model(m: &route::Model) -> Self {
+        let provider = match m.provider {
+            RouteProvider::Komoot => "komoot".to_string(),
+        };
+        Self {
+            id: m.id,
+            trip_id: m.trip_id,
+            provider,
+            provider_route_id: m.provider_route_id.clone(),
+            name: m.name.clone(),
+            sport: m.sport.clone(),
+            distance_meters: m.distance_meters,
+            duration_seconds: m.duration_seconds,
+            elevation_up_meters: m.elevation_up_meters,
+            elevation_down_meters: m.elevation_down_meters,
+            start_latitude: m.start_latitude,
+            start_longitude: m.start_longitude,
+            polyline: m.polyline.clone(),
+            note: m.note.clone(),
+            external_url: m.external_url.clone(),
+            trip_day_id: m.trip_day_id,
+            day_order: m.day_order,
+            scheduled_at: m.scheduled_at,
+            updated_at: m.updated_at,
+            deleted_at: m.deleted_at,
+            last_modified_by: parse_uuid_opt(m.last_modified_by.as_deref()),
+        }
+    }
+}
+
+pub fn parse_route_provider(s: &str) -> RouteProvider {
+    match s {
+        "komoot" => RouteProvider::Komoot,
+        _ => RouteProvider::Komoot,
     }
 }

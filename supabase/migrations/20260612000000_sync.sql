@@ -78,15 +78,17 @@ create unique index trip_invites_unique_pending
 -- ---- trip-scoped sub-tables --------------------------------------
 create table public.accommodations
 (
-    id               uuid primary key,
-    trip_id          uuid        not null references public.trips (id) on delete cascade,
-    name             text        not null,
-    check_in         timestamptz,
-    check_out        timestamptz,
-    address          text,
-    updated_at       timestamptz not null default now(),
-    deleted_at       timestamptz,
-    last_modified_by uuid
+    id                    uuid primary key,
+    trip_id               uuid        not null references public.trips (id) on delete cascade,
+    name                  text        not null,
+    check_in              timestamptz,
+    check_out             timestamptz,
+    address               text,
+    coordinates_latitude  double precision,
+    coordinates_longitude double precision,
+    updated_at            timestamptz not null default now(),
+    deleted_at            timestamptz,
+    last_modified_by      uuid
 );
 create index accommodations_trip_idx       on public.accommodations (trip_id);
 create index accommodations_updated_at_idx on public.accommodations (updated_at);
@@ -175,12 +177,19 @@ create table public.points_of_interest
     note                  text,
     coordinates_latitude  double precision,
     coordinates_longitude double precision,
+    -- Day-planner assignment. trip_day_id references public.trip_days
+    -- via the FK below — the table is declared further down so the
+    -- FK is added in a deferred ALTER (after both tables exist).
+    trip_day_id           uuid,
+    day_order             integer,
+    scheduled_at          timestamptz,
     updated_at            timestamptz not null default now(),
     deleted_at            timestamptz,
     last_modified_by      uuid
 );
 create index points_of_interest_trip_idx       on public.points_of_interest (trip_id);
 create index points_of_interest_updated_at_idx on public.points_of_interest (updated_at);
+create index points_of_interest_trip_day_idx   on public.points_of_interest (trip_day_id);
 
 create table public.trains
 (
@@ -272,6 +281,87 @@ create table public.trip_tags
     primary key (trip_id, tag_id)
 );
 create index trip_tags_updated_at_idx on public.trip_tags (updated_at);
+
+-- ---- trip_days (per-day planner) ---------------------------------
+-- Each trip_day represents one calendar day inside a trip's range, plus
+-- optional title. routes / points_of_interest can attach to a day via
+-- their `trip_day_id` column (no FK from server side; the client
+-- resolves day membership from the synced trip_days rows).
+create table public.trip_days
+(
+    id               uuid primary key,
+    trip_id          uuid        not null references public.trips (id) on delete cascade,
+    date             date        not null,
+    title            text,
+    updated_at       timestamptz not null default now(),
+    deleted_at       timestamptz,
+    last_modified_by uuid
+);
+create unique index trip_days_trip_date_unique
+    on public.trip_days (trip_id, date)
+    where deleted_at is null;
+create index trip_days_trip_idx       on public.trip_days (trip_id);
+create index trip_days_updated_at_idx on public.trip_days (updated_at);
+
+-- ---- trip_day_locations -----------------------------------------
+-- Composite-PK join table assigning a Location to a TripDay, with an
+-- `is_primary` flag and `display_order` so the planner UI can render
+-- the locations in the right order. Soft-delete only — the deleted_at
+-- column carries unassignments across devices.
+create table public.trip_day_locations
+(
+    trip_day_id   uuid        not null references public.trip_days (id) on delete cascade,
+    location_id   uuid        not null references public.locations  (id) on delete cascade,
+    is_primary    boolean     not null default false,
+    display_order integer     not null default 0,
+    updated_at    timestamptz not null default now(),
+    deleted_at    timestamptz,
+    primary key (trip_day_id, location_id)
+);
+create index trip_day_locations_loc_idx        on public.trip_day_locations (location_id);
+create index trip_day_locations_updated_at_idx on public.trip_day_locations (updated_at);
+
+-- ---- routes (Komoot tours) ---------------------------------------
+-- Komoot route imports per trip; can be assigned to a planner day via
+-- `trip_day_id`. Provider + provider_route_id is unique per trip so
+-- the same tour isn't imported twice into the same trip.
+create table public.routes
+(
+    id                    uuid primary key,
+    trip_id               uuid        not null references public.trips (id) on delete cascade,
+    provider              text        not null,
+    provider_route_id     text        not null,
+    name                  text        not null,
+    sport                 text,
+    distance_meters       double precision not null,
+    duration_seconds      bigint      not null,
+    elevation_up_meters   double precision,
+    elevation_down_meters double precision,
+    start_latitude        double precision not null,
+    start_longitude       double precision not null,
+    polyline              text        not null,
+    note                  text,
+    external_url          text        not null,
+    trip_day_id           uuid        references public.trip_days (id) on delete set null,
+    day_order             integer,
+    scheduled_at          timestamptz,
+    updated_at            timestamptz not null default now(),
+    deleted_at            timestamptz,
+    last_modified_by      uuid
+);
+create unique index routes_trip_provider_route_unique
+    on public.routes (trip_id, provider, provider_route_id)
+    where deleted_at is null;
+create index routes_trip_idx       on public.routes (trip_id);
+create index routes_updated_at_idx on public.routes (updated_at);
+
+-- FK from points_of_interest.trip_day_id → trip_days(id). The
+-- column was declared above when trip_days didn't exist yet; we
+-- add the constraint now that both tables are in place.
+alter table public.points_of_interest
+    add constraint points_of_interest_trip_day_id_fkey
+    foreign key (trip_day_id) references public.trip_days (id)
+    on delete set null;
 
 -- ---- Append-only activity log ------------------------------------
 create table public.trip_activity
@@ -445,6 +535,38 @@ create policy "trip_tags_via_trip" on public.trip_tags
     for all
     using (public.user_can_access_trip(trip_tags.trip_id))
     with check (public.user_can_access_trip(trip_tags.trip_id));
+
+alter table public.trip_days enable row level security;
+create policy "trip_days_via_trip" on public.trip_days
+    for all
+    using (public.user_can_access_trip(trip_days.trip_id))
+    with check (public.user_can_access_trip(trip_days.trip_id));
+
+alter table public.routes enable row level security;
+create policy "routes_via_trip" on public.routes
+    for all
+    using (public.user_can_access_trip(routes.trip_id))
+    with check (public.user_can_access_trip(routes.trip_id));
+
+-- trip_day_locations doesn't carry trip_id directly; gate on its day's
+-- trip via a join through public.trip_days.
+alter table public.trip_day_locations enable row level security;
+create policy "trip_day_locations_via_day" on public.trip_day_locations
+    for all
+    using (
+        exists (
+            select 1 from public.trip_days td
+             where td.id = trip_day_locations.trip_day_id
+               and public.user_can_access_trip(td.trip_id)
+        )
+    )
+    with check (
+        exists (
+            select 1 from public.trip_days td
+             where td.id = trip_day_locations.trip_day_id
+               and public.user_can_access_trip(td.trip_id)
+        )
+    );
 
 -- Tags are a global, append-only library. Reads are gated to tags the
 -- caller has in their personal library (user_tags) plus tags linked
@@ -820,6 +942,9 @@ begin
         'accommodation_attachments',
         'location_attachments',
         'trip_tags',
+        'trip_days',
+        'trip_day_locations',
+        'routes',
         'trip_members',
         'trip_invites',
         'profiles',
