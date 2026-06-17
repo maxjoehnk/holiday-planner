@@ -464,6 +464,16 @@ create policy "profiles_update_self" on public.profiles
     using (id = (select auth.uid()))
     with check (id = (select auth.uid()));
 
+-- Column-level grants so a PATCH /profiles?id=eq.<me> can only touch
+-- display_name and updated_at. Without this, the RLS WITH CHECK above
+-- only verifies the row identity — a caller could PATCH `email`
+-- alongside `display_name` and spoof another user's email in the
+-- member list. The id column is intentionally not granted: changing
+-- it would re-key the row, and SECURITY DEFINER triggers
+-- (handle_new_user) own row creation.
+revoke update on public.profiles from anon, authenticated;
+grant  update (display_name, updated_at) on public.profiles to authenticated;
+
 alter table public.trips enable row level security;
 create policy "trips_member_or_owner_all" on public.trips
     for all
@@ -946,7 +956,11 @@ begin
         'trip_day_locations',
         'routes',
         'trip_members',
-        'trip_invites',
+        -- `trip_invites` is intentionally NOT published. Clients
+        -- never sync it (handle_new_user / claim_pending_invites_on_signin
+        -- consume invites server-side), and broadcasting it leaks
+        -- invitee email addresses over the realtime channel to every
+        -- trip member's websocket.
         'profiles',
         'trip_activity'
     ]
@@ -961,6 +975,15 @@ begin
         -- clients can't reconcile the deletion locally.
         execute format('alter table public.%I replica identity full', t);
     end loop;
+end $$;
+
+-- Belt-and-braces: in case an earlier migration run added
+-- `trip_invites` to the publication, drop it now. The current loop
+-- above no longer includes it.
+do $$
+begin
+    alter publication supabase_realtime drop table public.trip_invites;
+exception when undefined_object then null;
 end $$;
 
 -- ============================================================

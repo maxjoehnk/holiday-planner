@@ -171,13 +171,21 @@ async fn drain(db: &Database) -> anyhow::Result<usize> {
                         mutation.entity_id,
                     );
                     record_failure(db, &mutation, &e, attempts).await?;
-                    status::emit(SyncStatus::Error { message: format!("{e:#}") });
+                    // Transient failures (network blip, JWT refresh
+                    // window, RLS hiccup) shouldn't surface as
+                    // dismissable error toasts on every retry. Treat
+                    // anything below MAX_ATTEMPTS as Offline and let
+                    // the worker recover quietly. Only emit Error once
+                    // we've truly given up.
                     if attempts >= MAX_ATTEMPTS {
                         tracing::error!(
                             "push {} {} dead-lettered after {attempts} attempts",
                             mutation.entity_type,
                             mutation.entity_id,
                         );
+                        status::emit(SyncStatus::Error { message: format!("{e:#}") });
+                    } else {
+                        status::emit(SyncStatus::Offline);
                     }
                     consecutive_failures += 1;
                     if consecutive_failures >= MAX_CONSECUTIVE_FAILURES {
