@@ -220,11 +220,29 @@ async fn resolve_header_image(
     Option<String>,
     Option<DateTime<Utc>>,
 )> {
-    let Some(remote_path) = incoming.header_image_path.clone() else {
+    // Remote explicitly has no header → drop our local copy.
+    if incoming.header_image_path.is_none() && incoming.header_image_sha256.is_none() {
         return Ok((None, None, None, None));
-    };
-    let Some(remote_sha) = incoming.header_image_sha256.clone() else {
-        return Ok((None, None, None, None));
+    }
+    // Anomalous partial server row (path without sha, or vice versa).
+    // Don't trust it to overwrite — preserve whatever local has so a
+    // half-written server row can't cause permanent local data loss.
+    let (Some(remote_path), Some(remote_sha)) = (
+        incoming.header_image_path.clone(),
+        incoming.header_image_sha256.clone(),
+    ) else {
+        tracing::warn!(
+            "apply trip {}: remote header_image is half-populated (path={:?}, sha256={:?}); preserving local state",
+            incoming.id,
+            incoming.header_image_path,
+            incoming.header_image_sha256,
+        );
+        return Ok((
+            local.and_then(|m| m.header_image.clone()),
+            local.and_then(|m| m.header_image_path.clone()),
+            local.and_then(|m| m.header_image_sha256.clone()),
+            local.and_then(|m| m.header_image_uploaded_at),
+        ));
     };
 
     let local_matches = local
@@ -240,12 +258,20 @@ async fn resolve_header_image(
         Some(downloaded)
     };
 
-    Ok((
-        bytes,
-        Some(remote_path),
-        Some(remote_sha),
-        incoming.header_image_uploaded_at,
-    ))
+    // Don't downgrade uploaded_at: a local Some + remote None usually
+    // means the pulling device is also the pushing device, and its
+    // local push completed the upload while the server's view of the
+    // row was still pre-upload. Trust the local timestamp over a stale
+    // pull.
+    let local_uploaded_at = local.and_then(|m| m.header_image_uploaded_at);
+    let uploaded_at = match (local_uploaded_at, incoming.header_image_uploaded_at) {
+        (Some(local_ts), Some(remote_ts)) => Some(local_ts.max(remote_ts)),
+        (Some(local_ts), None) => Some(local_ts),
+        (None, Some(remote_ts)) => Some(remote_ts),
+        (None, None) => None,
+    };
+
+    Ok((bytes, Some(remote_path), Some(remote_sha), uploaded_at))
 }
 
 async fn apply_attachment(db: &Database, row: Value) -> anyhow::Result<()> {

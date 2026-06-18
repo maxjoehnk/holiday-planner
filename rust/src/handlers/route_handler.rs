@@ -98,7 +98,16 @@ impl RouteHandler {
             repositories::routes::update(&self.db, active).await?;
             id
         } else {
-            let id = Uuid::new_v4();
+            // Content-addressed id so two members importing the same
+            // Komoot tour offline arrive at the same row instead of
+            // hitting the server-side
+            // `(trip_id, provider, provider_route_id)` unique
+            // constraint with two different uuid_v4 ids.
+            let id = crate::sync::wire::route_id_for(
+                command.trip_id,
+                "komoot",
+                &provider_route_id,
+            );
             let active = route::ActiveModel {
                 id: Set(id),
                 trip_id: Set(command.trip_id),

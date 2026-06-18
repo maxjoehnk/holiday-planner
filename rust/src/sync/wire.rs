@@ -499,6 +499,22 @@ pub fn trip_day_id_for(trip_id: Uuid, date: chrono::NaiveDate) -> Uuid {
     Uuid::new_v5(&TRIP_DAY_NAMESPACE, payload.as_bytes())
 }
 
+/// Namespace for content-addressed route ids. Routes are imported
+/// from external providers (currently Komoot) and have a
+/// `(trip_id, provider, provider_route_id)` unique constraint on
+/// the server. Without deterministic ids, two members of a shared
+/// trip importing the same tour offline would each derive a fresh
+/// uuid_v4 and one push would 409 on that constraint. Arbitrary
+/// constant, must never change.
+const ROUTE_NAMESPACE: Uuid = Uuid::from_u128(0x1b8c_2d63_4e95_4a73_a92e_8c4d6f5b7d1a);
+
+/// Derive the canonical route id for
+/// `(trip_id, provider, provider_route_id)`.
+pub fn route_id_for(trip_id: Uuid, provider: &str, provider_route_id: &str) -> Uuid {
+    let payload = format!("{trip_id}|{provider}|{provider_route_id}");
+    Uuid::new_v5(&ROUTE_NAMESPACE, payload.as_bytes())
+}
+
 // =====================================================================
 // Join tables — composite-key rows, no last_modified_by.
 // =====================================================================

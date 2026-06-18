@@ -234,19 +234,23 @@ async fn push_one(
             if table == "attachments" {
                 upload_attachment_blob_if_needed(db, mutation.entity_id).await?;
             }
-            // Same idea for trip header images. The bytes only ride in
-            // the local row; the wire format carries just the path +
-            // hash + uploaded_at, so the blob has to land first.
-            if table == "trips" {
-                upload_trip_header_if_needed(db, mutation.entity_id).await?;
-            }
             // Rebuild the payload from the current local row so the queue
-            // can never serve stale or corrupted JSON. Fall back to the
-            // stored payload only for tables we don't have a per-row
-            // refresh path for.
-            let payload = match refresh_payload(db, table, mutation.entity_id).await? {
-                Some(fresh) => fresh,
-                None => serde_json::from_str(&mutation.payload)?,
+            // can never serve stale or corrupted JSON. Trips have a
+            // dedicated path that uploads the header image and
+            // serialises from the *same* snapshot, closing the TOCTOU
+            // window where a racing `update_trip` between the two reads
+            // would have shipped a row with a path whose bytes weren't
+            // yet uploaded.
+            let payload = if table == "trips" {
+                match prepare_trip_push(db, mutation.entity_id).await? {
+                    Some(p) => p,
+                    None => serde_json::from_str(&mutation.payload)?,
+                }
+            } else {
+                match refresh_payload(db, table, mutation.entity_id).await? {
+                    Some(fresh) => fresh,
+                    None => serde_json::from_str(&mutation.payload)?,
+                }
             };
             if table == "tags" || table == "user_tags" {
                 // Tags and user_tags are append-only with deterministic
@@ -339,15 +343,10 @@ async fn refresh_payload(
 
     let conn = db.deref();
     let payload = match table {
-        "trips" => {
-            let Some(m) = Trip::find_by_id(id).one(conn).await? else { return Ok(None) };
-            let owner = m
-                .owner_id
-                .as_deref()
-                .and_then(|s| Uuid::parse_str(s).ok());
-            let Some(owner) = owner else { return Ok(None) };
-            serde_json::to_value(wire::TripRow::from_model(&m, owner))?
-        }
+        // "trips" has its own dedicated `prepare_trip_push` so the
+        // header-image upload and the payload serialisation read from
+        // a single in-memory snapshot. Don't fall back to this generic
+        // path for trips.
         "accommodations" => {
             let Some(m) = Accommodation::find_by_id(id).one(conn).await? else { return Ok(None) };
             serde_json::to_value(wire::AccommodationRow::from_model(&m))?
@@ -458,40 +457,66 @@ fn build_join_filter(table: &str, payload: &JsonValue) -> anyhow::Result<String>
 /// Mirror of [`upload_attachment_blob_if_needed`] for trip header
 /// images. Idempotent: if the row already has `header_image_uploaded_at`
 /// set we skip the upload entirely.
-async fn upload_trip_header_if_needed(
+/// Single-snapshot push prep for trips: read the row once, upload the
+/// header image if needed, persist `uploaded_at` only when the path
+/// hasn't changed underneath us, and serialise from the in-memory
+/// snapshot. Closes the TOCTOU window where a racing `update_trip`
+/// between the upload and the payload read used to ship a row pointing
+/// at an un-uploaded path.
+async fn prepare_trip_push(
     db: &Database,
     trip_id: Uuid,
-) -> anyhow::Result<()> {
-    use crate::database::entities::trip::{self, Entity as Trip};
-    use sea_orm::EntityTrait;
+) -> anyhow::Result<Option<JsonValue>> {
+    use crate::database::entities::trip::{self, Column as TripColumn, Entity as Trip};
+    use sea_orm::sea_query::Expr;
+    use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
-    let Some(model) = Trip::find_by_id(trip_id).one(db.deref()).await? else {
-        return Ok(());
+    let Some(mut model) = Trip::find_by_id(trip_id).one(db.deref()).await? else {
+        return Ok(None);
     };
-    let (Some(path), Some(bytes)) = (model.header_image_path.clone(), model.header_image.clone())
-    else {
-        return Ok(());
-    };
-    if model.header_image_uploaded_at.is_some() {
-        return Ok(());
+    let owner = model
+        .owner_id
+        .as_deref()
+        .and_then(|s| Uuid::parse_str(s).ok());
+    let Some(owner) = owner else { return Ok(None) };
+
+    // Maybe upload the header image. We capture the path we're about to
+    // upload to so the post-upload persist can be conditional on the
+    // path still being the same: if `update_trip` raced and changed
+    // the path, we mustn't stamp uploaded_at on the new path's row.
+    if let (Some(path), Some(bytes), None) = (
+        model.header_image_path.clone(),
+        model.header_image.clone(),
+        model.header_image_uploaded_at,
+    ) {
+        let uploaded_path = path.clone();
+        http::storage_upload(
+            crate::sync::wire::ATTACHMENTS_BUCKET,
+            &path,
+            "application/octet-stream",
+            bytes,
+        )
+        .await?;
+        let now = chrono::Utc::now();
+        let _ = Trip::update_many()
+            .col_expr(TripColumn::HeaderImageUploadedAt, Expr::value(Some(now)))
+            .filter(TripColumn::Id.eq(trip_id))
+            .filter(TripColumn::HeaderImagePath.eq(uploaded_path.clone()))
+            .exec(db.deref())
+            .await?;
+        // If the conditional update matched our row, propagate the
+        // new timestamp into the in-memory snapshot we're about to
+        // serialise. If it didn't (path changed mid-flight), the
+        // snapshot we read pre-update is what update_trip's enqueued
+        // mutation should push, so leave model alone — re-reading
+        // would risk picking up a partially-written row.
+        if model.header_image_path.as_deref() == Some(uploaded_path.as_str()) {
+            model.header_image_uploaded_at = Some(now);
+        }
     }
 
-    http::storage_upload(
-        crate::sync::wire::ATTACHMENTS_BUCKET,
-        &path,
-        "application/octet-stream",
-        bytes,
-    )
-    .await?;
-
-    let now = chrono::Utc::now();
-    let active = trip::ActiveModel {
-        id: Set(trip_id),
-        header_image_uploaded_at: Set(Some(now)),
-        ..Default::default()
-    };
-    Trip::update(active).exec(db.deref()).await?;
-    Ok(())
+    let row = crate::sync::wire::TripRow::from_model(&model, owner);
+    Ok(Some(serde_json::to_value(row)?))
 }
 
 /// Read the local attachment, upload its bytes to Storage if we haven't
