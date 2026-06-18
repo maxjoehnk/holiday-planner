@@ -314,12 +314,6 @@ should be addressed before public release.
 - **Missing index on `lower(trip_invites.email)`** for the
   `handle_new_user` + `claim_pending_invites_for` lookups on every
   signup / sign-in.
-- **Anonymous tag's `user_tags` aren't claimed at sign-in / backfill.**
-  Backfill only stamps user_tags for tags linked to claimed trips; a
-  local anonymous tag that's never been put on a trip stays with no
-  user_tags row, so other devices won't see it. Add a "claim every
-  local tag" pass to backfill.
-
 ### UX
 
 - **Sign-out doesn't unlink local trips.** Multi-user device shares

@@ -348,7 +348,7 @@ pub(crate) async fn forget_user_tag(db: &Database, tag_id: Uuid) -> anyhow::Resu
 /// Read the local tag row and enqueue an Insert mutation for it. Used
 /// when a user creates a brand-new tag and we need to propagate the
 /// global row to the server. No-op while anonymous.
-async fn enqueue_tag_row(db: &Database, id: Uuid) -> anyhow::Result<()> {
+pub(crate) async fn enqueue_tag_row(db: &Database, id: Uuid) -> anyhow::Result<()> {
     if sync::session::current_user().await.is_none() {
         return Ok(());
     }

@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::api::sync::SyncStatus;
 use crate::database::Database;
-use super::{coordinator, push, status};
+use super::{backfill, coordinator, push, status};
 
 /// Max time we wait for the outbox to drain on sign-out before
 /// giving up and wiping the queue anyway.
@@ -59,6 +59,15 @@ pub async fn set_auth_session(access_token: String, user_id: Uuid) -> anyhow::Re
     *ACCESS_TOKEN.write().await = Some(access_token);
     *CURRENT_USER.write().await = Some(user_id);
     status::emit(SyncStatus::Idle);
+    // Claim any local-only tags (created while anonymous, never put on a
+    // trip) for the signed-in user before we kick the worker — otherwise
+    // they'd stay invisible to other devices forever. Failure is
+    // non-fatal; sync still functions.
+    if let Some(db) = DB_HANDLE.read().await.clone() {
+        if let Err(e) = backfill::claim_local_tags(&db).await {
+            tracing::warn!("claim_local_tags on sign-in: {e:#}");
+        }
+    }
     // Drain anything queued while signed out.
     push::signal_pending();
     // Bring up the realtime coordinator (pull-then-subscribe).

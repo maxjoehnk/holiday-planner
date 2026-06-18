@@ -61,6 +61,35 @@ pub async fn upload_local_only_trips(db: &Database) -> anyhow::Result<u64> {
     Ok(total)
 }
 
+/// Push every local tag into the signed-in user's library.
+///
+/// Tags created while anonymous live only in the local SQLite tags table
+/// — no `user_tags` row, no server-side mutation. The per-trip subtree
+/// claim handles tags that happen to be on a claimed trip, but a tag
+/// the user created in the library editor and never put on a trip would
+/// otherwise stay invisible to their other devices. Run this once at
+/// sign-in time so the caller's library mirrors across devices.
+///
+/// Idempotent: we skip any tag already in `user_tags(me, …)` so a sign
+/// in→out→in cycle doesn't keep re-queueing the same rows.
+pub async fn claim_local_tags(db: &Database) -> anyhow::Result<()> {
+    let user_id = session::current_user()
+        .await
+        .ok_or_else(|| anyhow!("Sign in before claiming local tags"))?;
+    let tags = Tag::find().all(db.deref()).await?;
+    for t in &tags {
+        if crate::database::repositories::user_tags::find_by_id(db, user_id, t.id)
+            .await?
+            .is_some()
+        {
+            continue;
+        }
+        crate::handlers::tag_handler::enqueue_tag_row(db, t.id).await?;
+        crate::handlers::tag_handler::enqueue_user_tag(db, t.id).await?;
+    }
+    Ok(())
+}
+
 /// Claim a single trip the user owns (or pre-owned but never pushed) for
 /// the signed-in user and enqueue its full subtree.
 pub async fn upload_trip(db: &Database, trip_id: Uuid) -> anyhow::Result<()> {
