@@ -289,58 +289,25 @@ async fn push_one(
         }
         MutationOperation::Delete => {
             // Trip owners hard-delete the row (cascades clean up every
-            // child + trip_members / activity). The cascade does NOT
-            // touch Storage objects, so we scrub the bucket first using
-            // the storage_paths snapshot the handler captured.
+            // child + trip_members / activity). Storage cleanup
+            // (trip header image + every cascaded attachment's
+            // storage_path) is handled by the
+            // scrub_obsolete_header_image / scrub_attachment_storage
+            // BEFORE DELETE triggers on the server, so the cascade
+            // chain takes care of it without a client-side scrub.
             if table == "trips" {
                 if let Ok(payload) = serde_json::from_str::<JsonValue>(&mutation.payload) {
                     if payload.get("hard_delete").and_then(|v| v.as_bool()).unwrap_or(false) {
-                        if let Some(paths) =
-                            payload.get("storage_paths").and_then(|v| v.as_array())
-                        {
-                            for p in paths {
-                                if let Some(path) = p.as_str() {
-                                    if !path.is_empty() {
-                                        if let Err(e) = http::storage_delete(
-                                            crate::sync::wire::ATTACHMENTS_BUCKET,
-                                            path,
-                                        )
-                                        .await
-                                        {
-                                            tracing::warn!(
-                                                "storage scrub {path}: {e:#}"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
                         http::delete_by_id(table, &mutation.entity_id.to_string()).await?;
                         return Ok(());
                     }
                 }
             }
-            // For attachments, scrub the Storage object on the way out.
-            // The blob can disappear before the row tombstone lands; missing
-            // objects are tolerated by `storage_delete`.
-            if table == "attachments" {
-                if let Ok(payload) = serde_json::from_str::<JsonValue>(&mutation.payload) {
-                    if let Some(path) = payload.get("storage_path").and_then(|v| v.as_str()) {
-                        if !path.is_empty() {
-                            if let Err(e) = http::storage_delete(
-                                crate::sync::wire::ATTACHMENTS_BUCKET,
-                                path,
-                            )
-                            .await
-                            {
-                                tracing::warn!("storage delete {path}: {e:#}");
-                            }
-                        }
-                    }
-                }
-            }
             // Soft delete on the wire so realtime can broadcast the
             // tombstone. The local row was already hard-deleted.
+            // Attachments scrub their Storage object via the
+            // scrub_attachment_storage BEFORE UPDATE trigger when
+            // deleted_at flips here.
             let now = chrono::Utc::now();
             let patch = serde_json::json!({
                 "deleted_at": now,

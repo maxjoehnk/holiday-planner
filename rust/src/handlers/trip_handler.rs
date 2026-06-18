@@ -356,7 +356,6 @@ impl TripHandler {
     }
 
     pub async fn delete_trip(&self, trip_id: Uuid) -> anyhow::Result<()> {
-        use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
         let trip = repositories::trips::find_by_id(&self.db, trip_id).await?;
         let Some(trip) = trip else {
             anyhow::bail!("Trip not found");
@@ -370,22 +369,10 @@ impl TripHandler {
                 == Some(current_user);
 
             if is_owner {
-                // Snapshot every attachment's Storage path so the push
-                // worker can scrub the bucket — cascading DELETE on
-                // trips removes the metadata row but not the blob.
-                // Header images live in the same bucket so they ride
-                // along here too.
-                let mut storage_paths: Vec<String> = entities::attachment::Entity::find()
-                    .filter(entities::attachment::Column::TripId.eq(trip_id))
-                    .all(self.db.deref())
-                    .await?
-                    .into_iter()
-                    .filter_map(|a| a.storage_path)
-                    .collect();
-                if let Some(path) = trip.header_image_path.clone() {
-                    storage_paths.push(path);
-                }
-
+                // Storage cleanup (the trip's header image + every
+                // cascaded attachment's blob) is handled server-side
+                // by the BEFORE DELETE triggers on `trips` and
+                // `attachments`, so we just enqueue the hard-delete.
                 sync::push::enqueue(
                     self.db.deref(),
                     "trips",
@@ -394,7 +381,6 @@ impl TripHandler {
                     &serde_json::json!({
                         "id": trip_id,
                         "hard_delete": true,
-                        "storage_paths": storage_paths,
                     }),
                 )
                 .await?;

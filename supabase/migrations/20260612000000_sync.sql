@@ -823,21 +823,29 @@ begin
     end loop;
 end $$;
 
--- scrub_obsolete_header_image: when a trip's header_image_path
--- changes (the client mints a new key per byte change so other
--- devices pick up the change via a path diff), delete the old
--- storage.objects row. Supabase's storage backend picks up the
--- deletion and removes the underlying file from the bucket. Doing
--- this server-side instead of client-side means a client crash
--- between minting the new path and firing the scrub doesn't orphan
--- the old object — and it works regardless of which member did the
--- edit.
+-- Server-side storage cleanup. Two triggers, one for trips header
+-- images and one for attachments, both deleting the relevant
+-- storage.objects row when its owning row is updated (path change /
+-- soft-delete) or deleted (hard-delete / cascade). Supabase's
+-- storage backend propagates the DELETE to the bucket. Doing this
+-- on the server instead of client-side means a crash mid-edit can't
+-- orphan an object, and the cleanup happens once per real change
+-- regardless of which member did the edit.
+
 create or replace function public.scrub_obsolete_header_image()
 returns trigger
 language plpgsql
 security definer set search_path = public
 as $$
 begin
+    if tg_op = 'DELETE' then
+        if old.header_image_path is not null then
+            delete from storage.objects
+             where bucket_id = 'attachments'
+               and name = old.header_image_path;
+        end if;
+        return old;
+    end if;
     if (old.header_image_path is distinct from new.header_image_path)
        and old.header_image_path is not null
     then
@@ -851,9 +859,56 @@ $$;
 
 revoke execute on function public.scrub_obsolete_header_image() from public, anon, authenticated;
 
-create trigger trips_scrub_obsolete_header
+create trigger trips_scrub_obsolete_header_on_update
     before update on public.trips
     for each row execute procedure public.scrub_obsolete_header_image();
+
+create trigger trips_scrub_obsolete_header_on_delete
+    before delete on public.trips
+    for each row execute procedure public.scrub_obsolete_header_image();
+
+-- Attachments: scrub the storage.objects row when the storage_path
+-- changes (re-upload), when the attachment soft-deletes (deleted_at
+-- transitions to non-null) and when the row is hard-deleted (cascade
+-- from a trip delete). Skipping the uploaded_at check is fine — a
+-- DELETE on a non-existent storage.objects row is a no-op match-zero.
+create or replace function public.scrub_attachment_storage()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+    if tg_op = 'DELETE' then
+        if old.storage_path is not null then
+            delete from storage.objects
+             where bucket_id = 'attachments'
+               and name = old.storage_path;
+        end if;
+        return old;
+    end if;
+    if old.storage_path is not null
+       and (
+           old.storage_path is distinct from new.storage_path
+           or (old.deleted_at is null and new.deleted_at is not null)
+       )
+    then
+        delete from storage.objects
+         where bucket_id = 'attachments'
+           and name = old.storage_path;
+    end if;
+    return new;
+end;
+$$;
+
+revoke execute on function public.scrub_attachment_storage() from public, anon, authenticated;
+
+create trigger attachments_scrub_storage_on_update
+    before update on public.attachments
+    for each row execute procedure public.scrub_attachment_storage();
+
+create trigger attachments_scrub_storage_on_delete
+    before delete on public.attachments
+    for each row execute procedure public.scrub_attachment_storage();
 
 -- ============================================================
 -- 5. invite_to_trip RPC.
