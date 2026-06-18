@@ -69,11 +69,19 @@ create table public.trip_invites
     id         uuid primary key     default gen_random_uuid(),
     trip_id    uuid        not null references public.trips (id) on delete cascade,
     email      text        not null,
-    invited_by uuid        not null references auth.users (id),
+    -- Cascade so any path that deletes the inviter (Studio admin
+    -- delete, future RPCs, test resets) doesn't FK-violate on the
+    -- way out. delete_my_account still scrubs explicitly for the
+    -- privacy guarantee, but is no longer load-bearing.
+    invited_by uuid        not null references auth.users (id) on delete cascade,
     created_at timestamptz not null default now()
 );
 create unique index trip_invites_unique_pending
     on public.trip_invites (trip_id, lower(email));
+-- Per-signin lookup index for claim_pending_invites_for, which
+-- filters on `lower(email)` alone. The composite unique index above
+-- can't service email-only lookups.
+create index trip_invites_email_idx on public.trip_invites (lower(email));
 
 -- ---- trip-scoped sub-tables --------------------------------------
 create table public.accommodations
@@ -376,6 +384,35 @@ create table public.trip_activity
     occurred_at   timestamptz not null default now()
 );
 create index trip_activity_trip_idx on public.trip_activity (trip_id, occurred_at desc);
+
+-- last_modified_by → auth.users(id) ON DELETE SET NULL on every
+-- sub-table that carries the attribution column. Without these,
+-- deleting a user leaves dangling UUIDs that the share / member-list
+-- joins to `profiles` resolve to "Modified by <uuid>" instead of a
+-- name. The do-block is idempotent so re-deployment over an existing
+-- schema doesn't fail.
+do $$
+declare
+    t text;
+begin
+    foreach t in array array[
+        'trips', 'accommodations', 'attachments', 'locations',
+        'car_rentals', 'reservations', 'points_of_interest', 'trains',
+        'trip_days', 'routes'
+    ]
+    loop
+        begin
+            execute format(
+                'alter table public.%I
+                    add constraint %I_last_modified_by_fkey
+                    foreign key (last_modified_by)
+                    references auth.users(id) on delete set null',
+                t, t
+            );
+        exception when duplicate_object then null;
+        end;
+    end loop;
+end $$;
 
 -- ============================================================
 -- 2. SECURITY DEFINER membership helpers.
@@ -743,13 +780,19 @@ declare
     v_old       jsonb := case when tg_op <> 'INSERT' then to_jsonb(old) else null end;
     v_row       jsonb := coalesce(v_new, v_old);
     v_trip_id   uuid;
-    v_entity_id uuid := (v_row->>'id')::uuid;
+    -- trip_members uses a composite PK (trip_id, user_id) with no `id`
+    -- column; surface the user_id so the activity row still has a
+    -- stable per-member entity reference.
+    v_entity_id uuid := case tg_table_name
+        when 'trip_members' then (v_row->>'user_id')::uuid
+        else (v_row->>'id')::uuid
+    end;
     v_label     text;
     v_action    text;
     v_actor     uuid;
 begin
     v_trip_id := case tg_table_name
-        when 'trips' then v_entity_id
+        when 'trips' then (v_row->>'id')::uuid
         else (v_row->>'trip_id')::uuid
     end;
 
@@ -762,6 +805,11 @@ begin
         when 'points_of_interest' then v_row->>'name'
         when 'trains'             then
             (v_row->>'departure_station_name') || ' → ' || (v_row->>'arrival_station_name')
+        when 'attachments'        then coalesce(v_row->>'name', v_row->>'file_name')
+        when 'trip_days'          then coalesce(v_row->>'title', v_row->>'date')
+        when 'routes'             then v_row->>'name'
+        -- trip_members has no human label of its own; the UI joins
+        -- `actor_user_id` back to `profiles` for "Alice added Bob".
         else null
     end;
 
@@ -811,7 +859,11 @@ begin
         'reservations',
         'car_rentals',
         'points_of_interest',
-        'trains'
+        'trains',
+        'attachments',
+        'trip_members',
+        'trip_days',
+        'routes'
     ]
     loop
         execute format(

@@ -14,7 +14,9 @@ use sea_orm::ActiveValue::Set;
 use sea_orm::{ColumnTrait, ConnectionTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
 use serde::Serialize;
 use serde_json::Value as JsonValue;
-use tokio::sync::Notify;
+use tokio::sync::{Mutex, Notify};
+use tokio::task::JoinHandle;
+use tokio::sync::RwLock;
 use uuid::Uuid;
 
 use crate::api::sync::SyncStatus;
@@ -37,6 +39,21 @@ const MAX_CONSECUTIVE_FAILURES: u32 = 3;
 
 static PUSH_NOTIFY: OnceLock<Notify> = OnceLock::new();
 static WORKER_STARTED: AtomicBool = AtomicBool::new(false);
+static WORKER_HANDLE: RwLock<Option<JoinHandle<()>>> = RwLock::const_new(None);
+static WORKER_SHUTDOWN: OnceLock<Notify> = OnceLock::new();
+/// Serialises every drain pass. Without this the background worker
+/// and `drain_now` (called from sign-out) can fetch the same batch
+/// concurrently, burn double the network, and bump `attempts`
+/// spuriously on shared failures.
+static DRAIN_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+fn shutdown_signal() -> &'static Notify {
+    WORKER_SHUTDOWN.get_or_init(Notify::new)
+}
+
+fn drain_lock() -> &'static Mutex<()> {
+    DRAIN_LOCK.get_or_init(|| Mutex::new(()))
+}
 
 fn notify() -> &'static Notify {
     PUSH_NOTIFY.get_or_init(Notify::new)
@@ -90,17 +107,25 @@ pub async fn enqueue<T: Serialize>(
 
 /// Spawn the drain loop. Idempotent — extra calls are no-ops so a stray
 /// re-invocation (token refresh, hot restart) can never spawn a second
-/// worker that would race the first one on the same queue rows.
+/// worker that would race the first one on the same queue rows. The
+/// worker can be stopped with [`stop_worker`], which also resets the
+/// guard so a future `spawn_worker` (e.g. after a `connect_db` rerun)
+/// gets a fresh task.
 pub fn spawn_worker(db: Database) {
     if WORKER_STARTED.swap(true, Ordering::SeqCst) {
         return;
     }
-    tokio::spawn(async move {
+    let handle = tokio::spawn(async move {
         loop {
-            // Wait for an enqueue signal OR a periodic retry tick.
+            // Wait for an enqueue signal, a periodic retry tick, or
+            // an explicit stop request.
             tokio::select! {
-                _ = notify().notified() => {},
-                _ = tokio::time::sleep(RETRY_BACKOFF) => {},
+                biased;
+                _ = shutdown_signal().notified() => {
+                    return;
+                }
+                _ = notify().notified() => {}
+                _ = tokio::time::sleep(RETRY_BACKOFF) => {}
             }
             if session::current_user().await.is_none() {
                 continue;
@@ -118,6 +143,19 @@ pub fn spawn_worker(db: Database) {
             }
         }
     });
+    let mut guard = WORKER_HANDLE.try_write().expect("worker handle slot was contended on spawn");
+    *guard = Some(handle);
+}
+
+/// Stop the background drain worker and reset the guard so a future
+/// `spawn_worker` call (e.g. on re-binding the DB handle) can start
+/// fresh. Idempotent — a no-op if no worker is running.
+pub async fn stop_worker() {
+    shutdown_signal().notify_waiters();
+    if let Some(handle) = WORKER_HANDLE.write().await.take() {
+        let _ = tokio::time::timeout(Duration::from_secs(2), handle).await;
+    }
+    WORKER_STARTED.store(false, Ordering::SeqCst);
 }
 
 /// Run a single drain pass synchronously. Used by sign-out to give
@@ -137,6 +175,10 @@ pub async fn clear_queue(db: &Database) -> anyhow::Result<()> {
 }
 
 async fn drain(db: &Database) -> anyhow::Result<usize> {
+    // Hold the drain lock across the whole body so the background
+    // worker and `drain_now` (sign-out flush) can't race the same
+    // batch and double-push.
+    let _guard = drain_lock().lock().await;
     let mut total = 0usize;
     let mut consecutive_failures: u32 = 0;
     loop {

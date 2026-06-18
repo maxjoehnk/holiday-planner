@@ -12,7 +12,13 @@ use super::{coordinator, push, status};
 
 /// Max time we wait for the outbox to drain on sign-out before
 /// giving up and wiping the queue anyway.
-const FINAL_DRAIN_TIMEOUT: Duration = Duration::from_secs(5);
+/// Wait this long for the outbox to drain on sign-out before we
+/// give up and wipe the queue. Sized larger than a single PostgREST
+/// request timeout (30 s) is overkill; sized at 20 s gives a typical
+/// 10-mutation batch room to land on a slow mobile network while
+/// still keeping sign-out responsive. We emit `SyncStatus::Syncing`
+/// during the drain so the UI can render a hint.
+const FINAL_DRAIN_TIMEOUT: Duration = Duration::from_secs(20);
 
 /// Cached Database handle so we can (re)start the coordinator on sign-in
 /// without threading it through every API call.
@@ -88,15 +94,19 @@ pub async fn set_auth_session(access_token: String, user_id: Uuid) -> anyhow::Re
 /// foreign RLS context, dead-lettering each.
 pub async fn clear_auth_session() -> anyhow::Result<()> {
     if let Some(db) = DB_HANDLE.read().await.clone() {
+        status::emit(SyncStatus::Syncing);
         let _ = tokio::time::timeout(FINAL_DRAIN_TIMEOUT, push::drain_now(&db)).await;
         if let Err(e) = push::clear_queue(&db).await {
             tracing::warn!("clear_queue on sign-out: {e:#}");
         }
     }
 
-    // Stop the coordinator before clearing the token so it doesn't make
-    // one last unauthenticated request on the way out.
+    // Stop the coordinator + push worker before clearing the token so
+    // neither makes one last unauthenticated request on the way out.
+    // `stop_worker` also resets WORKER_STARTED so a future spawn picks
+    // up the (possibly rebound) DB handle.
     coordinator::stop().await;
+    push::stop_worker().await;
     if let Some(client) = CLIENT.read().await.as_ref() {
         if let Err(e) = client.clear_auth().await {
             tracing::warn!("Failed to clear Supabase auth token: {e}");
