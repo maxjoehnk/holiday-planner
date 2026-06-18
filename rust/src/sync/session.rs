@@ -1,8 +1,5 @@
-use std::sync::Arc;
 use std::time::Duration;
 
-use anyhow::anyhow;
-use supabase::Client as SupabaseClient;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
@@ -28,14 +25,9 @@ pub async fn set_db(db: Database) {
     *DB_HANDLE.write().await = Some(db);
 }
 
-/// Bound to the project URL + anon key. Cleared and rebuilt only if
-/// [`configure`] is called again (rare; the user would have to switch
-/// Supabase projects).
-static CLIENT: RwLock<Option<Arc<SupabaseClient>>> = RwLock::const_new(None);
-
-/// Project URL (e.g. https://xyz.supabase.co). Used for direct PostgREST
-/// calls; `supabase-lib-rs`'s `set_auth` doesn't actually forward the JWT
-/// to HTTP requests, so push / pull go via [`super::http`] instead.
+/// Project URL (e.g. https://xyz.supabase.co). All PostgREST + Storage
+/// traffic is dispatched from [`super::http`] using this URL and the
+/// cached [`ACCESS_TOKEN`]; realtime uses [`super::realtime`].
 static SUPABASE_URL: RwLock<Option<String>> = RwLock::const_new(None);
 static SUPABASE_ANON_KEY: RwLock<Option<String>> = RwLock::const_new(None);
 
@@ -47,30 +39,23 @@ static CURRENT_USER: RwLock<Option<Uuid>> = RwLock::const_new(None);
 /// PostgREST sees `auth.uid()` rather than the anonymous role.
 static ACCESS_TOKEN: RwLock<Option<String>> = RwLock::const_new(None);
 
-/// Wire the Supabase client. Called once at app startup with values from
-/// `--dart-define` (or equivalent). Safe to call again to switch projects.
+/// Cache the project URL + anon key. Called once at app startup with
+/// values from `--dart-define` (or equivalent). Safe to call again to
+/// switch projects.
 pub async fn configure(url: String, anon_key: String) -> anyhow::Result<()> {
-    let client = SupabaseClient::new(&url, &anon_key)
-        .map_err(|e| anyhow!("Failed to construct Supabase client: {e}"))?;
-    *CLIENT.write().await = Some(Arc::new(client));
     *SUPABASE_URL.write().await = Some(url);
     *SUPABASE_ANON_KEY.write().await = Some(anon_key);
     status::emit(SyncStatus::SignedOut);
     Ok(())
 }
 
-/// Push the signed-in user's JWT into the Supabase client.
+/// Cache the signed-in user's JWT.
 ///
 /// Dart owns the magic-link flow; on every `onAuthStateChange` event it
-/// calls this function. We cache the token locally for direct PostgREST
-/// calls and also forward it to the realtime client.
+/// calls this function. `super::http` reads [`ACCESS_TOKEN`] on every
+/// PostgREST / Storage request and `super::realtime` reads it on
+/// connect / heartbeat-tick refresh.
 pub async fn set_auth_session(access_token: String, user_id: Uuid) -> anyhow::Result<()> {
-    let client = require_client().await?;
-    // Best-effort: feed the library so its realtime path picks the JWT
-    // up. (HTTP requests bypass the library — see SUPABASE_URL above.)
-    if let Err(e) = client.set_auth(&access_token).await {
-        tracing::warn!("Failed to set auth on Supabase client: {e}");
-    }
     *ACCESS_TOKEN.write().await = Some(access_token);
     *CURRENT_USER.write().await = Some(user_id);
     status::emit(SyncStatus::Idle);
@@ -107,11 +92,6 @@ pub async fn clear_auth_session() -> anyhow::Result<()> {
     // up the (possibly rebound) DB handle.
     coordinator::stop().await;
     push::stop_worker().await;
-    if let Some(client) = CLIENT.read().await.as_ref() {
-        if let Err(e) = client.clear_auth().await {
-            tracing::warn!("Failed to clear Supabase auth token: {e}");
-        }
-    }
     *ACCESS_TOKEN.write().await = None;
     *CURRENT_USER.write().await = None;
     status::emit(SyncStatus::SignedOut);
@@ -132,16 +112,4 @@ pub async fn supabase_url() -> Option<String> {
 
 pub async fn anon_key() -> Option<String> {
     SUPABASE_ANON_KEY.read().await.clone()
-}
-
-pub async fn client() -> Option<Arc<SupabaseClient>> {
-    CLIENT.read().await.clone()
-}
-
-async fn require_client() -> anyhow::Result<Arc<SupabaseClient>> {
-    CLIENT
-        .read()
-        .await
-        .clone()
-        .ok_or_else(|| anyhow!("Sync is not configured; call configure_sync first"))
 }
