@@ -823,6 +823,38 @@ begin
     end loop;
 end $$;
 
+-- scrub_obsolete_header_image: when a trip's header_image_path
+-- changes (the client mints a new key per byte change so other
+-- devices pick up the change via a path diff), delete the old
+-- storage.objects row. Supabase's storage backend picks up the
+-- deletion and removes the underlying file from the bucket. Doing
+-- this server-side instead of client-side means a client crash
+-- between minting the new path and firing the scrub doesn't orphan
+-- the old object — and it works regardless of which member did the
+-- edit.
+create or replace function public.scrub_obsolete_header_image()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+    if (old.header_image_path is distinct from new.header_image_path)
+       and old.header_image_path is not null
+    then
+        delete from storage.objects
+         where bucket_id = 'attachments'
+           and name = old.header_image_path;
+    end if;
+    return new;
+end;
+$$;
+
+revoke execute on function public.scrub_obsolete_header_image() from public, anon, authenticated;
+
+create trigger trips_scrub_obsolete_header
+    before update on public.trips
+    for each row execute procedure public.scrub_obsolete_header_image();
+
 -- ============================================================
 -- 5. invite_to_trip RPC.
 -- ============================================================

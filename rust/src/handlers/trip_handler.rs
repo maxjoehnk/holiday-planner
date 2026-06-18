@@ -278,16 +278,11 @@ impl TripHandler {
         // Only mint a fresh Storage path when the bytes actually
         // changed. Hash-equality (or both-None) means we reuse the
         // existing path + uploaded_at and the push worker skips the
-        // upload.
+        // upload. Scrubbing the previous Storage object on path
+        // change is handled by the `scrub_obsolete_header_image`
+        // BEFORE UPDATE trigger on `public.trips`, so we don't need
+        // to fire a storage_delete from here.
         let new_sha = command.header_image.as_deref().map(sha256_hex);
-        // When bytes change we point header_image_path at a new key.
-        // Any object that's already on Storage at the previous key is
-        // now orphaned and needs scrubbing — capture it so we can fire
-        // a `storage_delete` once the new path is in place. `uploaded_at`
-        // gates this: if the previous path was minted but never
-        // uploaded (handler crashed, sign-out raced), nothing's on
-        // Storage to scrub.
-        let mut obsolete_storage_path: Option<String> = None;
         let (header_path, header_sha, header_uploaded_at) =
             if new_sha == existing.header_image_sha256 {
                 (
@@ -296,9 +291,6 @@ impl TripHandler {
                     existing.header_image_uploaded_at,
                 )
             } else {
-                if existing.header_image_uploaded_at.is_some() {
-                    obsolete_storage_path = existing.header_image_path.clone();
-                }
                 let path = command.header_image.as_ref().map(|_| {
                     sync::wire::trip_header_storage_path(command.id, Uuid::new_v4())
                 });
@@ -356,23 +348,6 @@ impl TripHandler {
         if dates_changed {
             let day_handler = TripDayHandler::create(self.db.clone());
             day_handler.reconcile_after_trip_date_change(command.id).await?;
-        }
-
-        // Fire-and-forget scrub of the now-orphaned header object. The
-        // push for the new path runs through the queue and will retry
-        // on failure; this delete doesn't. A failure here just leaves
-        // the old object lying in the bucket — small leak, not a
-        // correctness issue. Skipped when signed out (no Storage
-        // access) and when the prior path was never uploaded.
-        if obsolete_storage_path.is_some() && current_user.is_some() {
-            let path = obsolete_storage_path.unwrap();
-            tokio::spawn(async move {
-                if let Err(e) =
-                    sync::http::storage_delete(sync::wire::ATTACHMENTS_BUCKET, &path).await
-                {
-                    tracing::warn!("scrub obsolete header image {path}: {e:#}");
-                }
-            });
         }
 
         let trip = self.get_trip_overview(command.id).await?;
