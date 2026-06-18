@@ -1,12 +1,21 @@
 use std::ops::Deref;
 use sea_orm::ActiveValue::Set;
+use sha2::{Digest, Sha256};
 use uuid::Uuid;
 use chrono::{DateTime, Local, NaiveDate, NaiveTime, TimeZone, Utc};
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, repositories, entities};
 use crate::models::*;
 use crate::commands::*;
-use crate::handlers::{Handler, LocationHandler, TripDayHandler};
+use crate::handlers::{enqueue_trip_tag, Handler, LocationHandler, TripDayHandler};
+use crate::sync;
 use crate::third_party::unsplash;
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    format!("{:x}", hasher.finalize())
+}
 
 pub struct TripHandler {
     db: Database,
@@ -45,56 +54,36 @@ impl TripHandler {
     pub async fn get_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting trips");
         let trips = repositories::trips::find_all(&self.db).await?;
-
-        let trips = trips.into_iter()
-            .map(|trip| TripListModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                header_image: trip.header_image,
-            })
-            .collect();
-
-        Ok(trips)
+        let scope = TripVisibilityScope::load(&self.db).await?;
+        Ok(trips
+            .into_iter()
+            .filter(|t| scope.includes(t))
+            .map(trip_list_model_from)
+            .collect())
     }
 
     pub async fn get_upcoming_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting upcoming trips");
         let trips = repositories::trips::find_all(&self.db).await?;
+        let scope = TripVisibilityScope::load(&self.db).await?;
         let now = Local::now().date_naive();
-
-        let trips = trips.into_iter()
-            .filter(|trip| trip.end_date.to_local_date() >= now)
-            .map(|trip| TripListModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                header_image: trip.header_image,
-            })
-            .collect();
-
-        Ok(trips)
+        Ok(trips
+            .into_iter()
+            .filter(|t| t.end_date.to_local_date() >= now && scope.includes(t))
+            .map(trip_list_model_from)
+            .collect())
     }
 
     pub async fn get_past_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting past trips");
         let trips = repositories::trips::find_all(&self.db).await?;
+        let scope = TripVisibilityScope::load(&self.db).await?;
         let now = Local::now().date_naive();
-
-        let trips = trips.into_iter()
-            .filter(|trip| trip.end_date.to_local_date() < now)
-            .map(|trip| TripListModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                header_image: trip.header_image,
-            })
-            .collect();
-
-        Ok(trips)
+        Ok(trips
+            .into_iter()
+            .filter(|t| t.end_date.to_local_date() < now && scope.includes(t))
+            .map(trip_list_model_from)
+            .collect())
     }
 
     pub async fn get_trip_overview(&self, id: Uuid) -> anyhow::Result<TripOverviewModel> {
@@ -158,6 +147,11 @@ impl TripHandler {
             trains => Some(TransitOverviewModel::UpcomingTransits(trains.len())),
         };
 
+        let owner_id = trip
+            .owner_id
+            .as_deref()
+            .and_then(|s| Uuid::parse_str(s).ok());
+        let is_detached = trip.detached_at.is_some();
         let trip = TripOverviewModel {
             id: trip.id,
             name: trip.name,
@@ -173,20 +167,53 @@ impl TripHandler {
             accommodation_status,
             locations_list,
             single_location_weather_tidal,
+            owner_id,
+            is_detached,
         };
 
         Ok(trip)
     }
 
     pub async fn create_trip(&self, command: CreateTrip) -> anyhow::Result<TripOverviewModel> {
+        let current_user = sync::session::current_user().await;
+        // Generate the trip id up front so we can mint a Storage path
+        // for the header image in the same active model rather than
+        // doing a follow-up UPDATE just to attach the path.
+        let trip_id = Uuid::new_v4();
+        let (header_path, header_sha) = match command.header_image.as_deref() {
+            Some(bytes) => (
+                Some(sync::wire::trip_header_storage_path(trip_id, Uuid::new_v4())),
+                Some(sha256_hex(bytes)),
+            ),
+            None => (None, None),
+        };
         let model = entities::trip::ActiveModel {
+            id: Set(trip_id),
             name: Set(command.name),
             start_date: Set(command.start_date),
             end_date: Set(command.end_date),
             header_image: Set(command.header_image),
+            header_image_path: Set(header_path),
+            header_image_sha256: Set(header_sha),
+            header_image_uploaded_at: Set(None),
+            updated_at: Set(Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            owner_id: Set(current_user.map(|u| u.to_string())),
             ..Default::default()
         };
         let trip = repositories::trips::create(&self.db, model).await?;
+
+        if let Some(user_id) = current_user {
+            let row = sync::wire::TripRow::from_model(&trip, user_id);
+            sync::push::enqueue(
+                self.db.deref(),
+                "trips",
+                trip.id,
+                MutationOperation::Insert,
+                &row,
+            )
+            .await?;
+        }
 
         if let Some(location) = command.location {
             let location_handler = LocationHandler::create(self.db.clone());
@@ -196,6 +223,7 @@ impl TripHandler {
         // Set trip tags
         for tag_id in command.tag_ids {
             repositories::tags::add_tag_to_trip(&self.db, trip.id, tag_id).await?;
+            enqueue_trip_tag(&self.db, trip.id, tag_id, MutationOperation::Insert).await?;
         }
 
         let trip = self.get_trip_overview(trip.id).await?;
@@ -204,27 +232,82 @@ impl TripHandler {
     }
 
     pub async fn update_trip(&self, command: UpdateTrip) -> anyhow::Result<TripOverviewModel> {
-        let trip = repositories::trips::find_by_id(&self.db, command.id).await?;
-        let Some(existing) = trip else {
+        let Some(existing) = repositories::trips::find_by_id(&self.db, command.id).await? else {
             return Err(anyhow::anyhow!("Trip not found"));
         };
 
         let dates_changed =
             existing.start_date != command.start_date || existing.end_date != command.end_date;
 
+        let current_user = sync::session::current_user().await;
+        // Only mint a fresh Storage path when the bytes actually
+        // changed. Hash-equality (or both-None) means we reuse the
+        // existing path + uploaded_at and the push worker skips the
+        // upload. Scrubbing the previous Storage object on path
+        // change is handled by the `scrub_obsolete_header_image`
+        // BEFORE UPDATE trigger on `public.trips`, so we don't need
+        // to fire a storage_delete from here.
+        let new_sha = command.header_image.as_deref().map(sha256_hex);
+        let (header_path, header_sha, header_uploaded_at) =
+            if new_sha == existing.header_image_sha256 {
+                (
+                    existing.header_image_path.clone(),
+                    existing.header_image_sha256.clone(),
+                    existing.header_image_uploaded_at,
+                )
+            } else {
+                let path = command.header_image.as_ref().map(|_| {
+                    sync::wire::trip_header_storage_path(command.id, Uuid::new_v4())
+                });
+                (path, new_sha, None)
+            };
         let model = entities::trip::ActiveModel {
             id: Set(command.id),
             name: Set(command.name),
             start_date: Set(command.start_date),
             end_date: Set(command.end_date),
             header_image: Set(command.header_image),
+            header_image_path: Set(header_path),
+            header_image_sha256: Set(header_sha),
+            header_image_uploaded_at: Set(header_uploaded_at),
+            updated_at: Set(Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
         repositories::trips::update(&self.db, model).await?;
 
-        // Update trip tags
+        // Update trip tags. Snapshot the previous set so the queue can
+        // carry tombstones for tags that drop out.
+        let previous = repositories::tags::find_by_trip_id(&self.db, command.id).await?;
+        for tag in previous {
+            if !command.tag_ids.contains(&tag.id) {
+                enqueue_trip_tag(&self.db, command.id, tag.id, MutationOperation::Delete).await?;
+            }
+        }
         repositories::tags::clear_trip_tags(&self.db, command.id).await?;
         for tag_id in command.tag_ids {
             repositories::tags::add_tag_to_trip(&self.db, command.id, tag_id).await?;
+            enqueue_trip_tag(&self.db, command.id, tag_id, MutationOperation::Insert).await?;
+        }
+
+        if let Some(user_id) = current_user {
+            // Refetch so the enqueued row carries the freshly bumped updated_at.
+            if let Some(refreshed) = repositories::trips::find_by_id(&self.db, command.id).await? {
+                let owner_id = refreshed
+                    .owner_id
+                    .as_deref()
+                    .and_then(|s| Uuid::parse_str(s).ok())
+                    .unwrap_or(user_id);
+                let row = sync::wire::TripRow::from_model(&refreshed, owner_id);
+                sync::push::enqueue(
+                    self.db.deref(),
+                    "trips",
+                    refreshed.id,
+                    MutationOperation::Update,
+                    &row,
+                )
+                .await?;
+            }
         }
 
         if dates_changed {
@@ -236,15 +319,56 @@ impl TripHandler {
 
         Ok(trip)
     }
-    
+
     pub async fn delete_trip(&self, trip_id: Uuid) -> anyhow::Result<()> {
         let trip = repositories::trips::find_by_id(&self.db, trip_id).await?;
-        if trip.is_none() {
+        let Some(trip) = trip else {
             anyhow::bail!("Trip not found");
+        };
+
+        if let Some(current_user) = sync::session::current_user().await {
+            let is_owner = trip
+                .owner_id
+                .as_deref()
+                .and_then(|s| Uuid::parse_str(s).ok())
+                == Some(current_user);
+
+            if is_owner {
+                // Storage cleanup (the trip's header image + every
+                // cascaded attachment's blob) is handled server-side
+                // by the BEFORE DELETE triggers on `trips` and
+                // `attachments`, so we just enqueue the hard-delete.
+                sync::push::enqueue(
+                    self.db.deref(),
+                    "trips",
+                    trip_id,
+                    MutationOperation::Delete,
+                    &serde_json::json!({
+                        "id": trip_id,
+                        "hard_delete": true,
+                    }),
+                )
+                .await?;
+            } else {
+                // Non-owner: leave the trip rather than touching the
+                // shared row. Push as a trip_members soft-delete so
+                // the user's own membership row carries the tombstone.
+                sync::push::enqueue(
+                    self.db.deref(),
+                    "trip_members",
+                    current_user,
+                    MutationOperation::Delete,
+                    &serde_json::json!({
+                        "trip_id": trip_id,
+                        "user_id": current_user,
+                    }),
+                )
+                .await?;
+            }
         }
 
         repositories::trips::delete(&self.db, trip_id).await?;
-        
+
         Ok(())
     }
     
@@ -282,5 +406,70 @@ trait DateExt {
 impl DateExt for DateTime<Utc> {
     fn to_local_date(&self) -> NaiveDate {
         Local.from_utc_datetime(&self.naive_utc()).date_naive()
+    }
+}
+
+/// Visibility filter applied to the trip list / upcoming / past
+/// queries. Anonymous trips (`owner_id IS NULL`) are visible to
+/// everyone. Owned trips are visible to the owner and to members.
+/// When signed out, only anonymous trips are visible — this is what
+/// keeps a multi-user device from leaking the previous account's
+/// trips into the list after sign-out.
+struct TripVisibilityScope {
+    current_user: Option<Uuid>,
+    memberships: std::collections::HashSet<Uuid>,
+}
+
+impl TripVisibilityScope {
+    async fn load(db: &Database) -> anyhow::Result<Self> {
+        let current_user = sync::session::current_user().await;
+        let memberships = if let Some(uid) = current_user {
+            use crate::database::entities::trip_member::{Column, Entity as TripMember};
+            use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+            TripMember::find()
+                .filter(Column::UserId.eq(uid))
+                .filter(Column::DeletedAt.is_null())
+                .all(db.deref())
+                .await?
+                .into_iter()
+                .map(|m| m.trip_id)
+                .collect()
+        } else {
+            std::collections::HashSet::new()
+        };
+        Ok(Self { current_user, memberships })
+    }
+
+    fn includes(&self, trip: &entities::trip::Model) -> bool {
+        let owner = trip
+            .owner_id
+            .as_deref()
+            .and_then(|s| Uuid::parse_str(s).ok());
+        match (owner, self.current_user) {
+            // Anonymous-mode trip (locally-created, or detached after
+            // owner deletion) — always visible.
+            (None, _) => true,
+            // Signed out, but the trip belongs to someone — hide.
+            (Some(_), None) => false,
+            // I own this trip.
+            (Some(o), Some(me)) if o == me => true,
+            // Someone else owns it — visible only via my membership.
+            (Some(_), Some(_)) => self.memberships.contains(&trip.id),
+        }
+    }
+}
+
+fn trip_list_model_from(trip: entities::trip::Model) -> TripListModel {
+    TripListModel {
+        id: trip.id,
+        name: trip.name,
+        start_date: trip.start_date,
+        end_date: trip.end_date,
+        header_image: trip.header_image,
+        owner_id: trip
+            .owner_id
+            .as_deref()
+            .and_then(|s| Uuid::parse_str(s).ok()),
+        is_detached: trip.detached_at.is_some(),
     }
 }

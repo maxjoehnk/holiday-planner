@@ -64,4 +64,16 @@ sealed class DataChangeEvent with _$DataChangeEvent {
   const factory DataChangeEvent.tripDaysChanged({
     required UuidValue tripId,
   }) = DataChangeEvent_TripDaysChanged;
+  const factory DataChangeEvent.tripMembersChanged({
+    required UuidValue tripId,
+  }) = DataChangeEvent_TripMembersChanged;
+  const factory DataChangeEvent.tripAccessGranted({
+    required UuidValue tripId,
+  }) = DataChangeEvent_TripAccessGranted;
+  const factory DataChangeEvent.tripAccessRevoked({
+    required UuidValue tripId,
+  }) = DataChangeEvent_TripAccessRevoked;
+  const factory DataChangeEvent.tripActivityChanged({
+    required UuidValue tripId,
+  }) = DataChangeEvent_TripActivityChanged;
 }

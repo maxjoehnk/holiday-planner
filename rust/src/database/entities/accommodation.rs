@@ -16,6 +16,9 @@ pub struct Model {
     pub coordinates_longitude: Option<f64>,
     pub weather_information_last_updated: Option<DateTimeUtc>,
     pub pollen_information_last_updated: Option<DateTimeUtc>,
+    pub updated_at: chrono::DateTime<chrono::Utc>,
+    pub deleted_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

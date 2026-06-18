@@ -7,7 +7,6 @@ import '../commands/add_tag_to_trip.dart';
 import '../commands/create_tag.dart';
 import '../commands/remove_tag_from_trip.dart';
 import '../commands/set_trip_tags.dart';
-import '../commands/update_tag.dart';
 import '../frb_generated.dart';
 import '../models.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -22,11 +21,18 @@ Future<TagModel?> getTagById({required UuidValue id}) =>
 Future<TagModel> createTag({required CreateTag command}) =>
     RustLib.instance.api.crateApiTagsCreateTag(command: command);
 
-Future<TagModel> updateTag({required UpdateTag command}) =>
-    RustLib.instance.api.crateApiTagsUpdateTag(command: command);
+/// Rename a tag in the caller's library. Returns the canonical tag
+/// the rename ended up pointing at (which is either freshly created or
+/// reused from the global library if someone else had already typed
+/// the new name).
+Future<TagModel> renameTag(
+        {required UuidValue tagId, required String newName}) =>
+    RustLib.instance.api.crateApiTagsRenameTag(tagId: tagId, newName: newName);
 
-Future<void> deleteTag({required UuidValue id}) =>
-    RustLib.instance.api.crateApiTagsDeleteTag(id: id);
+/// Remove a tag from the caller's library and from every trip they
+/// own. Other devices see the change on their next sync.
+Future<void> deleteTag({required UuidValue tagId}) =>
+    RustLib.instance.api.crateApiTagsDeleteTag(tagId: tagId);
 
 Future<List<TagModel>> getTripTags({required UuidValue tripId}) =>
     RustLib.instance.api.crateApiTagsGetTripTags(tripId: tripId);

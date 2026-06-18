@@ -2,9 +2,13 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:holiday_planner/services/auth_service.dart';
 import 'package:holiday_planner/src/rust/api.dart';
+import 'package:holiday_planner/views/auth/account_view.dart';
+import 'package:holiday_planner/views/auth/sign_in_view.dart';
 import 'package:holiday_planner/views/settings/settings_view.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'packing_list/packing_list_view.dart';
 import 'trip_list/trip_overview.dart';
@@ -67,6 +71,25 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
         centerTitle: true,
         elevation: 0,
         actions: [
+          StreamBuilder<User?>(
+            stream: AuthService.instance.changes,
+            initialData: AuthService.instance.currentUser,
+            builder: (context, snapshot) {
+              final signedIn = snapshot.data != null;
+              return IconButton(
+                tooltip: signedIn ? 'Account' : 'Sign in',
+                icon: Icon(signedIn ? Icons.account_circle : Icons.account_circle_outlined),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => signedIn ? const AccountView() : const SignInView(),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
           IconButton(
             tooltip: AppLocalizations.of(context)!.homeSettingsTooltip,
             icon: const Icon(Icons.settings),

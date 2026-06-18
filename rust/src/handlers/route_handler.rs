@@ -98,7 +98,16 @@ impl RouteHandler {
             repositories::routes::update(&self.db, active).await?;
             id
         } else {
-            let id = Uuid::new_v4();
+            // Content-addressed id so two members importing the same
+            // Komoot tour offline arrive at the same row instead of
+            // hitting the server-side
+            // `(trip_id, provider, provider_route_id)` unique
+            // constraint with two different uuid_v4 ids.
+            let id = crate::sync::wire::route_id_for(
+                command.trip_id,
+                "komoot",
+                &provider_route_id,
+            );
             let active = route::ActiveModel {
                 id: Set(id),
                 trip_id: Set(command.trip_id),
@@ -118,6 +127,9 @@ impl RouteHandler {
                 trip_day_id: Set(None),
                 day_order: Set(None),
                 scheduled_at: Set(None),
+                updated_at: Set(chrono::Utc::now()),
+                deleted_at: Set(None),
+                last_modified_by: Set(crate::sync::session::current_user().await.map(|u| u.to_string())),
             };
             repositories::routes::insert(&self.db, active).await?;
             id
@@ -126,6 +138,7 @@ impl RouteHandler {
         let model = repositories::routes::find_by_id(&self.db, saved_id)
             .await?
             .ok_or_else(|| anyhow::anyhow!("Route disappeared after write"))?;
+        self.enqueue_after_write(saved_id, crate::database::entities::pending_mutation::MutationOperation::Insert).await?;
         to_model(model)
     }
 
@@ -140,15 +153,43 @@ impl RouteHandler {
         };
         let mut active = route.into_active_model();
         active.note.set_if_not_equals(command.note);
+        active.updated_at = sea_orm::ActiveValue::Set(chrono::Utc::now());
+        active.last_modified_by = sea_orm::ActiveValue::Set(
+            crate::sync::session::current_user().await.map(|u| u.to_string()),
+        );
         repositories::routes::update(&self.db, active).await?;
-
+        self.enqueue_after_write(command.id, crate::database::entities::pending_mutation::MutationOperation::Update).await?;
         Ok(())
     }
 
     pub async fn delete_route(&self, route_id: Uuid) -> anyhow::Result<()> {
         repositories::routes::delete_by_id(&self.db, route_id).await?;
-
+        if crate::sync::session::current_user().await.is_some() {
+            crate::sync::push::enqueue_if_signed_in(
+                &self.db,
+                "routes",
+                route_id,
+                crate::database::entities::pending_mutation::MutationOperation::Delete,
+                &serde_json::json!({ "id": route_id }),
+            )
+            .await?;
+        }
         Ok(())
+    }
+
+    async fn enqueue_after_write(
+        &self,
+        id: Uuid,
+        op: crate::database::entities::pending_mutation::MutationOperation,
+    ) -> anyhow::Result<()> {
+        if crate::sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::routes::find_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = crate::sync::wire::RouteRow::from_model(&model);
+        crate::sync::push::enqueue_if_signed_in(&self.db, "routes", id, op, &row).await
     }
 }
 

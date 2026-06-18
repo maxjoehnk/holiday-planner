@@ -25,18 +25,24 @@ pub async fn create_tag(command: CreateTag) -> anyhow::Result<TagModel> {
     Ok(tag)
 }
 
-#[tracing::instrument]
-pub async fn update_tag(command: UpdateTag) -> anyhow::Result<TagModel> {
+/// Rename a tag in the caller's library. Returns the canonical tag
+/// the rename ended up pointing at (which is either freshly created or
+/// reused from the global library if someone else had already typed
+/// the new name).
+#[tracing::instrument(skip(new_name))]
+pub async fn rename_tag(tag_id: Uuid, new_name: String) -> anyhow::Result<TagModel> {
     let handler = DB.try_get::<TagHandler>().await?;
-    let tag = handler.update_tag(command).await?;
+    let tag = handler.rename_tag(tag_id, new_name).await?;
     events::emit(DataChangeEvent::TagsChanged);
     Ok(tag)
 }
 
+/// Remove a tag from the caller's library and from every trip they
+/// own. Other devices see the change on their next sync.
 #[tracing::instrument]
-pub async fn delete_tag(id: Uuid) -> anyhow::Result<()> {
+pub async fn delete_tag(tag_id: Uuid) -> anyhow::Result<()> {
     let handler = DB.try_get::<TagHandler>().await?;
-    handler.delete_tag(id).await?;
+    handler.delete_tag(tag_id).await?;
     events::emit(DataChangeEvent::TagsChanged);
     Ok(())
 }

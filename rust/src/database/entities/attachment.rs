@@ -12,6 +12,18 @@ pub struct Model {
     pub data: Vec<u8>,
     pub file_name: String,
     pub content_type: String,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
+    /// Storage object key (e.g. `trips/<trip_id>/<attachment_id>`).
+    /// `None` when the row is still local-only (no sync push yet).
+    pub storage_path: Option<String>,
+    /// Hex SHA-256 of `data`, used to short-circuit re-uploads and verify
+    /// downloads.
+    pub sha256: Option<String>,
+    /// When this device last successfully pushed the blob to Supabase
+    /// Storage. `None` means a re-upload is pending.
+    pub uploaded_at: Option<DateTimeUtc>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

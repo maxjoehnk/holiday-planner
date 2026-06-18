@@ -2,9 +2,11 @@ use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
 use crate::commands::{AddTrain, UpdateTrain, ImportParsedTrainJourney, ParseTrainData};
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::transits::{Train, ParsedTrainJourney, ParsedTrainSegment};
+use crate::sync;
 
 pub struct TrainHandler {
     db: Database,
@@ -21,9 +23,11 @@ impl Handler for TrainHandler {
 impl TrainHandler {
     pub async fn add_train(&self, command: AddTrain) -> anyhow::Result<()> {
         tracing::debug!("Adding train to trip {}", command.trip_id);
-        
+
+        let current_user = sync::session::current_user().await;
+        let id = Uuid::new_v4();
         let train = entities::train::ActiveModel {
-            id: Set(Uuid::new_v4()),
+            id: Set(id),
             trip_id: Set(command.trip_id),
             train_number: Set(command.train_number),
             departure_station_name: Set(command.departure_station_name),
@@ -36,9 +40,13 @@ impl TrainHandler {
             arrival_scheduled_platform: Set(command.arrival_scheduled_platform),
             scheduled_departure_time: Set(command.scheduled_departure_time),
             scheduled_arrival_time: Set(command.scheduled_arrival_time),
+            updated_at: Set(chrono::Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
-        
+
         repositories::transits::insert_train(&self.db, train).await?;
+        self.enqueue_after_write(id, MutationOperation::Insert).await?;
 
         Ok(())
     }
@@ -75,6 +83,7 @@ impl TrainHandler {
         let Some(train) = repositories::transits::find_train_by_id(&self.db, command.id).await? else {
             anyhow::bail!("Unknown train");
         };
+        let current_user = sync::session::current_user().await;
         let mut train = train.into_active_model();
         train.train_number.set_if_not_equals(command.train_number);
         train.departure_station_name.set_if_not_equals(command.departure_station_name);
@@ -87,16 +96,38 @@ impl TrainHandler {
         train.arrival_scheduled_platform.set_if_not_equals(command.arrival_scheduled_platform);
         train.scheduled_departure_time.set_if_not_equals(command.scheduled_departure_time);
         train.scheduled_arrival_time.set_if_not_equals(command.scheduled_arrival_time);
+        train.updated_at = Set(chrono::Utc::now());
+        train.last_modified_by = Set(current_user.map(|u| u.to_string()));
 
         repositories::transits::update_train(&self.db, train).await?;
+        self.enqueue_after_write(command.id, MutationOperation::Update).await?;
 
         Ok(())
     }
 
     pub async fn delete_train(&self, train_id: Uuid) -> anyhow::Result<()> {
+        sync::push::enqueue_if_signed_in(
+            &self.db,
+            "trains",
+            train_id,
+            MutationOperation::Delete,
+            &serde_json::json!({ "id": train_id }),
+        )
+        .await?;
         repositories::transits::delete_train_by_id(&self.db, train_id).await?;
 
         Ok(())
+    }
+
+    async fn enqueue_after_write(&self, id: Uuid, op: MutationOperation) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::transits::find_train_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = sync::wire::TrainRow::from_model(&model);
+        sync::push::enqueue_if_signed_in(&self.db, "trains", id, op, &row).await
     }
 
     pub async fn import_parsed_train_journey(&self, command: ImportParsedTrainJourney) -> anyhow::Result<()> {

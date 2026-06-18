@@ -10,6 +10,9 @@ pub struct Model {
     pub trip_id: Uuid,
     pub date: chrono::NaiveDate,
     pub title: Option<String>,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

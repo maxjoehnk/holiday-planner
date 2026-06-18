@@ -3,6 +3,7 @@ import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/date_format.dart';
 import 'package:holiday_planner/widgets/condensed_tag_display.dart';
 import 'package:holiday_planner/l10n/app_localizations.dart';
+import 'package:holiday_planner/widgets/trip_sync_chip.dart';
 
 class TripOverviewItem extends StatelessWidget {
   final TripListModel trip;
@@ -63,6 +64,16 @@ class TripOverviewItem extends StatelessWidget {
                     ),
                   ),
                 ),
+              Positioned(
+                top: 12,
+                right: 12,
+                child: TripSyncChip(
+                  tripId: trip.id,
+                  tripName: trip.name,
+                  ownerId: trip.ownerId,
+                  isDetached: trip.isDetached,
+                ),
+              ),
               Positioned(
                 bottom: 0,
                 left: 0,

@@ -172,6 +172,8 @@ class _TagSelectionWidgetState extends State<TagSelectionWidget> {
           tag: tag,
           isSelected: widget.selectedTags.any((t) => t.id == tag.id),
           onToggle: () => _toggleTag(tag),
+          onRename: () => _renameTag(tag),
+          onDelete: () => _deleteTag(tag),
         )).toList(),
       ),
     );
@@ -180,13 +182,13 @@ class _TagSelectionWidgetState extends State<TagSelectionWidget> {
   void _toggleTag(TagModel tag) {
     final selectedTags = List<TagModel>.from(widget.selectedTags);
     final isSelected = selectedTags.any((t) => t.id == tag.id);
-    
+
     if (isSelected) {
       selectedTags.removeWhere((t) => t.id == tag.id);
     } else {
       selectedTags.add(tag);
     }
-    
+
     widget.onTagsChanged(selectedTags);
   }
 
@@ -200,17 +202,108 @@ class _TagSelectionWidgetState extends State<TagSelectionWidget> {
       _loadTags(); // Refresh the tag list
     }
   }
+
+  Future<void> _renameTag(TagModel tag) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final controller = TextEditingController(text: tag.name);
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rename tag'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(labelText: 'Tag name'),
+          textCapitalization: TextCapitalization.words,
+          onSubmitted: (v) => Navigator.pop(context, v),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    final trimmed = newName?.trim() ?? '';
+    if (trimmed.isEmpty || trimmed == tag.name) return;
+    try {
+      final renamed = await renameTag(tagId: tag.id, newName: trimmed);
+      // Reflect the swap in the parent's selectedTags too: if the
+      // user had the old tag picked on this trip, the rename also
+      // re-tagged the trip on the server, so the new id should
+      // replace the old in the picker state.
+      if (widget.selectedTags.any((t) => t.id == tag.id)) {
+        final next = widget.selectedTags
+            .where((t) => t.id != tag.id)
+            .toList()
+          ..add(renamed);
+        widget.onTagsChanged(next);
+      }
+      await _loadTags();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Rename failed: $e')));
+    }
+  }
+
+  Future<void> _deleteTag(TagModel tag) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete "${tag.name}"?'),
+        content: const Text(
+          'The tag will be removed from your library and from every trip you own. '
+          'Trips owned by other people that use this tag aren\'t affected.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await deleteTag(tagId: tag.id);
+      if (widget.selectedTags.any((t) => t.id == tag.id)) {
+        widget.onTagsChanged(
+          widget.selectedTags.where((t) => t.id != tag.id).toList(),
+        );
+      }
+      await _loadTags();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Delete failed: $e')));
+    }
+  }
 }
 
 class _TagChip extends StatelessWidget {
   final TagModel tag;
   final bool isSelected;
   final VoidCallback onToggle;
+  final VoidCallback onRename;
+  final VoidCallback onDelete;
 
   const _TagChip({
     required this.tag,
     required this.isSelected,
     required this.onToggle,
+    required this.onRename,
+    required this.onDelete,
   });
 
   @override
@@ -218,30 +311,74 @@ class _TagChip extends StatelessWidget {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
 
-    return FilterChip(
-      label: Text(tag.name),
-      selected: isSelected,
-      onSelected: (_) => onToggle(),
-      avatar: Icon(
-        Icons.label,
-        size: 16,
-        color: isSelected 
-            ? colorScheme.onSecondaryContainer 
-            : colorScheme.onSurfaceVariant,
+    return GestureDetector(
+      onLongPress: () => _showActions(context),
+      child: FilterChip(
+        label: Text(tag.name),
+        selected: isSelected,
+        onSelected: (_) => onToggle(),
+        avatar: Icon(
+          Icons.label,
+          size: 16,
+          color: isSelected
+              ? colorScheme.onSecondaryContainer
+              : colorScheme.onSurfaceVariant,
+        ),
+        backgroundColor: colorScheme.surface,
+        selectedColor: colorScheme.secondaryContainer,
+        checkmarkColor: colorScheme.onSecondaryContainer,
+        labelStyle: textTheme.bodyMedium?.copyWith(
+          color: isSelected
+              ? colorScheme.onSecondaryContainer
+              : colorScheme.onSurfaceVariant,
+          fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+        ),
+        side: BorderSide(
+          color: isSelected
+              ? colorScheme.secondary
+              : colorScheme.outlineVariant,
+        ),
       ),
-      backgroundColor: colorScheme.surface,
-      selectedColor: colorScheme.secondaryContainer,
-      checkmarkColor: colorScheme.onSecondaryContainer,
-      labelStyle: textTheme.bodyMedium?.copyWith(
-        color: isSelected 
-            ? colorScheme.onSecondaryContainer 
-            : colorScheme.onSurfaceVariant,
-        fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-      ),
-      side: BorderSide(
-        color: isSelected 
-            ? colorScheme.secondary 
-            : colorScheme.outlineVariant,
+    );
+  }
+
+  Future<void> _showActions(BuildContext context) async {
+    final colorScheme = Theme.of(context).colorScheme;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(
+                tag.name,
+                style: Theme.of(ctx).textTheme.titleMedium,
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: const Text('Rename'),
+              onTap: () {
+                Navigator.pop(ctx);
+                onRename();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.delete_outline, color: colorScheme.error),
+              title: Text(
+                'Delete',
+                style: TextStyle(color: colorScheme.error),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                onDelete();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

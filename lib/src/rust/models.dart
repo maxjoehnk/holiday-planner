@@ -605,12 +605,24 @@ class TripListModel {
   final DateTime endDate;
   final Uint8List? headerImage;
 
+  /// `None` for trips created while anonymous (never pushed). When set,
+  /// the trip is linked to a Supabase user — usually the current user
+  /// but possibly someone who shared it with us.
+  final UuidValue? ownerId;
+
+  /// True once the server has dropped the trip out from under us
+  /// (e.g. the owner deleted it). The local snapshot stays
+  /// available but is no longer in sync.
+  final bool isDetached;
+
   const TripListModel({
     required this.id,
     required this.name,
     required this.startDate,
     required this.endDate,
     this.headerImage,
+    this.ownerId,
+    required this.isDetached,
   });
 
   @override
@@ -619,7 +631,9 @@ class TripListModel {
       name.hashCode ^
       startDate.hashCode ^
       endDate.hashCode ^
-      headerImage.hashCode;
+      headerImage.hashCode ^
+      ownerId.hashCode ^
+      isDetached.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -630,7 +644,9 @@ class TripListModel {
           name == other.name &&
           startDate == other.startDate &&
           endDate == other.endDate &&
-          headerImage == other.headerImage;
+          headerImage == other.headerImage &&
+          ownerId == other.ownerId &&
+          isDetached == other.isDetached;
 }
 
 class TripLocationListModel {
@@ -721,6 +737,14 @@ class TripOverviewModel {
   final List<TripLocationSummary> locationsList;
   final TripLocationListModel? singleLocationWeatherTidal;
 
+  /// `None` for trips created while anonymous (never pushed). When set,
+  /// the trip is linked to a Supabase user.
+  final UuidValue? ownerId;
+
+  /// True once the server has dropped the trip out from under us.
+  /// The local data is still browseable but read-only.
+  final bool isDetached;
+
   const TripOverviewModel({
     required this.id,
     required this.name,
@@ -736,6 +760,8 @@ class TripOverviewModel {
     this.accommodationStatus,
     required this.locationsList,
     this.singleLocationWeatherTidal,
+    this.ownerId,
+    required this.isDetached,
   });
 
   @override
@@ -753,7 +779,9 @@ class TripOverviewModel {
       nextTransit.hashCode ^
       accommodationStatus.hashCode ^
       locationsList.hashCode ^
-      singleLocationWeatherTidal.hashCode;
+      singleLocationWeatherTidal.hashCode ^
+      ownerId.hashCode ^
+      isDetached.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -773,7 +801,9 @@ class TripOverviewModel {
           nextTransit == other.nextTransit &&
           accommodationStatus == other.accommodationStatus &&
           locationsList == other.locationsList &&
-          singleLocationWeatherTidal == other.singleLocationWeatherTidal;
+          singleLocationWeatherTidal == other.singleLocationWeatherTidal &&
+          ownerId == other.ownerId &&
+          isDetached == other.isDetached;
 }
 
 class TripPackingListEntry {

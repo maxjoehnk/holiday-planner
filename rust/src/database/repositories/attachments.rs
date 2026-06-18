@@ -37,7 +37,21 @@ pub async fn insert(db: &impl ConnectionTrait, model: attachment::ActiveModel) -
     Attachment::insert(model)
         .exec_without_returning(db)
         .await?;
-    
+
+    Ok(())
+}
+
+pub async fn mark_uploaded(
+    db: &impl ConnectionTrait,
+    id: Uuid,
+    when: chrono::DateTime<chrono::Utc>,
+) -> DbResult<()> {
+    let model = attachment::ActiveModel {
+        id: sea_orm::ActiveValue::Set(id),
+        uploaded_at: sea_orm::ActiveValue::Set(Some(when)),
+        ..Default::default()
+    };
+    Attachment::update(model).exec(db).await?;
     Ok(())
 }
 
@@ -69,6 +83,8 @@ pub async fn add_to_accommodation(db: &impl ConnectionTrait, accommodation_id: U
     let model = accommodation_attachment::ActiveModel {
         accommodation_id: sea_orm::ActiveValue::Set(accommodation_id),
         attachment_id: sea_orm::ActiveValue::Set(attachment_id),
+        updated_at: sea_orm::ActiveValue::Set(chrono::Utc::now()),
+        ..Default::default()
     };
 
     AccommodationAttachment::insert(model)

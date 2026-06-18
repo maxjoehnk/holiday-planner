@@ -24,6 +24,9 @@ pub struct Model {
     pub link: Option<String>,
     pub booking_number: Option<String>,
     pub category: ReservationCategory,
+    pub updated_at: DateTimeUtc,
+    pub deleted_at: Option<DateTimeUtc>,
+    pub last_modified_by: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

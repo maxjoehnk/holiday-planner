@@ -8,11 +8,14 @@ import 'package:holiday_planner/services/refreshable_data.dart';
 import 'package:holiday_planner/src/rust/api/trips.dart';
 import 'package:holiday_planner/src/rust/models.dart';
 import 'package:holiday_planner/src/rust/models/tidal_information.dart';
+import 'package:holiday_planner/services/auth_service.dart';
 import 'package:holiday_planner/views/trip/attachments/add_attachment.dart';
 import 'package:holiday_planner/views/trip/attachments/trip_attachments.dart';
 import 'package:holiday_planner/views/trip/day_planner/day_planner_view.dart';
 import 'package:holiday_planner/views/trip/edit_trip.dart';
+import 'package:holiday_planner/views/trip/share_trip_view.dart';
 import 'package:holiday_planner/views/trip/summary/trip_summary.dart';
+import 'package:holiday_planner/widgets/trip_sync_chip.dart';
 import 'package:uuid/uuid.dart';
 
 import 'map/trip_map.dart';
@@ -150,6 +153,33 @@ class _TripViewState extends State<TripView> {
                   backgroundColor: Colors.teal,
                   foregroundColor: Colors.white,
                   actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: Center(
+                        child: TripSyncChip(
+                          tripId: widget.tripId,
+                          tripName: trip.name,
+                          ownerId: trip.ownerId,
+                          isDetached: trip.isDetached,
+                        ),
+                      ),
+                    ),
+                    if (AuthService.instance.isSignedIn)
+                      IconButton(
+                        icon: const Icon(Icons.person_add_alt_1),
+                        tooltip: 'Share',
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ShareTripView(
+                                tripId: widget.tripId,
+                                tripName: trip.name,
+                                isDetached: trip.isDetached,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {

@@ -24,6 +24,14 @@ pub struct TripListModel {
     pub start_date: DateTime<Utc>,
     pub end_date: DateTime<Utc>,
     pub header_image: Option<Vec<u8>>,
+    /// `None` for trips created while anonymous (never pushed). When set,
+    /// the trip is linked to a Supabase user — usually the current user
+    /// but possibly someone who shared it with us.
+    pub owner_id: Option<Uuid>,
+    /// True once the server has dropped the trip out from under us
+    /// (e.g. the owner deleted it). The local snapshot stays
+    /// available but is no longer in sync.
+    pub is_detached: bool,
 }
 
 #[derive(Clone)]
@@ -42,6 +50,12 @@ pub struct TripOverviewModel {
     pub accommodation_status: Option<AccommodationStatus>,
     pub locations_list: Vec<TripLocationSummary>,
     pub single_location_weather_tidal: Option<TripLocationListModel>,
+    /// `None` for trips created while anonymous (never pushed). When set,
+    /// the trip is linked to a Supabase user.
+    pub owner_id: Option<Uuid>,
+    /// True once the server has dropped the trip out from under us.
+    /// The local data is still browseable but read-only.
+    pub is_detached: bool,
 }
 
 #[derive(Clone)]

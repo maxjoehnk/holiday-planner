@@ -1,10 +1,12 @@
 use std::ops::Deref;
 use sea_orm::ActiveValue::Set;
 use uuid::Uuid;
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, repositories, entities};
 use crate::jobs::BackgroundJobHandler;
 use crate::models::*;
 use crate::handlers::Handler;
+use crate::sync;
 use crate::third_party::{photon, overpass};
 
 pub struct LocationHandler {
@@ -107,8 +109,10 @@ impl LocationHandler {
             is_coastal
         );
         
+        let current_user = sync::session::current_user().await;
+        let id = Uuid::new_v4();
         let location = entities::location::ActiveModel {
-            id: Set(Uuid::new_v4()),
+            id: Set(id),
             trip_id: Set(trip_id),
             coordinates_latitude: Set(location.coordinates.latitude),
             coordinates_longitude: Set(location.coordinates.longitude),
@@ -118,9 +122,13 @@ impl LocationHandler {
             tidal_information_last_updated: Set(None),
             weather_information_last_updated: Set(None),
             pollen_information_last_updated: Set(None),
+            updated_at: Set(chrono::Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
-        
+
         repositories::locations::insert(&self.db, location).await?;
+        self.enqueue_after_write(id, MutationOperation::Insert).await?;
 
         queue_background_sync_jobs(&self.db);
 
@@ -129,12 +137,24 @@ impl LocationHandler {
 
     pub async fn update_coastal_flag(&self, location_id: Uuid, is_coastal: bool) -> anyhow::Result<()> {
         repositories::locations::update_coastal_flag(&self.db, location_id, is_coastal).await?;
-        
+        self.enqueue_after_write(location_id, MutationOperation::Update).await?;
+
         if !is_coastal {
             repositories::tidal_information::delete_by_location_id(self.db.deref(), location_id).await?;
         }
-        
+
         Ok(())
+    }
+
+    async fn enqueue_after_write(&self, id: Uuid, op: MutationOperation) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::locations::find_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = sync::wire::LocationRow::from_model(&model);
+        sync::push::enqueue_if_signed_in(&self.db, "locations", id, op, &row).await
     }
 
     pub async fn get_location_details(&self, location_id: Uuid) -> anyhow::Result<TripLocationListModel> {
@@ -175,6 +195,14 @@ impl LocationHandler {
     }
 
     pub async fn delete_location(&self, location_id: Uuid) -> anyhow::Result<()> {
+        sync::push::enqueue_if_signed_in(
+            &self.db,
+            "locations",
+            location_id,
+            MutationOperation::Delete,
+            &serde_json::json!({ "id": location_id }),
+        )
+        .await?;
         repositories::tidal_information::delete_by_location_id(self.db.deref(), location_id).await?;
         repositories::locations::delete_by_id(&self.db, location_id).await?;
 

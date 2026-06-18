@@ -3,10 +3,12 @@ use sea_orm::ActiveValue::Set;
 use sea_orm::IntoActiveModel;
 use uuid::Uuid;
 use crate::commands::{AddTripPointOfInterest, UpdateTripPointOfInterest};
+use crate::database::entities::pending_mutation::MutationOperation;
 use crate::database::{Database, entities, repositories};
 use crate::handlers::Handler;
 use crate::models::{Coordinate, PointOfInterestModel};
 use crate::models::point_of_interests::{PointOfInterestOsmModel, PointOfInterestSearchModel};
+use crate::sync;
 use crate::third_party::{overpass, photon};
 
 pub struct PointOfInterestHandler {
@@ -80,9 +82,11 @@ impl PointOfInterestHandler {
 
     pub async fn add_point_of_interest(&self, command: AddTripPointOfInterest) -> anyhow::Result<()> {
         tracing::debug!("Adding point of interest to trip {}", command.trip_id);
-        
+
+        let current_user = sync::session::current_user().await;
+        let id = Uuid::new_v4();
         let point_of_interest = entities::point_of_interest::ActiveModel {
-            id: Set(Uuid::new_v4()),
+            id: Set(id),
             trip_id: Set(command.trip_id),
             name: Set(command.name),
             address: Set(command.address),
@@ -96,9 +100,13 @@ impl PointOfInterestHandler {
             trip_day_id: Set(None),
             day_order: Set(None),
             scheduled_at: Set(None),
+            updated_at: Set(chrono::Utc::now()),
+            last_modified_by: Set(current_user.map(|u| u.to_string())),
+            ..Default::default()
         };
-        
+
         repositories::points_of_interest::insert(&self.db, point_of_interest).await?;
+        self.enqueue_after_write(id, MutationOperation::Insert).await?;
 
         Ok(())
     }
@@ -128,6 +136,7 @@ impl PointOfInterestHandler {
         let Some(point_of_interest) = repositories::points_of_interest::find_by_id(&self.db, command.id).await? else {
             anyhow::bail!("Unknown point of interest");
         };
+        let current_user = sync::session::current_user().await;
         let mut point_of_interest = point_of_interest.into_active_model();
         point_of_interest.name.set_if_not_equals(command.name);
         point_of_interest.address.set_if_not_equals(command.address);
@@ -138,16 +147,38 @@ impl PointOfInterestHandler {
         point_of_interest.note.set_if_not_equals(command.note);
         point_of_interest.coordinates_latitude.set_if_not_equals(command.coordinate.map(|c| c.latitude));
         point_of_interest.coordinates_longitude.set_if_not_equals(command.coordinate.map(|c| c.longitude));
+        point_of_interest.updated_at = Set(chrono::Utc::now());
+        point_of_interest.last_modified_by = Set(current_user.map(|u| u.to_string()));
 
         repositories::points_of_interest::update(&self.db, point_of_interest).await?;
+        self.enqueue_after_write(command.id, MutationOperation::Update).await?;
 
         Ok(())
     }
 
     pub async fn delete_point_of_interest(&self, point_of_interest_id: Uuid) -> anyhow::Result<()> {
+        sync::push::enqueue_if_signed_in(
+            &self.db,
+            "points_of_interest",
+            point_of_interest_id,
+            MutationOperation::Delete,
+            &serde_json::json!({ "id": point_of_interest_id }),
+        )
+        .await?;
         repositories::points_of_interest::delete_by_id(&self.db, point_of_interest_id).await?;
 
         Ok(())
+    }
+
+    async fn enqueue_after_write(&self, id: Uuid, op: MutationOperation) -> anyhow::Result<()> {
+        if sync::session::current_user().await.is_none() {
+            return Ok(());
+        }
+        let Some(model) = repositories::points_of_interest::find_by_id(&self.db, id).await? else {
+            return Ok(());
+        };
+        let row = sync::wire::PointOfInterestRow::from_model(&model);
+        sync::push::enqueue_if_signed_in(&self.db, "points_of_interest", id, op, &row).await
     }
 }
 

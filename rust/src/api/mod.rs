@@ -16,6 +16,9 @@ pub mod transits;
 pub mod tags;
 pub mod events;
 pub mod trip_days;
+pub mod sync;
+pub mod sharing;
+pub mod activity;
 
 static DB: RwLock<Option<Database>> = RwLock::const_new(None);
 
@@ -59,7 +62,15 @@ pub fn init_app() {
 pub async fn connect_db(path: String) -> anyhow::Result<()> {
     let database = Database::new(path).await?;
     let mut db = DB.write().await;
-    *db = Some(database);
+    *db = Some(database.clone());
+    drop(db);
+    crate::sync::session::set_db(database.clone()).await;
+    crate::sync::push::spawn_worker(database.clone());
+    // If the auth session is already live (rare on first launch but happens
+    // on hot restart) the coordinator can start immediately.
+    if crate::sync::session::current_user().await.is_some() {
+        crate::sync::coordinator::start(database).await;
+    }
 
     Ok(())
 }
