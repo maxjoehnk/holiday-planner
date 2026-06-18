@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:holiday_planner/services/auth_service.dart';
 import 'package:holiday_planner/src/rust/api/sync.dart' as rust_sync;
+import 'package:holiday_planner/views/auth/stuck_mutations_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountView extends StatefulWidget {
@@ -71,6 +72,20 @@ class _AccountViewState extends State<AccountView> {
                   onTap: _profileLoading || _deleting
                       ? null
                       : () => _editDisplayName(context),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.error_outline),
+                  title: const Text('Stuck mutations'),
+                  subtitle: const Text(
+                    'Edits the sync worker gave up on — review and retry or discard.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: _deleting
+                      ? null
+                      : () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const StuckMutationsView(),
+                          )),
                 ),
                 const Divider(),
                 ListTile(

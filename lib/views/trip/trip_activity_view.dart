@@ -11,10 +11,15 @@ import 'package:uuid/uuid.dart';
 class TripActivityView extends StatefulWidget {
   final UuidValue tripId;
   final String tripName;
+  /// `true` once the original owner deleted the trip — server-side
+  /// triggers stopped firing for it, so the log is frozen at the
+  /// pre-detach snapshot. UI shows a banner explaining the freeze.
+  final bool isDetached;
 
   const TripActivityView({
     required this.tripId,
     required this.tripName,
+    this.isDetached = false,
     super.key,
   });
 
@@ -42,23 +47,60 @@ class _TripActivityViewState extends State<TripActivityView> {
     return Scaffold(
       appBar: AppBar(title: Text('Activity · ${widget.tripName}')),
       body: SafeArea(
-        child: StreamBuilder<List<TripActivityEntry>>(
-          stream: _entries.stream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final entries = snapshot.data!;
-            if (entries.isEmpty) {
-              return const Center(child: Text('No recent activity.'));
-            }
-            return ListView.separated(
-              itemCount: entries.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
-              itemBuilder: (context, i) => _ActivityTile(entry: entries[i]),
-            );
-          },
+        child: Column(
+          children: [
+            if (widget.isDetached) const _ActivityFrozenBanner(),
+            Expanded(
+              child: StreamBuilder<List<TripActivityEntry>>(
+                stream: _entries.stream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final entries = snapshot.data!;
+                  if (entries.isEmpty) {
+                    return const Center(child: Text('No recent activity.'));
+                  }
+                  return ListView.separated(
+                    itemCount: entries.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, i) => _ActivityTile(entry: entries[i]),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _ActivityFrozenBanner extends StatelessWidget {
+  const _ActivityFrozenBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      color: theme.colorScheme.tertiaryContainer,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.history_toggle_off, color: theme.colorScheme.onTertiaryContainer),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Activity stopped when the original owner deleted this trip. '
+              'The log below is the snapshot from before deletion.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onTertiaryContainer,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

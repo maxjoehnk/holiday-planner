@@ -182,6 +182,7 @@ class _TripSyncChipState extends State<TripSyncChip> {
               builder: (_) => TripActivityView(
                 tripId: widget.tripId,
                 tripName: widget.tripName,
+                isDetached: widget.isDetached,
               ),
             ),
           ),

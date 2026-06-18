@@ -54,71 +54,36 @@ impl TripHandler {
     pub async fn get_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting trips");
         let trips = repositories::trips::find_all(&self.db).await?;
-
-        let trips = trips.into_iter()
-            .map(|trip| TripListModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                header_image: trip.header_image,
-                owner_id: trip
-                    .owner_id
-                    .as_deref()
-                    .and_then(|s| Uuid::parse_str(s).ok()),
-                is_detached: trip.detached_at.is_some(),
-            })
-            .collect();
-
-        Ok(trips)
+        let scope = TripVisibilityScope::load(&self.db).await?;
+        Ok(trips
+            .into_iter()
+            .filter(|t| scope.includes(t))
+            .map(trip_list_model_from)
+            .collect())
     }
 
     pub async fn get_upcoming_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting upcoming trips");
         let trips = repositories::trips::find_all(&self.db).await?;
+        let scope = TripVisibilityScope::load(&self.db).await?;
         let now = Local::now().date_naive();
-
-        let trips = trips.into_iter()
-            .filter(|trip| trip.end_date.to_local_date() >= now)
-            .map(|trip| TripListModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                header_image: trip.header_image,
-                owner_id: trip
-                    .owner_id
-                    .as_deref()
-                    .and_then(|s| Uuid::parse_str(s).ok()),
-                is_detached: trip.detached_at.is_some(),
-            })
-            .collect();
-
-        Ok(trips)
+        Ok(trips
+            .into_iter()
+            .filter(|t| t.end_date.to_local_date() >= now && scope.includes(t))
+            .map(trip_list_model_from)
+            .collect())
     }
 
     pub async fn get_past_trips(&self) -> anyhow::Result<Vec<TripListModel>> {
         tracing::debug!("Getting past trips");
         let trips = repositories::trips::find_all(&self.db).await?;
+        let scope = TripVisibilityScope::load(&self.db).await?;
         let now = Local::now().date_naive();
-
-        let trips = trips.into_iter()
-            .filter(|trip| trip.end_date.to_local_date() < now)
-            .map(|trip| TripListModel {
-                id: trip.id,
-                name: trip.name,
-                start_date: trip.start_date,
-                end_date: trip.end_date,
-                header_image: trip.header_image,
-                owner_id: trip
-                    .owner_id
-                    .as_deref()
-                    .and_then(|s| Uuid::parse_str(s).ok()),
-                is_detached: trip.detached_at.is_some(),
-            })
-            .collect();
-
-        Ok(trips)
+        Ok(trips
+            .into_iter()
+            .filter(|t| t.end_date.to_local_date() < now && scope.includes(t))
+            .map(trip_list_model_from)
+            .collect())
     }
 
     pub async fn get_trip_overview(&self, id: Uuid) -> anyhow::Result<TripOverviewModel> {
@@ -441,5 +406,70 @@ trait DateExt {
 impl DateExt for DateTime<Utc> {
     fn to_local_date(&self) -> NaiveDate {
         Local.from_utc_datetime(&self.naive_utc()).date_naive()
+    }
+}
+
+/// Visibility filter applied to the trip list / upcoming / past
+/// queries. Anonymous trips (`owner_id IS NULL`) are visible to
+/// everyone. Owned trips are visible to the owner and to members.
+/// When signed out, only anonymous trips are visible — this is what
+/// keeps a multi-user device from leaking the previous account's
+/// trips into the list after sign-out.
+struct TripVisibilityScope {
+    current_user: Option<Uuid>,
+    memberships: std::collections::HashSet<Uuid>,
+}
+
+impl TripVisibilityScope {
+    async fn load(db: &Database) -> anyhow::Result<Self> {
+        let current_user = sync::session::current_user().await;
+        let memberships = if let Some(uid) = current_user {
+            use crate::database::entities::trip_member::{Column, Entity as TripMember};
+            use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+            TripMember::find()
+                .filter(Column::UserId.eq(uid))
+                .filter(Column::DeletedAt.is_null())
+                .all(db.deref())
+                .await?
+                .into_iter()
+                .map(|m| m.trip_id)
+                .collect()
+        } else {
+            std::collections::HashSet::new()
+        };
+        Ok(Self { current_user, memberships })
+    }
+
+    fn includes(&self, trip: &entities::trip::Model) -> bool {
+        let owner = trip
+            .owner_id
+            .as_deref()
+            .and_then(|s| Uuid::parse_str(s).ok());
+        match (owner, self.current_user) {
+            // Anonymous-mode trip (locally-created, or detached after
+            // owner deletion) — always visible.
+            (None, _) => true,
+            // Signed out, but the trip belongs to someone — hide.
+            (Some(_), None) => false,
+            // I own this trip.
+            (Some(o), Some(me)) if o == me => true,
+            // Someone else owns it — visible only via my membership.
+            (Some(_), Some(_)) => self.memberships.contains(&trip.id),
+        }
+    }
+}
+
+fn trip_list_model_from(trip: entities::trip::Model) -> TripListModel {
+    TripListModel {
+        id: trip.id,
+        name: trip.name,
+        start_date: trip.start_date,
+        end_date: trip.end_date,
+        header_image: trip.header_image,
+        owner_id: trip
+            .owner_id
+            .as_deref()
+            .and_then(|s| Uuid::parse_str(s).ok()),
+        is_detached: trip.detached_at.is_some(),
     }
 }

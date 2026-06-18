@@ -216,3 +216,90 @@ pub async fn sync_status_stream(sink: StreamSink<SyncStatus>) -> anyhow::Result<
     });
     Ok(())
 }
+
+/// One row in the dead-letter queue: a mutation that's hit
+/// `MAX_ATTEMPTS` push failures and is no longer being retried.
+#[derive(Clone, Debug)]
+pub struct DeadLetter {
+    pub id: Uuid,
+    pub entity_type: String,
+    pub entity_id: Uuid,
+    pub operation: String,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub attempts: i32,
+    pub last_error: Option<String>,
+}
+
+/// Mutations the push worker has given up on. The UI shows these so a
+/// user / developer can see what's stuck, copy the error, and decide
+/// to retry or discard.
+pub async fn list_dead_letters() -> anyhow::Result<Vec<DeadLetter>> {
+    use crate::database::entities::pending_mutation::{
+        self, Entity as PendingMutation, MutationOperation,
+    };
+    use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder};
+    const MAX_ATTEMPTS: i32 = 10;
+
+    let db_guard = DB.read().await;
+    let Some(db) = db_guard.as_ref() else {
+        return Ok(Vec::new());
+    };
+    let rows = PendingMutation::find()
+        .filter(pending_mutation::Column::Attempts.gte(MAX_ATTEMPTS))
+        .order_by_desc(pending_mutation::Column::CreatedAt)
+        .all(db.deref())
+        .await?;
+    Ok(rows
+        .into_iter()
+        .map(|m| DeadLetter {
+            id: m.id,
+            entity_type: m.entity_type,
+            entity_id: m.entity_id,
+            operation: match m.operation {
+                MutationOperation::Insert => "insert".to_string(),
+                MutationOperation::Update => "update".to_string(),
+                MutationOperation::Delete => "delete".to_string(),
+            },
+            created_at: m.created_at,
+            attempts: m.attempts,
+            last_error: m.last_error,
+        })
+        .collect())
+}
+
+/// Reset a dead-lettered mutation back to attempts=0 so the push
+/// worker will try it again on the next drain tick. No-op if the row
+/// is gone.
+pub async fn retry_dead_letter(mutation_id: Uuid) -> anyhow::Result<()> {
+    use crate::database::entities::pending_mutation::{self, Entity as PendingMutation};
+    use sea_orm::ActiveValue::Set;
+
+    let db_guard = DB.read().await;
+    let Some(db) = db_guard.as_ref() else {
+        return Ok(());
+    };
+    let active = pending_mutation::ActiveModel {
+        id: Set(mutation_id),
+        attempts: Set(0),
+        last_error: Set(None),
+        ..Default::default()
+    };
+    let _ = PendingMutation::update(active).exec(db.deref()).await;
+    sync_mod::push::signal_pending();
+    Ok(())
+}
+
+/// Drop a dead-lettered mutation. Used when the user has accepted the
+/// failure is permanent (e.g. RLS rejected an edit on a trip they
+/// no longer have access to).
+pub async fn discard_dead_letter(mutation_id: Uuid) -> anyhow::Result<()> {
+    use crate::database::entities::pending_mutation::Entity as PendingMutation;
+    use sea_orm::EntityTrait;
+
+    let db_guard = DB.read().await;
+    let Some(db) = db_guard.as_ref() else {
+        return Ok(());
+    };
+    PendingMutation::delete_by_id(mutation_id).exec(db.deref()).await?;
+    Ok(())
+}

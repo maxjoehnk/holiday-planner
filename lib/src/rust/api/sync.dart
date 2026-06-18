@@ -9,7 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'package:uuid/uuid.dart';
 part 'sync.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`
 
 /// Configure the Supabase client. Called once at app startup with the
 /// project URL and anon key (typically passed via `--dart-define`).
@@ -61,6 +61,24 @@ Future<void> deleteAccount() =>
 Stream<SyncStatus> syncStatusStream() =>
     RustLib.instance.api.crateApiSyncSyncStatusStream();
 
+/// Mutations the push worker has given up on. The UI shows these so a
+/// user / developer can see what's stuck, copy the error, and decide
+/// to retry or discard.
+Future<List<DeadLetter>> listDeadLetters() =>
+    RustLib.instance.api.crateApiSyncListDeadLetters();
+
+/// Reset a dead-lettered mutation back to attempts=0 so the push
+/// worker will try it again on the next drain tick. No-op if the row
+/// is gone.
+Future<void> retryDeadLetter({required UuidValue mutationId}) =>
+    RustLib.instance.api.crateApiSyncRetryDeadLetter(mutationId: mutationId);
+
+/// Drop a dead-lettered mutation. Used when the user has accepted the
+/// failure is permanent (e.g. RLS rejected an edit on a trip they
+/// no longer have access to).
+Future<void> discardDeadLetter({required UuidValue mutationId}) =>
+    RustLib.instance.api.crateApiSyncDiscardDeadLetter(mutationId: mutationId);
+
 class AuthSession {
   final String accessToken;
   final String refreshToken;
@@ -90,6 +108,51 @@ class AuthSession {
           refreshToken == other.refreshToken &&
           userId == other.userId &&
           expiresAtUnixSeconds == other.expiresAtUnixSeconds;
+}
+
+/// One row in the dead-letter queue: a mutation that's hit
+/// `MAX_ATTEMPTS` push failures and is no longer being retried.
+class DeadLetter {
+  final UuidValue id;
+  final String entityType;
+  final UuidValue entityId;
+  final String operation;
+  final DateTime createdAt;
+  final int attempts;
+  final String? lastError;
+
+  const DeadLetter({
+    required this.id,
+    required this.entityType,
+    required this.entityId,
+    required this.operation,
+    required this.createdAt,
+    required this.attempts,
+    this.lastError,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      entityType.hashCode ^
+      entityId.hashCode ^
+      operation.hashCode ^
+      createdAt.hashCode ^
+      attempts.hashCode ^
+      lastError.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeadLetter &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          entityType == other.entityType &&
+          entityId == other.entityId &&
+          operation == other.operation &&
+          createdAt == other.createdAt &&
+          attempts == other.attempts &&
+          lastError == other.lastError;
 }
 
 /// Snapshot of the signed-in user's profile row used by the account

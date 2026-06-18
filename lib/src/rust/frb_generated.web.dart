@@ -351,6 +351,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DayWeather dco_decode_day_weather(dynamic raw);
 
   @protected
+  DeadLetter dco_decode_dead_letter(dynamic raw);
+
+  @protected
   DeletePackingListEntry dco_decode_delete_packing_list_entry(dynamic raw);
 
   @protected
@@ -398,6 +401,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<DayLocation> dco_decode_list_day_location(dynamic raw);
+
+  @protected
+  List<DeadLetter> dco_decode_list_dead_letter(dynamic raw);
 
   @protected
   List<HourlyWeatherForecast> dco_decode_list_hourly_weather_forecast(
@@ -1069,6 +1075,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DayWeather sse_decode_day_weather(SseDeserializer deserializer);
 
   @protected
+  DeadLetter sse_decode_dead_letter(SseDeserializer deserializer);
+
+  @protected
   DeletePackingListEntry sse_decode_delete_packing_list_entry(
       SseDeserializer deserializer);
 
@@ -1124,6 +1133,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<DayLocation> sse_decode_list_day_location(SseDeserializer deserializer);
+
+  @protected
+  List<DeadLetter> sse_decode_list_dead_letter(SseDeserializer deserializer);
 
   @protected
   List<HourlyWeatherForecast> sse_decode_list_hourly_weather_forecast(
@@ -1854,6 +1866,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_day_weather(DayWeather self, SseSerializer serializer);
 
   @protected
+  void sse_encode_dead_letter(DeadLetter self, SseSerializer serializer);
+
+  @protected
   void sse_encode_delete_packing_list_entry(
       DeletePackingListEntry self, SseSerializer serializer);
 
@@ -1910,6 +1925,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_day_location(
       List<DayLocation> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_dead_letter(
+      List<DeadLetter> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_hourly_weather_forecast(

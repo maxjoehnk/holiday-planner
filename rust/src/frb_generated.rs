@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1003479423;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -713253193;
 
 // Section: executor
 
@@ -1073,6 +1073,43 @@ fn wire__crate__api__trips__delete_trip_impl(
         },
     )
 }
+fn wire__crate__api__sync__discard_dead_letter_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "discard_dead_letter",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_mutation_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::sync::discard_dead_letter(api_mutation_id).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__trips__download_web_image_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2061,6 +2098,41 @@ fn wire__crate__api__sharing__leave_trip_impl(
         },
     )
 }
+fn wire__crate__api__sync__list_dead_letters_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "list_dead_letters",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::sync::list_dead_letters().await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__sharing__list_outbound_invites_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2593,6 +2665,43 @@ fn wire__crate__api__trip_days__reorder_trip_day_impl(
                         let output_ok =
                             crate::api::trip_days::reorder_trip_day(api_trip_id, api_command)
                                 .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__sync__retry_dead_letter_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "retry_dead_letter",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_mutation_id = <uuid::Uuid>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::sync::retry_dead_letter(api_mutation_id).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -4365,6 +4474,28 @@ impl SseDecode for crate::models::trip_day::DayWeather {
     }
 }
 
+impl SseDecode for crate::api::sync::DeadLetter {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_entityType = <String>::sse_decode(deserializer);
+        let mut var_entityId = <uuid::Uuid>::sse_decode(deserializer);
+        let mut var_operation = <String>::sse_decode(deserializer);
+        let mut var_createdAt = <chrono::DateTime<chrono::Utc>>::sse_decode(deserializer);
+        let mut var_attempts = <i32>::sse_decode(deserializer);
+        let mut var_lastError = <Option<String>>::sse_decode(deserializer);
+        return crate::api::sync::DeadLetter {
+            id: var_id,
+            entity_type: var_entityType,
+            entity_id: var_entityId,
+            operation: var_operation,
+            created_at: var_createdAt,
+            attempts: var_attempts,
+            last_error: var_lastError,
+        };
+    }
+}
+
 impl SseDecode for crate::commands::delete_packing_list_entry::DeletePackingListEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4558,6 +4689,18 @@ impl SseDecode for Vec<crate::models::trip_day::DayLocation> {
             ans_.push(<crate::models::trip_day::DayLocation>::sse_decode(
                 deserializer,
             ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::sync::DeadLetter> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::sync::DeadLetter>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -6438,162 +6581,165 @@ fn pde_ffi_dispatcher_primary_impl(
         26 => wire__crate__api__tags__delete_tag_impl(port, ptr, rust_vec_len, data_len),
         27 => wire__crate__api__transits__delete_train_impl(port, ptr, rust_vec_len, data_len),
         28 => wire__crate__api__trips__delete_trip_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__attachments__get_accommodation_attachments_impl(
+        29 => wire__crate__api__sync__discard_dead_letter_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__trips__download_web_image_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__attachments__get_accommodation_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__tags__get_all_tags_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__trips__get_location_details_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__sync__get_my_profile_impl(port, ptr, rust_vec_len, data_len),
-        34 => {
+        32 => wire__crate__api__tags__get_all_tags_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__trips__get_location_details_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__sync__get_my_profile_impl(port, ptr, rust_vec_len, data_len),
+        35 => {
             wire__crate__api__packing_list__get_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        35 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__tags__get_tag_by_id_impl(port, ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__accommodations__get_trip_accommodations_impl(
+        36 => wire__crate__api__trips__get_past_trips_impl(port, ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__tags__get_tag_by_id_impl(port, ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__trips__get_trip_impl(port, ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__accommodations__get_trip_accommodations_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__attachments__get_trip_attachments_impl(
+        40 => wire__crate__api__attachments__get_trip_attachments_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__trip_days__get_trip_days_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
-        43 => {
+        41 => wire__crate__api__bookings__get_trip_bookings_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__trip_days__get_trip_days_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__trips__get_trip_locations_impl(port, ptr, rust_vec_len, data_len),
+        44 => {
             wire__crate__api__trips__get_trip_packing_list_impl(port, ptr, rust_vec_len, data_len)
         }
-        44 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
+        45 => wire__crate__api__points_of_interest__get_trip_points_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => wire__crate__api__routes__get_trip_routes_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__api__trip_days__get_unassigned_day_items_impl(
+        46 => wire__crate__api__routes__get_trip_routes_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__tags__get_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__transits__get_trip_trains_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__trips__get_trips_impl(port, ptr, rust_vec_len, data_len),
+        50 => wire__crate__api__trip_days__get_unassigned_day_items_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__routes__import_komoot_route_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__transits__import_parsed_train_journey_impl(
+        51 => wire__crate__api__trips__get_upcoming_trips_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__routes__import_komoot_route_impl(port, ptr, rust_vec_len, data_len),
+        53 => wire__crate__api__transits__import_parsed_train_journey_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__sharing__invite_trip_member_impl(port, ptr, rust_vec_len, data_len),
-        55 => wire__crate__api__sharing__leave_trip_impl(port, ptr, rust_vec_len, data_len),
-        56 => {
+        54 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__sharing__invite_trip_member_impl(port, ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__sharing__leave_trip_impl(port, ptr, rust_vec_len, data_len),
+        57 => wire__crate__api__sync__list_dead_letters_impl(port, ptr, rust_vec_len, data_len),
+        58 => {
             wire__crate__api__sharing__list_outbound_invites_impl(port, ptr, rust_vec_len, data_len)
         }
-        57 => {
+        59 => {
             wire__crate__api__activity__list_trip_activity_impl(port, ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__sharing__list_trip_members_impl(port, ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__sync__local_only_trip_count_impl(port, ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
-        63 => {
+        60 => wire__crate__api__sharing__list_trip_members_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__sync__local_only_trip_count_impl(port, ptr, rust_vec_len, data_len),
+        62 => wire__crate__api__trips__mark_as_packed_impl(port, ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__trips__mark_as_unpacked_impl(port, ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__transits__parse_train_data_impl(port, ptr, rust_vec_len, data_len),
+        65 => {
             wire__crate__api__attachments__read_attachment_impl(port, ptr, rust_vec_len, data_len)
         }
-        64 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
+        66 => wire__crate__api__attachments__remove_accommodation_attachment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        65 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
-        66 => wire__crate__api__trip_days__remove_trip_day_location_impl(
+        67 => wire__crate__api__tags__remove_tag_from_trip_impl(port, ptr, rust_vec_len, data_len),
+        68 => wire__crate__api__trip_days__remove_trip_day_location_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        67 => wire__crate__api__sharing__remove_trip_member_impl(port, ptr, rust_vec_len, data_len),
-        68 => wire__crate__api__tags__rename_tag_impl(port, ptr, rust_vec_len, data_len),
-        69 => wire__crate__api__trip_days__reorder_trip_day_impl(port, ptr, rust_vec_len, data_len),
-        70 => wire__crate__api__sharing__revoke_invite_impl(port, ptr, rust_vec_len, data_len),
-        71 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
-        72 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
-        73 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
+        69 => wire__crate__api__sharing__remove_trip_member_impl(port, ptr, rust_vec_len, data_len),
+        70 => wire__crate__api__tags__rename_tag_impl(port, ptr, rust_vec_len, data_len),
+        71 => wire__crate__api__trip_days__reorder_trip_day_impl(port, ptr, rust_vec_len, data_len),
+        72 => wire__crate__api__sync__retry_dead_letter_impl(port, ptr, rust_vec_len, data_len),
+        73 => wire__crate__api__sharing__revoke_invite_impl(port, ptr, rust_vec_len, data_len),
+        74 => wire__crate__api__run_background_jobs_impl(port, ptr, rust_vec_len, data_len),
+        75 => wire__crate__api__trips__search_locations_impl(port, ptr, rust_vec_len, data_len),
+        76 => wire__crate__api__points_of_interest__search_point_of_interest_details_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        74 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
+        77 => wire__crate__api__points_of_interest__search_point_of_interests_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        75 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
-        76 => wire__crate__api__sync__set_auth_session_impl(port, ptr, rust_vec_len, data_len),
-        77 => wire__crate__api__trip_days__set_primary_trip_day_location_impl(
+        78 => wire__crate__api__trips__search_web_images_impl(port, ptr, rust_vec_len, data_len),
+        79 => wire__crate__api__sync__set_auth_session_impl(port, ptr, rust_vec_len, data_len),
+        80 => wire__crate__api__trip_days__set_primary_trip_day_location_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        78 => {
+        81 => {
             wire__crate__api__trip_days__set_trip_day_title_impl(port, ptr, rust_vec_len, data_len)
         }
-        79 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
-        80 => {
+        82 => wire__crate__api__tags__set_trip_tags_impl(port, ptr, rust_vec_len, data_len),
+        83 => {
             wire__crate__api__events__subscribe_data_changes_impl(port, ptr, rust_vec_len, data_len)
         }
-        81 => wire__crate__api__sync__sync_status_stream_impl(port, ptr, rust_vec_len, data_len),
-        82 => {
+        84 => wire__crate__api__sync__sync_status_stream_impl(port, ptr, rust_vec_len, data_len),
+        85 => {
             wire__crate__api__trip_days__unassign_day_item_impl(port, ptr, rust_vec_len, data_len)
         }
-        83 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
-        84 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
-        85 => wire__crate__api__sync__update_my_profile_impl(port, ptr, rust_vec_len, data_len),
-        86 => wire__crate__api__packing_list__update_packing_list_entry_impl(
+        86 => wire__crate__api__bookings__update_car_rental_impl(port, ptr, rust_vec_len, data_len),
+        87 => wire__crate__api__trips__update_coastal_flag_impl(port, ptr, rust_vec_len, data_len),
+        88 => wire__crate__api__sync__update_my_profile_impl(port, ptr, rust_vec_len, data_len),
+        89 => wire__crate__api__packing_list__update_packing_list_entry_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        87 => {
+        90 => {
             wire__crate__api__bookings__update_reservation_impl(port, ptr, rust_vec_len, data_len)
         }
-        88 => wire__crate__api__routes__update_route_impl(port, ptr, rust_vec_len, data_len),
-        89 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
-        90 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
-        91 => wire__crate__api__accommodations__update_trip_accommodation_impl(
+        91 => wire__crate__api__routes__update_route_impl(port, ptr, rust_vec_len, data_len),
+        92 => wire__crate__api__transits__update_train_impl(port, ptr, rust_vec_len, data_len),
+        93 => wire__crate__api__trips__update_trip_impl(port, ptr, rust_vec_len, data_len),
+        94 => wire__crate__api__accommodations__update_trip_accommodation_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        92 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
+        95 => wire__crate__api__points_of_interest__update_trip_point_of_interest_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        93 => {
+        96 => {
             wire__crate__api__sync__upload_local_only_trips_impl(port, ptr, rust_vec_len, data_len)
         }
-        94 => wire__crate__api__sync__upload_trip_impl(port, ptr, rust_vec_len, data_len),
+        97 => wire__crate__api__sync__upload_trip_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -7521,6 +7667,29 @@ impl flutter_rust_bridge::IntoIntoDart<crate::models::trip_day::DayWeather>
     for crate::models::trip_day::DayWeather
 {
     fn into_into_dart(self) -> crate::models::trip_day::DayWeather {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::sync::DeadLetter {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.entity_type.into_into_dart().into_dart(),
+            self.entity_id.into_into_dart().into_dart(),
+            self.operation.into_into_dart().into_dart(),
+            self.created_at.into_into_dart().into_dart(),
+            self.attempts.into_into_dart().into_dart(),
+            self.last_error.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::sync::DeadLetter {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sync::DeadLetter>
+    for crate::api::sync::DeadLetter
+{
+    fn into_into_dart(self) -> crate::api::sync::DeadLetter {
         self
     }
 }
@@ -9793,6 +9962,19 @@ impl SseEncode for crate::models::trip_day::DayWeather {
     }
 }
 
+impl SseEncode for crate::api::sync::DeadLetter {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <uuid::Uuid>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.entity_type, serializer);
+        <uuid::Uuid>::sse_encode(self.entity_id, serializer);
+        <String>::sse_encode(self.operation, serializer);
+        <chrono::DateTime<chrono::Utc>>::sse_encode(self.created_at, serializer);
+        <i32>::sse_encode(self.attempts, serializer);
+        <Option<String>>::sse_encode(self.last_error, serializer);
+    }
+}
+
 impl SseEncode for crate::commands::delete_packing_list_entry::DeletePackingListEntry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -9936,6 +10118,16 @@ impl SseEncode for Vec<crate::models::trip_day::DayLocation> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::models::trip_day::DayLocation>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::sync::DeadLetter> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::sync::DeadLetter>::sse_encode(item, serializer);
         }
     }
 }

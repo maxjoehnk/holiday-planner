@@ -10,10 +10,15 @@ import 'package:uuid/uuid.dart';
 class ShareTripView extends StatefulWidget {
   final UuidValue tripId;
   final String tripName;
+  /// `true` when the original owner deleted the trip and we're keeping
+  /// the local snapshot read-only. Members can re-claim it; sharing
+  /// actions don't work until they do.
+  final bool isDetached;
 
   const ShareTripView({
     required this.tripId,
     required this.tripName,
+    this.isDetached = false,
     super.key,
   });
 
@@ -53,6 +58,7 @@ class _ShareTripViewState extends State<ShareTripView> {
       body: SafeArea(
         child: Column(
           children: [
+            if (widget.isDetached) const _DetachedBanner(),
             Expanded(
               child: StreamBuilder<List<TripMemberModel>>(
                 stream: _members.stream,
@@ -69,6 +75,7 @@ class _ShareTripViewState extends State<ShareTripView> {
                         itemBuilder: (context, i) => _MemberTile(
                           tripId: widget.tripId,
                           member: members[i],
+                          isDetached: widget.isDetached,
                         ),
                       ),
                       StreamBuilder<List<PendingInviteModel>>(
@@ -92,6 +99,7 @@ class _ShareTripViewState extends State<ShareTripView> {
                                 itemBuilder: (context, i) => _PendingInviteTile(
                                   tripId: widget.tripId,
                                   invite: invites[i],
+                                  isDetached: widget.isDetached,
                                 ),
                               ),
                             ],
@@ -104,9 +112,42 @@ class _ShareTripViewState extends State<ShareTripView> {
               ),
             ),
             const Divider(height: 1),
-            _InviteForm(tripId: widget.tripId),
+            _InviteForm(
+              tripId: widget.tripId,
+              isDetached: widget.isDetached,
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DetachedBanner extends StatelessWidget {
+  const _DetachedBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      color: theme.colorScheme.tertiaryContainer,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.cloud_off_outlined, color: theme.colorScheme.onTertiaryContainer),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'This trip is read-only because the original owner deleted it. '
+              'Sync it to your account to share again.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onTertiaryContainer,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -135,8 +176,13 @@ class _SectionHeader extends StatelessWidget {
 class _PendingInviteTile extends StatelessWidget {
   final UuidValue tripId;
   final PendingInviteModel invite;
+  final bool isDetached;
 
-  const _PendingInviteTile({required this.tripId, required this.invite});
+  const _PendingInviteTile({
+    required this.tripId,
+    required this.invite,
+    required this.isDetached,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +190,9 @@ class _PendingInviteTile extends StatelessWidget {
     return ListTile(
       leading: Icon(Icons.mail_outline, color: theme.colorScheme.secondary),
       title: Text(invite.email),
-      subtitle: const Text('Waiting for sign-up'),
+      subtitle: Text(_formatRelativeInvited(invite.createdAt)),
       trailing: TextButton(
-        onPressed: () => _revoke(context),
+        onPressed: isDetached ? null : () => _revoke(context),
         child: const Text('Revoke'),
       ),
     );
@@ -157,9 +203,34 @@ class _PendingInviteTile extends StatelessWidget {
     try {
       await revokeInvite(tripId: tripId, inviteId: invite.id);
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Revoke failed: $e')));
+      if (context.mounted) {
+        messenger.showSnackBar(SnackBar(content: Text('Revoke failed: $e')));
+      }
     }
   }
+}
+
+String _formatRelativeInvited(DateTime when) {
+  final delta = DateTime.now().toUtc().difference(when.toUtc());
+  if (delta.inMinutes < 1) return 'Invited just now';
+  if (delta.inHours < 1) {
+    final m = delta.inMinutes;
+    return 'Invited $m minute${m == 1 ? '' : 's'} ago';
+  }
+  if (delta.inDays < 1) {
+    final h = delta.inHours;
+    return 'Invited $h hour${h == 1 ? '' : 's'} ago';
+  }
+  if (delta.inDays < 30) {
+    final d = delta.inDays;
+    return 'Invited $d day${d == 1 ? '' : 's'} ago';
+  }
+  final months = (delta.inDays / 30).floor();
+  if (months < 12) {
+    return 'Invited $months month${months == 1 ? '' : 's'} ago';
+  }
+  final years = (delta.inDays / 365).floor();
+  return 'Invited $years year${years == 1 ? '' : 's'} ago';
 }
 
 class _SignInPrompt extends StatelessWidget {
@@ -183,8 +254,13 @@ class _SignInPrompt extends StatelessWidget {
 class _MemberTile extends StatelessWidget {
   final UuidValue tripId;
   final TripMemberModel member;
+  final bool isDetached;
 
-  const _MemberTile({required this.tripId, required this.member});
+  const _MemberTile({
+    required this.tripId,
+    required this.member,
+    required this.isDetached,
+  });
 
   String get _displayName =>
       member.displayName ?? member.email ?? member.userId.toString();
@@ -209,7 +285,7 @@ class _MemberTile extends StatelessWidget {
         ],
       ),
       subtitle: subtitle == null ? null : Text(subtitle),
-      trailing: member.isOwner
+      trailing: member.isOwner || isDetached
           ? null
           : PopupMenuButton<_MemberAction>(
               onSelected: (action) => _handle(context, action),
@@ -273,8 +349,9 @@ class _OwnerBadge extends StatelessWidget {
 
 class _InviteForm extends StatefulWidget {
   final UuidValue tripId;
+  final bool isDetached;
 
-  const _InviteForm({required this.tripId});
+  const _InviteForm({required this.tripId, required this.isDetached});
 
   @override
   State<_InviteForm> createState() => _InviteFormState();
@@ -312,6 +389,7 @@ class _InviteFormState extends State<_InviteForm> {
 
   @override
   Widget build(BuildContext context) {
+    final disabled = widget.isDetached;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -319,6 +397,7 @@ class _InviteFormState extends State<_InviteForm> {
           Expanded(
             child: TextField(
               controller: _controller,
+              enabled: !disabled,
               keyboardType: TextInputType.emailAddress,
               autocorrect: false,
               decoration: const InputDecoration(
@@ -330,7 +409,7 @@ class _InviteFormState extends State<_InviteForm> {
           ),
           const SizedBox(width: 8),
           FilledButton(
-            onPressed: _sending ? null : _submit,
+            onPressed: disabled || _sending ? null : _submit,
             child: _sending
                 ? const SizedBox(
                     width: 16,

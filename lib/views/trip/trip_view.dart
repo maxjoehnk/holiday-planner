@@ -174,6 +174,7 @@ class _TripViewState extends State<TripView> {
                               builder: (context) => ShareTripView(
                                 tripId: widget.tripId,
                                 tripName: trip.name,
+                                isDetached: trip.isDetached,
                               ),
                             ),
                           );
